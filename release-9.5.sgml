@@ -1,6 +1,522 @@
 <!-- doc/src/sgml/release-9.5.sgml -->
 <!-- See header comment in release.sgml about typical markup -->
 
+ <sect1 id="release-9-5-3">
+  <title>Release 9.5.3</title>
+
+  <note>
+  <title>출시일</title>
+  <simpara>2016-05-12</simpara>
+  </note>
+
+  <para>
+   이번 릴리즈에는 9.5.2 버전 출시 이후 발견된 다양한 개선 사항들이
+   포함되었다.  9.5 메이저 릴리즈에 포함된 새 기능들의 자세한 내용은 
+   <xref linkend="release-9-5">에서 다룬다. 
+  </para>
+
+  <sect2>
+   <title>9.5.3 버전으로 업그레이드 하기</title>
+
+   <para>
+    9.5.X 버전에서는 덤프/복원 작업을 할 필요는 없다. 
+   </para>
+
+   <para>
+    하지만, 9.5.2 이전 버전을 사용하고 있다면, <xref linkend="release-9-5-2">
+    소개를 먼저 읽어 보아야 한다.
+   </para>
+  </sect2>
+
+  <sect2>
+   <title>바뀐점</title>
+
+   <itemizedlist>
+
+    <listitem>
+<!--
+Author: Peter Eisentraut <peter_e@gmx.net>
+Branch: master [7c7d4fdda] 2016-04-08 14:11:56 -0400
+Branch: REL9_5_STABLE [a3c17b2af] 2016-05-06 23:47:42 -0400
+Branch: REL9_4_STABLE [e3b14de9f] 2016-05-07 00:10:31 -0400
+Branch: REL9_3_STABLE [a9d8644de] 2016-05-07 00:10:17 -0400
+Branch: REL9_2_STABLE [e3a493ac0] 2016-05-07 00:05:39 -0400
+Branch: REL9_1_STABLE [9b676fd49] 2016-05-07 00:09:37 -0400
+-->
+     <para>
+      OpenSSL을 이용한 접속에서 오류 큐가 이미 빈 것이라고 가정하지 
+      않고, 접속 전에 이 오류 큐를 비움; 오류 큐가 비어 있지 않은
+      상태에서 접속이 되는 상황을 막음 (Peter Geoghegan, Dave
+      Vitek, Peter Eisentraut)
+     </para>
+
+     <para>
+      단일 프로세스로 OpenSSL 라이브러리를 이용한 여러 접속에서,
+      오류 큐를 비울 때, 오류 큐가 깔끔하게 비워지지 않는 
+      문제를 고쳤다.
+      PHP, Python, Ruby 환경에서 <application>libpq</> 라이브러리를
+      사용해서 동시 접속을 하는 경우, OpenSSL 라이브러리를 이용하는
+      경우에 이 문제가 발견 되었다.
+      이 문제는 확장 모듈에서 SSL 연결을 사용할 경우도 
+      같은 문제를 일으킬 가능성이 있어, 서버도 안전하지는 않다.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [80f66a9ad] 2016-04-21 20:05:58 -0400
+Branch: REL9_5_STABLE [94c685a7c] 2016-04-21 20:05:58 -0400
+Branch: REL9_4_STABLE [3232c2427] 2016-04-21 20:05:58 -0400
+Branch: REL9_3_STABLE [d9742ac46] 2016-04-21 20:05:58 -0400
+Branch: REL9_2_STABLE [ad2d32b57] 2016-04-21 20:05:58 -0400
+Branch: REL9_1_STABLE [6882dbd34] 2016-04-21 20:05:58 -0400
+-->
+     <para>
+      left join 구문에서 오른쪽 집합이 full join을 
+      사용할 경우
+      실행 계획기의
+      <quote>failed to build any <replaceable>N</>-way joins</quote>
+      (불특정 <replaceable>N</>방향 조인 생성 실패) 오류 수정
+      (Tom Lane)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [207d5a656] 2016-04-29 20:19:38 -0400
+Branch: REL9_5_STABLE [f25d0619c] 2016-04-29 20:19:38 -0400
+Branch: REL9_4_STABLE [72edc8ffe] 2016-04-29 20:19:38 -0400
+Branch: REL9_3_STABLE [67349e5a8] 2016-04-29 20:19:38 -0400
+Branch: REL9_2_STABLE [f02cb8c9a] 2016-04-29 20:19:38 -0400
+-->
+     <para>
+      다중 nestloop 계획에서 = 연산 검사가 잘못 되었던 것 수정
+      (Tom Lane)
+     </para>
+
+     <para>
+      <literal>WHERE</> 절에
+      <literal>X.X = Y.Y = Z.Z</> 형태와 같이 삼중 이상 다중 = 
+      연산자를 사용하는 경우, 실행 계획기가 잘못된 실행 계획을 
+      짤 수 있던 문제를 수정함.
+      오래전부터 있었던 버그였으나, 실재로 이런 문제가 발생된 
+      경우가 없었기 때문에, 이제 수정 되었음.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [abb164655] 2016-04-21 23:17:36 -0400
+Branch: REL9_5_STABLE [81deadd31] 2016-04-21 23:17:36 -0400
+-->
+     <para>
+      <xref linkend="guc-operator-precedence-warning"> 설정값이
+      on으로 지정된 경우, 아주 드물게 구문 오류가 발생한 부분 수정
+      (Tom Lane)
+     </para>
+
+     <para>
+      <literal>SELECT (ARRAY[])::text[]</> 경우 오류가 발생했음.
+      괄호가 없으면 정상.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [f0e766bd7] 2016-04-15 00:02:26 -0400
+Branch: REL9_5_STABLE [edd57377f] 2016-04-15 00:02:26 -0400
+Branch: REL9_4_STABLE [0479eccdc] 2016-04-15 00:02:26 -0400
+-->
+     <para>
+      GIN 인덱스 검색에서 쿼리 실행 중 메모리 누수 수정
+      (Julien Rouhaud)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [bde361fef] 2016-04-20 14:25:15 -0400
+Branch: REL9_5_STABLE [be2754456] 2016-04-20 14:25:15 -0400
+Branch: REL9_4_STABLE [ef35afa35] 2016-04-20 14:25:15 -0400
+-->
+     <para>
+      GIN 인덱스 자료 입력시 쿼리 실행 메모리 누수 방지와, 
+      잠재적 인덱스 손상 위험 막음
+      (Tom Lane)
+     </para>
+
+     <para>
+      메모리 누수 현상은 간단한 쿼리에서는 소량이기 때문에, 잘 찾기 힘드나, 
+      <varname>maintenance_work_mem</>를 초과하는 대량 GIN 인덱스 만들기를
+      할 때는 그 누수량이 심했다.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [d136d600f] 2016-05-06 12:09:20 -0400
+Branch: REL9_5_STABLE [504af1fe0] 2016-05-06 12:09:20 -0400
+Branch: REL9_4_STABLE [1180868d1] 2016-05-06 12:09:20 -0400
+Branch: REL9_3_STABLE [462456d8d] 2016-05-06 12:09:20 -0400
+Branch: REL9_2_STABLE [11247dd99] 2016-05-06 12:09:20 -0400
+Branch: REL9_1_STABLE [7bad282c3] 2016-05-06 12:09:20 -0400
+-->
+     <para>
+      <function>to_timestamp()</> 함수에서 
+      <literal>TH</>, <literal>th</>, <literal>Y,YYY</>
+      양식 출력에서 잘못된 부분 수정
+      (Tom Lane)
+     </para>
+
+     <para>
+      서브시퀀스 양식 코드가 잘못 인식되어 입력 문자열의 끝부분이 
+      잘못 잘리는 문제가 있었다.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [1f7c85b82] 2016-04-21 14:20:30 -0400
+Branch: REL9_5_STABLE [4b52cc289] 2016-04-21 14:20:18 -0400
+Branch: REL9_4_STABLE [679c92238] 2016-04-21 14:20:18 -0400
+Branch: REL9_3_STABLE [e5882f26b] 2016-04-21 14:20:18 -0400
+Branch: REL9_2_STABLE [c7c145e4f] 2016-04-21 14:20:18 -0400
+Branch: REL9_1_STABLE [663624e60] 2016-04-21 14:20:18 -0400
+-->
+     <para>
+      룰이나 뷰에서 <literal><replaceable>값</> <replaceable>연산자</>
+      ANY (<replaceable>배열</>)</literal> 형태가 서브 SELECT 구문으로
+      있는 경우 잘못된 처리를 수정함
+      (Tom Lane)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [99f3b5613] 2016-04-04 18:05:23 -0400
+Branch: REL9_5_STABLE [f3d17491c] 2016-04-04 18:05:23 -0400
+Branch: REL9_4_STABLE [28148e258] 2016-04-04 18:05:24 -0400
+-->
+     <para>
+      <command>ALTER SYSTEM</> 구문의 매개변수값으로 줄바꿈 문자
+      허용하지 않음
+      (Tom Lane)
+     </para>
+
+     <para>
+      환경 설정파일에서 값으로 사용되는 문자열 가운데 
+      줄바꿈 문자가 있으면 오류를 내기 때문에, 
+      <command>ALTER SYSTEM</> 구문에서 사용하는 그 값에도 허용하지 않게 함.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [8f1911d5e] 2016-04-15 12:11:40 -0400
+Branch: REL9_5_STABLE [8f8e65d34] 2016-04-15 12:11:27 -0400
+Branch: REL9_4_STABLE [8eed31ffb] 2016-04-15 12:11:27 -0400
+-->
+     <para>
+      OID가 있는 인덱스가 사용될 경우 바르게 작동하도록
+      <command>ALTER TABLE ... REPLICA IDENTITY USING INDEX</>
+      처리 방식 수정
+      (David Rowley)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [93c301fc4] 2016-04-08 12:31:53 -0400
+Branch: REL9_5_STABLE [0da7cf6e8] 2016-04-08 12:31:42 -0400
+-->
+     <para>
+      테이블스페이스 심볼릭 링크 삭제 시 발생할 수 있는 오동작 가능성
+      방지
+      (Tom Lane)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [6a3d3965d] 2016-04-14 19:42:21 -0400
+Branch: REL9_5_STABLE [e7a456174] 2016-04-14 19:42:22 -0400
+Branch: REL9_4_STABLE [00456911f] 2016-04-14 19:42:22 -0400
+-->
+     <para>
+      자료형 길이 계산이 엄격한 몇몇 플랫폼에서 논리 디코딩 모듈
+      오동작 해결
+      (Tom Lane, Andres Freund)
+     </para>
+
+     <para>
+      이 문제는 트랜잭션의 크기가 커 디스크로 임시 보관하고,
+      기본키가 바뀌는 트랜잭션에서 문제가 생겼다.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Andres Freund <andres@anarazel.de>
+Branch: master [59455018a] 2016-04-28 22:11:18 -0700
+Branch: REL9_5_STABLE [2e1b4adf3] 2016-04-28 22:11:18 -0700
+Branch: REL9_4_STABLE [596f93605] 2016-04-28 22:11:18 -0700
+-->
+     <para>
+      wal 송신기가 종료될 때 수신기의 응답을 위한 요청이 반복되던 부분 수정
+      (Nick Cleaton)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [cbabb70f3] 2016-04-20 23:48:13 -0400
+Branch: REL9_5_STABLE [0b8e0bf0a] 2016-04-20 23:48:13 -0400
+Branch: REL9_4_STABLE [f05ac711b] 2016-04-20 23:48:13 -0400
+Branch: REL9_3_STABLE [691073bd8] 2016-04-20 23:48:13 -0400
+Branch: REL9_2_STABLE [1b22368ff] 2016-04-20 23:48:13 -0400
+Branch: REL9_1_STABLE [4c1c9f80b] 2016-04-20 23:48:13 -0400
+-->
+     <para>
+      <application>pg_regress</> 에서 <envar>PGCTLTIMEOUT</>
+      환경 변수를 이용해 작업 시작 초과시간을 지정할 수 있도록 함
+      (Tom Lane)
+     </para>
+
+     <para>
+      <application>pg_ctl</> 명령에서 추가된 이 기능을 
+      느린 시스템의 기능 검사 자동화를 위해 확장함.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [6cead413b] 2016-04-13 18:58:14 -0400
+Branch: REL9_5_STABLE [fb0f63933] 2016-04-13 18:57:52 -0400
+Branch: REL9_4_STABLE [5daf1012a] 2016-04-13 18:57:52 -0400
+Branch: REL9_3_STABLE [34bf6bc56] 2016-04-13 18:57:52 -0400
+Branch: REL9_2_STABLE [6bb42d520] 2016-04-13 18:57:52 -0400
+Branch: REL9_1_STABLE [3ef1f3a3e] 2016-04-13 18:57:52 -0400
+-->
+     <para>
+      하나 뿐인 연산자 클래스로 구성된 연자자 패밀리의 
+      소유주 지정이 바르게 되도록
+      <application>pg_upgrade</> 수정함
+      (Tom Lane)
+     </para>
+
+     <para>
+      이 문제는 새 데이터베이스에 연사자 패밀리가 복원되었을 때, 
+      그 연산자 클래스들이 그 패밀리에 속하지 못하는 부분이었다.
+      사용하는 부분에 크게 문제가 되지는 않았지만, 새로 만들어진 
+      데이터베이스를 <application>pg_dump</> 명령을 이용해서 덤프하는
+      경우 문제가 생길 수 있었다.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [1a2c17f8e] 2016-05-06 22:05:56 -0400
+Branch: REL9_5_STABLE [196870f2f] 2016-05-06 22:05:51 -0400
+Branch: REL9_4_STABLE [e1aecebc0] 2016-05-06 22:05:51 -0400
+Branch: REL9_3_STABLE [e1d88f983] 2016-05-06 22:05:51 -0400
+-->
+     <para>
+      TOAST 규칙이 다른 버전간 <application>pg_upgrade</> 명령이 
+      바르게 작동하도록 수정함
+      (Tom Lane)
+     </para>
+
+     <para>
+      <application>pg_upgrade</> 명령은 옛 버전에서는 TOAST 테이블이 없는데,
+      새 <productname>PostgreSQL</>
+      버전에서 한 테이블이 TOAST 테이블을 추가로 있어야 한다고 판단하는
+      경우를 위해 특별한 예외처리를 했다.
+      이 부분에서 문제가 있었고, 이부분을 이 버전에서 뺐다.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Noah Misch <noah@leadboat.com>
+Branch: master [213c7df03] 2016-04-26 21:53:58 -0400
+Branch: REL9_5_STABLE [f9989482d] 2016-04-26 21:54:07 -0400
+-->
+     <para>
+      IBM XLC 컴파일러를 사용할 경우 atomic 연산 오류 수정 (Noah Misch)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [75c24d0f7] 2016-04-18 13:33:06 -0400
+Branch: REL9_5_STABLE [c6a5b6677] 2016-04-18 13:33:07 -0400
+Branch: REL9_4_STABLE [21b7f49eb] 2016-04-18 13:33:07 -0400
+Branch: REL9_3_STABLE [6ec1ff852] 2016-04-18 13:33:07 -0400
+Branch: REL9_2_STABLE [b24f7e280] 2016-04-18 13:33:07 -0400
+-->
+     <para>
+      빌드 시 <option>--disable-spinlocks</> 옵션을 추가해서
+      SysV 세마포어 수를 줄임
+      (Tom Lane)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [0ab3595e5] 2016-04-23 16:53:15 -0400
+Branch: REL9_5_STABLE [bdf7744f7] 2016-04-23 16:53:15 -0400
+Branch: REL9_4_STABLE [2a715371c] 2016-04-23 16:53:15 -0400
+Branch: REL9_3_STABLE [252c35895] 2016-04-23 16:53:15 -0400
+Branch: REL9_2_STABLE [0f5491283] 2016-04-23 16:53:15 -0400
+Branch: REL9_1_STABLE [cbff4b708] 2016-04-23 16:53:15 -0400
+-->
+     <para>
+      NetBSD 라이브러리 함수와 충돌을 피하기 위해,
+      <function>strtoi()</> 함수를 <function>strtoint()</>
+      함수로 이름을 바꿈
+      (Thomas Munro)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: REL9_5_STABLE [20d4428f0] 2016-04-21 15:44:18 -0400
+Branch: REL9_4_STABLE [5e2fb8862] 2016-04-21 15:44:18 -0400
+Branch: REL9_3_STABLE [8f9518414] 2016-04-21 15:44:18 -0400
+Branch: REL9_2_STABLE [6848827b4] 2016-04-21 15:44:18 -0400
+Branch: REL9_1_STABLE [b2bb59bd5] 2016-04-21 15:44:18 -0400
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [125ad539a] 2016-04-21 16:58:47 -0400
+Branch: REL9_5_STABLE [d2e59cbc3] 2016-04-21 16:58:59 -0400
+Branch: REL9_4_STABLE [56dee70d9] 2016-04-21 16:59:04 -0400
+Branch: REL9_3_STABLE [82bf369ed] 2016-04-21 16:59:08 -0400
+Branch: REL9_2_STABLE [b5ebc513d] 2016-04-21 16:59:13 -0400
+Branch: REL9_1_STABLE [9028f404e] 2016-04-21 16:59:17 -0400
+-->
+     <para>
+      Windows에서 <function>bind()</>, <function>listen()</>
+      함수가 반환하는 오류 처리 수정
+      (Tom Lane)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Andrew Dunstan <andrew@dunslane.net>
+Branch: master [01a07e6c1] 2016-04-08 12:37:20 -0400
+Branch: REL9_5_STABLE [849167943] 2016-04-08 12:36:59 -0400
+Branch: REL9_4_STABLE [f79a7fa90] 2016-04-08 12:29:31 -0400
+Branch: REL9_3_STABLE [ca5d6edbf] 2016-04-08 12:29:34 -0400
+Branch: REL9_2_STABLE [9e77d0e3c] 2016-04-08 12:29:36 -0400
+Branch: REL9_1_STABLE [d2189a802] 2016-04-08 12:33:29 -0400
+-->
+     <para>
+      Microsoft Visual Studio로 빌드 할 때 컴파일러의 출력 
+      내용을 간략하게 처리함
+      (Christian Ullrich)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Andrew Dunstan <andrew@dunslane.net>
+Branch: master [0fb54de9a] 2016-04-29 08:09:07 -0400
+Branch: REL9_5_STABLE [da52474f3] 2016-04-29 08:06:25 -0400
+Branch: master [7dc549238] 2016-04-29 09:49:31 -0400
+Branch: REL9_5_STABLE [b71b4d852] 2016-04-29 09:50:38 -0400
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [23b09e15b] 2016-04-28 11:50:58 -0400
+Branch: REL9_5_STABLE [94a16531b] 2016-04-28 11:51:08 -0400
+Branch: REL9_4_STABLE [65c2eeb00] 2016-04-28 11:51:13 -0400
+Branch: REL9_3_STABLE [707c44fe2] 2016-04-28 11:51:17 -0400
+Branch: REL9_2_STABLE [c563d97c6] 2016-04-28 11:51:22 -0400
+Branch: REL9_1_STABLE [a6c6789c4] 2016-04-28 11:51:26 -0400
+-->
+     <para>
+      Visual Studio 2015에서 빌드 가능함
+      (Michael Paquier, Petr Jel&iacute;nek)
+     </para>
+
+     <para>
+      VS2015 환경은 Windows Vista 이전 환경에서는 사용할 수 없다.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Magnus Hagander <magnus@hagander.net>
+Branch: master [9f633b404] 2016-04-22 05:18:59 -0400
+Branch: REL9_5_STABLE [409c49c64] 2016-04-22 05:19:57 -0400
+Branch: REL9_4_STABLE [c238a4101] 2016-04-22 05:20:07 -0400
+Branch: REL9_3_STABLE [ab5c6d01f] 2016-04-22 05:20:18 -0400
+-->
+     <para>
+      Visual Studio 2013 환경에서 <function>putenv()</> 처리를 수정함
+      (Michael Paquier)
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [7abc15716] 2016-03-29 11:55:19 -0400
+Branch: REL9_5_STABLE [491e84738] 2016-03-29 11:54:57 -0400
+Branch: REL9_4_STABLE [2fed676c9] 2016-03-29 11:54:57 -0400
+Branch: REL9_3_STABLE [11cc7bb88] 2016-03-29 11:54:57 -0400
+Branch: REL9_2_STABLE [b4b06931e] 2016-03-29 11:54:58 -0400
+Branch: REL9_1_STABLE [6cd30292b] 2016-03-29 11:54:58 -0400
+-->
+     <para>
+      Windows <function>FormatMessage()</> 함수 처리에서
+      위험성 제거
+      (Christian Ullrich)
+     </para>
+
+     <para>
+      적절한 곳에 <literal>FORMAT_MESSAGE_IGNORE_INSERTS</>
+      플래그를 사용해야 함.  알려진 버그는 아니나, 위험성을 제거함.
+     </para>
+    </listitem>
+
+    <listitem>
+<!--
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Branch: master [98f158e41] 2016-05-05 20:08:58 -0400
+Branch: REL9_5_STABLE [4edbb265c] 2016-05-05 20:09:10 -0400
+Branch: REL9_4_STABLE [a5148e800] 2016-05-05 20:09:17 -0400
+Branch: REL9_3_STABLE [d30c67af8] 2016-05-05 20:09:22 -0400
+Branch: REL9_2_STABLE [29d154e36] 2016-05-05 20:09:27 -0400
+Branch: REL9_1_STABLE [bfc39da64] 2016-05-05 20:09:32 -0400
+-->
+     <para>
+      러시아와 베니주엘라 일광시간법 변경에 따른 <application>tzdata</>
+      파일을 2016d로 바꿈.  여기에는 <literal>Europe/Kirov</>,
+      <literal>Asia/Tomsk</> 지역 이름이 추가 되었음.
+     </para>
+    </listitem>
+
+   </itemizedlist>
+
+  </sect2>
+ </sect1>
+
  <sect1 id="release-9-5-2">
   <title>Release 9.5.2</title>
 
@@ -726,7 +1242,7 @@ Branch: REL9_1_STABLE [e5fd35cc5] 2016-03-25 19:03:54 -0400
     <listitem>
      <para>
       2016c <application>tzdata</> 파일 적용.
-      일관시간법 변경: 아제르바이잔, 칠레, 아이티, 팔레스타인, 러시아
+      일광시간법 변경: 아제르바이잔, 칠레, 아이티, 팔레스타인, 러시아
       (알타이, 아스트라한, 키로프, 사할린, 울리야놉스크 지방), 또한
       리투아니아, 몰도바, 러시아 (칼리닌그라드, 삼마라, 볼고그라드)
       역사적인 부분도 수정.
@@ -2242,7 +2758,7 @@ Add GUC and storage parameter to set the maximum size of GIN pending list.
 -->
        <para>
         <link
-        linkend="catalog-pg-replication-slots"><structname>pg_replication_slots</></>
+        linkend="view-pg-replication-slots"><structname>pg_replication_slots</></>
         시스템 뷰에 해당 복제 슬롯을 사용하는 프로세스를 표시 함
         (Craig Ringer)
        </para>
@@ -3508,7 +4024,7 @@ Add GUC and storage parameter to set the maximum size of GIN pending list.
          <application>psql</>에서 
          <option>--output</> 옵션이나 <option>--log-file</> 옵션으로
          지정한 파일 쓰기가 불가능한 경우 작업이 중지 된다.
-         (Tom Lane, Daniel Verite)
+         (Tom Lane, Daniel V&eacute;rit&eacute;)
         </para>
 
         <para>

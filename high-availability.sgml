@@ -977,7 +977,8 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     </para>
     <para>
      운영 서버에서 사용하고 있는 복제 슬롯 관련 정보는
-     <link linkend="catalog-pg-replication-slots"><structname>pg_replication_slots</structname></link> 뷰에서 제공한다.
+     <link linkend="view-pg-replication-slots"><structname>pg_replication_slots</structname></link>
+     뷰에서 제공한다.
     </para>
     <para>
      슬롯은 스트리밍 복제 프로토콜(<xref linkend="protocol-replication"> 참조)
