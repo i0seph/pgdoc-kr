@@ -16,16 +16,16 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE OPERATOR</refname>
-  <refpurpose>define a new operator</refpurpose>
+  <refpurpose>새 연산자 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE OPERATOR <replaceable>name</replaceable> (
-    PROCEDURE = <replaceable class="parameter">function_name</replaceable>
-    [, LEFTARG = <replaceable class="parameter">left_type</replaceable> ] [, RIGHTARG = <replaceable class="parameter">right_type</replaceable> ]
-    [, COMMUTATOR = <replaceable class="parameter">com_op</replaceable> ] [, NEGATOR = <replaceable class="parameter">neg_op</replaceable> ]
-    [, RESTRICT = <replaceable class="parameter">res_proc</replaceable> ] [, JOIN = <replaceable class="parameter">join_proc</replaceable> ]
+CREATE OPERATOR <replaceable>이름</replaceable> (
+    PROCEDURE = <replaceable class="parameter">함수이름</replaceable>
+    [, LEFTARG = <replaceable class="parameter">왼쪽자료형</replaceable> ] [, RIGHTARG = <replaceable class="parameter">오른쪽자료형</replaceable> ]
+    [, COMMUTATOR = <replaceable class="parameter">교환연산자</replaceable> ] [, NEGATOR = <replaceable class="parameter">부정연산자</replaceable> ]
+    [, RESTRICT = <replaceable class="parameter">restrict함수</replaceable> ] [, JOIN = <replaceable class="parameter">join함수</replaceable> ]
     [, HASHES ] [, MERGES ]
 )
 </synopsis>
@@ -35,80 +35,81 @@ CREATE OPERATOR <replaceable>name</replaceable> (
   <title>설명</title>
 
   <para>
-   <command>CREATE OPERATOR</command> defines a new operator,
-   <replaceable class="parameter">name</replaceable>.  The user who
-   defines an operator becomes its owner.  If a schema name is given
-   then the operator is created in the specified schema.  Otherwise it
-   is created in the current schema.
+   <command>CREATE OPERATOR</command> 명령은 지정한
+   <replaceable class="parameter">name</replaceable>의 새 연산자를
+   만든다.  만들어진 연산자의 소유주는 만든 사람이 된다.  연산자 이름 앞에
+   스키마 이름을 지정하면, 해당 스키마 소속 연산자가 된다.  스키마 이름을
+   생략하면, 현재 스키마에서 만들어진다.
   </para>
 
   <para>
-   The operator name is a sequence of up to <symbol>NAMEDATALEN</>-1
-   (63 by default) characters from the following list:
+   연산자 이름은 다음 문자들의 집합으로 최대 <symbol>NAMEDATALEN</>-1
+   (기본값 63) 바이트까지 문자열로 구성할 수 있다:
 <literallayout>
 + - * / &lt; &gt; = ~ ! @ # % ^ &amp; | ` ?
 </literallayout>
 
-   There are a few restrictions on your choice of name:
+   하지만 다음과 같은 연산자는 만들 수 없다
    <itemizedlist>
     <listitem>
-     <para><literal>--</literal> and <literal>/*</literal> cannot appear anywhere in an operator name,
-     since they will be taken as the start of a comment.
+     <para><literal>--</literal> 또는 <literal>/*</literal> 형태의 연산자는
+     구문 주석과 같기 때문에 만들 수 없다.
      </para>
     </listitem>
     <listitem>
      <para>
-     A multicharacter operator name cannot end in <literal>+</literal> or
-     <literal>-</literal>,
-     unless the name also contains at least one of these characters:
+     연산자의 이름이 다음 문자 가운데 하나 이상을 포함하지 않으면,
+     그 이름으로 <literal>+</literal> 또는
+     <literal>-</literal> 문자로 끝날 수 없다:
 <literallayout>
 ~ ! @ # % ^ &amp; | ` ?
 </literallayout>
-     For example, <literal>@-</literal> is an allowed operator name,
-     but <literal>*-</literal> is not.
-     This restriction allows <productname>PostgreSQL</productname> to
-     parse SQL-compliant commands without requiring spaces between tokens.
+     예를 들어, <literal>@-</literal> 연산자 이름을 허용하지만,
+     <literal>*-</literal> 이름은 허용하지 않는다.
+     이 제한은 토큰 사이 공백 문자 없이 SQL 구문 분석을 
+     <productname>PostgreSQL</productname>이 할 수 있도록 하기 위함이다.
      </para>
     </listitem>
     <listitem>
      <para>
-     The use of <literal>=&gt;</> as an operator name is deprecated.  It may
-     be disallowed altogether in a future release.
+     <literal>=&gt;</> 연산자 이름은 더 이상 사용하지 않는다.  앞으로도
+     이 연산자는 허용하지 않을 것이다.
      </para>
     </listitem>
    </itemizedlist>
   </para>
 
   <para>
-   The operator <literal>!=</literal> is mapped to
-   <literal>&lt;&gt;</literal> on input, so these two names are always
-   equivalent.
+   <literal>!=</literal> 연산자는 입력 할 때
+   <literal>&lt;&gt;</literal> 연산자로 자동 변환 되기 때문에,
+   사용자가 <literal>!=</literal> 연산자를 만든다 하더라도,
+   자동으로 <literal>&lt;&gt;</literal> 연산자로 바뀐다.
   </para>
 
   <para>
-   At least one of <literal>LEFTARG</> and <literal>RIGHTARG</> must be defined.  For
-   binary operators, both must be defined. For right  unary
-   operators, only <literal>LEFTARG</> should be defined, while for left
-   unary operators only <literal>RIGHTARG</> should be defined.
+   연산자를 만들 때, <literal>LEFTARG</> 값 또는 <literal>RIGHTARG</> 값은 
+   적어도 하나 이상은 지정해야 한다.  이항 연산자라면 반드시 두 값 모두
+   지정해야 한다.  오른쪽 단항 연산자인 경우는 <literal>LEFTARG</> 값을,
+   왼쪽 단항 연산자는 <literal>RIGHTARG</> 값을 지정해야 한다.
   </para>
 
   <para>
-   The <replaceable class="parameter">function_name</replaceable>
-   procedure must have been previously defined using <command>CREATE
-   FUNCTION</command> and must be defined to accept the correct number
-   of arguments (either one or two) of the indicated types.
+   <replaceable class="parameter">함수이름</replaceable>에 지정하는
+   함수는 <command>CREATE FUNCTION</command> 명령으로 
+   바른 인자(하나 또는 두 개의 인자)를 지정해서 만든 함수여야 한다.
   </para>
 
   <para>
-   The other clauses specify optional operator optimization clauses.
-   Their meaning is detailed in <xref linkend="xoper-optimization">.
+   다른 구문들은 모두 선택형이다.  각 옵션들에 대한 자세한 설명은
+   <xref linkend="xoper-optimization">에서 자세히 설명한다.
   </para>
 
   <para>
-   To be able to create an operator, you must have <literal>USAGE</literal>
-   privilege on the argument types and the return type, as well
-   as <literal>EXECUTE</literal> privilege on the underlying function.  If a
-   commutator or negator operator is specified, you must own these operators.
+   한 연산자를 만드려면, 먼저 입력 인자의 자료형과, 
+   출력 인자의 자료형에 대한 <literal>USAGE</literal> 권한이 있어야 하며,
+   지정한 함수에 대해서는 <literal>EXECUTE</literal> 권한이 
+   있어야 한다.  교환연산자나 부정연산자를 지정했다면, 그 연산자의 
+   소유주도 만드는 연산자의 소유주와 같아야 한다.
   </para>
  </refsect1>
 
@@ -117,63 +118,59 @@ CREATE OPERATOR <replaceable>name</replaceable> (
 
     <variablelist>
      <varlistentry>
-      <term><replaceable class="parameter">name</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
-        The name of the operator to be defined. See above for allowable
-        characters.  The name can be schema-qualified, for example
-        <literal>CREATE OPERATOR myschema.+ (...)</>.  If not, then
-        the operator is created in the current schema.  Two operators
-        in the same schema can have the same name if they operate on
-        different data types.  This is called
-        <firstterm>overloading</>.
+        연산자 이름.  사용할 수 있는 문자는 위에서 설명하고 있다.  스키마를
+        지정하려면 <literal>CREATE OPERATOR myschema.+ (...)</> 형태로
+        지정한다.  스키마 이름이 빠지면 현재 스키마 소속으로 만들어진다.  한
+        스키마 내에 같은 이름의 연산자를 만들 수 있는데, 이 경우는
+        함수의 <firstterm>오버로딩</>과 같이 그 사용하는 자료형이 다르면 된다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">function_name</replaceable></term>
+      <term><replaceable class="parameter">함수이름</replaceable></term>
       <listitem>
        <para>
-        The function used to implement this operator.
+        연산 처리 함수
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">left_type</replaceable></term>
+      <term><replaceable class="parameter">왼쪽자료형</replaceable></term>
       <listitem>
        <para>
-        The data type of the operator's left operand, if any.
-        This option would be omitted for a left-unary operator.
+        연산자의 왼쪽 자료형. 왼쪽 단항 연산자인 경우는 생략 되어야 함.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">right_type</replaceable></term>
+      <term><replaceable class="parameter">오른쪽자료형</replaceable></term>
       <listitem>
        <para>
-        The data type of the operator's right operand, if any.
-        This option would be omitted for a right-unary operator.
+        연산자의 오른쪽 자료형. 오른쪽 단항 연산자인 경우는 생략 되어야 함.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">com_op</replaceable></term>
+      <term><replaceable class="parameter">교환연산자</replaceable></term>
       <listitem>
        <para>
-        The commutator of this operator.
+        교환 연산자
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">neg_op</replaceable></term>
+      <term><replaceable class="parameter">부정연산자</replaceable></term>
       <listitem>
        <para>
-        The negator of this operator.
+        부정 연산자
        </para>
       </listitem>
      </varlistentry>
@@ -182,7 +179,7 @@ CREATE OPERATOR <replaceable>name</replaceable> (
       <term><replaceable class="parameter">res_proc</replaceable></term>
       <listitem>
        <para>
-        The restriction selectivity estimator function for this operator.
+        이 연산자의 제한 선택 검증 함수
        </para>
       </listitem>
      </varlistentry>
@@ -191,7 +188,7 @@ CREATE OPERATOR <replaceable>name</replaceable> (
       <term><replaceable class="parameter">join_proc</replaceable></term>
       <listitem>
        <para>
-        The join selectivity estimator function for this operator.
+        이 연산자의 조인 선택 검증 함수
        </para>
       </listitem>
      </varlistentry>
@@ -200,7 +197,7 @@ CREATE OPERATOR <replaceable>name</replaceable> (
       <term><literal>HASHES</literal></term>
       <listitem>
        <para>
-       Indicates this operator can support a hash join.
+       이 연산자로 해쉬 조인이 가능 하도록 지정
        </para>
       </listitem>
      </varlistentry>
@@ -209,16 +206,17 @@ CREATE OPERATOR <replaceable>name</replaceable> (
       <term><literal>MERGES</literal></term>
       <listitem>
        <para>
-       Indicates this operator can support a merge join.
+       이 연산자로 머지 조인이 가능 하도록 지정
        </para>
       </listitem>
      </varlistentry>
     </variablelist>
 
   <para>
-   To give a schema-qualified operator name in <replaceable
-   class="parameter">com_op</replaceable> or the other optional
-   arguments, use the <literal>OPERATOR()</> syntax, for example:
+   <replaceable class="parameter">교환연산자</replaceable>처럼
+   지정할 옵션 값으로 연산자가 사용될 경우, 그 연산자에
+   스키마를 지정해야 한다면, <literal>OPERATOR()</>
+   구문을 사용해야 한다. 사용예:
 <programlisting>
 COMMUTATOR = OPERATOR(myschema.===) ,
 </programlisting></para>
@@ -228,29 +226,32 @@ COMMUTATOR = OPERATOR(myschema.===) ,
   <title>참고</title>
 
   <para>
-   Refer to <xref linkend="xoper"> for further information.
+   사용자 정의 새로운 연산자에 대한 보다 자세한 내용은 
+   <xref linkend="xoper">에서 소개하고 있다.
   </para>
 
   <para>
-   It is not possible to specify an operator's lexical precedence in
-   <command>CREATE OPERATOR</>, because the parser's precedence behavior
-   is hard-wired.  See <xref linkend="sql-precedence"> for precedence details.
+   <command>CREATE OPERATOR</> 명령으로 연산자를 만들 때,
+   연산자의 어휘적 우선순위는 임의로 지정할 수 없다.  왜냐하면, 
+   연산자 우선 순위는 고정되어 있다.  이 우선 순위에 대한 
+   자세한 이야기는 <xref linkend="sql-precedence">에서 다룬다.
   </para>
 
   <para>
-   The obsolete options <literal>SORT1</>, <literal>SORT2</>,
-   <literal>LTCMP</>, and <literal>GTCMP</> were formerly used to
-   specify the names of sort operators associated with a merge-joinable
-   operator.  This is no longer necessary, since information about
-   associated operators is found by looking at B-tree operator families
-   instead.  If one of these options is given, it is ignored except
-   for implicitly setting <literal>MERGES</> true.
+   <literal>SORT1</>, <literal>SORT2</>, <literal>LTCMP</>, 
+   <literal>GTCMP</> 옵션들은 머지 조인이 가능한 연산자로 
+   지정할 경우 자연스럽게 사용되는 기능이기 때문에,  더 이상
+   사용하지 않는다.  B-트리 연산자 가족을 대신에 찾아서
+   해당 처리를 하기 때문에 더 이상 필요가 없다.
+   이런 옵션을 지정했는데, <literal>MERGES</> 옵션을 지정했다면,
+   그 옵션은 무시 된다.
   </para>
 
   <para>
-   Use <xref linkend="sql-dropoperator"> to delete user-defined operators
-   from a database.  Use <xref linkend="sql-alteroperator"> to modify operators in a
-   database.
+   데이터베이스에서 사용자 정의 연산자를 삭제 하려면, 
+   <xref linkend="sql-dropoperator"> 명령을 사용한다.  해당
+   연사자를 변경하려면, <xref linkend="sql-alteroperator"> 명령을
+   사용한다.
   </para>
  </refsect1>
 
@@ -258,8 +259,8 @@ COMMUTATOR = OPERATOR(myschema.===) ,
   <title>예제</title>
 
   <para>
-   The following command defines a new operator, area-equality, for
-   the data type <type>box</type>:
+   다음은 두 <type>box</type> 자료형 자료 값이 서로 같은 
+   공간에 있는가를 검사하는 새 연산자 정의 구문이다:
 <programlisting>
 CREATE OPERATOR === (
     LEFTARG = box,
@@ -278,9 +279,9 @@ CREATE OPERATOR === (
   <title>호환성</title>
 
   <para>
-   <command>CREATE OPERATOR</command> is a
-   <productname>PostgreSQL</productname> extension.  There are no
-   provisions for user-defined operators in the SQL standard.
+   <command>CREATE OPERATOR</command> 명령은
+   <productname>PostgreSQL</productname> 확장 기능이다.  표준
+   SQL에서는 사용자 정의 연산자에 대한 제안이 없다.
   </para>
  </refsect1>
 
