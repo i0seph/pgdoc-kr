@@ -1,39 +1,38 @@
 <!-- doc/src/sgml/xoper.sgml -->
 
  <sect1 id="xoper">
-  <title>User-defined Operators</title>
+  <title>사용자 정의 연산자</title>
 
   <indexterm zone="xoper">
-   <primary>operator</primary>
-   <secondary>user-defined</secondary>
+   <primary>연산자</primary>
+   <secondary>사용자 정의</secondary>
   </indexterm>
 
   <para>
-   Every operator is <quote>syntactic sugar</quote> for a call to an
-   underlying function that does the real work; so you must
-   first create the underlying function before you can create
-   the operator.  However, an operator is <emphasis>not merely</emphasis>
-   syntactic sugar, because it carries additional information
-   that helps the query planner optimize queries that use the
-   operator.  The next section will be devoted to explaining
-   that additional information.
+   모든 연산자는 해당 작업을 하는 함수를 호출 하는 <quote>간편 구문,
+   syntactic sugar</quote>이다; 즉 새로운 어떤 연산자를 
+   만들고자 한다면, 먼저 그 일을 하는 함수부터 만들어야 한다.  하지만,
+   하나의 연산자가 그저 구문을 간편하게 하는 역할만 
+   <emphasis>하지는 않는다</emphasis>.  쿼리 실행 계획기는 그 연산자를 
+   보고 최적화된 실행 계획을 짜기 때문이다.  이것에 대한 설명은
+   다음 장에서 추가로 설명한다.
   </para>
 
   <para>
-   <productname>PostgreSQL</productname> supports left unary, right
-   unary, and binary operators.  Operators can be
-   overloaded;<indexterm><primary>overloading</primary><secondary>operators</secondary></indexterm>
-   that is, the same operator name can be used for different operators
-   that have different numbers and types of operands.  When a query is
-   executed, the system determines the operator to call from the
-   number and types of the provided operands.
+   <productname>PostgreSQL</productname>에서는 왼쪽, 오른쪽 단항 연산자와
+   이항 연산자를 지원한다.
+   연산자는 오버로드될 수 있다;
+   <indexterm><primary>오버로딩</primary><secondary>연산자</secondary></indexterm>
+   같은 연산자인데, 항 개수가 다르거나, 자료형이 다른 여러 연산자가 
+   함께 있을 수 있다.  쿼리가 실행 될 때, 그 연산자와 관계된 항과 
+   자료형에 따라서 해당 연산자가 사용된다.
   </para>
 
   <para>
-   Here is an example of creating an operator for adding two complex
-   numbers.  We assume we've already created the definition of type
-   <type>complex</type> (see <xref linkend="xtypes">).  First we need a
-   function that does the work, then we can define the operator:
+   아래는 두 복소수를 서로 더하는 연산자를 만드는 예제다.  여기서는
+   이미 <type>complex</type> 자료형이 만들어져 있다고 간주했다(<xref
+   linkend="xtypes"> 참조).  먼저 그 연산을 할 함수를 만들고, 
+   다음 연산자를 만든다:
 
 <programlisting>
 CREATE FUNCTION complex_add(complex, complex)
@@ -51,7 +50,7 @@ CREATE OPERATOR + (
   </para>
 
   <para>
-   Now we could execute a query like this:
+   만들어진 연산자는 다음과 같이 사용할 수 있다:
 
 <screen>
 SELECT (a + b) AS c FROM test_complex;
@@ -64,110 +63,113 @@ SELECT (a + b) AS c FROM test_complex;
   </para>
 
   <para>
-   We've shown how to create a binary operator here.  To create unary
-   operators, just omit one of <literal>leftarg</> (for left unary) or
-   <literal>rightarg</> (for right unary).  The <literal>procedure</>
-   clause and the argument clauses are the only required items in
-   <command>CREATE OPERATOR</command>.  The <literal>commutator</>
-   clause shown in the example is an optional hint to the query
-   optimizer.  Further details about <literal>commutator</> and other
-   optimizer hints appear in the next section.
+   윗 예제는 이항 연산자를 만들고 사용한 것이다.  단항
+   연산자를 만드려면 필요 없는 각 항을 생략하면
+   된다.  왼쪽 단항이면 <literal>leftarg</> 인자를,
+   오른쪽 단항이면 <literal>rightarg</> 인자를
+   생략한다.  <literal>procedure</> 절과 인자를 지정하는
+   절이 <command>CREATE OPERATOR</command> 명령에서 필요한
+   기본 옵션이다.  윗 예제에 있는 <literal>commutator</> 절은
+   쿼리 최적화기가 최적의 실행 계획을 만드는데 사용된다.  이런
+   <literal>commutator</>와 같은 쿼리 최적화 여러 옵션들에
+   대해서는 다음 장에서 다룬다.
   </para>
  </sect1>
 
   <sect1 id="xoper-optimization">
-   <title>Operator Optimization Information</title>
+   <title>연산자 최적화 정보</title>
 
    <para>
-    A <productname>PostgreSQL</productname> operator definition can include
-    several optional clauses that tell the system useful things about how
-    the operator behaves.  These clauses should be provided whenever
-    appropriate, because they can make for considerable speedups in execution
-    of queries that use the operator.  But if you provide them, you must be
-    sure that they are right!  Incorrect use of an optimization clause can
-    result in slow queries, subtly wrong output, or other Bad Things.
-    You can always leave out an optimization clause if you are not sure
-    about it; the only consequence is that queries might run slower than
-    they need to.
+    <productname>PostgreSQL</productname>에서 사용하는 
+    연산자는 자신이 어떻게 동작하는지에 대한 여러 정보를 
+    서버에서 제공하는 여러 옵션을 포함하여 정의된다.  이 옵션
+    정의는 쿼리 처리 속도를 빠르게 하기 때문에, 적절히
+    잘 사용해야 한다!  잘못된 옵션 정의는 오히려 쿼리 처리 
+    속도를 더 늦게 만들 수도 있고, 의도하지 않은 출력 결과가
+    나올 수도 있고, 그 외 다른 문제점을 일으킬 수도 있다.
+    물론 아래에서 설명하는 옵션들을 정확히 모르면, 아애 정의하지
+    않을 수도 있다; 단지 더 빠르게 할 수 있는 것을 못할 뿐이다.
    </para>
 
    <para>
-    Additional optimization clauses might be added in future versions of
-    <productname>PostgreSQL</productname>.  The ones described here are all
-    the ones that release &version; understands.
+    아래에서 설명하고 있는 최적화 옵션들 외에도 
+    향후 <productname>PostgreSQL</productname> 버전에서
+    보다 많은 최적화 옵션들이 추가 되어야 할 것이다.
+    여기서 소개하고 있는 옵션들은
+    &version; 버전 기준에서 사용 가능한 것들이다.
    </para>
 
    <sect2>
     <title><literal>COMMUTATOR</></title>
 
     <para>
-     The <literal>COMMUTATOR</> clause, if provided, names an operator that is the
-     commutator of the operator being defined.  We say that operator A is the
-     commutator of operator B if (x A y) equals (y B x) for all possible input
-     values x, y.  Notice that B is also the commutator of A.  For example,
-     operators <literal>&lt;</> and <literal>&gt;</> for a particular data type are usually each others'
-     commutators, and operator <literal>+</> is usually commutative with itself.
-     But operator <literal>-</> is usually not commutative with anything.
+     <literal>COMMUTATOR</> 절에 (제공한다면) 해당 연산자에 대한
+     교환 연산자 이름을 지정한다.  입력된 x, y 값에 대한
+     (x A y) 식과 (y B x) 식의 결과값이 같다면, A 연산자를 
+     B 연산자의 교환 연산자라 한다.  물론 A 연산자의 교환 연산자는
+     B이다.  예를 들어, 특정 자료형에서
+     <literal>&lt;</>, <literal>&gt;</> 두 연산자는 서로
+     교환 연산자이며, <literal>+</> 연산자는 자기 스스로가 교환
+     연산자이지만, <literal>-</> 연산자는 자기 스스로가 
+     교환 연산자가 되지 못하기도 한다.
     </para>
 
     <para>
-     The left operand type of a commutable operator is the same as the
-     right operand type of its commutator, and vice versa.  So the name of
-     the commutator operator is all that <productname>PostgreSQL</productname>
-     needs to be given to look up the commutator, and that's all that needs to
-     be provided in the <literal>COMMUTATOR</> clause.
+     교환 연산자는 왼쪽, 오른쪽 자료형이 서로 같아야 한다.  그래서,
+     <productname>PostgreSQL</productname>에서는 
+     <literal>COMMUTATOR</> 절에서 단지 그 교환 연산자의 이름만
+     정의한다.  (즉, 해당 자료형을 사용하는 연산자가 먼저 
+     정의 되어 있어야 한다. - 옮긴이)
     </para>
 
     <para>
-     It's critical to provide commutator information for operators that
-     will be used in indexes and join clauses, because this allows the
-     query optimizer to <quote>flip around</> such a clause to the forms
-     needed for different plan types.  For example, consider a query with
-     a WHERE clause like <literal>tab1.x = tab2.y</>, where <literal>tab1.x</>
-     and <literal>tab2.y</> are of a user-defined type, and suppose that
-     <literal>tab2.y</> is indexed.  The optimizer cannot generate an
-     index scan unless it can determine how to flip the clause around to
-     <literal>tab2.y = tab1.x</>, because the index-scan machinery expects
-     to see the indexed column on the left of the operator it is given.
-     <productname>PostgreSQL</productname> will <emphasis>not</> simply
-     assume that this is a valid transformation &mdash; the creator of the
-     <literal>=</> operator must specify that it is valid, by marking the
-     operator with commutator information.
+     교환 연산자 정의는 인덱스 사용과 조인 구문에서 아주 중요한 
+     영향을 미친다.  왜냐하면, 이 정의가 없다면, 쿼리 최적화기의 
+     <quote>항 바꾸기</> 작업을 건너띄기 때문이다.  예를 들어,
+     WHERE절에 <literal>tab1.x = tab2.y</> 형태의 
+     구문이 있고, <literal>tab1.x</>, <literal>tab2.y</>
+     둘 다 사용자 정의 자료형이고, <literal>tab2.y</> 칼럼에 대해서
+     인덱스를 만들어 두었다.  이 경우, 최적화기는 이 구문에서
+     인덱스를 사용하지 않는다.  인덱스 검색 기능은 우선적으로
+     왼쪽 칼럼에 대해서 인덱스가 있는가를 조사하기 때문이다. 
+     <productname>PostgreSQL</productname>에서는 
+     그냥 막 항을 서로 바꾸지 <emphasis>않는다</> &mdash;
+     즉, 사용자가 그 자료형에 대한 <literal>=</> 연산자를 만들 때,
+     각 항이 서로 바뀌어도 결과가 같은가를 정의하는 
+     교환 연산자 정의도 바르게 해야 한다.
     </para>
 
     <para>
-     When you are defining a self-commutative operator, you just do it.
-     When you are defining a pair of commutative operators, things are
-     a little trickier: how can the first one to be defined refer to the
-     other one, which you haven't defined yet?  There are two solutions
-     to this problem:
+     교환 연산자가 만드려고 하는 연산자와 같은 경우라면, 
+     그냥 그 연산자로 교환 연산자 정의를 하면 되지만,
+     이 두 개의 연산자가 
+     서로 쌍인 경우는 약간의 꼼수가 필요하다: 왜냐하면, 
+     교환 연산자가 이미 만들어져 있어야 하는데, 그 연산자의 
+     교환 연산자를 아직 만들지 않았기 때문이다.
+     다음은 이 문제를 푸는 두 가지 방법이다:
 
      <itemizedlist>
       <listitem>
        <para>
-        One way is to omit the <literal>COMMUTATOR</> clause in the first operator that
-        you define, and then provide one in the second operator's definition.
-        Since <productname>PostgreSQL</productname> knows that commutative
-        operators come in pairs, when it sees the second definition it will
-        automatically go back and fill in the missing <literal>COMMUTATOR</> clause in
-        the first definition.
+        첫번째 방법은 일단 하나의 연산자에서 <literal>COMMUTATOR</>절
+        을 빼고 만들고, 다음 연산자에서는 앞에서 만든 연산자를
+        교환 연산자로 지정하여 만든다.  <productname>PostgreSQL</productname>에서는
+        교환 연산자는 한 쌍을 가지기 때문에, 두번째 만들어진 연산자에서
+        첫번째 만들어진 연산자를 교환 연산자로 지정했다면, 자동으로
+        첫번째 연산자의 교환 연산자로 두번째 연산자를 다시 지정한다.
        </para>
       </listitem>
 
       <listitem>
        <para>
-        The other, more straightforward way is just to include <literal>COMMUTATOR</> clauses
-        in both definitions.  When <productname>PostgreSQL</productname> processes
-        the first definition and realizes that <literal>COMMUTATOR</> refers to a nonexistent
-        operator, the system will make a dummy entry for that operator in the
-        system catalog.  This dummy entry will have valid data only
-        for the operator name, left and right operand types, and result type,
-        since that's all that <productname>PostgreSQL</productname> can deduce
-        at this point.  The first operator's catalog entry will link to this
-        dummy entry.  Later, when you define the second operator, the system
-        updates the dummy entry with the additional information from the second
-        definition.  If you try to use the dummy operator before it's been filled
-        in, you'll just get an error message.
+        다른 방법은 보다 직설적으로 그냥 두 연산자 모두 <literal>COMMUTATOR</>절을
+        포함해서 만든다.  이 경우 <productname>PostgreSQL</productname>에서는 
+        첫번째 연산자를 만들 때 지정한 교환 연산자가 없는 것을 알고, 
+        그냥 시스템 카탈로그에 그 정보만 기록해 두고 연산자를 만든다.  교환 연산자는
+        만드려고 하는 연산자에서 사용하는 양쪽 자료형이 서로 같기 때문에,
+        임의의 가상 연산자를 만들 수 있다.  그 다음 두번째 연산자를 정상적으로 만들고, 
+        두번째 연산자가 만들어지면서 교환 연산자 정의 쌍이 마무리 된다.  
+        즉, 두번째 연산자가 만들어지기 전에 첫번째 연산자를 사용하면 오류를 낸다.
        </para>
       </listitem>
      </itemizedlist>
@@ -178,37 +180,38 @@ SELECT (a + b) AS c FROM test_complex;
     <title><literal>NEGATOR</></title>
 
     <para>
-     The <literal>NEGATOR</> clause, if provided, names an operator that is the
-     negator of the operator being defined.  We say that operator A
-     is the negator of operator B if both return Boolean results and
-     (x A y) equals NOT (x B y) for all possible inputs x, y.
-     Notice that B is also the negator of A.
-     For example, <literal>&lt;</> and <literal>&gt;=</> are a negator pair for most data types.
-     An operator can never validly be its own negator.
+     <literal>NEGATOR</>절에 (제공한다면) 해당 연산자의 부정 연산자 이름을
+     지정한다.  입력된 x, y 값에 대해서 (x A y) 식의 결과값(불린형)과
+     NOT (x B y) 식의 결과값이 같을 때, A 연산자를 B 연산자의 부정 연산자라고
+     한다.  물론 B 연산자는 A 연산자의 부정 연산자이기도 하다.
+     예를 들어, <literal>&lt;</> 연산자와 <literal>&gt;=</> 연산자는 
+     대부분 자료형에서 부정 연산자 쌍이다.
+     자기 스스로가 부정 연산자인 경우는 없다.
     </para>
 
    <para>
-    Unlike commutators, a pair of unary operators could validly be marked
-    as each other's negators; that would mean (A x) equals NOT (B x)
-    for all x, or the equivalent for right unary operators.
+    교환 연산자와 달리, 단항 연산자의 쌍이 서로의 부정 연산자가 되기도 한다.
+    이 말은 (A x) 결과값이 NOT (B x)의 결과값과 같음을 의미한다. 
+    또한 오른쪽 단항 연산자에서도 마찬가지다.
    </para>
 
    <para>
-    An operator's negator must have the same left and/or right operand types
-    as the operator to be defined, so just as with <literal>COMMUTATOR</>, only the operator
-    name need be given in the <literal>NEGATOR</> clause.
+    한 연산자의 부정 연산자에서 사용하는 자료형도
+    그 연산자가 사용하는 자료형과 같아야 한다.  그래서,
+    <literal>COMMUTATOR</>절과 마찬가지로 <literal>NEGATOR</>절에서도
+    연산자 이름만 정의하면 된다.
    </para>
 
    <para>
-    Providing a negator is very helpful to the query optimizer since
-    it allows expressions like <literal>NOT (x = y)</> to be simplified into
-    <literal>x &lt;&gt; y</>.  This comes up more often than you might think, because
-    <literal>NOT</> operations can be inserted as a consequence of other rearrangements.
+    부정 연산자는 최적화기가 <literal>NOT (x = y)</> 이런 구문을
+    <literal>x &lt;&gt; y</> 구문으로 단순화하는데 유용하게 사용된다.
+    <literal>NOT</> 연산은 다른 재구성 결과로 추가될 수 있기 때문에,
+    이런 단순화 작업은 생각보다 빈번하게 일어난다.
    </para>
 
    <para>
-    Pairs of negator operators can be defined using the same methods
-    explained above for commutator pairs.
+    한 쌍의 부정 연산자 정의에 있어 충돌 문제도 위에서 설명한
+    교환 연산자 문제와 같이 처리하면 된다.
    </para>
 
   </sect2>
@@ -217,71 +220,76 @@ SELECT (a + b) AS c FROM test_complex;
    <title><literal>RESTRICT</></title>
 
    <para>
-    The <literal>RESTRICT</> clause, if provided, names a restriction selectivity
-    estimation function for the operator.  (Note that this is a function
-    name, not an operator name.)  <literal>RESTRICT</> clauses only make sense for
-    binary operators that return <type>boolean</>.  The idea behind a restriction
-    selectivity estimator is to guess what fraction of the rows in a
-    table will satisfy a <literal>WHERE</literal>-clause condition of the form:
+    <literal>RESTRICT</>절에는 (제공한다면) 해당 연산자의 제한 선택 추정 함수
+    이름을 지정한다.  (이 이름이 연산자 이름이 아니라, 함수 이름임을 주의해야
+    한다)  <literal>RESTRICT</>절은 연산자가 이항 연산자이고 그 결과가 
+    <type>boolean</>형인 경우에만 효과가 있다.  이 제한 선택 추정이란 
+    <literal>WHERE</literal>절에서 다음과 같은 형태로 연산자를 사용할 경우
+    해당 테이블에서 추출될 로우수를 추정하는 것을 말한다:
 <programlisting>
-column OP constant
+칼럼 연산자 상수
 </programlisting>
-    for the current operator and a particular constant value.
-    This assists the optimizer by
-    giving it some idea of how many rows will be eliminated by <literal>WHERE</>
-    clauses that have this form.  (What happens if the constant is on
-    the left, you might be wondering?  Well, that's one of the things that
-    <literal>COMMUTATOR</> is for...)
+    여기서 연산자는 지금 이야기하는 해당 연산자이며, 상수는 특정 상수다.
+    이 함수는
+    최적화기가 이 <literal>WHERE</>절에서 지정한 조건에 맞는 
+    로우수를 예측하는데 도움을 준다. (물론 위와 같은 식에서
+    왼쪽 항에 상수가 올 경우는 상황이 복잡해진다. 하지만, 앞 
+    <literal>COMMUTATOR</>절에서 지정한 교환 연산자를 통해서 
+    그 위치를 서로 바꾼 다음 처리할 것이다.)
    </para>
 
    <para>
-    Writing new restriction selectivity estimation functions is far beyond
-    the scope of this chapter, but fortunately you can usually just use
-    one of the system's standard estimators for many of your own operators.
-    These are the standard restriction estimators:
+    새로운 제한 선택 추정 함수를 만드는 방법에 대해서는 이 장의 범위를
+    벗어나지만, 대부분의 사용자 정의 연산자에서 쓸 수 있는 시스템
+    표준 추정 함수들을 미리 만들어 두었다.  다음은 이 함수들이다:
     <simplelist>
-     <member><function>eqsel</> for <literal>=</></member>
-     <member><function>neqsel</> for <literal>&lt;&gt;</></member>
-     <member><function>scalarltsel</> for <literal>&lt;</> or <literal>&lt;=</></member>
-     <member><function>scalargtsel</> for <literal>&gt;</> or <literal>&gt;=</></member>
+     <member><literal>=</> 연산자에서는 <function>eqsel</></member>
+     <member><literal>&lt;&gt;</> 연산자에서는 <function>neqsel</></member>
+     <member><literal>&lt;</> 또는 <literal>&lt;=</> 연산자에서는 <function>scalarltsel</></member>
+     <member><literal>&gt;</> 또는 <literal>&gt;=</> 연산자에서는 <function>scalargtsel</></member>
    </simplelist>
-    It might seem a little odd that these are the categories, but they
-    make sense if you think about it.  <literal>=</> will typically accept only
-    a small fraction of the rows in a table; <literal>&lt;&gt;</> will typically reject
-    only a small fraction.  <literal>&lt;</> will accept a fraction that depends on
-    where the given constant falls in the range of values for that table
-    column (which, it just so happens, is information collected by
-    <command>ANALYZE</command> and made available to the selectivity estimator).
-    <literal>&lt;=</> will accept a slightly larger fraction than <literal>&lt;</> for the same
-    comparison constant, but they're close enough to not be worth
-    distinguishing, especially since we're not likely to do better than a
-    rough guess anyhow.  Similar remarks apply to <literal>&gt;</> and <literal>&gt;=</>.
+    이런 분류를 한 것이 조금 이상할 것 같지만, 이 부분에 대해서 
+    생각을 해 볼만 하다.  <literal>=</> 연산자인 경우는 
+    한 테이블에 대해서 해당 조건에 맞는 경우가 비교적 적은 집합일 것이며;
+    <literal>&lt;&gt;</> 연산인 경우는 그 적은 집합을 제외한 부분일
+    것이다.  <literal>&lt;</> 연산인 경우는 <command>ANALYZE</command>
+    명령에 의해 수집한 자료 분포에서 특정 부분을 의미할 것이며,
+    <literal>&lt;=</> 연산인 경우는 <literal>&lt;</>
+    연산의 추정치보다 약간 더 많을 것이다고 가정할 수 있다. 물론 
+    차이가 크게 나지는 않을 것이다고 가정할 것이다.  <literal>&gt;</>
+    연산과 <literal>&gt;=</> 연산도 마찬가지일 것이다.
    </para>
 
    <para>
-    You can frequently get away with using either <function>eqsel</function> or <function>neqsel</function> for
-    operators that have very high or very low selectivity, even if they
-    aren't really equality or inequality.  For example, the
-    approximate-equality geometric operators use <function>eqsel</function> on the assumption that
-    they'll usually only match a small fraction of the entries in a table.
+    실 결과가 정말 같은지 다른지에 관계 없이,
+    아주 많거나, 아주 적은 조건 만족 결과가 예상되는 
+    <function>eqsel</function>, <function>neqsel</function> 
+    함수 사용은 의미가 없다고 판단하여 종종 사용하지 않을 수도 있다.
+    예를 들어, 대략 같다를 처리하는 도형 연산자인 경우
+    해당 테이블에서 일치하는 자료가 적을 것으로 간주하고, 
+    그 연산자의 제한 선택 추정 함수로 <function>eqsel</function> 함수를 지정한다.
    </para>
 
    <para>
-    You can use <function>scalarltsel</> and <function>scalargtsel</> for comparisons on data types that
-    have some sensible means of being converted into numeric scalars for
-    range comparisons.  If possible, add the data type to those understood
-    by the function <function>convert_to_scalar()</function> in <filename>src/backend/utils/adt/selfuncs.c</filename>.
-    (Eventually, this function should be replaced by per-data-type functions
-    identified through a column of the <classname>pg_type</> system catalog; but that hasn't happened
-    yet.)  If you do not do this, things will still work, but the optimizer's
-    estimates won't be as good as they could be.
+    연산할 자료형이 숫자형으로 변환될 수 있고, 그 범위를 연산해야 하는 경우
+    <function>scalarltsel</>, <function>scalargtsel</> 함수를 지정한다.
+    가능하면, <filename>src/backend/utils/adt/selfuncs.c</filename>
+    소스 파일에 있는 <function>convert_to_scalar()</function> 함수가
+    사용할 수 있는 자료형으로 변환 될 수 있는 자료형을 사용하는
+    연산자에 지정한다.
+    (향후, 이 함수는 <classname>pg_type</> 시스템 카탈로그의 
+    한 칼럼에 일대일 대응되는 함수들로 대체될 것이다. 아직은 아님)
+    물론 이런 조건에 맞지 않아도 최적화기 쪽으로 참고 정보를 주겠지만,
+    좋은 실행 계획을 짤 근거 자료가 되지는 못한다.
    </para>
 
    <para>
-    There are additional selectivity estimation functions designed for geometric
-    operators in <filename>src/backend/utils/adt/geo_selfuncs.c</filename>: <function>areasel</function>, <function>positionsel</function>,
-    and <function>contsel</function>.  At this writing these are just stubs, but you might want
-    to use them (or even better, improve them) anyway.
+    추가로 도형 자료형에 대한 제한 선택 추정 함수로는 
+    <filename>src/backend/utils/adt/geo_selfuncs.c</filename> 소스 코드에
+    다음과 같이 있다: <function>areasel</function>,
+    <function>positionsel</function>, <function>contsel</function>.
+    이들은 기본 함수로 작성되었지만, 충분히 쓸만한 것도 있고, 
+    개선 해야 할 것도 있다.
    </para>
    </sect2>
 
@@ -289,32 +297,32 @@ column OP constant
     <title><literal>JOIN</></title>
 
     <para>
-     The <literal>JOIN</> clause, if provided, names a join selectivity
-     estimation function for the operator.  (Note that this is a function
-     name, not an operator name.)  <literal>JOIN</> clauses only make sense for
-     binary operators that return <type>boolean</type>.  The idea behind a join
-     selectivity estimator is to guess what fraction of the rows in a
-     pair of tables will satisfy a <literal>WHERE</>-clause condition of the form:
+     <literal>JOIN</>절에서는 (제공한다면) 해당 연산자의
+     조인 선택 추정 함수 이름을 지정한다.  (이 이름은
+     연산자 이름이 아니라, 함수 이름임을 주의해야 한다.)
+     <literal>JOIN</>절은 연산자가 이항 연산자이고 그 결과가
+     <type>boolean</>형인 경우에만 효과가 있다. 이 조인 선택 추정이란
+     <literal>WHERE</literal>절에서 다음과 같은 형태로 연산자를 사용할 경우
+     그 대상 로우수를 추정하는 것을 말한다:
 <programlisting>
-table1.column1 OP table2.column2
+table1.column1 연산자 table2.column2
 </programlisting>
-     for the current operator.  As with the <literal>RESTRICT</literal> clause, this helps
-     the optimizer very substantially by letting it figure out which
-     of several possible join sequences is likely to take the least work.
+     <literal>RESTRICT</literal>절과 마찬가지로,
+     이 지정은 조인 작업을 소요되는 비용을 추정해서 
+     최적화기가 최적의 실행계획을 짜도록 도움을 준다.
     </para>
 
     <para>
-     As before, this chapter will make no attempt to explain how to write
-     a join selectivity estimator function, but will just suggest that
-     you use one of the standard estimators if one is applicable:
+     앞에서와 같이 이 함수를 만드는 방법에 대해서는 여기서 소개하지는 않고,
+     단지 미리 만들어진 표준 추정 함수를 소개한다:
      <simplelist>
-      <member><function>eqjoinsel</> for <literal>=</></member>
-      <member><function>neqjoinsel</> for <literal>&lt;&gt;</></member>
-      <member><function>scalarltjoinsel</> for <literal>&lt;</> or <literal>&lt;=</></member>
-      <member><function>scalargtjoinsel</> for <literal>&gt;</> or <literal>&gt;=</></member>
-      <member><function>areajoinsel</> for 2D area-based comparisons</member>
-      <member><function>positionjoinsel</> for 2D position-based comparisons</member>
-      <member><function>contjoinsel</> for 2D containment-based comparisons</member>
+      <member><literal>=</> 연산자에서는 <function>eqjoinsel</></member>
+      <member><literal>&lt;&gt;</> 연산자에서는 <function>neqjoinsel</></member>
+      <member><literal>&lt;</> 또는 <literal>&lt;=</> 연산자에서는 <function>scalarltjoinsel</></member>
+      <member><literal>&gt;</> 또는 <literal>&gt;=</> 연산자에서는 <function>scalargtjoinsel</></member>
+      <member>2D 영역 기반 비교 연산에서는 <function>areajoinsel</></member>
+      <member>2D 위치 기반 비교 연산에서는 <function>positionjoinsel</></member>
+      <member>2D 포함 기반 비교 연산에서는 <function>contjoinsel</></member>
      </simplelist>
     </para>
    </sect2>
