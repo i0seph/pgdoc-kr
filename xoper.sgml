@@ -64,7 +64,7 @@ SELECT (a + b) AS c FROM test_complex;
 
   <para>
    윗 예제는 이항 연산자를 만들고 사용한 것이다.  단항
-   연산자를 만드려면 필요 없는 각 항을 생략하면
+   연산자를 만들려면 필요 없는 각 항을 생략하면
    된다.  왼쪽 단항이면 <literal>leftarg</> 인자를,
    오른쪽 단항이면 <literal>rightarg</> 인자를
    생략한다.  <literal>procedure</> 절과 인자를 지정하는
@@ -331,85 +331,80 @@ table1.column1 연산자 table2.column2
     <title><literal>HASHES</></title>
 
     <para>
-     The <literal>HASHES</literal> clause, if present, tells the system that
-     it is permissible to use the hash join method for a join based on this
-     operator.  <literal>HASHES</> only makes sense for a binary operator that
-     returns <literal>boolean</>, and in practice the operator must represent
-     equality for some data type or pair of data types.
+     <literal>HASHES</literal>절에서는 (제공한다면) 해당 연산자를 사용하는
+     부분에서 해시 조인을 사용할 수 있도록 한다.  이 지정은 그 연산자가
+     이항 연산자이며, 반환값이 <literal>boolean</>형이고,
+     각 항의 자료형이 서로 같거나, 같은 종류의 자료형이어야 작동한다.
     </para>
 
     <para>
-     The assumption underlying hash join is that the join operator can
-     only return true for pairs of left and right values that hash to the
-     same hash code.  If two values get put in different hash buckets, the
-     join will never compare them at all, implicitly assuming that the
-     result of the join operator must be false.  So it never makes sense
-     to specify <literal>HASHES</literal> for operators that do not represent
-     some form of equality.  In most cases it is only practical to support
-     hashing for operators that take the same data type on both sides.
-     However, sometimes it is possible to design compatible hash functions
-     for two or more data types; that is, functions that will generate the
-     same hash codes for <quote>equal</> values, even though the values
-     have different representations.  For example, it's fairly simple
-     to arrange this property when hashing integers of different widths.
+     해시 조인의 기본 개념은 조인 연산자 기준으로 양쪽 항의 그 값에 대한
+     해시값이 같은가를 조사하는 것이다.  이 두 값이 서로 다른 해시 버켓에
+     있다면, 그들은 처음부터 비교 대상에서 제외되며, 암묵적으로
+     서로 다른 값으로 판단해서 연산 결과값을 false로 반환한다.  따라서
+     두 값이 같은가를 조사하는 연산자가 아닌 경우는 이
+     <literal>HASHES</literal> 지정은 아무런 의미가 없다.
+     보통 이 기능은 양쪽 항 자료형이 같은 경우에 지정하는 것이 일반적이다.
+     반면에, 서로 다른 자료형일지라도 해시 함수가 그 값에 대한 해시값을
+     같게 만들도록 설계할 수도 있어, 이런 경우라면, 이 기능을 사용할 수 
+     있다.  예를 들어, 정수 자료형에 대해서 그 길이가 달라도 그 값이
+     같다면, 같은 해시값을 사용한다.
     </para>
 
     <para>
-     To be marked <literal>HASHES</literal>, the join operator must appear
-     in a hash index operator family.  This is not enforced when you create
-     the operator, since of course the referencing operator family couldn't
-     exist yet.  But attempts to use the operator in hash joins will fail
-     at run time if no such operator family exists.  The system needs the
-     operator family to find the data-type-specific hash function(s) for the
-     operator's input data type(s).  Of course, you must also create suitable
-     hash functions before you can create the operator family.
+     <literal>HASHES</literal> 기능을 사용하려면, 먼저 그 해당 연산자가
+     해시 인덱스 연산자 가족의 일원이어야 한다.  연산자를 만들
+     때, 미리 이 연산자를 위한 연산자 가족이 아직 구성되지 않았기 때문에
+     이런 조건에 제한 없이 일단 만들 수 있다.  하지만, 이 연산자를 통해
+     해시 조인 작업을 할 경우 해당 연산자 가족이 없으면 실시간 오류를 
+     낸다.  해당 자료형에 대한 해시 함수를 찾기 위해 연산자 가족 정보가
+     필요하기 때문이다.  물론 연산자 가족을 만들려면, 그 자료형에 대한
+     해시 함수를 먼저 만들어야 할 것이다.
     </para>
 
     <para>
-     Care should be exercised when preparing a hash function, because there
-     are machine-dependent ways in which it might fail to do the right thing.
-     For example, if your data type is a structure in which there might be
-     uninteresting pad bits, you cannot simply pass the whole structure to
-     <function>hash_any</>.  (Unless you write your other operators and
-     functions to ensure that the unused bits are always zero, which is the
-     recommended strategy.)
-     Another example is that on machines that meet the <acronym>IEEE</>
-     floating-point standard, negative zero and positive zero are different
-     values (different bit patterns) but they are defined to compare equal.
-     If a float value might contain negative zero then extra steps are needed
-     to ensure it generates the same hash value as positive zero.
+     해시 함수의 반환값이 기계에 따라 다를 수 있어,
+     해시 함수를 준비할 때 주의할 필요가 있다.
+     예를 들어,  사용할 자료형이 구조체이고, 이 안에 의미 없는 
+     비트들이 채워진 경우, <function>hash_any</> 함수를 사용해서
+     해시값을 구하면 위험하다.  (함수와 연산자를 만들 때,
+     사용하지 않는 비트는 항상 0으로 처리하도록 작성하는 것이 안전하다.)
+     또 다른 예로, -0 값과, +0 값이 서로 다른 것으로 처리하는
+     <acronym>IEEE</> 부동소수 표준 처리에 대한
+     기계별 차이가 있을 수 있다.  
+     이런 경우를 대비해서 -0 값은 해시값을 구하기 전에 미리 +0 으로 
+     바꾸는 작업이 필요하다.
     </para>
 
     <para>
-     A hash-joinable operator must have a commutator (itself if the two
-     operand data types are the same, or a related equality operator
-     if they are different) that appears in the same operator family.
-     If this is not the case, planner errors might occur when the operator
-     is used.  Also, it is a good idea (but not strictly required) for
-     a hash operator family that supports multiple data types to provide
-     equality operators for every combination of the data types; this
-     allows better optimization.
+     해시 조인이 가능한 연산자는 교환 연산자를 해당 연산자 가족에
+     포함 시켜야 하며, 연산자를 만들 때 그것을 지정해야 한다(
+     교환 연산자는 연산 하는 두 자료형이 같은 경우는 그 연산자 자신이
+     될 것이고, 서로 다르다면, 그에 상응하는 또 다른 연산자일 것이다).
+     교환 연산자를 지정하지 않으면, 실행 계획기에서 오류를 낸다.   또한,
+     (반드시 필요하지는 않지만)  해시 연산자 가족에 여러 자료형을 지원하는
+     그에 상응하는 다른 연산자들도 모두 포함시켜 놓는 것은 
+     좋은 방법이다. 이렇게 함으로 최적화 작업이 더 좋아질 것이다.
     </para>
 
     <note>
     <para>
-     The function underlying a hash-joinable operator must be marked
-     immutable or stable.  If it is volatile, the system will never
-     attempt to use the operator for a hash join.
+     해시 조인이 가능한 연산자에 사용할 함수는 반드시 immutable 이거나
+     stable 함수여야 한다.  volatile 함수면 해시 조인 자체를
+     시도하지 않는다.
     </para>
     </note>
 
     <note>
     <para>
-     If a hash-joinable operator has an underlying function that is marked
-     strict, the
-     function must also be complete: that is, it should return true or
-     false, never null, for any two nonnull inputs.  If this rule is
-     not followed, hash-optimization of <literal>IN</> operations might
-     generate wrong results.  (Specifically, <literal>IN</> might return
-     false where the correct answer according to the standard would be null;
-     or it might yield an error complaining that it wasn't prepared for a
-     null result.)
+     해시 조인이 가능한 연산자에 사용할 함수가 strict 인 경우,
+     입력값이 null일 지라도, 그 함수의 반환값은 true 또는
+     false 여야만 한다.
+     이렇게 하지 않으면,  <literal>IN</> 동작의 해시 최적화가 
+     잘못된 결과를 만든다.
+     (특히, strict 함수는 입력값이 null 인 경우 무조건 null을 
+     반환하기 때문에, 입력값으로 null이 오는 경우 default 처리를 하고, 
+     함수 내용에서 그 default 값에 대한 예외처리를 하는 것이 안전하다.)
     </para>
     </note>
 
@@ -419,55 +414,55 @@ table1.column1 연산자 table2.column2
     <title><literal>MERGES</></title>
 
     <para>
-     The <literal>MERGES</literal> clause, if present, tells the system that
-     it is permissible to use the merge-join method for a join based on this
-     operator.  <literal>MERGES</> only makes sense for a binary operator that
-     returns <literal>boolean</>, and in practice the operator must represent
-     equality for some data type or pair of data types.
+     <literal>MERGES</literal>절에서는 (제공한다면) 해당 연산자를 사용하는
+     부분에서 머지 조인을 사용할 수 있도록 한다.  이 지정은 그 연산자가
+     이항 연산자이며, 반환값이 <literal>boolean</>형이고,
+     각 항의 자료형이 서로 같거나, 같은 종류의 자료형이어야 작동한다.
     </para>
 
     <para>
-     Merge join is based on the idea of sorting the left- and right-hand tables
-     into order and then scanning them in parallel.  So, both data types must
-     be capable of being fully ordered, and the join operator must be one
-     that can only succeed for pairs of values that fall at the
-     <quote>same place</>
-     in the sort order.  In practice this means that the join operator must
-     behave like equality.  But it is possible to merge-join two
-     distinct data types so long as they are logically compatible.  For
-     example, the <type>smallint</type>-versus-<type>integer</type>
-     equality operator is merge-joinable.
-     We only need sorting operators that will bring both data types into a
-     logically compatible sequence.
+     머지 조인의 기본 개념은 조인할 칼럼의 양쪽 자료를 각각 정렬해서, 
+     차례로 그 값이 같은지 비교하는 것이다.  그래서, 먼저 그 자료가
+     정렬될 수 있어야 하며, 양쪽 자료 모두 같은 정렬 기준으로 
+     <quote>같은 장소</>에 같은 자료가 있어야 이들이 서로 같다고
+     간주할 수 있다.  하지만, 이 같은 장소는 논리적인 호환성을 
+     뜻하기도 한다.  예를 들어 <type>smallint</type> 자료형과
+     <type>integer</type> 자료형의 머지 조인도 가능하다.  그래서, 
+     양쪽 자료형에 대해서 논리적으로 같은 위치에 있도록 정렬하는 
+     작업만 보장되면 된다.
     </para>
 
     <para>
-     To be marked <literal>MERGES</literal>, the join operator must appear
-     as an equality member of a <literal>btree</> index operator family.
-     This is not enforced when you create
-     the operator, since of course the referencing operator family couldn't
-     exist yet.  But the operator will not actually be used for merge joins
-     unless a matching operator family can be found.  The
-     <literal>MERGES</literal> flag thus acts as a hint to the planner that
-     it's worth looking for a matching operator family.
+     <literal>MERGES</literal> 기능을 사용하려면, 이 연산자가 
+     <literal>btree</> 인덱스 연산자 가족의 일원이어야 한다.
+     하지만, 연산자를 만들 때, 그 참조하는 연산자 가족을 
+     아직 안 만들었을 수도 있기 때문에, 일단 연산자를 
+     먼저 만들 수도 있다.
+     하지만 이 연산자가 연산자 가족으로 포함되어 있지 않다면,
+     머지 조인을 사용하지 못한다.  <literal>MERGES</literal> 옵션은
+     실행계획기에게 사용할 연산자 가족을 찾기위한 힌트를 제공하는
+     것이다.
     </para>
 
     <para>
-     A merge-joinable operator must have a commutator (itself if the two
-     operand data types are the same, or a related equality operator
-     if they are different) that appears in the same operator family.
-     If this is not the case, planner errors might occur when the operator
-     is used.  Also, it is a good idea (but not strictly required) for
-     a <literal>btree</> operator family that supports multiple data types to provide
-     equality operators for every combination of the data types; this
-     allows better optimization.
+     머지 조인이 가능한 연산자를 만들 때는 반드시
+     교환 연산자도 함께 지정해야 한다. (두 자료형이 같은 경우는
+     자기 자신이면 되고, 서로 다른 자료형이라면, 같은 역할을 
+     하는 연산자를 지정한다.) 이 연산자 또한 같은 연산자 가족 
+     구성원이여야 한다.
+     이렇게 만들지 않으면, 실행 계획기가 이 연산자를 사용할 때
+     오류를 낸다.  또한,
+     (반드시 필요하지는 않지만)  <literal>btree</> 연산자 가족에
+     여러 자료형을 지원하는
+     그에 상응하는 다른 연산자들도 모두 포함시켜 놓는 것은
+     좋은 방법이다. 이렇게 함으로 최적화 작업이 더 좋아질 것이다.
     </para>
 
     <note>
     <para>
-     The function underlying a merge-joinable operator must be marked
-     immutable or stable.  If it is volatile, the system will never
-     attempt to use the operator for a merge join.
+     머지 조인이 가능한 연산자에 사용할 함수는 반드시 immutable 이거나
+     stable 함수여야 한다.  volatile 함수면 머지 조인 자체를
+     시도하지 않는다.
     </para>
     </note>
    </sect2>
