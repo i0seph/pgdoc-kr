@@ -8,42 +8,42 @@
  </indexterm>
 
  <para>
-  The <filename>intarray</> module provides a number of useful functions
-  and operators for manipulating null-free arrays of integers.
-  There is also support for indexed searches using some of the operators.
+  <filename>intarray</> 모듈은 
+  정수를 구성 요소로 하는 null 값이 없는 배열
+  처리를 위한 유용한 함수와 연산자를 제공한다.
+  또한 이 배열 자료형에 대한 인덱스 검색 기능도 제공한다.
  </para>
 
  <para>
-  All of these operations will throw an error if a supplied array contains any
-  NULL elements.
+  여기서 소개하는 모든 연산자는 그 대상 배열에 null 값이 있으면, 오류를 낸다.
  </para>
 
  <para>
-  Many of these operations are only sensible for one-dimensional arrays.
-  Although they will accept input arrays of more dimensions, the data is
-  treated as though it were a linear array in storage order.
+  여기서 소개하는 대부분의 연산자는 일차원 배열에서만 쓸모가 있다.
+  물론 다차원 배열에서도 사용 가능 하지만, 그 자료는 
+  저장 순서를 기반으로 일차원 배열처럼 간주한다.
  </para>
 
  <sect2>
-  <title><filename>intarray</> Functions and Operators</title>
+  <title><filename>intarray</> 함수와 연산자들</title>
 
   <para>
-   The functions provided by the <filename>intarray</filename> module
-   are shown in <xref linkend="intarray-func-table">, the operators
-   in <xref linkend="intarray-op-table">.
+   <filename>intarray</filename> 모듈에서 제공하는 함수는
+   <xref linkend="intarray-func-table">에서, 연산자는
+   <xref linkend="intarray-op-table">에서 소개한다.
   </para>
 
   <table id="intarray-func-table">
-   <title><filename>intarray</> Functions</title>
+   <title><filename>intarray</> 함수들</title>
 
    <tgroup cols="5">
     <thead>
      <row>
-      <entry>Function</entry>
-      <entry>Return Type</entry>
-      <entry>Description</entry>
-      <entry>Example</entry>
-      <entry>Result</entry>
+      <entry>함수</entry>
+      <entry>반환 자료형</entry>
+      <entry>설명</entry>
+      <entry>사용예</entry>
+      <entry>결과</entry>
      </row>
     </thead>
 
@@ -51,7 +51,7 @@
      <row>
       <entry><function>icount(int[])</function><indexterm><primary>icount</primary></indexterm></entry>
       <entry><type>int</type></entry>
-      <entry>number of elements in array</entry>
+      <entry>배열 요소 개수</entry>
       <entry><literal>icount('{1,2,3}'::int[])</literal></entry>
       <entry><literal>3</literal></entry>
      </row>
@@ -59,7 +59,7 @@
      <row>
       <entry><function>sort(int[], text dir)</function><indexterm><primary>sort</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>sort array &mdash; <parameter>dir</> must be <literal>asc</> or <literal>desc</></entry>
+      <entry>배열 정렬 &mdash; <parameter>dir</>에는 <literal>asc</> 또는 <literal>desc</>만 허용</entry>
       <entry><literal>sort('{1,2,3}'::int[], 'desc')</literal></entry>
       <entry><literal>{3,2,1}</literal></entry>
      </row>
@@ -67,7 +67,7 @@
      <row>
       <entry><function>sort(int[])</function></entry>
       <entry><type>int[]</type></entry>
-      <entry>sort in ascending order</entry>
+      <entry>오름차순 정렬</entry>
       <entry><literal>sort(array[11,77,44])</literal></entry>
       <entry><literal>{11,44,77}</literal></entry>
      </row>
@@ -75,7 +75,7 @@
      <row>
       <entry><function>sort_asc(int[])</function><indexterm><primary>sort_asc</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>sort in ascending order</entry>
+      <entry>오름차순 정렬</entry>
       <entry><literal></literal></entry>
       <entry><literal></literal></entry>
      </row>
@@ -83,7 +83,7 @@
      <row>
       <entry><function>sort_desc(int[])</function><indexterm><primary>sort_desc</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>sort in descending order</entry>
+      <entry>내림차순 정렬</entry>
       <entry><literal></literal></entry>
       <entry><literal></literal></entry>
      </row>
@@ -91,7 +91,7 @@
      <row>
       <entry><function>uniq(int[])</function><indexterm><primary>uniq</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>remove adjacent duplicates</entry>
+      <entry>중복된 요소 제거</entry>
       <entry><literal>uniq(sort('{1,2,3,2,1}'::int[]))</literal></entry>
       <entry><literal>{1,2,3}</literal></entry>
      </row>
@@ -99,7 +99,7 @@
      <row>
       <entry><function>idx(int[], int item)</function><indexterm><primary>idx</primary></indexterm></entry>
       <entry><type>int</type></entry>
-      <entry>index of first element matching <parameter>item</> (0 if none)</entry>
+      <entry>해당 <parameter>item</> 요소가 배열의 몇번째에 있는지 (0이면 없음)</entry>
       <entry><literal>idx(array[11,22,33,22,11], 22)</literal></entry>
       <entry><literal>2</literal></entry>
      </row>
@@ -107,7 +107,7 @@
      <row>
       <entry><function>subarray(int[], int start, int len)</function><indexterm><primary>subarray</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>portion of array starting at position <parameter>start</>, <parameter>len</> elements</entry>
+      <entry>배열의 <parameter>start</> 시작 위치에서, <parameter>len</> 개수 만큼 부분 배열 추출</entry>
       <entry><literal>subarray('{1,2,3,2,1}'::int[], 2, 3)</literal></entry>
       <entry><literal>{2,3,2}</literal></entry>
      </row>
@@ -115,7 +115,7 @@
      <row>
       <entry><function>subarray(int[], int start)</function></entry>
       <entry><type>int[]</type></entry>
-      <entry>portion of array starting at position <parameter>start</></entry>
+      <entry>배열의 <parameter>start</> 번째부터 시작해서 끝까지 부분 배열 추출</entry>
       <entry><literal>subarray('{1,2,3,2,1}'::int[], 2)</literal></entry>
       <entry><literal>{2,3,2,1}</literal></entry>
      </row>
@@ -123,7 +123,7 @@
      <row>
       <entry><function>intset(int)</function><indexterm><primary>intset</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>make single-element array</entry>
+      <entry>입련 인자를 단일 요소로 하는 배열 반환</entry>
       <entry><literal>intset(42)</literal></entry>
       <entry><literal>{42}</literal></entry>
      </row>
@@ -133,14 +133,14 @@
   </table>
 
   <table id="intarray-op-table">
-   <title><filename>intarray</> Operators</title>
+   <title><filename>intarray</> 연산자들</title>
 
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Operator</entry>
-      <entry>Returns</entry>
-      <entry>Description</entry>
+      <entry>연산자</entry>
+      <entry>반환값</entry>
+      <entry>설명</entry>
      </row>
     </thead>
 
@@ -148,168 +148,171 @@
      <row>
       <entry><literal>int[] &amp;&amp; int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>overlap &mdash; <literal>true</> if arrays have at least one common element</entry>
+      <entry>겹침 &mdash; 두 배열 요수 가운데 한 요소라도 같으면 <literal>true</></entry>
      </row>
      <row>
       <entry><literal>int[] @&gt; int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>contains &mdash; <literal>true</> if left array contains right array</entry>
+      <entry>포함함 &mdash; 왼쪽 배열이 오른쪽 배열을 포함하면 <literal>true</></entry>
      </row>
      <row>
       <entry><literal>int[] &lt;@ int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>contained &mdash; <literal>true</> if left array is contained in right array</entry>
+      <entry>포함됨 &mdash; 왼쪽 배열이 오른쪽 배열에 포함되면 <literal>true</></entry>
      </row>
      <row>
       <entry><literal># int[]</literal></entry>
       <entry><type>int</type></entry>
-      <entry>number of elements in array</entry>
+      <entry>배열 요소 수</entry>
      </row>
      <row>
       <entry><literal>int[] # int</literal></entry>
       <entry><type>int</type></entry>
-      <entry>index (same as <function>idx</> function)</entry>
+      <entry><function>idx</> 함수의 연산자</entry>
      </row>
      <row>
       <entry><literal>int[] + int</literal></entry>
       <entry><type>int[]</type></entry>
-      <entry>push element onto array (add it to end of array)</entry>
+      <entry>배열에 요소 추가 (배열 마지막에 추가됨)</entry>
      </row>
      <row>
       <entry><literal>int[] + int[]  </literal></entry>
       <entry><type>int[]</type></entry>
-      <entry>array concatenation (right array added to the end of left one)</entry>
+      <entry>배열 합치기, 왼쪽 오른쪽 순서대로 합침</entry>
      </row>
      <row>
       <entry><literal>int[] - int</literal></entry>
       <entry><type>int[]</type></entry>
-      <entry>remove entries matching right argument from array</entry>
+      <entry>오른쪽에 지정한 정수가 배열 요소에 있으면 뺌</entry>
      </row>
      <row>
       <entry><literal>int[] - int[]</literal></entry>
       <entry><type>int[]</type></entry>
-      <entry>remove elements of right array from left</entry>
+      <entry>왼쪽 배열에서 오른쪽 배열 요소들을 모두 뺌</entry>
      </row>
      <row>
       <entry><literal>int[] | int</literal></entry>
       <entry><type>int[]</type></entry>
-      <entry>union of arguments</entry>
+      <entry>오른쪽 정수를 왼쪽 배열에 포함함 (이미 있으면 무시)</entry>
      </row>
      <row>
       <entry><literal>int[] | int[]</literal></entry>
       <entry><type>int[]</type></entry>
-      <entry>union of arrays</entry>
+      <entry>두 배열을 합치면서 겹치는 것 없앰</entry>
      </row>
      <row>
       <entry><literal>int[] &amp; int[]</literal></entry>
       <entry><type>int[]</type></entry>
-      <entry>intersection of arrays</entry>
+      <entry>두 배열의 교집합</entry>
      </row>
      <row>
       <entry><literal>int[] @@ query_int</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry><literal>true</> if array satisfies query (see below)</entry>
+      <entry>해당 query_int 조건에 맞으면 <literal>true</> (아래 참조)</entry>
      </row>
      <row>
       <entry><literal>query_int ~~ int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry><literal>true</> if array satisfies query (commutator of <literal>@@</>)</entry>
+      <entry>윗 <literal>@@</> 연산자의 교환 연산자</entry>
      </row>
     </tbody>
    </tgroup>
   </table>
 
   <para>
-   (Before PostgreSQL 8.2, the containment operators <literal>@&gt;</> and
-   <literal>&lt;@</> were respectively called <literal>@</> and <literal>~</>.
-   These names are still available, but are deprecated and will eventually be
-   retired.  Notice that the old names are reversed from the convention
-   formerly followed by the core geometric data types!)
+   (8.2 이전 버전에서는 <literal>@&gt;</> 연산자와 <literal>&lt;@</> 
+   연산자는 각각  <literal>@</>, <literal>~</> 로 사용했었다.
+   이 연산자들도 아직 사용할 수는 있지만, 범용 배열 연산자들이 정리되면서
+   이 연산자(@,~)는 이제 더 이상 사용하지 않는다.  이 연산자들은 
+   기본 지리정보 자료형에서 아직 사용하기에, 헷갈리지 않기 바란다!)
   </para>
 
   <para>
-   The operators <literal>&amp;&amp;</>, <literal>@&gt;</> and
-   <literal>&lt;@</> are equivalent to <productname>PostgreSQL</>'s built-in
-   operators of the same names, except that they work only on integer arrays
-   that do not contain nulls, while the built-in operators work for any array
-   type.  This restriction makes them faster than the built-in operators
-   in many cases.
+   <literal>&amp;&amp;</>, <literal>@&gt;</>, <literal>&lt;@</> 연산자는
+   범용 배열 자료형의 기본 연산자로 채택되어 그 사용법이 똑같다.
+   다른 점은 이 모듈을 사용하면, 정수형 배열에서는 null 값이 없어야되고, 
+   그 외 배열 자료형에서는 null 값이 있어도 된다.
+   이런 제한은 정수형 배열 자료형에서 처리 속도를 빠르게 하기 때문에, 
+   아직까지 이런 차이가 있다.
   </para>
 
   <para>
-   The <literal>@@</> and <literal>~~</> operators test whether an array
-   satisfies a <firstterm>query</>, which is expressed as a value of a
-   specialized data type <type>query_int</>.  A <firstterm>query</>
-   consists of integer values that are checked against the elements of
-   the array, possibly combined using the operators <literal>&amp;</>
-   (AND), <literal>|</> (OR), and <literal>!</> (NOT).  Parentheses
-   can be used as needed.  For example,
-   the query <literal>1&amp;(2|3)</> matches arrays that contain 1
-   and also contain either 2 or 3.
+   <literal>@@</>,  <literal>~~</> 연산자는 
+   지정한 <firstterm>쿼리</> 조건에 만족하는가를 검사하는 연산자다.
+   이 쿼리는 문자열로 <type>query_int</> 구문을 사용해야 하면, 
+   사용할 수 있는 기호는  <literal>&amp;</>
+   (AND), <literal>|</> (OR), <literal>!</> (NOT) 이다. 
+   예를 들어 이 쿼리가  <literal>1&amp;(2|3)</>  이라면,
+   해당 배열 요소들 가운데, 1은 반드시 있어야 하고, 
+   2 또는 3도 반드시 있는 배열이면 이 연산자는 true를 반환한다.
   </para>
  </sect2>
 
  <sect2>
-  <title>Index Support</title>
+  <title>인덱스 지원</title>
 
   <para>
-   <filename>intarray</> provides index support for the
-   <literal>&amp;&amp;</>, <literal>@&gt;</>, <literal>&lt;@</>,
-   and <literal>@@</> operators, as well as regular array equality.
+   <filename>intarray</> 모듈은 <literal>&amp;&amp;</>, <literal>@&gt;</>,
+   <literal>&lt;@</>, <literal>@@</> 연산자를 사용할 경우
+   인덱스를 사용해서 보다 빠르게 그 결과를 확인할 수 있도록
+   연산자 클래스를 제공한다.
   </para>
 
   <para>
-   Two GiST index operator classes are provided:
-   <literal>gist__int_ops</> (used by default) is suitable for
-   small- to medium-size data sets, while
-   <literal>gist__intbig_ops</> uses a larger signature and is more
-   suitable for indexing large data sets (i.e., columns containing
-   a large number of distinct array values).
-   The implementation uses an RD-tree data structure with
-   built-in lossy compression.
+   GiST 색인 방법으로 다음 두 가지 연산자 클래스를 제공한다:
+   <literal>gist__int_ops</> (기본값) 클래스는
+   4바이트 정수에 대한 연산자 클래스이며,
+   <literal>gist__intbig_ops</> 클래스는
+   8바이트 정수에 대한 연산자 클래스다.
+   이 색인 방법은 RD-tree 자료 구조에 대한 구현체이며, 
+   내장된 압축이 별로 안되는 방법이다.
   </para>
 
   <para>
-   There is also a non-default GIN operator class
-   <literal>gin__int_ops</> supporting the same operators.
+   GIN 연산자 클래스로 <literal>gin__int_ops</>
+   연산자 클래스도 제공한다.
   </para>
 
   <para>
-   The choice between GiST and GIN indexing depends on the relative
-   performance characteristics of GiST and GIN, which are discussed elsewhere.
-   As a rule of thumb, a GIN index is faster to search than a GiST index, but
-   slower to build or update; so GIN is better suited for static data and GiST
-   for often-updated data.
+   해당 배열형에 대해서 GiST 색인 방법을 쓸지, 
+   GIN 색인 방법을 쓸지에 대해서는 Gist, GIN 인덱스의 장단점을 
+   충분히 파악한 후 선택하면 된다. 
+   간략하게 소개하면, 일단 검색 속도는 GIN 색인 방법이 더 빠르지만,
+   자료 입력, 변경 속도는 GiST 보다 느리다. 그래서,
+   읽기 전용 자료라면, GIN 색인 방법을, 자주 그 배열 자료가 바뀐다면
+   GiST 색인 방법을 사용하면 된다. (물론 실재로는 이처럼 단순하지는
+   않다. 자세한 이야기는 59, 61장 참조 - 옮긴이)
   </para>
  </sect2>
 
  <sect2>
-  <title>Example</title>
+  <title>사용 예</title>
 
 <programlisting>
--- a message can be in one or more <quote>sections</>
+-- 하나의 메시지는 하나 또는 여러 섹션을 포함한다.
 CREATE TABLE message (mid INT PRIMARY KEY, sections INT[], ...);
 
--- create specialized index
+-- sections 칼럼에 대한 인덱스
 CREATE INDEX message_rdtree_idx ON message USING GIST (sections gist__int_ops);
 
--- select messages in section 1 OR 2 - OVERLAP operator
+-- 겹침 연산자를 이용한 해당 섹션이 있는 메시지 찾기
 SELECT message.mid FROM message WHERE message.sections &amp;&amp; '{1,2}';
 
--- select messages in sections 1 AND 2 - CONTAINS operator
+-- 포함 연산자를 이용한 해당 섹션이 있는 메시지 찾기
 SELECT message.mid FROM message WHERE message.sections @&gt; '{1,2}';
 
--- the same, using QUERY operator
+-- 윗 쿼리와 같은 쿼리 문자열을 이용한 또 다른 방법
 SELECT message.mid FROM message WHERE message.sections @@ '1&amp;2'::query_int;
 </programlisting>
  </sect2>
 
  <sect2>
-  <title>Benchmark</title>
+  <title>성능 검사</title>
 
   <para>
-   The source directory <filename>contrib/intarray/bench</> contains a
-   benchmark test suite.  To run:
+   소스 디렉터리 안  <filename>contrib/intarray/bench</>
+   디렉터리에  이 모듈에 대한 성능 검사 관련 소스들이 포함되어 있다.
+   사용법:
   </para>
 
 <programlisting>
@@ -321,20 +324,20 @@ psql TEST &lt; ../_int.sql
 </programlisting>
 
   <para>
-   The <filename>bench.pl</> script has numerous options, which
-   are displayed when it is run without any arguments.
+   <filename>bench.pl</> 스크립트는 다양한 옵션을 제공한다.
+   옵션 설명은 아무런 옵션 없이 실행하면 보여준다.
   </para>
  </sect2>
 
  <sect2>
-  <title>Authors</title>
+  <title>만든이</title>
 
   <para>
-   All work was done by Teodor Sigaev (<email>teodor@sigaev.ru</email>) and
-   Oleg Bartunov (<email>oleg@sai.msu.su</email>). See
-   <ulink url="http://www.sai.msu.su/~megera/postgres/gist/"></ulink> for
-   additional information. Andrey Oktyabrski did a great work on adding new
-   functions and operations.
+   모든 작업은 Teodor Sigaev (<email>teodor@sigaev.ru</email>)와
+   Oleg Bartunov (<email>oleg@sai.msu.su</email>)가 했다.
+   추가적인 정보는 <ulink url="http://www.sai.msu.su/~megera/postgres/gist/"></ulink>
+   페이지에서 제공한다.  Andrey Oktyabrski가 새 함수와 연산자들 
+   추가 작업을 했다.
   </para>
  </sect2>
 
