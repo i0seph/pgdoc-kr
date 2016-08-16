@@ -301,19 +301,26 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
           신규 테이블에 포함된 데이터를 원본 테이블에서 검색할 수도 없습니다.
      </para>
      <para>
-      <literal>INCLUDING DEFAULTS</literal>를 지정할 경우에만,
-          기본값 표현식이 복사되는 열 정의에 복사됩니다.
-          기본 동작은 기본값 표현식을 제외하는 것이며,
-          이 경우 신규 테이블로 복제된 열은 null 기본값을 갖게 됩니다.
+      특정 칼럼의 초기값 표현식은 <literal>INCLUDING DEFAULTS</literal>
+      구문이 지정된 경우에만 그 초기값 표현식이 복사 된다.
+      이 구문을 생략하면, 원본 테이블의 초기값 설정은 모두 무시된다.
+      <function>nextval</> 함수와 같은 데이터베이스 자료 조작 함수가
+      초기값으로 지정되었다면, 그것도 그대로 지정된다는 점에 주의해야 한다.
      </para>
      <para>
       Not-null 제약은 항상 신규 테이블로 복사됩니다.
           <literal>INCLUDING CONSTRAINTS</literal>가 지정된 경우에만,
           <literal>CHECK</literal> 제약이 복사됩니다.
-          <literal>INCLUDING INDEXES</literal> 절이 지정된 경우에만,
-          원본 테이블의 인덱스, <literal>PRIMARY KEY</> 및 <literal>UNIQUE</>
-          제약조건이 신규 테이블에 생성됩니다.
           열 제약과 테이블 제약은 따로 구분하지 않습니다.
+     </para>
+     <para>
+      원본 테이블의 인덱스, <literal>PRIMARY KEY</>, <literal>UNIQUE</>,
+      <literal>EXCLUDE</> 제약조건은
+      <literal>INCLUDING INDEXES</literal> 구문을 지정했을 때만 
+      복사된다. 복사해서 새로 만들어지는 각 이름들은 
+      이름 만들기 규칙에 의해서 적당한 이름으로 변경된다. 
+      (이 정책은 새로 만들어지는 인덱스의 이름이 같아서 못 만드는 경우를 
+      방지하기 위함이다.)
      </para>
      <para>
       <literal>INCLUDING STORAGE</literal>를 지정한 경우에만,
@@ -1350,6 +1357,18 @@ CREATE TABLE employees OF employee_type (
         때문에 이 제약은 무시 하는게 더 깔끔해 보입니다.
    </para>
   </refsect2>
+
+  <refsect2>
+   <title><literal>LIKE</> 절</title>
+
+   <para>
+    <literal>LIKE</> 절은 표준 SQL 구문이지만, 
+    <productname>PostgreSQL</productname>에서는 표준에서 정의하지 않은
+    많은 옵션들을 제공한다. 또한 표준 SQL 구문에서 요구하는 
+    다른 옵션들이 아직 구현 되지 않은 것도 있다.
+   </para>
+  </refsect2>
+
 
   <refsect2>
    <title><literal>WITH</> 절</title>

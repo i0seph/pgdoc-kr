@@ -171,7 +171,8 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
         (복합 필드의 몇몇 필드에만 삽입하면 나머지 필드는 null로 채워진다.)
         <literal>ON CONFLICT DO UPDATE</>로 칼럼을 참조하는 경우,
         대상 칼럼을 지정할 때 테이블 명을 포함하면 안된다.
-        예를 들어, <literal>INSERT ... ON CONFLICT DO UPDATE tab SET table_name.col = 1</>은
+        예를 들어, <literal>INSERT INTO table_name ... ON CONFLICT DO UPDATE
+        SET table_name.col = 1</>은
         유효하지 않다. (이는 <command>UPDATE</>의 일반적인 동작에 따른 것이다.)
         </para>
       </listitem>
