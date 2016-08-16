@@ -86,7 +86,7 @@
       <entry><structfield>relforknumber</structfield></entry>
       <entry><type>smallint</type></entry>
       <entry></entry>
-      <entry>해당 릴레이션에서의 포크 번호; <filename>include/storage/relfilenode.h</> 참조</entry>
+      <entry>해당 릴레이션에서의 포크 번호; <filename>include/common/relpath.h</> 참조</entry>
      </row>
 
      <row>
