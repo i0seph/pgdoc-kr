@@ -16,35 +16,36 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>pg_recvlogical</refname>
-  <refpurpose>control <productname>PostgreSQL</productname> logical decoding streams</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 논리 디코딩 스트림 제어</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_recvlogical</command>
-   <arg rep="repeat" choice="opt"><replaceable>option</replaceable></arg>
+   <arg rep="repeat" choice="opt"><replaceable>옵션</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
   <para>
-   <command>pg_recvlogical</command> controls logical decoding replication
-   slots and streams data from such replication slots.
+   <command>pg_recvlogical</command> 명령은
+   논리 디코딩 복제 슬롯과 그 복제 슬롯에서 보내는 스트림 자료를 제어한다.
   </para>
 
   <para>
-   It creates a replication-mode connection, so it is subject to the same
-   constraints as <xref linkend="app-pgreceivexlog">, plus those for logical
-   replication (see <xref linkend="logicaldecoding">).
+   이 명령은 복제용 연결을 사용한다.  이런 이유로 
+   <xref linkend="app-pgreceivexlog">  명령어의 제약 사항과 같은 
+   제약 사항이 있다. 더불어 논리 복제의 제약 사항도 있다.
+   (<xref linkend="logicaldecoding"> 참조)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
-    At least one of the following options must be specified to select an action:
+    이 명령어가 정상 작동 되려면 다음 옵션 가운데 하나 이상은 반드시 지정해야 한다:
 
     <variablelist>
 
@@ -52,10 +53,10 @@ PostgreSQL documentation
       <term><option>--create-slot</option></term>
       <listitem>
        <para>
-        Create a new logical replication slot with the name specified by
-        <option>--slot</option>, using the output plugin specified by
-        <option>--plugin</option>, for the database specified
-        by <option>--dbname</option>.
+        <option>--dbname</option> 옵션으로 지정한 데이터베이스에 대해서,
+        <option>--slot</option> 옵션으로 지정한 이름의 논리 복제 슬롯을
+        만들고, <option>--plugin</option> 옵션으로 지정한 출력 플러그인을
+        사용한다.
        </para>
       </listitem>
      </varlistentry>
@@ -64,8 +65,8 @@ PostgreSQL documentation
       <term><option>--drop-slot</option></term>
       <listitem>
        <para>
-        Drop the replication slot with the name specified
-        by <option>--slot</option>, then exit.
+        <option>--slot</option> 옵션으로 지정한 이름의 슬롯을 
+        삭제하고 종료한다.
        </para>
       </listitem>
      </varlistentry>
@@ -74,20 +75,19 @@ PostgreSQL documentation
       <term><option>--start</option></term>
       <listitem>
        <para>
-        Begin streaming changes from the logical replication slot specified
-        by <option>--slot</option>, continuing until terminated by a
-        signal. If the server side change stream ends with a server shutdown
-        or disconnect, retry in a loop unless
-        <option>--no-loop</option> is specified.
+        <option>--slot</option> 옵션으로 지정한 슬롯을 통해 
+        넘어오는 내역을 출력하며, 이 작업은 시그널 신호로 종료되기
+        전까지 계속 진행한다.  <option>--no-loop</option> 옵션을 
+        지정하지 않으면, 이 출력 작업은 운영 서버의 종료되거나, 
+        재시작되어도 계속 된다.
        </para>
 
        <para>
-        The stream format is determined by the output plugin specified when
-        the slot was created.
+        출력 양식은 슬롯을 만들때 지정한 플러그인의 양식을 따른다.
        </para>
 
        <para>
-        The connection must be to the same database used to create the slot.
+        원본 서버 연결 정보는 그 슬롯을 만들때와 같아야 한다.
        </para>
       </listitem>
      </varlistentry>
@@ -95,35 +95,36 @@ PostgreSQL documentation
    </para>
 
    <para>
-    <option>--create-slot</option> and <option>--start</option> can be
-    specified together.  <option>--drop-slot</option> cannot be combined with
-    another action.
+    <option>--create-slot</option> 옵션과 <option>--start</option> 옵션은
+    같이 사용할 수 있다.  <option>--drop-slot</option> 옵션은 같이 사용할 수
+    없다.
    </para>
 
    <para>
-    The following command-line options control the location and format of the
-    output and other replication behavior:
+    다음 옵션들은 복제 관련 위치, 출력 양식, 기타 복제 기능들을 지정하는
+    것들이다:
 
     <variablelist>
      <varlistentry>
-      <term><option>-f <replaceable>filename</replaceable></option></term>
-      <term><option>--file=<replaceable>filename</replaceable></option></term>
+      <term><option>-f <replaceable>파일이름</replaceable></option></term>
+      <term><option>--file=<replaceable>파일이름</replaceable></option></term>
       <listitem>
        <para>
-        Write received and decoded transaction data into this
-        file. Use <literal>-</> for <systemitem>stdout</systemitem>.
+        복제 내용을 해당 파일로 기록한다.  파일이름으로
+        <literal>-</> 문자를 지정하면, <systemitem>stdout</systemitem>
+        (표준출력)으로 보낸다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-F <replaceable>interval_seconds</replaceable></option></term>
-      <term><option>--fsync-interval=<replaceable>interval_seconds</replaceable></option></term>
+      <term><option>-F <replaceable>간격_초</replaceable></option></term>
+      <term><option>--fsync-interval=<replaceable>간격_초</replaceable></option></term>
       <listitem>
        <para>
-        Specifies how often <application>pg_recvlogical</application> should
-        issue <function>fsync()</function> calls to ensure the output file is
-        safely flushed to disk.
+        지정한 초 단위 간격으로 <application>pg_recvlogical</application> 
+        명령은 해당 자료를 안전하게 보관하기 위해서,
+        <function>fsync()</function> 함수를 호출한다.
        </para>
 
        <para>
@@ -133,10 +134,10 @@ PostgreSQL documentation
        </para>
 
        <para>
-        Specifying an interval of <literal>0</literal> disables
-        issuing <function>fsync()</function> calls altogether, while still
-        reporting progress to the server.  In this case, data could be lost in
-        the event of a crash.
+        이 값을 <literal>0</literal>으로 지정하면,
+        원본 서버에 진행 사항을 보고하기 전까지,
+        <function>fsync()</function> 함수를 호출하지 않는다.  이렇게
+        지정하면 이 명령이 갑자기 종료될 경우 자료 손실이 있을 수 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -158,8 +159,8 @@ PostgreSQL documentation
       <term><option>--if-not-exists</option></term>
       <listitem>
        <para>
-        Do not error out when <option>--create-slot</option> is specified
-        and a slot with the specified name already exists.
+        <option>--create-slot</option> 옵션과 함께 쓰이며,
+        해당 슬롯이 없는 경우에만 그 슬롯을 만든다.
        </para>
       </listitem>
      </varlistentry>
@@ -169,55 +170,56 @@ PostgreSQL documentation
       <term><option>--no-loop</option></term>
       <listitem>
        <para>
-        When the connection to the server is lost, do not retry in a loop, just exit.
+        원본 서버와의 접속이 끊기면 종료한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-o <replaceable>name</replaceable>[=<replaceable>value</replaceable>]</option></term>
-      <term><option>--option=<replaceable>name</replaceable>[=<replaceable>value</replaceable>]</option></term>
+      <term><option>-o <replaceable>이름</replaceable>[=<replaceable>값</replaceable>]</option></term>
+      <term><option>--option=<replaceable>이름</replaceable>[=<replaceable>값</replaceable>]</option></term>
       <listitem>
        <para>
-        Pass the option <replaceable>name</replaceable> to the output plugin with,
-        if specified, the option value <replaceable>value</replaceable>. Which
-        options exist and their effects depends on the used output plugin.
+        출력 플러그인에서 사용하는 옵션들을 
+        <replaceable>이름</replaceable>[=<replaceable>값</replaceable>] 형태로 지정한다.
+        이 옵션 이름은 해당 출력 플러그인 문서를 참조해야 한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-P <replaceable>plugin</replaceable></option></term>
-      <term><option>--plugin=<replaceable>plugin</replaceable></option></term>
+      <term><option>-P <replaceable>출력플러그인</replaceable></option></term>
+      <term><option>--plugin=<replaceable>출력플러그인</replaceable></option></term>
       <listitem>
        <para>
-        When creating a slot, use the specified logical decoding output
-        plugin. See <xref linkend="logicaldecoding">. This option has no
-        effect if the slot already exists.
+        슬롯을 만들 때 지정한 그 플러그인 이름을 지정한다.
+        자세한 설명은 <xref linkend="logicaldecoding">을 참조한다.
+        이 옵션은 이미 해당 슬롯이 만들어진 상황이라면 무시된다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-s <replaceable>interval_seconds</replaceable></option></term>
-      <term><option>--status-interval=<replaceable>interval_seconds</replaceable></option></term>
+      <term><option>-s <replaceable>간격_초</replaceable></option></term>
+      <term><option>--status-interval=<replaceable>간격_초</replaceable></option></term>
       <listitem>
        <para>
-        This option has the same effect as the option of the same name
-        in <xref linkend="app-pgreceivexlog">.  See the description there.
+        이 옵션은 <xref linkend="app-pgreceivexlog"> 명령의 옵션과 같다.
+        자세한 설명은 그 명령어 설명서를 참조한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-S <replaceable>slot_name</replaceable></option></term>
-      <term><option>--slot=<replaceable>slot_name</replaceable></option></term>
+      <term><option>-S <replaceable>슬롯이름</replaceable></option></term>
+      <term><option>--slot=<replaceable>슬롯이름</replaceable></option></term>
       <listitem>
        <para>
-        In <option>--start</option> mode, use the existing logical replication slot named
-        <replaceable>slot_name</replaceable>. In <option>--create-slot</option>
-        mode, create the slot with this name. In <option>--drop-slot</option>
-        mode, delete the slot with this name.
+        <option>--start</option> 옵션을 지정할 경우 사용할
+        <replaceable>슬롯이름</replaceable>을 지정한다.  <option>--create-slot</option>
+        옵셥과 함께 쓰이면, 해당 이름의 슬롯을 만들고, 
+        <option>--drop-slot</option> 옵션과 함께 쓰이면, 해당 이름의 슬롯을 
+        삭제한다.
        </para>
       </listitem>
      </varlistentry>
@@ -227,7 +229,7 @@ PostgreSQL documentation
        <term><option>--verbose</></term>
        <listitem>
        <para>
-        Enables verbose mode.
+        작업 상황을 보다 자세히 출력한다.
        </para>
        </listitem>
      </varlistentry>
@@ -235,12 +237,12 @@ PostgreSQL documentation
    </para>
 
    <para>
-    The following command-line options control the database connection parameters.
+    다음 옵션들은 원본 데이터베이스 서버 접속에 관련된 옵션들이다:
 
     <variablelist>
       <varlistentry>
-       <term><option>-d <replaceable>database</replaceable></option></term>
-       <term><option>--dbname=<replaceable>database</replaceable></option></term>
+       <term><option>-d <replaceable>데이터베이스</replaceable></option></term>
+       <term><option>--dbname=<replaceable>데이터베이스</replaceable></option></term>
        <listitem>
         <para>
          The database to connect to.  See the description of the actions for
@@ -252,8 +254,8 @@ PostgreSQL documentation
       </varlistentry>
 
       <varlistentry>
-       <term><option>-h <replaceable>hostname-or-ip</replaceable></option></term>
-       <term><option>--host=<replaceable>hostname-or-ip</replaceable></option></term>
+       <term><option>-h <replaceable>호스트이름-또는-IP</replaceable></option></term>
+       <term><option>--host=<replaceable>호스트이름-또는-IP</replaceable></option></term>
        <listitem>
         <para>
          Specifies the host name of the machine on which the server is
@@ -266,8 +268,8 @@ PostgreSQL documentation
       </varlistentry>
 
       <varlistentry>
-       <term><option>-p <replaceable>port</replaceable></option></term>
-       <term><option>--port=<replaceable>port</replaceable></option></term>
+       <term><option>-p <replaceable>포트</replaceable></option></term>
+       <term><option>--port=<replaceable>포트</replaceable></option></term>
        <listitem>
         <para>
          Specifies the TCP port or local Unix domain socket file
@@ -279,8 +281,8 @@ PostgreSQL documentation
       </varlistentry>
 
       <varlistentry>
-       <term><option>-U <replaceable>user</replaceable></option></term>
-       <term><option>--username=<replaceable>user</replaceable></option></term>
+       <term><option>-U <replaceable>사용자이름</replaceable></option></term>
+       <term><option>--username=<replaceable>사용자이름</replaceable></option></term>
        <listitem>
         <para>
          User name to connect as.  Defaults to current operating system user
@@ -328,7 +330,7 @@ PostgreSQL documentation
    </para>
 
    <para>
-    The following additional options are available:
+    다음 옵션들은 부가 옵션이다:
 
     <variablelist>
      <varlistentry>
@@ -356,25 +358,26 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경변수</title>
 
   <para>
-   This utility, like most other <productname>PostgreSQL</> utilities,
-   uses the environment variables supported by <application>libpq</>
-   (see <xref linkend="libpq-envars">).
+   이 명령어는 <application>libpq</> 라이브러리를 사용함으로
+   대부분의 <productname>PostgreSQL</> 응용 프로그램처럼
+   해당 라이브러리에서 사용한 환경 변수를 그대로 사용할 수 있다.
+   (<xref linkend="libpq-envars"> 참조).
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   See <xref linkend="logicaldecoding-example"> for an example.
+   <xref linkend="logicaldecoding-example"> 참조
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-pgreceivexlog"></member>
