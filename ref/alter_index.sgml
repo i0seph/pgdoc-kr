@@ -23,6 +23,7 @@ PostgreSQL documentation
 <synopsis>
 ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
 ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> SET TABLESPACE <replaceable class="PARAMETER">테이블스페이스이름</replaceable>
+ALTER INDEX <replaceable class="PARAMETER">이름</replaceable> DEPENDS ON EXTENSION <replaceable class="PARAMETER">확장모듈이름</replaceable>
 ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> SET ( <replaceable class="PARAMETER">저장옵션_매개변수명</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )
 ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RESET ( <replaceable class="PARAMETER">저장옵션_매개변수명</replaceable> [, ... ] )
 </synopsis>
@@ -67,6 +68,17 @@ ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RE
      </para>
     </listitem>
    </varlistentry>
+
+   <varlistentry>
+    <term><literal>DEPENDS ON EXTENSION</literal></term>
+    <listitem>
+     <para>
+      해당 인덱스를 지정한 확장 모듈의 한 부분으로 지정해서, 
+      확장 모듈이 삭제되면 함께 삭제 될 수 있도록 한다.
+     </para>
+    </listitem>
+   </varlistentry>
+
 
    <varlistentry>
     <term><literal>SET ( <replaceable class="PARAMETER">저장옵션_매개변수명</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )</literal></term>
@@ -126,6 +138,15 @@ ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RE
       <listitem>
        <para>
         옮겨갈 새 테이블스페이스 이름.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><replaceable class="PARAMETER">확장모듈이름</replaceable></term>
+      <listitem>
+       <para>
+        이 인덱스와 관련 있는 확장 모듈 이름
        </para>
       </listitem>
      </varlistentry>

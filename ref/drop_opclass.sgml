@@ -26,7 +26,7 @@ DROP OPERATOR CLASS [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceab
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP OPERATOR CLASS</command> drops an existing operator class.
@@ -42,7 +42,7 @@ DROP OPERATOR CLASS [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceab
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
 
@@ -78,7 +78,9 @@ DROP OPERATOR CLASS [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceab
     <term><literal>CASCADE</literal></term>
     <listitem>
      <para>
-      Automatically drop objects that depend on the operator class.
+      Automatically drop objects that depend on the operator class (such as
+      indexes), and in turn all objects that depend on those objects
+      (see <xref linkend="ddl-depend">).
      </para>
     </listitem>
    </varlistentry>
@@ -96,7 +98,7 @@ DROP OPERATOR CLASS [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceab
  </refsect1>
 
  <refsect1>
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    <command>DROP OPERATOR CLASS</> will not drop the operator family
@@ -110,7 +112,7 @@ DROP OPERATOR CLASS [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceab
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Remove the B-tree operator class <literal>widget_ops</literal>:
@@ -126,7 +128,7 @@ DROP OPERATOR CLASS widget_ops USING btree;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    There is no <command>DROP OPERATOR CLASS</command> statement in the
@@ -135,7 +137,7 @@ DROP OPERATOR CLASS widget_ops USING btree;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alteropclass"></member>

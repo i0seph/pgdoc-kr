@@ -316,6 +316,14 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
      </row>
 
      <row>
+      <entry><structname>pg_stat_wal_receiver</><indexterm><primary>pg_stat_wal_receiver</primary></indexterm></entry>
+      <entry>Only one row, showing statistics about the WAL receiver from
+       that receiver's connected server.
+       See <xref linkend="pg-stat-wal-receiver-view"> for details.
+      </entry>
+     </row>
+
+     <row>
       <entry><structname>pg_stat_ssl</><indexterm><primary>pg_stat_ssl</primary></indexterm></entry>
       <entry>One row per connection (regular and replication), showing information about
        SSL used on this connection.
@@ -531,6 +539,13 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
       </entry>
      </row>
 
+     <row>
+      <entry><structname>pg_stat_progress_vacuum</><indexterm><primary>pg_stat_progress_vacuum</primary></indexterm></entry>
+      <entry>One row for each backend (including autovacuum worker processes) running
+      <command>VACUUM</>, showing current progress.
+      See <xref linkend='vacuum-progress-reporting'>.</entry>
+     </row>
+
     </tbody>
    </tgroup>
   </table>
@@ -647,10 +662,56 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
      <entry><type>timestamp with time zone</></entry>
      <entry><structfield>state</>가 마지막으로 변경된 시간</entry>
     </row>
+     <row>
+      <entry><structfield>wait_event_type</></entry>
+      <entry><type>text</></entry>
+      <entry>The type of event for which the backend is waiting, if any;
+       otherwise NULL. Possible values are:
+       <itemizedlist>
+        <listitem>
+         <para>
+          <literal>LWLockNamed</>: The backend is waiting for a specific named
+          lightweight lock.  Each such lock protects a particular data
+          structure in shared memory.  <literal>wait_event</> will contain
+          the name of the lightweight lock.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <literal>LWLockTranche</>: The backend is waiting for one of a
+          group of related lightweight locks.  All locks in the group perform
+          a similar function; <literal>wait_event</> will identify the general
+          purpose of locks in that group.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <literal>Lock</>: The backend is waiting for a heavyweight lock.
+          Heavyweight locks, also known as lock manager locks or simply locks,
+          primarily protect SQL-visible objects such as tables.  However,
+          they are also used to ensure mutual exclusion for certain internal
+          operations such as relation extension.  <literal>wait_event</> will
+          identify the type of lock awaited.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <literal>BufferPin</>: The server process is waiting to access to
+          a data buffer during a period when no other process can be
+          examining that buffer.  Buffer pin waits can be protracted if
+          another process holds an open cursor which last read data from the
+          buffer in question.
+         </para>
+        </listitem>
+       </itemizedlist>
+      </entry>
+     </row>
     <row>
-     <entry><structfield>waiting</></entry>
-     <entry><type>boolean</></entry>
-     <entry>이 백엔드가 잠금을 기다리고 있으면 true</entry>
+     <entry><structfield>wait_event</></entry>
+     <entry><type>text</></entry>
+     <entry>Wait event name if backend is currently waiting, otherwise NULL.
+     See <xref linkend="wait-event-table"> for details.
+     </entry>
     </row>
     <row>
      <entry><structfield>state</></entry>
@@ -717,12 +778,354 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
 
   <note>
    <para>
-    <structfield>waiting</>과 <structfield>state</>칼럼은 독립적이다. 
-    백엔드가 <literal>active</> 상태이면,
-    <literal>waiting</>일 수도 있고 아닐 수도 있다. 상태가
-    <literal>active</>이고 <structfield>waiting</>이 true면, 쿼리가 수행 중임을 뜻하지만 시스템 어딘가에서 잠금으로 블록 됐음을 뜻한다.
+    <structfield>wait_event</>와 <structfield>state</>칼럼은 독립적이다. 
+    백엔드가 <literal>active</> 상태일 때,
+    그 이벤트가 <literal>waiting</> 일 수도 있고 아닐 수도 있다.  상태가
+    <literal>active</>이고, <structfield>wait_event</> 값이 비어 있지
+    않으면, 쿼리가 현재 실행 중이지만, 시스템 어딘가에서 지연이 
+    발생했음을 의미한다.
    </para>
   </note>
+
+  <table id="wait-event-table">
+   <title><structname>wait_event</structname> Description</title>
+
+    <tgroup cols="3">
+      <thead>
+       <row>
+        <entry>Wait Event Type</entry>
+        <entry>Wait Event Name</entry>
+        <entry>Description</entry>
+       </row>
+      </thead>
+
+      <tbody>
+       <row>
+        <entry morerows="41"><literal>LWLockNamed</></entry>
+        <entry><literal>ShmemIndexLock</></entry>
+        <entry>Waiting to find or allocate space in shared memory.</entry>
+       </row>
+       <row>
+        <entry><literal>OidGenLock</></entry>
+        <entry>Waiting to allocate or assign an OID.</entry>
+       </row>
+        <row>
+         <entry><literal>XidGenLock</></entry>
+         <entry>Waiting to allocate or assign a transaction id.</entry>
+        </row>
+        <row>
+         <entry><literal>ProcArrayLock</></entry>
+         <entry>Waiting to get a snapshot or clearing a transaction id at
+         transaction end.</entry>
+        </row>
+        <row>
+         <entry><literal>SInvalReadLock</></entry>
+         <entry>Waiting to retrieve or remove messages from shared invalidation
+         queue.</entry>
+        </row>
+        <row>
+         <entry><literal>SInvalWriteLock</></entry>
+         <entry>Waiting to add a message in shared invalidation queue.</entry>
+        </row>
+        <row>
+         <entry><literal>WALBufMappingLock</></entry>
+         <entry>Waiting to replace a page in WAL buffers.</entry>
+        </row>
+        <row>
+         <entry><literal>WALWriteLock</></entry>
+         <entry>Waiting for WAL buffers to be written to disk.</entry>
+        </row>
+        <row>
+         <entry><literal>ControlFileLock</></entry>
+         <entry>Waiting to read or update the control file or creation of a
+         new WAL file.</entry>
+        </row>
+        <row>
+         <entry><literal>CheckpointLock</></entry>
+         <entry>Waiting to perform checkpoint.</entry>
+        </row>
+        <row>
+         <entry><literal>CLogControlLock</></entry>
+         <entry>Waiting to read or update transaction status.</entry>
+        </row>
+        <row>
+         <entry><literal>SubtransControlLock</></entry>
+         <entry>Waiting to read or update sub-transaction information.</entry>
+        </row>
+        <row>
+         <entry><literal>MultiXactGenLock</></entry>
+         <entry>Waiting to read or update shared multixact state.</entry>
+        </row>
+        <row>
+         <entry><literal>MultiXactOffsetControlLock</></entry>
+         <entry>Waiting to read or update multixact offset mappings.</entry>
+        </row>
+        <row>
+         <entry><literal>MultiXactMemberControlLock</></entry>
+         <entry>Waiting to read or update multixact member mappings.</entry>
+        </row>
+        <row>
+         <entry><literal>RelCacheInitLock</></entry>
+         <entry>Waiting to read or write relation cache initialization
+         file.</entry>
+        </row>
+        <row>
+         <entry><literal>CheckpointerCommLock</></entry>
+         <entry>Waiting to manage fsync requests.</entry>
+        </row>
+        <row>
+         <entry><literal>TwoPhaseStateLock</></entry>
+         <entry>Waiting to read or update the state of prepared transactions.</entry>
+        </row>
+        <row>
+         <entry><literal>TablespaceCreateLock</></entry>
+         <entry>Waiting to create or drop the tablespace.</entry>
+        </row>
+        <row>
+         <entry><literal>BtreeVacuumLock</></entry>
+          <entry>Waiting to read or update vacuum-related information for a
+          B-tree index.</entry>
+        </row>
+        <row>
+         <entry><literal>AddinShmemInitLock</></entry>
+         <entry>Waiting to manage space allocation in shared memory.</entry>
+        </row>
+        <row>
+         <entry><literal>AutovacuumLock</></entry>
+         <entry>Autovacuum worker or launcher waiting to update or
+         read the current state of autovacuum workers.</entry>
+        </row>
+        <row>
+         <entry><literal>AutovacuumScheduleLock</></entry>
+         <entry>Waiting to ensure that the table it has selected for a vacuum
+         still needs vacuuming.
+         </entry>
+        </row>
+        <row>
+         <entry><literal>SyncScanLock</></entry>
+         <entry>Waiting to get the start location of a scan on a table for
+         synchronized scans.</entry>
+        </row>
+        <row>
+         <entry><literal>RelationMappingLock</></entry>
+         <entry>Waiting to update the relation map file used to store catalog
+         to filenode mapping.
+         </entry>
+        </row>
+        <row>
+         <entry><literal>AsyncCtlLock</></entry>
+         <entry>Waiting to read or update shared notification state.</entry>
+        </row>
+        <row>
+         <entry><literal>AsyncQueueLock</></entry>
+          <entry>Waiting to read or update notification messages.</entry>
+        </row>
+        <row>
+         <entry><literal>SerializableXactHashLock</></entry>
+         <entry>Waiting to retrieve or store information about serializable
+         transactions.</entry>
+        </row>
+        <row>
+         <entry><literal>SerializableFinishedListLock</></entry>
+         <entry>Waiting to access the list of finished serializable
+         transactions.</entry>
+        </row>
+        <row>
+         <entry><literal>SerializablePredicateLockListLock</></entry>
+         <entry>Waiting to perform an operation on a list of locks held by
+         serializable transactions.</entry>
+        </row>
+        <row>
+         <entry><literal>OldSerXidLock</></entry>
+         <entry>Waiting to read or record conflicting serializable
+         transactions.</entry>
+        </row>
+        <row>
+         <entry><literal>SyncRepLock</></entry>
+         <entry>Waiting to read or update information about synchronous
+         replicas.</entry>
+        </row>
+        <row>
+         <entry><literal>BackgroundWorkerLock</></entry>
+         <entry>Waiting to read or update background worker state.</entry>
+        </row>
+        <row>
+         <entry><literal>DynamicSharedMemoryControlLock</></entry>
+         <entry>Waiting to read or update dynamic shared memory state.</entry>
+        </row>
+        <row>
+         <entry><literal>AutoFileLock</></entry>
+         <entry>Waiting to update the <filename>postgresql.auto.conf</> file.</entry>
+        </row>
+        <row>
+         <entry><literal>ReplicationSlotAllocationLock</></entry>
+         <entry>Waiting to allocate or free a replication slot.</entry>
+        </row>
+        <row>
+         <entry><literal>ReplicationSlotControlLock</></entry>
+         <entry>Waiting to read or update replication slot state.</entry>
+        </row>
+        <row>
+         <entry><literal>CommitTsControlLock</></entry>
+         <entry>Waiting to read or update transaction commit timestamps.</entry>
+        </row>
+        <row>
+         <entry><literal>CommitTsLock</></entry>
+         <entry>Waiting to read or update the last value set for the
+         transaction timestamp.</entry>
+        </row>
+        <row>
+         <entry><literal>ReplicationOriginLock</></entry>
+         <entry>Waiting to setup, drop or use replication origin.</entry>
+        </row>
+        <row>
+         <entry><literal>MultiXactTruncationLock</></entry>
+         <entry>Waiting to read or truncate multixact information.</entry>
+        </row>
+        <row>
+         <entry><literal>OldSnapshotTimeMapLock</></entry>
+         <entry>Waiting to read or update old snapshot control information.</entry>
+        </row>
+        <row>
+         <entry morerows="15"><literal>LWLockTranche</></entry>
+         <entry><literal>clog</></entry>
+         <entry>Waiting for I/O on a clog (transaction status) buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>commit_timestamp</></entry>
+         <entry>Waiting for I/O on commit timestamp buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>subtrans</></entry>
+         <entry>Waiting for I/O a subtransaction buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>multixact_offset</></entry>
+         <entry>Waiting for I/O on a multixact offset buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>multixact_member</></entry>
+         <entry>Waiting for I/O on a multixact_member buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>async</></entry>
+         <entry>Waiting for I/O on an async (notify) buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>oldserxid</></entry>
+         <entry>Waiting to I/O on an oldserxid buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>wal_insert</></entry>
+         <entry>Waiting to insert WAL into a memory buffer.</entry>
+        </row>
+        <row>
+         <entry><literal>buffer_content</></entry>
+         <entry>Waiting to read or write a data page in memory.</entry>
+        </row>
+        <row>
+         <entry><literal>buffer_io</></entry>
+         <entry>Waiting for I/O on a data page.</entry>
+        </row>
+        <row>
+         <entry><literal>replication_origin</></entry>
+         <entry>Waiting to read or update the replication progress.</entry>
+        </row>
+        <row>
+         <entry><literal>replication_slot_io</></entry>
+         <entry>Waiting for I/O on a replication slot.</entry>
+        </row>
+        <row>
+         <entry><literal>proc</></entry>
+         <entry>Waiting to read or update the fast-path lock information.</entry>
+        </row>
+        <row>
+         <entry><literal>buffer_mapping</></entry>
+         <entry>Waiting to associate a data block with a buffer in the buffer
+         pool.</entry>
+        </row>
+        <row>
+         <entry><literal>lock_manager</></entry>
+         <entry>Waiting to add or examine locks for backends, or waiting to
+         join or exit a locking group (used by parallel query).</entry>
+        </row>
+        <row>
+         <entry><literal>predicate_lock_manager</></entry>
+         <entry>Waiting to add or examine predicate lock information.</entry>
+        </row>
+        <row>
+         <entry morerows="9"><literal>Lock</></entry>
+         <entry><literal>relation</></entry>
+         <entry>Waiting to acquire a lock on a relation.</entry>
+        </row>
+        <row>
+         <entry><literal>extend</></entry>
+         <entry>Waiting to extend a relation.</entry>
+        </row>
+        <row>
+         <entry><literal>page</></entry>
+         <entry>Waiting to acquire a lock on page of a relation.</entry>
+        </row>
+        <row>
+         <entry><literal>tuple</></entry>
+         <entry>Waiting to acquire a lock on a tuple.</entry>
+        </row>
+        <row>
+         <entry><literal>transactionid</></entry>
+         <entry>Waiting for a transaction to finish.</entry>
+        </row>
+        <row>
+         <entry><literal>virtualxid</></entry>
+         <entry>Waiting to acquire a virtual xid lock.</entry>
+        </row>
+        <row>
+         <entry><literal>speculative token</></entry>
+         <entry>Waiting to acquire a speculative insertion lock.</entry>
+        </row>
+        <row>
+         <entry><literal>object</></entry>
+         <entry>Waiting to acquire a lock on a non-relation database object.</entry>
+        </row>
+        <row>
+         <entry><literal>userlock</></entry>
+         <entry>Waiting to acquire a userlock.</entry>
+        </row>
+        <row>
+         <entry><literal>advisory</></entry>
+         <entry>Waiting to acquire an advisory user lock.</entry>
+        </row>
+        <row>
+         <entry><literal>BufferPin</></entry>
+         <entry><literal>BufferPin</></entry>
+         <entry>Waiting to acquire a pin on a buffer.</entry>
+        </row>
+      </tbody>
+     </tgroup>
+    </table>
+
+   <note>
+    <para>
+     For tranches registered by extensions, the name is specified by extension
+     and this will be displayed as <structfield>wait_event</>.  It is quite
+     possible that user has registered the tranche in one of the backends (by
+     having allocation in dynamic shared memory) in which case other backends
+     won't have that information, so we display <literal>extension</> for such
+     cases.
+    </para>
+   </note>
+
+   <para>
+     Here is an example of how wait events can be viewed
+
+<programlisting>
+SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event is NOT NULL;
+ pid  | wait_event_type |  wait_event
+------+-----------------+---------------
+ 2540 | Lock            | relation
+ 6644 | LWLockNamed     | ProcArrayLock
+(2 rows)
+</programlisting>
+   </para>
 
   <table id="pg-stat-replication-view" xreflabel="pg_stat_replication">
    <title><structname>pg_stat_replication</structname> View</title>
@@ -832,6 +1235,97 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
    <structname>pg_stat_replication</structname>뷰는 WAL 송신자 프로세스당 하나의 로우를 가지며, 
    송신자가 연결된 대기 서버의 리플리케이션에 관한 통계치를 보여준다. 직접 연결된 대기 서버만 보여진다. 
    다운스트림 대기 서버에 관한 정보는 없다.
+  </para>
+
+  <table id="pg-stat-wal-receiver-view" xreflabel="pg_stat_wal_receiver">
+   <title><structname>pg_stat_wal_receiver</structname> View</title>
+   <tgroup cols="3">
+    <thead>
+    <row>
+      <entry>Column</entry>
+      <entry>Type</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+
+   <tbody>
+    <row>
+     <entry><structfield>pid</></entry>
+     <entry><type>integer</></entry>
+     <entry>Process ID of the WAL receiver process</entry>
+    </row>
+    <row>
+     <entry><structfield>status</></entry>
+     <entry><type>text</></entry>
+     <entry>Activity status of the WAL receiver process</entry>
+    </row>
+    <row>
+     <entry><structfield>receive_start_lsn</></entry>
+     <entry><type>pg_lsn</></entry>
+     <entry>First transaction log position used when WAL receiver is
+      started</entry>
+    </row>
+    <row>
+     <entry><structfield>receive_start_tli</></entry>
+     <entry><type>integer</></entry>
+     <entry>First timeline number used when WAL receiver is started</entry>
+    </row>
+    <row>
+     <entry><structfield>received_lsn</></entry>
+     <entry><type>pg_lsn</></entry>
+     <entry>Last transaction log position already received and flushed to
+      disk, the initial value of this field being the first log position used
+      when WAL receiver is started</entry>
+    </row>
+    <row>
+     <entry><structfield>received_tli</></entry>
+     <entry><type>integer</></entry>
+     <entry>Timeline number of last transaction log position received and
+      flushed to disk, the initial value of this field being the timeline
+      number of the first log position used when WAL receiver is started
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>last_msg_send_time</></entry>
+     <entry><type>timestamp with time zone</></entry>
+     <entry>Send time of last message received from origin WAL sender</entry>
+    </row>
+    <row>
+     <entry><structfield>last_msg_receipt_time</></entry>
+     <entry><type>timestamp with time zone</></entry>
+     <entry>Receipt time of last message received from origin WAL sender</entry>
+    </row>
+    <row>
+     <entry><structfield>latest_end_lsn</></entry>
+     <entry><type>pg_lsn</></entry>
+     <entry>Last transaction log position reported to origin WAL sender</entry>
+    </row>
+    <row>
+     <entry><structfield>latest_end_time</></entry>
+     <entry><type>timestamp with time zone</></entry>
+     <entry>Time of last transaction log position reported to origin WAL sender</entry>
+    </row>
+    <row>
+     <entry><structfield>slot_name</></entry>
+     <entry><type>text</></entry>
+     <entry>Replication slot name used by this WAL receiver</entry>
+    </row>
+    <row>
+     <entry><structfield>conninfo</></entry>
+     <entry><type>text</></entry>
+     <entry>
+      Connection string used by this WAL receiver,
+      with security-sensitive fields obfuscated.
+     </entry>
+    </row>
+   </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   The <structname>pg_stat_wal_receiver</structname> view will contain only
+   one row, showing statistics about the WAL receiver from that receiver's
+   connected server.
   </para>
 
   <table id="pg-stat-ssl-view" xreflabel="pg_stat_ssl">
@@ -1762,7 +2256,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
       <entry><literal><function>pg_stat_reset()</function></literal><indexterm><primary>pg_stat_reset</primary></indexterm></entry>
       <entry><type>void</type></entry>
       <entry>
-       현재 데이터베이스의 통계치 카운터 전체를 0으로 만듦(슈퍼 유저 권한이 필요함)
+       현재 데이터베이스의 통계치 카운터 전체를 0으로 만듦(슈퍼 유저 권한이 필요함, EXECUTE 권한 부여 가능)
       </entry>
      </row>
 
@@ -1770,7 +2264,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
       <entry><literal><function>pg_stat_reset_shared</function>(text)</literal><indexterm><primary>pg_stat_reset_shared</primary></indexterm></entry>
       <entry><type>void</type></entry>
       <entry>
-       인자에 따라서 전체 클러스터 통계치 카운터를 0으로 만듦(슈퍼 유저 권한이 필요함) 
+       인자에 따라서 전체 클러스터 통계치 카운터를 0으로 만듦(슈퍼 유저 권한이 필요함, EXECUTE 권한 부여 가능) 
        <literal>pg_stat_reset_shared('bgwriter')</>를 호출하면 
        <structname>pg_stat_bgwriter</>뷰에 보여진 전체 카운터들을 0으로 만듦
       </entry>
@@ -1780,7 +2274,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
       <entry><literal><function>pg_stat_reset_single_table_counters</function>(oid)</literal><indexterm><primary>pg_stat_reset_single_table_counters</primary></indexterm></entry>
       <entry><type>void</type></entry>
       <entry>
-       현재 데이터베이스의 한 테이블 혹은 인덱스에 대한 통계치를 0으로 만듦(슈퍼 유저 권한이 필요함)
+       현재 데이터베이스의 한 테이블 혹은 인덱스에 대한 통계치를 0으로 만듦(슈퍼 유저 권한이 필요함, EXECUTE 권한 부여 가능)
       </entry>
      </row>
 
@@ -1788,7 +2282,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
       <entry><literal><function>pg_stat_reset_single_function_counters</function>(oid)</literal><indexterm><primary>pg_stat_reset_single_function_counters</primary></indexterm></entry>
       <entry><type>void</type></entry>
       <entry>
-       현재 데이터베이스의 한 함수에 대한 통계치를 0으로 만듦(슈퍼 유저 권한이 필요함)
+       현재 데이터베이스의 한 함수에 대한 통계치를 0으로 만듦(슈퍼 유저 권한이 필요함, EXECUTE 권한 부여 가능)
       </entry>
      </row>
     </tbody>
@@ -1886,11 +2380,21 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
       <entry>백엔드에 로그인한 사용자의 OID</entry>
      </row>
 
-     <row>
-      <entry><literal><function>pg_stat_get_backend_waiting(integer)</function></literal></entry>
-      <entry><type>boolean</type></entry>
-      <entry>백엔드가 현재 잠금을 기다리고 있는 경우엔 true</entry>
-     </row>
+      <row>
+       <entry><literal><function>pg_stat_get_backend_wait_event_type(integer)</function></literal></entry>
+       <entry><type>text</type></entry>
+        <entry>Wait event type name if backend is currently waiting, otherwise NULL.
+        See <xref linkend="wait-event-table"> for details.
+        </entry>
+      </row>
+      <row>
+
+      <entry><literal><function>pg_stat_get_backend_wait_event(integer)</function></literal></entry>
+      <entry><type>text</type></entry>
+       <entry>Wait event name if backend is currently waiting, otherwise NULL.
+       See <xref linkend="wait-event-table"> for details.
+       </entry>
+      </row>
 
      <row>
       <entry><literal><function>pg_stat_get_backend_xact_start(integer)</function></literal></entry>
@@ -1956,6 +2460,208 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
   </para>
  </sect1>
 
+ <sect1 id="progress-reporting">
+  <title>Progress Reporting</title>
+
+  <para>
+   <productname>PostgreSQL</> has the ability to report the progress of
+   certain commands during command execution.  Currently, the only command
+   which supports progress reporting is <command>VACUUM</>.  This may be
+   expanded in the future.
+  </para>
+
+ <sect2 id="vacuum-progress-reporting">
+  <title>VACUUM Progress Reporting</title>
+
+  <para>
+   Whenever <command>VACUUM</> is running, the
+   <structname>pg_stat_progress_vacuum</structname> view will contain
+   one row for each backend (including autovacuum worker processes) that is
+   currently vacuuming.  The tables below describe the information
+   that will be reported and provide information about how to interpret it.
+   Progress reporting is not currently supported for <command>VACUUM FULL</>
+   and backends running <command>VACUUM FULL</> will not be listed in this
+   view.
+  </para>
+
+  <table id="pg-stat-progress-vacuum-view" xreflabel="pg_stat_progress_vacuum">
+   <title><structname>pg_stat_progress_vacuum</structname> View</title>
+   <tgroup cols="3">
+    <thead>
+    <row>
+      <entry>Column</entry>
+      <entry>Type</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+
+   <tbody>
+    <row>
+     <entry><structfield>pid</></entry>
+     <entry><type>integer</></entry>
+     <entry>Process ID of backend.</entry>
+    </row>
+    <row>
+     <entry><structfield>datid</></entry>
+     <entry><type>oid</></entry>
+     <entry>OID of the database to which this backend is connected.</entry>
+    </row>
+    <row>
+     <entry><structfield>datname</></entry>
+     <entry><type>name</></entry>
+     <entry>Name of the database to which this backend is connected.</entry>
+    </row>
+    <row>
+     <entry><structfield>relid</></entry>
+     <entry><type>oid</></entry>
+     <entry>OID of the table being vacuumed.</entry>
+    </row>
+    <row>
+     <entry><structfield>phase</></entry>
+     <entry><type>text</></entry>
+     <entry>
+       Current processing phase of vacuum.  See <xref linkend='vacuum-phases'>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>heap_blks_total</></entry>
+     <entry><type>bigint</></entry>
+     <entry>
+       Total number of heap blocks in the table.  This number is reported
+       as of the beginning of the scan; blocks added later will not be (and
+       need not be) visited by this <command>VACUUM</>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>heap_blks_scanned</></entry>
+     <entry><type>bigint</></entry>
+     <entry>
+       Number of heap blocks scanned.  Because the
+       <link linkend="storage-vm">visibility map</> is used to optimize scans,
+       some blocks will be skipped without inspection; skipped blocks are
+       included in this total, so that this number will eventually become
+       equal to <structfield>heap_blks_total</> when the vacuum is complete.
+       This counter only advances when the phase is <literal>scanning heap</>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>heap_blks_vacuumed</></entry>
+     <entry><type>bigint</></entry>
+     <entry>
+       Number of heap blocks vacuumed.  Unless the table has no indexes, this
+       counter only advances when the phase is <literal>vacuuming heap</>.
+       Blocks that contain no dead tuples are skipped, so the counter may
+       sometimes skip forward in large increments.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>index_vacuum_count</></entry>
+     <entry><type>bigint</></entry>
+     <entry>
+       Number of completed index vacuum cycles.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>max_dead_tuples</></entry>
+     <entry><type>bigint</></entry>
+     <entry>
+      Number of dead tuples that we can store before needing to perform
+      an index vacuum cycle, based on
+      <xref linkend="guc-maintenance-work-mem">.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>num_dead_tuples</></entry>
+     <entry><type>bigint</></entry>
+     <entry>
+       Number of dead tuples collected since the last index vacuum cycle.
+     </entry>
+    </row>
+   </tbody>
+   </tgroup>
+  </table>
+
+  <table id="vacuum-phases">
+   <title>VACUUM phases</title>
+   <tgroup cols="2">
+    <thead>
+    <row>
+      <entry>Phase</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+
+   <tbody>
+    <row>
+     <entry><literal>initializing</literal></entry>
+     <entry>
+       <command>VACUUM</> is preparing to begin scanning the heap.  This
+       phase is expected to be very brief.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>scanning heap</literal></entry>
+     <entry>
+       <command>VACUUM</> is currently scanning the heap.  It will prune and
+       defragment each page if required, and possibly perform freezing
+       activity.  The <structfield>heap_blks_scanned</> column can be used
+       to monitor the progress of the scan.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>vacuuming indexes</literal></entry>
+     <entry>
+       <command>VACUUM</> is currently vacuuming the indexes.  If a table has
+       any indexes, this will happen at least once per vacuum, after the heap
+       has been completely scanned.  It may happen multiple times per vacuum
+       if <xref linkend="guc-maintenance-work-mem"> is insufficient to
+       store the number of dead tuples found.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>vacuuming heap</literal></entry>
+     <entry>
+       <command>VACUUM</> is currently vacuuming the heap.  Vacuuming the heap
+       is distinct from scanning the heap, and occurs after each instance of
+       vacuuming indexes.  If <structfield>heap_blks_scanned</> is less than
+       <structfield>heap_blks_total</>, the system will return to scanning
+       the heap after this phase is completed; otherwise, it will begin
+       cleaning up indexes after this phase is completed.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>cleaning up indexes</literal></entry>
+     <entry>
+       <command>VACUUM</> is currently cleaning up indexes.  This occurs after
+       the heap has been completely scanned and all vacuuming of the indexes
+       and the heap has been completed.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>truncating heap</literal></entry>
+     <entry>
+       <command>VACUUM</> is currently truncating the heap so as to return
+       empty pages at the end of the relation to the operating system.  This
+       occurs after cleaning up indexes.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>performing final cleanup</literal></entry>
+     <entry>
+       <command>VACUUM</> is performing final cleanup.  During this phase,
+       <command>VACUUM</> will vacuum the free space map, update statistics
+       in <literal>pg_class</>, and report statistics to the statistics
+       collector.  When this phase is completed, <command>VACUUM</> will end.
+     </entry>
+    </row>
+   </tbody>
+   </tgroup>
+  </table>
+
+ </sect2>
+ </sect1>
+
+
  <sect1 id="dynamic-trace">
   <title>Dynamic Tracing</title>
 
@@ -2010,283 +2716,287 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
    <tbody>
 
     <row>
-     <entry>transaction-start</entry>
-     <entry>(LocalTransactionId)</entry>
+     <entry><literal>transaction-start</literal></entry>
+     <entry><literal>(LocalTransactionId)</literal></entry>
      <entry>새로운 트랜잭션이 시작하는 지점에서 발생하는 프로브. 인자는 트랜잭션 ID</entry>
     </row>
     <row>
-     <entry>transaction-commit</entry>
-     <entry>(LocalTransactionId)</entry>
+     <entry><literal>transaction-commit</literal></entry>
+     <entry><literal>(LocalTransactionId)</literal></entry>
      <entry>트랜잭션이 성공적으로 완료할 때 발생하는 프로브. 인자는 트랜잭션 ID</entry>
     </row>
     <row>
-     <entry>transaction-abort</entry>
-     <entry>(LocalTransactionId)</entry>
+     <entry><literal>transaction-abort</literal></entry>
+     <entry><literal>(LocalTransactionId)</literal></entry>
      <entry>트랜잭션이 성공적으로 완료되지 않았을 때 발생하는 프로브. 인자는 트랜잭션 ID</entry>
     </row>
     <row>
-     <entry>query-start</entry>
-     <entry>(const char *)</entry>
+     <entry><literal>query-start</literal></entry>
+     <entry><literal>(const char *)</literal></entry>
      <entry>쿼리 처리가 시작됐을 때 발생하는 프로브. 인자는 쿼리 문자열</entry>
     </row>
     <row>
-     <entry>query-done</entry>
-     <entry>(const char *)</entry>
+     <entry><literal>query-done</literal></entry>
+     <entry><literal>(const char *)</literal></entry>
      <entry>쿼리 처리가 끝났을 때 발생하는 프로브. 인자는 쿼리 문자열</entry>
     </row>
     <row>
-     <entry>query-parse-start</entry>
-     <entry>(const char *)</entry>
+     <entry><literal>query-parse-start</literal></entry>
+     <entry><literal>(const char *)</literal></entry>
      <entry>쿼리 파싱이 시작됐을 때 발생하는 프로브. 인자는 쿼리 문자열</entry>
     </row>
     <row>
-     <entry>query-parse-done</entry>
-     <entry>(const char *)</entry>
+     <entry><literal>query-parse-done</literal></entry>
+     <entry><literal>(const char *)</literal></entry>
      <entry>쿼리 파싱이 끝났을 때 발생하는 프로브. 인자는 쿼리 문자열</entry>
     </row>
     <row>
-     <entry>query-rewrite-start</entry>
-     <entry>(const char *)</entry>
+     <entry><literal>query-rewrite-start</literal></entry>
+     <entry><literal>(const char *)</literal></entry>
      <entry>쿼리를 다시 쓰기 시작할 때 발생하는 프로브. 인자는 쿼리 문자열</entry>
     </row>
     <row>
-     <entry>query-rewrite-done</entry>
-     <entry>(const char *)</entry>
+     <entry><literal>query-rewrite-done</literal></entry>
+     <entry><literal>(const char *)</literal></entry>
      <entry>쿼리 다시 쓰기가 완료됐을 때 발생하는 프로브. 인자는 쿼리 문자열</entry>
     </row>
     <row>
-     <entry>query-plan-start</entry>
-     <entry>()</entry>
+     <entry><literal>query-plan-start</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>쿼리 플래닝이 시작됐을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>query-plan-done</entry>
-     <entry>()</entry>
+     <entry><literal>query-plan-done</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>쿼리 플래닝이 끝났을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>query-execute-start</entry>
-     <entry>()</entry>
+     <entry><literal>query-execute-start</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>쿼리 수행이 시작됐을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>query-execute-done</entry>
-     <entry>()</entry>
+     <entry><literal>query-execute-done</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>쿼리 수행이 끝났을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>statement-status</entry>
-     <entry>(const char *)</entry>
+     <entry><literal>statement-status</literal></entry>
+     <entry><literal>(const char *)</literal></entry>
      <entry>서버 프로세스가 
       <structname>pg_stat_activity</>.<structfield>status</>를 업데이트할 때마다 발생하는 프로브. 인자는 새로운 상태 문자열</entry>
     </row>
     <row>
-     <entry>checkpoint-start</entry>
-     <entry>(int)</entry>
+     <entry><literal>checkpoint-start</literal></entry>
+     <entry><literal>(int)</literal></entry>
      <entry>체크포인트가 시작되면 발생하는 프로브. 인자는 shutdown나 immediate, force같은 체크포인트 타입을 표시하는 비트 플래그</entry>
     </row>
     <row>
-     <entry>checkpoint-done</entry>
-     <entry>(int, int, int, int, int)</entry>
-     <entry>체크포인트가 완료되면 발생하는 프로브(체크포인트 처리 도중에 그 다음 차례인 프로브가 연속적으로 발생함) 첫 번째 인자는 쓰여진 버퍼의 개수. 두 번째 인자는 버퍼의 총 개수. 세 번째, 네 번째, 다섯 번째 인자는 추가되고 삭제되고 재사용된 각 xlog 파일 개수</entry>
+     <entry><literal>checkpoint-done</literal></entry>
+     <entry><literal>(int, int, int, int, int)</literal></entry>
+     <entry>체크포인트가 완료되면 발생하는 프로브(체크포인트 처리 도중에 그 다음 차례인 프로브가 연속적으로 발생함) 첫 번째 인자는 쓰여진 버퍼의 개수. 두 번째 인자는 버퍼의 총 개수. 세 번째, 네 번째, 다섯 번째 인자는 추가되고 삭제되고 재사용된 각 WAL 파일 개수</entry>
     </row>
     <row>
-     <entry>clog-checkpoint-start</entry>
-     <entry>(bool)</entry>
+     <entry><literal>clog-checkpoint-start</literal></entry>
+     <entry><literal>(bool)</literal></entry>
      <entry>체크포인트의 CLOG 부분이 시작됐을 때 발생하는 프로브. 인자를 일반 체크 포인트의 경우 true로, shutdown 체크포인트의 경우 false로 전달</entry>
     </row>
     <row>
-     <entry>clog-checkpoint-done</entry>
-     <entry>(bool)</entry>
-     <entry>체크 포인트의 CLOG 부분이 완료되면 발생하는 프로브. 인자는 clog-checkpoint-start인자와 같은 뜻</entry>
+     <entry><literal>clog-checkpoint-done</literal></entry>
+     <entry><literal>(bool)</literal></entry>
+     <entry>체크 포인트의 CLOG 부분이 완료되면 발생하는 프로브.  인자는
+     <literal>clog-checkpoint-start</literal> 인자와 같은 뜻</entry>
     </row>
     <row>
-     <entry>subtrans-checkpoint-start</entry>
-     <entry>(bool)</entry>
+     <entry><literal>subtrans-checkpoint-start</literal></entry>
+     <entry><literal>(bool)</literal></entry>
      <entry>체크포인트의 SUBTRANS 부분이 시작되면 발생하는 프로브. 인자는 일반 체크포인트의 경우 true로, shutdown 체크포인트의 경우 false로 전달</entry>
     </row>
     <row>
-     <entry>subtrans-checkpoint-done</entry>
-     <entry>(bool)</entry>
+     <entry><literal>subtrans-checkpoint-done</literal></entry>
+     <entry><literal>(bool)</literal></entry>
      <entry>체크포인트의 SUBTRANS 부분이 끝나면 발생하는 프로브. 인자는 subtrans-checkpoint-start인자와 같은 뜻</entry>
     </row>
     <row>
-     <entry>multixact-checkpoint-start</entry>
-     <entry>(bool)</entry>
+     <entry><literal>multixact-checkpoint-start</literal></entry>
+     <entry><literal>(bool)</literal></entry>
      <entry>체크포인트의 MultiXact 부분이 시작되면 발생하는 프로브. 인자는 일반적인 체크포인트의 경우 true로, shutdown 체크포인트의 경우 false로 전달</entry>
     </row>
     <row>
-     <entry>multixact-checkpoint-done</entry>
-     <entry>(bool)</entry>
+     <entry><literal>multixact-checkpoint-done</literal></entry>
+     <entry><literal>(bool)</literal></entry>
      <entry>체크포인트의 MultiXact부분이 완료되면 발생하는 프로브. 인자는 multixact-checkpoint-start인자와 같은 뜻</entry>
     </row>
     <row>
-     <entry>buffer-checkpoint-start</entry>
-     <entry>(int)</entry>
+     <entry><literal>buffer-checkpoint-start</literal></entry>
+     <entry><literal>(int)</literal></entry>
      <entry>체크포인트의 버퍼 쓰기 부분이 시작되면 발생하는 프로브. 인자는 shutdown, immediate, force같은 체크포인트 타입을 구별하기 위한 비트 플래그</entry>
     </row>
     <row>
-     <entry>buffer-sync-start</entry>
-     <entry>(int, int)</entry>
+     <entry><literal>buffer-sync-start</literal></entry>
+     <entry><literal>(int, int)</literal></entry>
      <entry>체크포인트 중간에(어떤 버퍼가 쓰여야 하는지 식별한 후) dirty 버퍼를 쓰기 시작할 때 발생하는 프로브. 첫 번째 인자는 버퍼 총 개수를 뜻함. 두 번째 인자는 현재 dirty하고 쓰여져야 하는 버퍼의 개수를 뜻함</entry>
     </row>
     <row>
-     <entry>buffer-sync-written</entry>
-     <entry>(int)</entry>
+     <entry><literal>buffer-sync-written</literal></entry>
+     <entry><literal>(int)</literal></entry>
      <entry>체크포인트 중간에 버퍼가 쓰여질 때마다 발생하는 프로브. 인자는 버퍼의 ID 넘버</entry>
     </row>
     <row>
-     <entry>buffer-sync-done</entry>
-     <entry>(int, int, int)</entry>
-     <entry>모든 dirty 버퍼가 쓰여졌을 때 발생하는 프로브. 첫 번째 인자는 버퍼의 총 개수를 의미. 두 번째 인자는 체크포인트 프로세스가 실제로 쓴 버퍼의 개수. 세 번째 인자는 쓰기로 예상된 버퍼의 넘버(buffer-sync-start의 두 번째 인자). any difference reflects other processes flushing buffers during the checkpoint.</entry>
+     <entry><literal>buffer-sync-done</literal></entry>
+     <entry><literal>(int, int, int)</literal></entry>
+     <entry>모든 dirty 버퍼가 쓰여졌을 때 발생하는 프로브.  첫
+     번째 인자는 버퍼의 총 개수를 의미. 두 번째 인자는 체크포인트 프로세스가
+     실제로 쓴 버퍼의 개수.  세 번째 인자는 쓰기로 예상된 버퍼의
+     넘버(<literal>buffer-sync-start</literal>의 두 번째 인자). any difference reflects other processes flushing buffers during the checkpoint.</entry>
     </row>
     <row>
-     <entry>buffer-checkpoint-sync-start</entry>
-     <entry>()</entry>
+     <entry><literal>buffer-checkpoint-sync-start</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>dirty 버퍼가 커널에 쓰여진 이후와 fsync 요청을 보내기 이전에 발생한 프로브</entry>
     </row>
     <row>
-     <entry>buffer-checkpoint-done</entry>
-     <entry>()</entry>
+     <entry><literal>buffer-checkpoint-done</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>버퍼와 디스크 동기화가 완료될 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>twophase-checkpoint-start</entry>
-     <entry>()</entry>
+     <entry><literal>twophase-checkpoint-start</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>체크포인트 두 단계가 시작됐을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>twophase-checkpoint-done</entry>
-     <entry>()</entry>
+     <entry><literal>twophase-checkpoint-done</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>체크포인트의 두 단계 부분이 완료됐을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>buffer-read-start</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, bool)</entry>
-     <entry>버퍼 읽기가 시작될 때 발생하는 프로브. 첫 번째 인자와 두 번째 인자는 페이지의 포크와 블록 넘버를 전달(두 번째 인자는 릴레이션 익스텐션relation extension 요청일 경우 -1). 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스와 데이터베이스, 릴레이션의 식별자인 릴레이션 OID를 뜻함. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 InvalidBackendID (-1)을 뜻함. 일곱 번째 인자는 릴레이션 익스텐션을 요청할 때 true이고, 일반 읽기 작업에는 false를 전달함.</entry>
+     <entry><literal>buffer-read-start</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, bool)</literal></entry>
+     <entry>버퍼 읽기가 시작될 때 발생하는 프로브. 첫 번째 인자와 두 번째 인자는 페이지의 포크와 블록 넘버를 전달(두 번째 인자는 릴레이션 익스텐션relation extension 요청일 경우 -1). 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스와 데이터베이스, 릴레이션의 식별자인 릴레이션 OID를 뜻함. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 <symbol>InvalidBackendId</symbol> (-1)을 뜻함. 일곱 번째 인자는 릴레이션 익스텐션을 요청할 때 true이고, 일반 읽기 작업에는 false를 전달함.</entry>
     </row>
     <row>
-     <entry>buffer-read-done</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, bool, bool)</entry>
-     <entry>버퍼 읽기를 완료했을 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크와 블록 넘버를 전달(릴레이션 익스텐션 요청의 경우 두 번째 인자는 새로 추가된 블록의 블록 넘버를 가짐). 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 뜻함. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 InvalidBackendID (-1)을 뜻함. 일곱 번째 인자는 릴레이션 익스텐션을 요청할 때 true이고, 일반 읽기 작업에는 false를 전달함. 여덟 번째 인자는 풀에서 버퍼를 발견하면 true이고 아니면 false를 전달함.</entry>
+     <entry><literal>buffer-read-done</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, bool, bool)</literal></entry>
+     <entry>버퍼 읽기를 완료했을 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크와 블록 넘버를 전달(릴레이션 익스텐션 요청의 경우 두 번째 인자는 새로 추가된 블록의 블록 넘버를 가짐). 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 뜻함. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 <symbol>InvalidBackendId</symbol> (-1)을 뜻함. 일곱 번째 인자는 릴레이션 익스텐션을 요청할 때 true이고, 일반 읽기 작업에는 false를 전달함. 여덟 번째 인자는 풀에서 버퍼를 발견하면 true이고 아니면 false를 전달함.</entry>
     </row>
     <row>
-     <entry>buffer-flush-start</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid)</entry>
+     <entry><literal>buffer-flush-start</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid)</literal></entry>
      <entry>공유 버퍼에 쓰기 요청을 하기 전에 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달함</entry>
     </row>
     <row>
-     <entry>buffer-flush-done</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid)</entry>
-     <entry>쓰기 요청이 완료됐을 때 발생하는 프로브. (데이터를 커널에 전달하는 시간만 알려 주며, 디스크에 쓰여지지 않았을 때임) 인자들은 buffer-flush-start와 같음</entry>
+     <entry><literal>buffer-flush-done</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid)</literal></entry>
+     <entry>쓰기 요청이 완료됐을 때 발생하는 프로브. (데이터를 커널에 전달하는 시간만 알려 주며, 디스크에 쓰여지지 않았을 때임) 인자들은 <literal>buffer-flush-start</literal>와 같음</entry>
     </row>
     <row>
-     <entry>buffer-write-dirty-start</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid)</entry>
+     <entry><literal>buffer-write-dirty-start</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid)</literal></entry>
      <entry>서버 프로세스가 dirty 버퍼를 쓸 때 발생하는 프로브. 
-     (자주 발생하면 <xref linkend="guc-shared-buffers">가 너무 작거나 bgwriter control 매개변수가 조정이 필요함을 뜻함) 
+     (자주 발생하면 <xref linkend="guc-shared-buffers">가 너무 작거나 background writer control 매개변수가 조정이 필요함을 뜻함) 
      첫 번째와 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 
      세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션 식별하는 릴레이션 OID를 전달함</entry>
     </row>
     <row>
-     <entry>buffer-write-dirty-done</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid)</entry>
-     <entry>dirty-buffer 쓰기가 완료됐을 때 발생하는 프로브. 인자는 buffer-write-dirty-start와 같음</entry>
+     <entry><literal>buffer-write-dirty-done</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid)</literal></entry>
+     <entry>dirty-buffer 쓰기가 완료됐을 때 발생하는 프로브. 인자는 <literal>buffer-write-dirty-start</literal>와 같음</entry>
     </row>
     <row>
-     <entry>wal-buffer-write-dirty-start</entry>
-     <entry>()</entry>
+     <entry><literal>wal-buffer-write-dirty-start</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>WAL 버퍼 공간이 남아 있지 않아서 서버 프로세스가 dirty WAL 버퍼에 쓰기 시작할 때 발생하는 프로브(자주 발생하면 
       wal-buffers가 너무 작다는 뜻임)</entry>
     </row>
     <row>
-     <entry>wal-buffer-write-dirty-done</entry>
-     <entry>()</entry>
+     <entry><literal>wal-buffer-write-dirty-done</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>dirty WAL 버퍼 쓰기가 완료됐을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>xlog-insert</entry>
-     <entry>(unsigned char, unsigned char)</entry>
+     <entry><literal>xlog-insert</literal></entry>
+     <entry><literal>(unsigned char, unsigned char)</literal></entry>
      <entry>WAL 레코드가 삽입됐을 때 발생하는 프로브. 첫 번째 인자는 해당 레코드의 리소스 관리자(rmid)임. 두 번째 인자는 info 플래그를 전달함</entry>
     </row>
     <row>
-     <entry>xlog-switch</entry>
-     <entry>()</entry>
+     <entry><literal>xlog-switch</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>WAL 세그먼트 스위치를 요청했을 때 발생하는 프로브</entry>
     </row>
     <row>
-     <entry>smgr-md-read-start</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid, int)</entry>
-     <entry>릴레이션에서 블록을 읽기 시작할 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 InvalidBackendID (-1)을 뜻함.</entry>
+     <entry><literal>smgr-md-read-start</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int)</literal></entry>
+     <entry>릴레이션에서 블록을 읽기 시작할 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 <symbol>InvalidBackendId</symbol> (-1)을 뜻함.</entry>
     </row>
     <row>
-     <entry>smgr-md-read-done</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, int, int)</entry>
-     <entry>블록 읽기가 완료됐을 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 InvalidBackendID (-1)을 뜻함. 일곱 번째 인자는 실제로 읽힌 바이트 수를 뜻하고, 여덟 번째 인자는 요청된 숫자를 뜻함(이 두 개가 다르면 문제가 발생)</entry>
+     <entry><literal>smgr-md-read-done</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, int, int)</literal></entry>
+     <entry>블록 읽기가 완료됐을 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 <symbol>InvalidBackendId</symbol> (-1)을 뜻함. 일곱 번째 인자는 실제로 읽힌 바이트 수를 뜻하고, 여덟 번째 인자는 요청된 숫자를 뜻함(이 두 개가 다르면 문제가 발생)</entry>
     </row>
     <row>
-     <entry>smgr-md-write-start</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid, int)</entry>
-     <entry>릴레이션에 블록을 쓸 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 InvalidBackendID (-1)을 뜻함.</entry>
+     <entry><literal>smgr-md-write-start</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int)</literal></entry>
+     <entry>릴레이션에 블록을 쓸 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 <symbol>InvalidBackendId</symbol> (-1)을 뜻함.</entry>
     </row>
     <row>
-     <entry>smgr-md-write-done</entry>
-     <entry>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, int, int)</entry>
-     <entry>블록 쓰기가 완료됐을 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 InvalidBackendID (-1)을 뜻함. 일곱 번째 인자는 실제로 쓰여진 바이트 수를 뜻하고 여덟 번째 인자는 요청된 숫자를 뜻함(이 두 개가 다르면 문제가 발생)</entry>
+     <entry><literal>smgr-md-write-done</literal></entry>
+     <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, int, int)</literal></entry>
+     <entry>블록 쓰기가 완료됐을 때 발생하는 프로브. 첫 번째 및 두 번째 인자는 페이지의 포크 및 블록 넘버를 전달함. 세 번째, 네 번째, 다섯 번째 인자는 테이블스페이스, 데이터베이스, 릴레이션을 식별하는 릴레이션 OID를 전달. 여섯 번째 인자는 로컬 버퍼에 임시 릴레이션을 만든 백엔드의 ID 이거나 공유 버퍼의 <symbol>InvalidBackendId</symbol> (-1)을 뜻함. 일곱 번째 인자는 실제로 쓰여진 바이트 수를 뜻하고 여덟 번째 인자는 요청된 숫자를 뜻함(이 두 개가 다르면 문제가 발생)</entry>
     </row>
     <row>
-     <entry>sort-start</entry>
-     <entry>(int, bool, int, int, bool)</entry>
-     <entry>정렬 작업이 시작됐을 때 발생하는 프로브. 첫 번째 인자는 heap, 인덱스, 데이터 정렬을 뜻함. 두 번째 인자는 unique-value를 시행할 경우 true를 전달. 세 번째 인자는 키 컬럼의 수이고, 네 번째 인자는 허용된 워크 메모리의 킬로바이트 수를 뜻하고, 다섯 번째 인자는 정렬 결과에 랜덤 액세스random access가 요청됐을 때 true를 전달함.</entry>
+     <entry><literal>sort-start</literal></entry>
+     <entry><literal>(int, bool, int, int, bool)</literal></entry>
+     <entry>정렬 작업이 시작됐을 때 발생하는 프로브. 첫 번째 인자는 heap, 인덱스, 데이터 정렬을 뜻함. 두 번째 인자는 unique-value를 시행할 경우 true를 전달. 세 번째 인자는 키 컬럼의 수이고, 네 번째 인자는 허용된 워크 메모리의 킬로바이트 수를 뜻하고, 다섯 번째 인자는 정렬 결과에 랜덤 액세스 random access가 요청됐을 때 true를 전달함.</entry>
     </row>
     <row>
-     <entry>sort-done</entry>
-     <entry>(bool, long)</entry>
+     <entry><literal>sort-done</literal></entry>
+     <entry><literal>(bool, long)</literal></entry>
      <entry>정렬이 완료됐을 때 발생하는 프로브. 첫 번째 인자는 외부 정렬일 경우 true이고, 내부 정렬일 경우에는 false임. 두 번째 인자는 외부 정렬에 사용된 디스크 블록의 수이거나 내부 정렬에 사용된 메모리의 킬로바이트 수를 뜻함</entry>
     </row>
     <row>
-     <entry>lwlock-acquire</entry>
-     <entry>(LWLockId, LWLockMode)</entry>
+     <entry><literal>lwlock-acquire</literal></entry>
+     <entry><literal>(LWLockId, LWLockMode)</literal></entry>
      <entry>LWLock이 획득됐을 때 발생하는 프로브. 첫 번째 인자는 LWLock의 ID. 두 번째 인자는 요청된 잠금 모드로 독점적이거나 공유됨</entry>
     </row>
     <row>
-     <entry>lwlock-release</entry>
-     <entry>(LWLockId)</entry>
+     <entry><literal>lwlock-release</literal></entry>
+     <entry><literal>(LWLockId)</literal></entry>
      <entry>LWLock이 풀렸을 때 발생하는 프로브(waiter가 아직 깨어있지 않을 때). 인자는 LWLock의 ID임.</entry>
     </row>
     <row>
-     <entry>lwlock-wait-start</entry>
-     <entry>(LWLockId, LWLockMode)</entry>
+     <entry><literal>lwlock-wait-start</literal></entry>
+     <entry><literal>(LWLockId, LWLockMode)</literal></entry>
      <entry>LWLock이 즉시 가용하지 않고, 서버 프로세스가 잠금이 가용해질 때까지 기다리기 시작했을 때 발생하는 프로브. 첫 번째 인자는 LWLock의 ID이고, 두 번째 인자는 요청된 잠금 모드로 독점적이거나 공유됨</entry>
     </row>
     <row>
-     <entry>lwlock-wait-done</entry>
-     <entry>(LWLockId, LWLockMode)</entry>
+     <entry><literal>lwlock-wait-done</literal></entry>
+     <entry><literal>(LWLockId, LWLockMode)</literal></entry>
      <entry>서버 프로세스가 LWLock 대기 상태에서 풀려났을 때(잠금을 아직 획득하지 않은 상태) 발생하는 프로브. 첫 번째 인자는 LWLock의 ID임. 두 번째 인자는 요청된 잠금 모드로 독점적이거나 공유됨</entry>
     </row>
     <row>
-     <entry>lwlock-condacquire</entry>
-     <entry>(LWLockId, LWLockMode)</entry>
+     <entry><literal>lwlock-condacquire</literal></entry>
+     <entry><literal>(LWLockId, LWLockMode)</literal></entry>
      <entry>호출자가 대기 하지 않겠다고 하고, LWLock을 획득했을 때 발생하는 프로브. 첫 번째 인자는 LWLock의 ID임. 두 번째 인자는 요청된 잠금 모드로 독점적이거나 공유됨</entry>
     </row>
     <row>
-     <entry>lwlock-condacquire-fail</entry>
-     <entry>(LWLockId, LWLockMode)</entry>
+     <entry><literal>lwlock-condacquire-fail</literal></entry>
+     <entry><literal>(LWLockId, LWLockMode)</literal></entry>
      <entry>호출자가 대기 하지 않겠다고 했는데, LWLock을 획득하지 못했을 때 발생하는 프로브. 첫 번째 인자는 LWLock의 ID임. 두 번째 인자는 요청된 잠금 모드로 독점적이거나 공유됨</entry>
     </row>
     <row>
-     <entry>lock-wait-start</entry>
-     <entry>(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, LOCKMODE)</entry>
+     <entry><literal>lock-wait-start</literal></entry>
+     <entry><literal>(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, LOCKMODE)</literal></entry>
      <entry>잠금이 가용하지 않아서 heavyweight 잠금(lmgr lock) 요청이 대기하기 시작했을 때 발생하는 프로브. 첫 번째부터 네 번째까지의 인자들은 오브젝트가 잠겼는지 식별하는 태그 필드들임. 다섯 번째 인자는 잠긴 오브젝트 타입을 가리키고, 여섯 번째 인자는 요청된 잠금 타입을 가리킴.</entry>
     </row>
     <row>
-     <entry>lock-wait-done</entry>
-     <entry>(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, LOCKMODE)</entry>
-     <entry>heavyweight 잠금(lmgr lock) 요청의 대기 상태가 끝났을 때(예를 들어 잠금을 획득한 경우) 발생하는 프로브. 인자들은 lock-wait-start의 인자와 같음</entry>
+     <entry><literal>lock-wait-done</literal></entry>
+     <entry><literal>(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, LOCKMODE)</literal></entry>
+     <entry>heavyweight 잠금(lmgr lock) 요청의 대기 상태가 끝났을 때(예를 들어 잠금을 획득한 경우) 발생하는 프로브. 인자들은 <literal>lock-wait-start</literal>의 인자와 같음</entry>
     </row>
     <row>
-     <entry>deadlock-found</entry>
-     <entry>()</entry>
+     <entry><literal>deadlock-found</literal></entry>
+     <entry><literal>()</literal></entry>
      <entry>교착상태 감지detector가 교착상태를 발견했을 때 발생하는 프로브</entry>
     </row>
 

@@ -28,7 +28,7 @@ CREATE USER MAPPING FOR { <replaceable class="parameter">user_name</replaceable>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>CREATE USER MAPPING</command> defines a mapping of a user
@@ -41,13 +41,13 @@ CREATE USER MAPPING FOR { <replaceable class="parameter">user_name</replaceable>
   <para>
    The owner of a foreign server can create user mappings for that
    server for any user.  Also, a user can create a user mapping for
-   his own user name if <literal>USAGE</> privilege on the server has
+   their own user name if <literal>USAGE</> privilege on the server has
    been granted to the user.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -88,7 +88,7 @@ CREATE USER MAPPING FOR { <replaceable class="parameter">user_name</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Create a user mapping for user <literal>bob</>, server <literal>foo</>:
@@ -99,7 +99,7 @@ CREATE USER MAPPING FOR bob SERVER foo OPTIONS (user 'bob', password 'secret');
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    <command>CREATE USER MAPPING</command> conforms to ISO/IEC 9075-9 (SQL/MED).
@@ -107,7 +107,7 @@ CREATE USER MAPPING FOR bob SERVER foo OPTIONS (user 'bob', password 'secret');
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterusermapping"></member>

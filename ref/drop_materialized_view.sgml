@@ -26,7 +26,7 @@ DROP MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">name</replac
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP MATERIALIZED VIEW</command> drops an existing materialized
@@ -36,7 +36,7 @@ DROP MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">name</replac
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -64,7 +64,9 @@ DROP MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">name</replac
     <listitem>
      <para>
       Automatically drop objects that depend on the materialized view (such as
-      other materialized views, or regular views).
+      other materialized views, or regular views),
+      and in turn all objects that depend on those objects
+      (see <xref linkend="ddl-depend">).
      </para>
     </listitem>
    </varlistentry>
@@ -82,7 +84,7 @@ DROP MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">name</replac
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    This command will remove the materialized view called
@@ -93,7 +95,7 @@ DROP MATERIALIZED VIEW order_summary;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    <command>DROP MATERIALIZED VIEW</command> is a
@@ -102,7 +104,7 @@ DROP MATERIALIZED VIEW order_summary;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-creatematerializedview"></member>

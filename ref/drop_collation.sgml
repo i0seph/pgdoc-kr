@@ -23,7 +23,7 @@ DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRIC
  </refsynopsisdiv>
 
  <refsect1 id="sql-dropcollation-description">
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP COLLATION</command> removes a previously defined collation.
@@ -32,7 +32,7 @@ DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRIC
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
    <variablelist>
     <varlistentry>
@@ -60,7 +60,9 @@ DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRIC
      <term><literal>CASCADE</literal></term>
      <listitem>
       <para>
-       Automatically drop objects that depend on the collation.
+       Automatically drop objects that depend on the collation,
+       and in turn all objects that depend on those objects
+       (see <xref linkend="ddl-depend">).
       </para>
      </listitem>
     </varlistentry>
@@ -78,7 +80,7 @@ DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRIC
  </refsect1>
 
  <refsect1 id="sql-dropcollation-examples">
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    To drop the collation named <literal>german</>:
@@ -88,7 +90,7 @@ DROP COLLATION german;
  </refsect1>
 
  <refsect1 id="sql-dropcollation-compat">
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    The <command>DROP COLLATION</command> command conforms to the
@@ -98,7 +100,7 @@ DROP COLLATION german;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altercollation"></member>

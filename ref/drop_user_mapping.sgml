@@ -26,7 +26,7 @@ DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">user_name</
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP USER MAPPING</command> removes an existing user
@@ -35,14 +35,14 @@ DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">user_name</
 
   <para>
    The owner of a foreign server can drop user mappings for that server
-   for any user.  Also, a user can drop a user mapping for his own
+   for any user.  Also, a user can drop a user mapping for their own
    user name if <literal>USAGE</> privilege on the server has been
    granted to the user.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -79,7 +79,7 @@ DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">user_name</
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Drop a user mapping <literal>bob</>, server <literal>foo</> if it exists:
@@ -89,7 +89,7 @@ DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    <command>DROP USER MAPPING</command> conforms to ISO/IEC 9075-9
@@ -99,7 +99,7 @@ DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createusermapping"></member>

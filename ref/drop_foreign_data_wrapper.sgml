@@ -26,7 +26,7 @@ DROP FOREIGN DATA WRAPPER [ IF EXISTS ] <replaceable class="parameter">name</rep
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP FOREIGN DATA WRAPPER</command> removes an existing
@@ -36,7 +36,7 @@ DROP FOREIGN DATA WRAPPER [ IF EXISTS ] <replaceable class="parameter">name</rep
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -63,7 +63,9 @@ DROP FOREIGN DATA WRAPPER [ IF EXISTS ] <replaceable class="parameter">name</rep
     <listitem>
      <para>
       Automatically drop objects that depend on the foreign-data
-      wrapper (such as servers).
+      wrapper (such as foreign tables and servers),
+      and in turn all objects that depend on those objects
+      (see <xref linkend="ddl-depend">).
      </para>
     </listitem>
    </varlistentry>
@@ -72,7 +74,7 @@ DROP FOREIGN DATA WRAPPER [ IF EXISTS ] <replaceable class="parameter">name</rep
     <term><literal>RESTRICT</literal></term>
     <listitem>
      <para>
-      Refuse to drop the foreign-data wrappers if any objects depend
+      Refuse to drop the foreign-data wrapper if any objects depend
       on it.  This is the default.
      </para>
     </listitem>
@@ -81,7 +83,7 @@ DROP FOREIGN DATA WRAPPER [ IF EXISTS ] <replaceable class="parameter">name</rep
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Drop the foreign-data wrapper <literal>dbi</>:
@@ -91,7 +93,7 @@ DROP FOREIGN DATA WRAPPER dbi;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    <command>DROP FOREIGN DATA WRAPPER</command> conforms to ISO/IEC
@@ -101,7 +103,7 @@ DROP FOREIGN DATA WRAPPER dbi;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createforeigndatawrapper"></member>

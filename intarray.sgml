@@ -294,11 +294,6 @@
    해당 배열형에 대해서 GiST 색인 방법을 쓸지, 
    GIN 색인 방법을 쓸지에 대해서는 Gist, GIN 인덱스의 장단점을 
    충분히 파악한 후 선택하면 된다. 
-   간략하게 소개하면, 일단 검색 속도는 GIN 색인 방법이 더 빠르지만,
-   자료 입력, 변경 속도는 GiST 보다 느리다. 그래서,
-   읽기 전용 자료라면, GIN 색인 방법을, 자주 그 배열 자료가 바뀐다면
-   GiST 색인 방법을 사용하면 된다. (물론 실재로는 이처럼 단순하지는
-   않다. 자세한 이야기는 59, 61장 참조 - 옮긴이)
   </para>
  </sect2>
 
@@ -329,13 +324,14 @@ SELECT message.mid FROM message WHERE message.sections @@ '1&amp;2'::query_int;
   <para>
    소스 디렉터리 안  <filename>contrib/intarray/bench</>
    디렉터리에  이 모듈에 대한 성능 검사 관련 소스들이 포함되어 있다.
+   (<filename>DBD::Pg</> perl 모듈이 먼저 설치되어 있어야 한다)
    사용법:
   </para>
 
 <programlisting>
-cd .../bench
+cd .../contrib/intarray/bench
 createdb TEST
-psql TEST &lt; ../_int.sql
+sql -c "CREATE EXTENSION intarray" TEST
 ./create_test.pl | psql TEST
 ./bench.pl
 </programlisting>

@@ -97,9 +97,12 @@ SELECT rolname FROM pg_roles;
   </para>
 
   <para>
-   주어진 클라이언트 연결을 할 수 있는 데이터베이스 role 집합은 <xref linkend="client-authentication">에서 설명된 대로 클라이언트 인증 설정에 의해 결정된다. 
-   (따라서, 로그인 이름이 꼭 그 사람의 실명과 일치해야 할 필요가 없는 것처럼, 클라이언트를 운영 체제 사용자와 일치하는 role로 연결해야만 하는 것은 아니다.) 
-   role ID는 연결된 클라이언트에서 가능한 권한 집합을 결정하므로 다중 사용자 환경을 설정할 때 권한을 세심하게 구성하는 것이 중요하다.
+   주어진 클라이언트 연결을 할 수 있는 데이터베이스 role 집합은
+   <xref linkend="client-authentication">에서 설명된 대로 클라이언트 인증 설정에
+   의해 결정된다.  (따라서, 로그인 이름이 꼭 그 사람의 실명과 일치해야 할 필요가
+   없는 것처럼, 클라이언트를 운영 체제 사용자와 일치하는 role로 연결해야만
+   하는 것은 아니다.)  role ID는 연결된 클라이언트에서 가능한 권한 집합을
+   결정하므로 다중 사용자 환경을 설정할 때 권한을 세심하게 구성하는 것이 중요하다.
   </para>
  </sect1>
 
@@ -375,6 +378,57 @@ DROP ROLE doomed_role;
    remain, it will issue messages identifying which objects need to be
    reassigned or dropped.
   </para>
+ </sect1>
+
+ <sect1 id="default-roles">
+  <title>Default Roles</title>
+
+  <indexterm zone="default-roles">
+   <primary>role</>
+  </indexterm>
+
+  <para>
+   <productname>PostgreSQL</productname> provides a set of default roles
+   which provide access to certain, commonly needed, privileged capabilities
+   and information.  Administrators can GRANT these roles to users and/or
+   other roles in their environment, providing those users with access to
+   the specified capabilities and information.
+  </para>
+
+  <para>
+   The default roles are described in <xref linkend="default-roles-table">.
+   Note that the specific permissions for each of the default roles may
+   change in the future as additional capabilities are added.  Administrators
+   should monitor the release notes for changes.
+  </para>
+
+   <table tocentry="1" id="default-roles-table">
+    <title>Default Roles</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Role</entry>
+       <entry>Allowed Access</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>pg_signal_backend</entry>
+       <entry>Send signals to other backends (eg: cancel query, terminate).</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+
+  <para>
+   Administrators can grant access to these roles to users using the GRANT
+   command:
+
+<programlisting>
+GRANT pg_signal_backend TO admin_user;
+</programlisting>
+  </para>
+
  </sect1>
 
  <sect1 id="perm-functions">

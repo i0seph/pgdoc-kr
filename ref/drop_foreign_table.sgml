@@ -23,7 +23,7 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceabl
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP FOREIGN TABLE</command> removes a foreign table.
@@ -32,7 +32,7 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceabl
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -59,7 +59,8 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceabl
     <listitem>
      <para>
       Automatically drop objects that depend on the foreign table (such as
-      views).
+      views), and in turn all objects that depend on those objects
+      (see <xref linkend="ddl-depend">).
      </para>
     </listitem>
    </varlistentry>
@@ -77,7 +78,7 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceabl
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    To destroy two foreign tables, <literal>films</literal> and
@@ -89,7 +90,7 @@ DROP FOREIGN TABLE films, distributors;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    This command conforms to the ISO/IEC 9075-9 (SQL/MED), except that the
@@ -100,7 +101,7 @@ DROP FOREIGN TABLE films, distributors;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterforeigntable"></member>

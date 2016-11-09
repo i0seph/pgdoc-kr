@@ -527,9 +527,9 @@ files.
 </term>
 <listitem>
  <para>
-<productname>PostgreSQL</> 수퍼유저의 연결용으로 예약된 연결 <quote>슬롯</quote> 수를 결정한다. 
+<productname>PostgreSQL</> 슈퍼유저의 연결용으로 예약된 연결 <quote>슬롯</quote> 수를 결정한다. 
 최대 <xref linkend="guc-max-connections"> 연결 수가 동시에 활성화된다. 
-활성화된 동시 연결 수가 <varname>max_connections</>에서 <varname>superuser_reserved_connections</varname>를 뺀 값 이상이면 수퍼유저만 새롭게 연결되고 복제 연결은 되지 않는다.
+활성화된 동시 연결 수가 <varname>max_connections</>에서 <varname>superuser_reserved_connections</varname>를 뺀 값 이상이면 슈퍼유저만 새롭게 연결되고 복제 연결은 되지 않는다.
  </para>
 
  <para>
@@ -963,8 +963,8 @@ GSSAPI 사용자 이름의 대소문자를 구분할 것인지 설정한다. 기
  </para>
 
  <para>
-on일 경우 <literal>username@dbname</>처럼 사용자를 생성해야 한다. 
-연결된 클라이언트에 의해 <literal>username</>이 전달되는 경우, <literal>@</> 및 데이터베이스 이름이 사용자 이름에 추가되고 해당 데이터베이스 특정 사용자 이름이 서버에서 조회된다. 
+on일 경우 <replaceable>username@dbname</>처럼 사용자를 생성해야 한다. 
+연결된 클라이언트에 의해 <replaceable>username</>이 전달되는 경우, <literal>@</> 및 데이터베이스 이름이 사용자 이름에 추가되고 해당 데이터베이스 특정 사용자 이름이 서버에서 조회된다. 
 SQL 환경에서 사용자 이름에 <literal>@</>를 넣어 사용자를 생성하면 사용자 이름에 따옴표를 사용해야 한다는 점에 유의해야 한다.
  </para>
 
@@ -1133,6 +1133,46 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
 </listitem>
  </varlistentry>
 
+     <varlistentry id="guc-replacement-sort-tuples" xreflabel="replacement_sort_tuples">
+      <term><varname>replacement_sort_tuples</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>replacement_sort_tuples</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        When the number of tuples to be sorted is smaller than this number,
+        a sort will produce its first output run using replacement selection
+        rather than quicksort.  This may be useful in memory-constrained
+        environments where tuples that are input into larger sort operations
+        have a strong physical-to-logical correlation.  Note that this does
+        not include input tuples with an <emphasis>inverse</emphasis>
+        correlation.  It is possible for the replacement selection algorithm
+        to generate one long run that requires no merging, where use of the
+        default strategy would result in many runs that must be merged
+        to produce a final sorted output.  This may allow sort
+        operations to complete sooner.
+       </para>
+       <para>
+        The default is 150,000 tuples.  Note that higher values are typically
+        not much more effective, and may be counter-productive, since the
+        priority queue is sensitive to the size of available CPU cache, whereas
+        the default strategy sorts runs using a <firstterm>cache
+        oblivious</firstterm> algorithm.  This property allows the default sort
+        strategy to automatically and transparently make effective use
+        of available CPU cache.
+       </para>
+       <para>
+        Setting <varname>maintenance_work_mem</varname> to its default
+        value usually prevents utility command external sorts (e.g.,
+        sorts used by <command>CREATE INDEX</> to build B-Tree
+        indexes) from ever using replacement selection sort, unless the
+        input tuples are quite wide.
+       </para>
+      </listitem>
+     </varlistentry>
+
+
  <varlistentry id="guc-autovacuum-work-mem" xreflabel="autovacuum_work_mem">
 <term><varname>autovacuum_work_mem</varname> (<type>integer</type>)
 <indexterm>
@@ -1158,7 +1198,7 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
 서버 실행 스택의 최대 안전 깊이를 지정한다. 
 이 매개변수의 이상적인 설정은 커널이 강제로 지정한 안전 마진(safety margin)에서 약간 부족한 실제 스택 크기 제한이다(<literal>ulimit -s</>에 의해 설정된 대로, 또는 로컬과 동등). 
 표현식 평가(expression evaluation) 같이 서버의 모든 루틴이 아니라 잠재적 재귀 루틴 중 중요한 것만 스택 깊이가 검사되기 때문에, 안전 마진(safety margin)이 필요하다. 
-기본 설정은, 기본적으로 적게 잡고 충돌 가능성이 낮은 2메가바이트이다(<literal>2MB</>). 그러나, 설정값이 너무 작으면 복합 함수의 실행이 어려울 수 있다. 수퍼유저만 이 설정을 변경할 수 있다.
+기본 설정은, 기본적으로 적게 잡고 충돌 가능성이 낮은 2메가바이트이다(<literal>2MB</>). 그러나, 설정값이 너무 작으면 복합 함수의 실행이 어려울 수 있다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 
  <para>
@@ -1202,11 +1242,13 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
 </term>
 <listitem>
  <para>
-정렬 및 해시 임시 파일 같은 임시 파일 또는 보류된 커서용 저장소 파일에 세션이 사용할 수 있는 디스크 공간의 최대 크기를 지정한다. 
-이 제한을 초과하는 트랜잭션은 취소된다. 값은 킬로바이트 단위로 지정되며 <literal>-1</>(기본값)은 무제한을 의미한다. 수퍼유저만 이 설정을 변경할 수 있다.
+정렬 및 해시 임시 파일 같은 임시 파일 또는 보류된 커서용 저장소 파일에 프로세스가
+사용할 수 있는 디스크 공간의 최대 크기를 지정한다. 
+이 제한을 초과하는 트랜잭션은 취소된다. 값은 킬로바이트 단위로 지정되며 <literal>-1</>(기본값)은 무제한을 의미한다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
  <para>
-이 설정은 주어진 <productname>PostgreSQL</>세션에 의해 동시에 사용되는 모든 임시 파일의 총 공간을 제한한다. 
+이 설정은 주어진 <productname>PostgreSQL</> 프로세스에 의해 동시에 사용되는
+모든 임시 파일의 총 공간을 제한한다. 
 쿼리 실행 시 은밀하게 사용되는 임시 파일과 달리, 명시적 임시 테이블용으로 사용되는 디스크 공간은 이 제한에 합산되지 <emphasis>않는다</emphasis>는 점에 유의해야 한다.
  </para>
 </listitem>
@@ -1404,6 +1446,35 @@ value.
 </para>
  </listitem>
 </varlistentry>
+
+      <varlistentry id="guc-bgwriter-flush-after" xreflabel="bgwriter_flush_after">
+       <term><varname>bgwriter_flush_after</varname> (<type>integer</type>)
+       <indexterm>
+        <primary><varname>bgwriter_flush_after</> configuration parameter</primary>
+       </indexterm>
+       </term>
+       <listitem>
+        <para>
+         Whenever more than <varname>bgwriter_flush_after</varname> bytes have
+         been written by the bgwriter, attempt to force the OS to issue these
+         writes to the underlying storage.  Doing so will limit the amount of
+         dirty data in the kernel's page cache, reducing the likelihood of
+         stalls when an fsync is issued at the end of a checkpoint, or when
+         the OS writes data back in larger batches in the background.  Often
+         that will result in greatly reduced transaction latency, but there
+         also are some cases, especially with workloads that are bigger than
+         <xref linkend="guc-shared-buffers">, but smaller than the OS's page
+         cache, where performance might degrade.  This setting may have no
+         effect on some platforms.  The valid range is between
+         <literal>0</literal>, which disables controlled writeback, and
+         <literal>2MB</literal>.  The default is <literal>512kB</> on Linux,
+         <literal>0</> elsewhere.  (Non-default values of
+         <symbol>BLCKSZ</symbol> change the default and maximum.)
+         This parameter can only be set in the <filename>postgresql.conf</>
+         file or on the server command line.
+        </para>
+       </listitem>
+      </varlistentry>
  </variablelist>
 
  <para>
@@ -1428,19 +1499,27 @@ value.
 </para>
 
 <para>
- 이 설정을 위한 권장 시작점은 데이터베이스에서 사용되는 RAID 0 스트라이프 또는 RAID 1 미러를 환경 설정하는 개별 드라이브 수이다. 
+ 일반 하드 디스크인 경우,
+ 이 설정을 위한 권장 시작점은 데이터베이스에서 사용되는 RAID 0 스트라이프
+ 또는 RAID 1 미러를 환경 설정하는 개별 드라이브 수이다. 
  (RAID 5의 경우 패리티 드라이브 수는 계산하지 않는다. ) 그러나 동시 세션에서 여러 개의 쿼리가 실행된 상태에서 데이터베이스가 매우 바쁠 경우, 디스크 배열을 busy 상태로 유지하기 위해서는 적은 값도 충분하다. 
  디스크를 busy한 상태로 만들기 위해 필요 이상으로 큰 값을 설정하면 CPU 오버헤드만 가중된다.
+ SSD나 기타 메모리 기반 스토리지인 경우는 동시 요청이 빈번할 수 있다,
+ 이런 경우는 이 값을 수백으로 지정하는 것이 더 효과적이다.
 </para>
 
 <para>
- 버스 대역폭에 의해 제한되는 메모리 기반 저장소 또는 RAID 배열 같은 외부 시스템의 경우, 가용한 I/O 경로 수를 설정해야 한다. 
- 최상의 값을 찾아내려면 몇 가지 시험이 필요할 수도 있다.
-</para>
-
-<para>
- 비동기 I/O는 효과적인 <function>posix_fadvise</> 함수에 따라 달라지며, 이것이 운영 체제에 없을 수도 있다. 이 함수가 없을 경우 이 매개변수를 0 이외의 다른 것으로 설정하면 에러가 발생한다. 
+ 비동기 I/O는 효과적인 <function>posix_fadvise</> 함수에 따라 달라지며, 이것이
+ 운영 체제에 없을 수도 있다. 이 함수가 없을 경우 이 매개변수를 0 이외의
+ 다른 것으로 설정하면 에러가 발생한다. 
  일부 운영 체제(예: Solaris)에는 함수가 존재하지만 실제로는 아무것도 하지 않는다.
+</para>
+
+<para>
+         The default is 1 on supported systems, otherwise 0.  This value can
+         be overridden for tables in a particular tablespace by setting the
+         tablespace parameter of the same name (see
+         <xref linkend="sql-altertablespace">).
 </para>
  </listitem>
 </varlistentry>
@@ -1453,14 +1532,142 @@ value.
  </term>
  <listitem>
 <para>
- 시스템이 지원할 수 있는 백그라운드 프로세스의 최대 수를 설정한다. 이 매개변수는 서버 시작 시에만 설정 가능하다.
+ 시스템이 지원할 수 있는 백그라운드 프로세스의 최대 수를 설정한다.  이 매개변수는
+ 서버 시작 시에만 설정 가능하다. 기본값은 8.
 </para>
 
 <para>
- 대기 서버 실행 중에는 이 매개변수를 마스터 서버 값보다 크거나 같게 설정해야 한다. 그렇지 않으면 대기 서버에서 쿼리가 허용되지 않는다.
+ 대기 서버 실행 중에는 이 매개변수를 마스터 서버 값보다 크거나 같게
+ 설정해야 한다.  그렇지 않으면 대기 서버에서 쿼리가 허용되지 않는다.
 </para>
  </listitem>
 </varlistentry>
+
+      <varlistentry id="guc-max-parallel-workers-per-gather" xreflabel="max_parallel_workers_per_gather">
+       <term><varname>max_parallel_workers_per_gather</varname> (<type>integer</type>)
+       <indexterm>
+        <primary><varname>max_parallel_workers_per_gather</> configuration parameter</primary>
+       </indexterm>
+       </term>
+       <listitem>
+        <para>
+         Sets the maximum number of workers that can be started by a single
+         <literal>Gather</literal> node.  Parallel workers are taken from the
+         pool of processes established by
+         <xref linkend="guc-max-worker-processes">.  Note that the requested
+         number of workers may not actually be available at run time.  If this
+         occurs, the plan will run with fewer workers than expected, which may
+         be inefficient.  Setting this value to 0, which is the default,
+         disables parallel query execution.
+        </para>
+
+        <para>
+         Note that parallel queries may consume very substantially more
+         resources than non-parallel queries, because each worker process is
+         a completely separate process which has roughly the same impact on the
+         system as an additional user session.  This should be taken into
+         account when choosing a value for this setting, as well as when
+         configuring other settings that control resource utilization, such
+         as <xref linkend="guc-work-mem">.  Resource limits such as
+         <varname>work_mem</> are applied individually to each worker,
+         which means the total utilization may be much higher across all
+         processes than it would normally be for any single process.
+         For example, a parallel query using 4 workers may use up to 5 times
+         as much CPU time, memory, I/O bandwidth, and so forth as a query which
+         uses no workers at all.
+        </para>
+
+        <para>
+         For more information on parallel query, see
+         <xref linkend="parallel-query">.
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="guc-backend-flush-after" xreflabel="backend_flush_after">
+       <term><varname>backend_flush_after</varname> (<type>integer</type>)
+       <indexterm>
+        <primary><varname>backend_flush_after</> configuration parameter</primary>
+       </indexterm>
+       </term>
+       <listitem>
+        <para>
+         Whenever more than <varname>backend_flush_after</varname> bytes have
+         been written by a single backend, attempt to force the OS to issue
+         these writes to the underlying storage.  Doing so will limit the
+         amount of dirty data in the kernel's page cache, reducing the
+         likelihood of stalls when an fsync is issued at the end of a
+         checkpoint, or when the OS writes data back in larger batches in the
+         background.  Often that will result in greatly reduced transaction
+         latency, but there also are some cases, especially with workloads
+         that are bigger than <xref linkend="guc-shared-buffers">, but smaller
+         than the OS's page cache, where performance might degrade.  This
+         setting may have no effect on some platforms.  The valid range is
+         between <literal>0</literal>, which disables controlled writeback,
+         and <literal>2MB</literal>.  The default is <literal>0</> (i.e. no
+         flush control).  (Non-default values of <symbol>BLCKSZ</symbol>
+         change the maximum.)
+        </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry id="guc-old-snapshot-threshold" xreflabel="old_snapshot_threshold">
+       <term><varname>old_snapshot_threshold</varname> (<type>integer</type>)
+       <indexterm>
+        <primary><varname>old_snapshot_threshold</> configuration parameter</primary>
+       </indexterm>
+       </term>
+       <listitem>
+        <para>
+         Sets the minimum time that a snapshot can be used without risk of a
+         <literal>snapshot too old</> error occurring when using the snapshot.
+         This parameter can only be set at server start.
+        </para>
+
+        <para>
+         Beyond the threshold, old data may be vacuumed away.  This can help
+         prevent bloat in the face of snapshots which remain in use for a
+         long time.  To prevent incorrect results due to cleanup of data which
+         would otherwise be visible to the snapshot, an error is generated
+         when the snapshot is older than this threshold and the snapshot is
+         used to read a page which has been modified since the snapshot was
+         built.
+        </para>
+
+        <para>
+         A value of <literal>-1</> disables this feature, and is the default.
+         Useful values for production work probably range from a small number
+         of hours to a few days.  The setting will be coerced to a granularity
+         of minutes, and small numbers (such as <literal>0</> or
+         <literal>1min</>) are only allowed because they may sometimes be
+         useful for testing.  While a setting as high as <literal>60d</> is
+         allowed, please note that in many workloads extreme bloat or
+         transaction ID wraparound may occur in much shorter time frames.
+        </para>
+
+        <para>
+         When this feature is enabled, freed space at the end of a relation
+         cannot be released to the operating system, since that could remove
+         information needed to detect the <literal>snapshot too old</>
+         condition.  All space allocated to a relation remains associated with
+         that relation for reuse only within that relation unless explicitly
+         freed (for example, with <command>VACUUM FULL</>).
+        </para>
+
+        <para>
+         This setting does not attempt to guarantee that an error will be
+         generated under any particular circumstances.  In fact, if the
+         correct results can be generated from (for example) a cursor which
+         has materialized a result set, no error will be generated even if the
+         underlying rows in the referenced table have been vacuumed away.
+         Some tables cannot safely be vacuumed early, and so will not be
+         affected by this setting.  Examples include system catalogs and any
+         table which has a hash index.  For such tables this setting will
+         neither reduce bloat nor create a possibility of a <literal>snapshot
+         too old</> error on scanning.
+        </para>
+       </listitem>
+      </varlistentry>
  </variablelist>
 </sect2>
  </sect1>
@@ -1484,30 +1691,40 @@ value.
 </term>
 <listitem>
  <para>
-<varname>wal_level</>은 WAL에 기록되는 정보의 양을 결정한다. 기본값은 충돌 또는 즉시 셧다운으로부터 복구하기 위해 필요한 정보만 기록하는 <literal>minimal</>이다. 
-<literal>archive</>는 WAL 아카이브에 필요한 로깅만 추가한다. <literal>hot_standby</>는 대기 서버에서 읽기 전용 쿼리에 필요한 정보를 좀 더 추가한다. <literal>logical</>은 논리적 디코딩을 지원하는 데 필요한 정보를 추가한다. 
-각 레벨에는 모두 저수준에서 로깅된 정보가 포함된다. 이 매개변수는 서버 시작 시에만 설정 가능하다.
+<varname>wal_level</>은 WAL에 기록되는 정보의 양을 결정한다.  기본값은 충돌
+또는 즉시 셧다운으로부터 복구하기 위해 필요한 정보만 기록하는 
+<literal>minimal</>이다.  <literal>replica</>는 트랜잭션 로그를
+복구용으로 쓰기 위해 따로 보관하고, 대기 서버에서 읽기 전용 쿼리에 필요한
+정보를 좀 더 추가한다.  <literal>logical</>은 논리적 디코딩을
+지원하는 데 필요한 정보를 추가한다.  각 레벨에는 모두 저수준에서
+로깅된 정보가 포함된다. 이 매개변수는 서버 시작 시에만 설정 가능하다.
  </para>
  <para>
-<literal>minimal</> 레벨에서, 일부 벌크 실행 WAL 로깅은 안전하게 건너뛸 수 있다. 그러면 실행이 빨라진다(<xref linkend="populate-pitr"> 참조). 이러한 최적화를 적용할 수 있는 실행에는 다음이 포함된다.
+<literal>minimal</> 레벨에서, 일부 벌크 실행 WAL 로깅은 안전하게
+건너뛸 수 있다.  그러면 실행이 빨라진다(<xref linkend="populate-pitr"> 참조).  이러한
+최적화를 적용할 수 있는 실행에는 다음이 포함된다.
 <simplelist>
  <member><command>CREATE TABLE AS</></member>
  <member><command>CREATE INDEX</></member>
  <member><command>CLUSTER</></member>
- <member><command>COPY</> 상기는 동일 트랜잭션에서 생성되었거나 또는 레코드가 지워진 테이블에 적용된다.into tables that were created or truncated in the same
- transaction</member>
+ <member>동일 트랜잭션에서 만들어지고 삭제된 테이블 대상 <command>COPY</></member>
 </simplelist>
-그러나 최소 WAL에는 베이스 백업 및 WAL 로그로부터 데이터를 재구성하는 데 필요한 정보가 충분하지 않으므로 WAL 아카이빙(<xref linkend="guc-archive-mode">) 및 스트리밍 복제를 하려면 <literal>archive</> 이상을 사용해야 한다.
+그러나 최소 WAL에는 베이스 백업 및 WAL 로그로부터 데이터를 재구성하는
+데 필요한 정보가 충분하지 않으므로 WAL 아카이빙(<xref linkend="guc-archive-mode">)
+및 스트리밍 복제를 하려면 <literal>replica</> 이상을 사용해야 한다.
  </para>
+
  <para>
-<literal>hot_standby</> 레벨에서 <literal>archive</>와 동일한 정보 및 WAL로부터 실행 트랜잭션의 상태 재구성에 필요한 정보가 로깅된다. 
-대기 서버에서 읽기 전용 쿼리를 사용하려면, 운영 서버에서 <varname>wal_level</>을 <literal>hot_standby</> 이상으로 설정하고 <xref linkend="guc-hot-standby">는 대기 서버에서 활성화해야 한다. 
-<literal>hot_standby</>와 <literal>archive</> 레벨 사용시 측정 가능한 성능 차이는 거의 없는 것으로 생각되므로 운영상 눈에 띄는 변화가 있을 경우 피드백을 주기 바란다.
- </para>
- <para>
-<literal>logical</> 레벨에서 <literal>hot_standby</>를 사용하는 것과 동일한 정보 및 WAL로부터 논리적 변경 집합을 사용하는 데 필요한 정보가 로깅된다. <literal>logical</> 레벨을 사용하면 WAL 볼륨이 증가한다. 
+<literal>logical</> 레벨에서 <literal>replica</>를 사용하는 것과 동일한 정보 및 WAL로부터 논리적 변경 집합을 사용하는 데 필요한 정보가 로깅된다. <literal>logical</> 레벨을 사용하면 WAL 볼륨이 증가한다. 
 특히 여러 개의 테이블을 <literal>REPLICA IDENTITY FULL</literal>로 환경 설정하고 <command>UPDATE</> 및 <command>DELETE</> 문을 여러 개 실행하는 경우 그렇다.
  </para>
+
+       <para>
+        9.6 이전 버전에서는 이 설정값으로 <literal>archive</literal>,
+        <literal>hot_standby</literal> 두 값을 쓸 수 있었다.  하위 호환성을
+        위에 이 설정값을 사용할 수 있으며, 이들은 모두
+        <literal>replica</literal>로 처리된다.
+       </para>
 </listitem>
  </varlistentry>
 
@@ -1557,31 +1774,67 @@ value.
 </indexterm>
 </term>
 <listitem>
- <para>
-명령이 <quote>success</> 표시를 클라이언트에 리턴하기 전에 WAL 레코드가 디스크에 기록될 때까지 트랜잭션 커밋이 기다릴지 여부를 지정한다. 
-유효 값은 <literal>on</> 및 
-<literal>remote_write</>, <literal>local</>, <literal>off</>이다. 기본값 및 안전 설정은 <literal>on</>이다. <literal>off</>인 경우 success표시가 클라이언트에 전달되는 시간과 서버 충돌 없이 트랜잭션이 정말로 안전하다는 것이 보장되는 시간 사이에 지연이 생길 수 있다. 
-(최대 지연은 <xref linkend="guc-wal-writer-delay">의 3배이다.) <xref linkend="guc-fsync">와 달리, 이 매개변수를 <literal>off</>로 설정하면 데이터베이스 불일치 위험이 발생하지 않는다. 
-운영 체제 또는 데이터베이스 충돌은 이른바 최근에 커밋된 트랜잭션이 일부 분실되는 결과가 발생하지만 데이터베이스 상태는 해당 트랜잭션이 깔끔하게 중단된 것과 같다. 
-따라서, 트랜잭션 영속성에 대해 정확한 확실성보다는 성능이 더 중요한 경우에 <varname>synchronous_commit</>를 해제하는 것이 유용한 대안일 수 있다. 자세한 내용은 <xref linkend="wal-async-commit">을 참조 바란다.
- </para>
- <para>
-<xref linkend="guc-synchronous-standby-names">가 설정되면, 트랜잭션의 WAL 레코드가 대기 서버로 복제될 때까지 트랜잭션 커밋이 기다릴지의 여부를 이 매개변수로도 제어한다. 
-<literal>on</>으로 설정되면, 트랜잭션의 커밋 레코드를 수신했고 디스크에 쓰기 되었다는 응답이 현재의 동기 대기 서버로부터 올 때까지 커밋이 대기한다. 
-이것은 운영 서버 및 대기 서버 양쪽에서 데이터베이스 저장소의 손상이 없는 경우에 트랜잭션이 분실되지 않았음을 보장한다. 
-<literal>remote_write</>로 설정되면, 트랜잭션의 커밋 레코드를 수신했고 대기 서버의 운영 체제에 쓰기 되었지만, 대기 서버의 안정된 저장소에 데이터가 도착했는지는 확실하지 않다는 응답이 현재의 동기 대기 서버로부터 올 때까지 커밋이 대기한다. 
-데이터 보존을 위해서는 <productname>PostgreSQL</>의 대기 서버 인스턴스가 충돌한 경우에도 이 설정으로 충분하지만 대기 서버가 운영 체제 수준에서 충돌이 발생한 경우는 그렇지 않다.
- </para>
- <para>
-동기 복제를 사용 중인 경우 일반적으로 디스크에 로컬로 쓰기 되도록 기다리거나, WAL 레코드의 복제를 기다리거나, 트랜잭션이 비동기적으로 커밋되게 하는 것이 합리적이다. 
-그러나, <literal>local</> 설정은 디스크에 로컬로 쓰기 되도록 기다리지만 동기 복제는 기다리지 않는 트랜잭션에 사용할 수 있다. 
-<varname>synchronous_standby_names</>를 설정하지 않으면 <literal>on</> 및 <literal>remote_write</>, <literal>local</> 설정 모두 동일한 동기화 레벨을 제공하며 트랜잭션 커밋은 로컬로 디스크에 쓰기만을 기다린다.
- </para>
- <para>
-이 매개변수는 언제든 변경할 수 있다. 모든 트랜잭션의 동작은 사실상 커밋되었을 때의 설정에 따라 결정된다. 따라서 일부 트랜잭션 커밋은 동기적으로, 그 외에는 비동기적으로 만드는 것이 가능하고 유용하다. 
-예를 들면, 기본값이 반대인 경우 다중 문 트랜잭션 커밋 하나를 비동기적으로 만들려면 트랜잭션 내에서 <command>SET
-LOCAL synchronous_commit TO OFF</>를 실행해야 한다.
- </para>
+       <para>
+        Specifies whether transaction commit will wait for WAL records
+        to be written to disk before the command returns a <quote>success</>
+        indication to the client.  Valid values are <literal>on</>,
+        <literal>remote_apply</>, <literal>remote_write</>, <literal>local</>,
+        and <literal>off</>.  The default, and safe, setting
+        is <literal>on</>.  When <literal>off</>, there can be a delay between
+        when success is reported to the client and when the transaction is
+        really guaranteed to be safe against a server crash.  (The maximum
+        delay is three times <xref linkend="guc-wal-writer-delay">.)  Unlike
+        <xref linkend="guc-fsync">, setting this parameter to <literal>off</>
+        does not create any risk of database inconsistency: an operating
+        system or database crash might
+        result in some recent allegedly-committed transactions being lost, but
+        the database state will be just the same as if those transactions had
+        been aborted cleanly.  So, turning <varname>synchronous_commit</> off
+        can be a useful alternative when performance is more important than
+        exact certainty about the durability of a transaction.  For more
+        discussion see <xref linkend="wal-async-commit">.
+       </para>
+       <para>
+        If <xref linkend="guc-synchronous-standby-names"> is non-empty, this
+        parameter also controls whether or not transaction commits will wait
+        for their WAL records to be replicated to the standby server(s).
+        When set to <literal>on</>, commits will wait until replies
+        from the current synchronous standby(s) indicate they have received
+        the commit record of the transaction and flushed it to disk.  This
+        ensures the transaction will not be lost unless both the primary and
+        all synchronous standbys suffer corruption of their database storage.
+        When set to <literal>remote_apply</>, commits will wait until replies
+        from the current synchronous standby(s) indicate they have received the
+        commit record of the transaction and applied it, so that it has become
+        visible to queries on the standby(s).
+        When set to <literal>remote_write</>, commits will wait until replies
+        from the current synchronous standby(s) indicate they have
+        received the commit record of the transaction and written it out to
+        their operating system. This setting is sufficient to
+        ensure data preservation even if a standby instance of
+        <productname>PostgreSQL</> were to crash, but not if the standby
+        suffers an operating-system-level crash, since the data has not
+        necessarily reached stable storage on the standby.
+        Finally, the setting <literal>local</> causes commits to wait for
+        local flush to disk, but not for replication.  This is not usually
+        desirable when synchronous replication is in use, but is provided for
+        completeness.
+       </para>
+       <para>
+        If <varname>synchronous_standby_names</> is empty, the settings
+        <literal>on</>, <literal>remote_apply</>, <literal>remote_write</>
+        and <literal>local</> all provide the same synchronization level:
+        transaction commits only wait for local flush to disk.
+       </para>
+       <para>
+        This parameter can be changed at any time; the behavior for any
+        one transaction is determined by the setting in effect when it
+        commits.  It is therefore possible, and useful, to have some
+        transactions commit synchronously and others asynchronously.
+        For example, to make a single multistatement transaction commit
+        asynchronously when the default is the opposite, issue <command>SET
+        LOCAL synchronous_commit TO OFF</> within the transaction.
+       </para>
 </listitem>
  </varlistentry>
 
@@ -1737,9 +1990,38 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
 </indexterm>
 </term>
 <listitem>
- <para>
-WAL writer의 작업 라운드 사이의 지연을 지정한다. 각 라운드에서 writer는 WAL을 디스크에 기록한다. 그런 다음, <varname>wal_writer_delay</>밀리초 동안 슬립한 다음, 반복한다. 
-기본값은 200밀리초이다(<literal>200ms</>). 다수의 시스템에서 슬립 지연의 효율적인 설정은 10밀리초이다. <varname>wal_writer_delay</>를 10의 배수가 아닌 다른 값으로 설정하면 10의 배수로 값을 올림하여 설정한 것과 결과가 동일하다. 
+      <para>
+        Specifies how often the WAL writer flushes WAL. After flushing WAL it
+        sleeps for <varname>wal_writer_delay</> milliseconds, unless woken up
+        by an asynchronously committing transaction. In case the last flush
+        happened less than <varname>wal_writer_delay</> milliseconds ago and
+        less than <varname>wal_writer_flush_after</> bytes of WAL have been
+        produced since, WAL is only written to the OS, not flushed to disk.
+        The default value is 200 milliseconds (<literal>200ms</>).  Note that
+        on many systems, the effective resolution of sleep delays is 10
+        milliseconds; setting <varname>wal_writer_delay</> to a value that is
+        not a multiple of 10 might have the same results as setting it to the
+        next higher multiple of 10. 
+이 매개변수는 <filename>postgresql.conf</> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-wal-writer-flush-after" xreflabel="wal_writer_flush_after">
+      <term><varname>wal_writer_flush_after</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>wal_writer_flush_after</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+      <para>
+        Specifies how often the WAL writer flushes WAL. In case the last flush
+        happened less than <varname>wal_writer_delay</> milliseconds ago and
+        less than <varname>wal_writer_flush_after</> bytes of WAL have been
+        produced since, WAL is only written to the OS, not flushed to disk.
+        If <varname>wal_writer_flush_after</> is set to <literal>0</> WAL is
+        flushed every time the WAL writer has written WAL.  The default is
+        <literal>1MB</literal>. 
 이 매개변수는 <filename>postgresql.conf</> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
@@ -1756,7 +2038,7 @@ WAL writer의 작업 라운드 사이의 지연을 지정한다. 각 라운드�
 <varname>commit_delay</varname>는 WAL 쓰기를 초기화하기 전에 측정된 시간 지연을 마이크로초 단위로 추가한다. 
 이것은 시스템 로드가 충분히 커서 주어진 간격 내에 트랜잭션을 추가로 커밋할 준비가 된 경우 단일 WAL 쓰기를 통해 대량의 트랜잭션이 커밋되게 함으로써 그룹 커밋 처리량을 개선할 수 있다. 
 그러나 이것은 WAL 쓰기별로 대기 시간을 최대 <varname>commit_delay</varname> 마이크로초까지 늘리기도 한다. 커밋할 준비가 된 트랜잭션이 없을 경우 지연은 낭비되는 시간이므로 최소한 <varname>commit_siblings</varname>인 경우만 지연이 수행된다. 
-쓰기가 곧 시작되는 경우 다른 트랜잭션이 작동된다. 또한 <varname>fsync</varname>가 비활성화되면 지연이 수행되지 않는다. 기본 <varname>commit_delay</>는 0이다(지연 없음). 수퍼유저만 이 설정을 변경할 수 있다.
+쓰기가 곧 시작되는 경우 다른 트랜잭션이 작동된다. 또한 <varname>fsync</varname>가 비활성화되면 지연이 수행되지 않는다. 기본 <varname>commit_delay</>는 0이다(지연 없음). 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
  <para>
 9.3 이전의 <productname>PostgreSQL</> 릴리스에서 <varname>commit_delay</varname>는 동작이 다르고 효과도 떨어진다. 이것은 모든 WAL 쓰기가 아닌 커밋에만 영향을 주었고 WAL 쓰기가 곧 완료된 경우에도 환경 설정된 지연 시간 동안 대기했다. 
@@ -1792,8 +2074,10 @@ WAL writer의 작업 라운드 사이의 지연을 지정한다. 각 라운드�
 </term>
 <listitem>
  <para>
-자동 WAL checkpoints 간의 최대 시간. 초 단위. 기본값은 5분이다(<literal>5min</>). 이 매개변수를 늘리면 충돌 복구에 필요한 시간을 늘릴 수 있다. 
-이 매개변수는 <filename>postgresql.conf</> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+자동 WAL checkpoints 간의 최대 시간. 초 단위 (30초 ~ 하루). 기본값은
+5분이다(<literal>5min</>). 이 매개변수를 늘리면 충돌 복구에 필요한 시간을
+늘릴 수 있다.  이 매개변수는 <filename>postgresql.conf</> 파일 또는
+서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -1810,6 +2094,36 @@ checkpoints 간 총 시간 분할로써, checkpoints 완료 목표를 지정한�
  </para>
 </listitem>
  </varlistentry>
+
+     <varlistentry id="guc-checkpoint-flush-after" xreflabel="checkpoint_flush_after">
+      <term><varname>checkpoint_flush_after</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>checkpoint_flush_after</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Whenever more than <varname>checkpoint_flush_after</varname> bytes
+        have been written while performing a checkpoint, attempt to force the
+        OS to issue these writes to the underlying storage.  Doing so will
+        limit the amount of dirty data in the kernel's page cache, reducing
+        the likelihood of stalls when an fsync is issued at the end of the
+        checkpoint, or when the OS writes data back in larger batches in the
+        background.  Often that will result in greatly reduced transaction
+        latency, but there also are some cases, especially with workloads
+        that are bigger than <xref linkend="guc-shared-buffers">, but smaller
+        than the OS's page cache, where performance might degrade.  This
+        setting may have no effect on some platforms.  The valid range is
+        between <literal>0</literal>, which disables controlled writeback,
+        and <literal>2MB</literal>.  The default is <literal>256kB</> on
+        Linux, <literal>0</> elsewhere.  (Non-default values of
+        <symbol>BLCKSZ</symbol> change the default and maximum.)
+        This parameter can only be set in the <filename>postgresql.conf</>
+        file or on the server command line.
+       </para>
+      </listitem>
+     </varlistentry>
+
 
  <varlistentry id="guc-checkpoint-warning" xreflabel="checkpoint_warning">
 <term><varname>checkpoint_warning</varname> (<type>integer</type>)
@@ -1963,7 +2277,7 @@ checkpoint 세그먼트 파일을 채움으로써 checkpoints가 여기에 지�
 대기 서버 또는 스트리밍 베이스 백업 클라이언트로부터의 동시 연결 최대 수를 지정한다(예: 동시에 실행 중인 WAL 전송자 프로세스의 최대 수). 
 기본값은, 복제를 비활성화하는 0이다. WAL 전송자 프로세스는 총 연결 수에 포함되므로 매개변수를 <xref linkend="guc-max-connections">보다 큰 값으로 설정할 수 없다. 
 스트리밍 클라이언트의 연결이 갑작스럽게 끊어지면 타임아웃이 될 때까지 고아 연결 슬롯이 생기므로, 예상되는 클라이언트의 최대 수보다 이 매개변수를 약간 더 크게 설정하여 연결이 끊어진 클라이언트가 즉시 재연결될 수 있도록 해야 한다. 
-이 매개변수는 서버 시작 시에만 설정 가능하다. 대기 서버로부터의 연결이 가능하도록 <varname>wal_level</>은 <literal>archive</>와 같거나 크게 설정해야 한다.
+이 매개변수는 서버 시작 시에만 설정 가능하다. 대기 서버로부터의 연결이 가능하도록 <varname>wal_level</>은 <literal>replica</>와 같거나 크게 설정해야 한다.
  </para>
  </listitem>
 </varlistentry>
@@ -1977,7 +2291,7 @@ checkpoint 세그먼트 파일을 채움으로써 checkpoints가 여기에 지�
  <listitem>
 <para>
  서버가 지원할 수 있는 복제 슬롯의 최대 수를 지정한다(<xref linkend="streaming-replication-slots"> 참조). 기본값은 0이다. 이 매개변수는 서버 시작 시에만 설정 가능하다. 
- 복제 슬롯의 사용이 가능하도록 <varname>wal_level</varname>은 <literal>archive</literal>와 같거나 크게 설정해야 한다. 현재 존재하는 복제 슬롯 수보다 작은 값으로 설정하면 서버가 시작되지 않는다.
+ 복제 슬롯의 사용이 가능하도록 <varname>wal_level</varname>은 <literal>replica</literal>와 같거나 크게 설정해야 한다. 현재 존재하는 복제 슬롯 수보다 작은 값으로 설정하면 서버가 시작되지 않는다.
 </para>
  </listitem>
 </varlistentry>
@@ -2055,17 +2369,56 @@ checkpoint 세그먼트 파일을 채움으로써 checkpoints가 여기에 지�
 </term>
 <listitem>
  <para>
-<xref linkend="synchronous-replication">에 설명된 대로 <firstterm>동기 복제</>를 지원할 수 있는 대기 서버 이름을 쉼표로 구분된 목록으로 지정한다. 작동 중인 동기 대기 서버는 한 번에 많아야 하나이다. 
-커밋 대기 중인 트랜잭션은 이 대기 서버가 데이터 수신을 확인한 후에 진행이 허용된다. 
-동기 대기 서버는 이 목록 중에서 현재 연결되어 있고 실시간으로 데이터를 스트리밍하는 첫 번째 대기 서버다(<link linkend="monitoring-stats-views-table">
+<xref linkend="synchronous-replication">에 설명된 대로 <firstterm>동기 복제</>를 지원할 수 있는
+대기 서버 이름 목록을 지정한다. 활성 대기 서버는 하나 이상을 지정할 수 있다;
+커밋 대기 중인 트랜잭션은 이 대기 서버들이 데이터 수신을 확인한 후에 진행이 허용된다. 
+동기 대기 서버는 이 목록에서 지정한 순서 대로 연결되어 있고 실시간으로 데이터를
+스트리밍 전달하여 복제한다. (<link linkend="monitoring-stats-views-table">
 <literal>pg_stat_replication</></link> 뷰에서 <literal>streaming</literal> 상태로 표시됨). 
-이 목록에서 나중에 나타난 다른 대기 서버는 잠재적 동기 대기 서버를 나타낸다. 현재 동기 대기 서버가 어떤 이유로든 연결이 끊어진 경우 우선 순위가 그 다음으로 높은 대기 서버로 즉시 대체된다.
+동기 대기 서버가 어떤 이유로든 연결이 끊어진 경우
+지정한 우선 순위에 따라 그 다음으로 높은 대기 서버로 즉시 대체된다.
 대기 서버 이름을 2개 이상 지정하면 매우 높은 고가용성을 달성할 수 있다.
  </para>
+
  <para>
+        대기 서버 목록은 다음 형태로 지정한다:
+<synopsis>
+<replaceable class="parameter">num_sync</replaceable> ( <replaceable class="parameter">standby_name</replaceable> [, ...] )
+<replaceable class="parameter">standby_name</replaceable> [, ...]
+</synopsis>
+        <replaceable class="parameter">num_sync</replaceable> 자리에는
+        복제할 대기 서버 수,
+        <replaceable class="parameter">standby_name</replaceable>
+        자리에는 대기 서버들을 지정한다.  예를 들어,
+        <literal>3 (s1, s2, s3, s4)</> 이렇게 지정했다면, 
+        <literal>s1</>, <literal>s2</>,
+        <literal>s3</>, <literal>s4</> 서버 가운데,
+        세 대의 우선 순위 높은 대기 서버를 지정하는 것이다.
+        </para>
+        <para>
+        위의 두번째 줄 형태는 <productname>PostgreSQL</> 9.6 이전
+        버전에서 사용되던 방식인데, 이런 형태의 설정도 가능하다.  이때는
+        <replaceable class="parameter">num_sync</replaceable> 값이
+        1로 간주한다.  예를 들어, <literal>1 (s1, s2)</> 이 설정과, 
+        <literal>s1, s2</> 이 설정은 같은 의미다: 둘 중 하나를 
+        대기 서버로 지정함을 의미한다.
+       </para>
+       <para>
 대기 서버의 WAL 수신자의 <varname>primary_conninfo</>에 설정된 대로 이런 용도의 대기 서버 이름은 대기 서버의 <varname>application_name</> 설정이다. 고유성을 적용하는 메커니즘은 없다. 
 복제의 경우, 일치하는 대기 서버 중 하나는 정확히 어떤 것인지 가늠하기 어렵지만 동기 대기 서버가 되도록 선택된다. 특수 항목 <literal>*</>는 <literal>walreceiver</>의 기본 애플리케이션 이름을 비롯한 모든 <varname>application_name</>과 일치한다.
  </para>
+
+       <note>
+        <para>
+         Each <replaceable class="parameter">standby_name</replaceable>
+         should have the form of a valid SQL identifier, unless it
+         is <literal>*</>.  You can use double-quoting if necessary.  But note
+         that <replaceable class="parameter">standby_name</replaceable>s are
+         compared to standby application names case-insensitively, whether
+         double-quoted or not.
+        </para>
+       </note>
+
  <para>
 동기 대기 서버 이름이 여기서 지정되지 않으면 동기 복제는 활성화되지 않고 트랜잭션 커밋은 복제를 기다리지 않는다. 이것은 기본 환경 설정이다. 
 동기 복제가 활성화되더라도 개별 트랜잭션은 <xref linkend="guc-synchronous-commit"> 매개변수를 <literal>local</> 또는 <literal>off</>로 설정함으로써 복제를 기다리지 않도록 환경 설정할 수 있다.
@@ -2084,16 +2437,31 @@ checkpoint 세그먼트 파일을 채움으로써 checkpoints가 여기에 지�
 </term>
 <listitem>
  <para>
-<command>VACUUM</> 및 <acronym>HOT</> 업데이트가 데드 로우(dead row) 버전의 클린업을 연기하기 되는 트랜잭션 수를 지정한다. 기본값은 0개 트랜잭션이다. 
-이것은 데드 로우(dead row) 버전이 열린 트랜잭션에서 더 이상 보이지 않는 즉시, 가능한 한 빨리 제거될 수 있다는 것을 의미한다. 
-사용자는 <xref linkend="hot-standby">에 설명된 대로 핫 스탠바이가 지원하는 운영 서버에서 이 값을 0이 아닌 다른 값으로 설정하고 싶을 수도 있다. 
-이것은 행의 조기 클린업에 의한 충돌 없이 대기 서버에서 쿼리가 완료되는 시간적 여유를 허용한다. 
-그러나, 운영 서버에서 발생한 쓰기 트랜잭션 수에 관해서 값이 평가되므로, 대기 서버 쿼리에 대해 얼마만큼의 유예 시간이 가능한지를 예측하기는 어렵다. 
-이 매개변수는 <filename>postgresql.conf</> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+지정한 수 만큼의 트랜잭션에 대해서만 남기고, 나머지 트랜잭션으로 발생한
+폐기 처분 된 로우(dead row)를 <command>VACUUM</> 및 <acronym>HOT</> 업데이트가
+정리하도록 한다.
+기본값은 0개 트랜잭션이다. 
+이 설정은 트랜잭션 처리가 끝나면, 즉시 폐기 처분 된 로우는 
+정리 대상이 됨을 의미한다.
+사용자는 <xref linkend="hot-standby">에 설명된 대로 핫 스탠바이가
+지원하는 운영 서버에서 이 값을 0이 아닌 다른 값으로 설정하고 싶을 수도 있다. 
+이것은 행의 조기 클린업에 의한 충돌 없이 대기 서버에서 쿼리가 완료되는
+시간적 여유를 허용한다.  그러나, 운영 서버에서 발생한 쓰기 트랜잭션
+수에 관해서 값이 평가되므로, 대기 서버 쿼리에 대해 얼마만큼의 유예 시간이
+가능한지를 예측하기는 어렵다.  이 매개변수는 <filename>postgresql.conf</> 파일
+또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
  <para>
-대체 서버로서 대기 서버의 <varname>hot_standby_feedback</>을 이 매개변수의 사용으로 설정하는 것도 고려해야 한다.
+이런 대기 서버의 충돌 문제를 피하는 다른 방법으로
+<varname>hot_standby_feedback</> 설정을 활성화 하는 방법도 고려해 볼만 하다.
  </para>
+
+       <para>
+        <varname>old_snapshot_threshold</> 설정이 활성화 되어 있다면, 
+        이 설정이 0 이상이어도, 폐기 처분 된 로우에 대한 
+        정리 작업은 진행됨으로 그 로우들을 보호하지는 못한다.
+       </para>
+
 </listitem>
  </varlistentry>
 
@@ -2193,6 +2561,16 @@ WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_
  <para>
 케스케이드형 복제를 사용 중인 경우 운영 서버에 도달할 때까지 피드백이 상류로 전달된다. 상류 전달 외에, 대기 서버는 수신하는 피드백을 다른 용도로 사용하지 않는다.
  </para>
+       <para>
+        This setting does not override the behavior of
+        <varname>old_snapshot_threshold</> on the primary; a snapshot on the
+        standby which exceeds the primary's age threshold can become invalid,
+        resulting in cancellation of transactions on the standby.  This is
+        because <varname>old_snapshot_threshold</> is intended to provide an
+        absolute limit on the time which dead rows can contribute to bloat,
+        which would otherwise be violated because of the configuration of a
+        standby.
+       </para>
 </listitem>
  </varlistentry>
 
@@ -2319,15 +2697,13 @@ WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_
  <varlistentry id="guc-enable-indexonlyscan" xreflabel="enable_indexonlyscan">
 <term><varname>enable_indexonlyscan</varname> (<type>boolean</type>)
 <indexterm>
- <primary>index-only scan</primary>
-</indexterm>
-<indexterm>
  <primary><varname>enable_indexonlyscan</> 환경설정 매개변수</primary>
 </indexterm>
 </term>
 <listitem>
  <para>
-쿼리 플래너의 index-only-scan plan types 사용을 활성화 또는 비활성화한다. 기본값은 <literal>on</>이다.
+쿼리 플래너의 index-only-scan plan types 사용을 활성화 또는 비활성화한다
+(<xref linkend="indexes-index-only-scans"> 참조).  기본값은 <literal>on</>이다.
  </para>
 </listitem>
  </varlistentry>
@@ -2524,6 +2900,50 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
  </para>
 </listitem>
  </varlistentry>
+
+     <varlistentry id="guc-parallel-setup-cost" xreflabel="parallel_setup_cost">
+      <term><varname>parallel_setup_cost</varname> (<type>floating point</type>)
+      <indexterm>
+       <primary><varname>parallel_setup_cost</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Sets the planner's estimate of the cost of launching parallel worker
+        processes.
+        The default is 1000.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-parallel-tuple-cost" xreflabel="parallel_tuple_cost">
+      <term><varname>parallel_tuple_cost</varname> (<type>floating point</type>)
+      <indexterm>
+       <primary><varname>parallel_tuple_cost</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Sets the planner's estimate of the cost of transferring one tuple
+        from a parallel worker process to another process.
+        The default is 0.1.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-min-parallel-relation-size" xreflabel="min_parallel_relation_size">
+      <term><varname>min_parallel_relation_size</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>min_parallel_relation_size</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Sets the minimum size of relations to be considered for parallel scan.
+        The default is 8 megabytes (<literal>8MB</>).
+       </para>
+      </listitem>
+     </varlistentry>
 
  <varlistentry id="guc-effective-cache-size" xreflabel="effective_cache_size">
 <term><varname>effective_cache_size</varname> (<type>integer</type>)
@@ -2786,6 +3206,51 @@ SELECT * FROM parent WHERE key = 2400;
 </listitem>
  </varlistentry>
 
+     <varlistentry id="guc-force-parallel-mode" xreflabel="force_parallel_mode">
+      <term><varname>force_parallel_mode</varname> (<type>enum</type>)
+      <indexterm>
+       <primary><varname>force_parallel_mode</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Allows the use of parallel queries for testing purposes even in cases
+        where no performance benefit is expected.
+        The allowed values of <varname>force_parallel_mode</> are
+        <literal>off</> (use parallel mode only when it is expected to improve
+        performance), <literal>on</> (force parallel query for all queries
+        for which it is thought to be safe), and <literal>regress</> (like
+        <literal>on</>, but with additional behavior changes as explained
+        below).
+       </para>
+
+       <para>
+        More specifically, setting this value to <literal>on</> will add
+        a <literal>Gather</> node to the top of any query plan for which this
+        appears to be safe, so that the query runs inside of a parallel worker.
+        Even when a parallel worker is not available or cannot be used,
+        operations such as starting a subtransaction that would be prohibited
+        in a parallel query context will be prohibited unless the planner
+        believes that this will cause the query to fail.  If failures or
+        unexpected results occur when this option is set, some functions used
+        by the query may need to be marked <literal>PARALLEL UNSAFE</literal>
+        (or, possibly, <literal>PARALLEL RESTRICTED</literal>).
+       </para>
+
+       <para>
+        Setting this value to <literal>regress</> has all of the same effects
+        as setting it to <literal>on</> plus some additional effects that are
+        intended to facilitate automated regression testing.  Normally,
+        messages from a parallel worker include a context line indicating that,
+        but a setting of <literal>regress</> suppresses this line so that the
+        output is the same as in non-parallel execution.  Also,
+        the <literal>Gather</> nodes added to plans by this setting are hidden
+        in <literal>EXPLAIN</> output so that the output matches what
+        would be obtained if this setting were turned <literal>off</>.
+       </para>
+      </listitem>
+     </varlistentry>
+
  </variablelist>
 </sect2>
  </sect1>
@@ -3020,6 +3485,67 @@ Unix 시스템에서, 이 매개변수는 <varname>logging_collector</varname>�
  </listitem>
 </varlistentry>
 
+      <varlistentry id="guc-syslog-sequence-numbers" xreflabel="syslog_sequence_numbers">
+       <term><varname>syslog_sequence_numbers</varname> (<type>boolean</type>)
+        <indexterm>
+         <primary><varname>syslog_sequence_numbers</> configuration parameter</primary>
+        </indexterm>
+       </term>
+
+       <listitem>
+        <para>
+         When logging to <application>syslog</application> and this is on (the
+         default), then each message will be prefixed by an increasing
+         sequence number (such as <literal>[2]</literal>).  This circumvents
+         the <quote>--- last message repeated N times ---</quote> suppression
+         that many syslog implementations perform by default.  In more modern
+         syslog implementations, repeated message suppression can be configured
+         (for example, <literal>$RepeatedMsgReduction</literal>
+         in <productname>rsyslog</productname>), so this might not be
+         necessary.  Also, you could turn this off if you actually want to
+         suppress repeated messages.
+        </para>
+
+        <para>
+         This parameter can only be set in the <filename>postgresql.conf</>
+         file or on the server command line.
+        </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-syslog-split-messages" xreflabel="syslog_split_messages">
+      <term><varname>syslog_split_messages</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>syslog_split_messages</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        When logging to <application>syslog</> is enabled, this parameter
+        determines how messages are delivered to syslog.  When on (the
+        default), messages are split by lines, and long lines are split so
+        that they will fit into 1024 bytes, which is a typical size limit for
+        traditional syslog implementations.  When off, PostgreSQL server log
+        messages are delivered to the syslog service as is, and it is up to
+        the syslog service to cope with the potentially bulky messages.
+       </para>
+
+       <para>
+        If syslog is ultimately logging to a text file, then the effect will
+        be the same either way, and it is best to leave the setting on, since
+        most syslog implementations either cannot handle large messages or
+        would need to be specially configured to handle them.  But if syslog
+        is ultimately writing into some other medium, it might be necessary or
+        more useful to keep messages logically together.
+       </para>
+
+       <para>
+        This parameter can only be set in the <filename>postgresql.conf</>
+        file or on the server command line.
+       </para>
+      </listitem>
+     </varlistentry>
+
  <varlistentry id="guc-event-source" xreflabel="event_source">
 <term><varname>event_source</varname> (<type>string</type>)
 <indexterm>
@@ -3072,7 +3598,7 @@ Unix 시스템에서, 이 매개변수는 <varname>logging_collector</varname>�
 <literal>INFO</>, <literal>NOTICE</>, <literal>WARNING</>,
 <literal>ERROR</>, <literal>LOG</>, <literal>FATAL</>, and
 <literal>PANIC</>이다. 각 레벨에는 후속되는 모든 레벨이 포함된다. 
-후속 레벨일수록 메시지가 로그에 적게 전송된다. 기본값은 <literal>WARNING</>이다. <literal>LOG</>는 여기서 <varname>client_min_messages</>와는 다른 랭크를 갖는다. 수퍼유저만 이 설정을 변경할 수 있다.
+후속 레벨일수록 메시지가 로그에 적게 전송된다. 기본값은 <literal>WARNING</>이다. <literal>LOG</>는 여기서 <varname>client_min_messages</>와는 다른 랭크를 갖는다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3093,7 +3619,7 @@ Unix 시스템에서, 이 매개변수는 <varname>logging_collector</varname>�
 <literal>WARNING</literal>, <literal>ERROR</literal>,
 <literal>LOG</literal>,
 <literal>FATAL</literal>, <literal>PANIC</literal>이다. 기본값은, 에러, 로그 메시지, 심각한 에러 또는 패닉을 유발한 문(statement)을 로깅하는 <literal>ERROR</literal>이다. 
-실패 문의 로깅을 효율적으로 해제하려면 이 매개변수를 <literal>PANIC</literal>으로 설정해야 한다. 수퍼유저만 이 설정을 변경할 수 있다.
+실패 문의 로깅을 효율적으로 해제하려면 이 매개변수를 <literal>PANIC</literal>으로 설정해야 한다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3107,7 +3633,7 @@ Unix 시스템에서, 이 매개변수는 <varname>logging_collector</varname>�
  <listitem>
 <para>
  최소한 지정된 밀리 초 동안 문이 실행된 경우 완료된 문별로 지속 시간이 로깅되게 한다. 이것을 0으로 설정하면 모든 문의 기간이 인쇄된다. -1(기본값)은 로깅 문 기간을 비활성화한다. 
- 예를 들어, <literal>250ms</literal>로 설정하면 250ms 이상 실행된 모든 SQL 문이 로깅된다. 이 매개변수를 활성화하면 애플리케이션에서 최적화되지 않은 쿼리를 찾아내는 데 도움이 된다. 수퍼유저만 이 설정을 변경할 수 있다.
+ 예를 들어, <literal>250ms</literal>로 설정하면 250ms 이상 실행된 모든 SQL 문이 로깅된다. 이 매개변수를 활성화하면 애플리케이션에서 최적화되지 않은 쿼리를 찾아내는 데 도움이 된다. 슈퍼유저만 이 설정을 변경할 수 있다.
 </para>
 
 <para>
@@ -3315,7 +3841,7 @@ checkpoints 및 restartpoints가 서버 로그에 로깅되게 한다. 일부 �
 </term>
 <listitem>
  <para>
-완료된 모든 문의 지속 시간이 로깅 되게 한다. 기본값은 <literal>off</>이다. 수퍼유저만 이 설정을 변경할 수 있다.
+완료된 모든 문의 지속 시간이 로깅 되게 한다. 기본값은 <literal>off</>이다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 
  <para>
@@ -3345,7 +3871,7 @@ checkpoints 및 restartpoints가 서버 로그에 로깅되게 한다. 일부 �
 <literal>TERSE</>는 <literal>DETAIL</> 및 <literal>HINT</>,
 <literal>QUERY</>, <literal>CONTEXT</> 에러 정보의 로깅을 제외한다. 
 <literal>VERBOSE</> 출력은 <symbol>SQLSTATE</> 에러 코드(<xref linkend="errcodes-appendix"> 참고) 및 소스 코드 파일 이름, 함수 이름 및 에러 발생 줄 번호를 포함한다. 
-수퍼유저만 이 설정을 변경할 수 있다.
+슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3431,6 +3957,11 @@ checkpoints 및 restartpoints가 서버 로그에 로깅되게 한다. 일부 �
  <entry>밀리초 있는 타임스탬프</entry>
  <entry>no</entry>
 </row>
+<row>
+             <entry><literal>%n</literal></entry>
+             <entry>밀리초를 포함한 타임스탬프 (Unix epoch 형태)</entry>
+             <entry>no</entry>
+            </row>
 <row>
  <entry><literal>%i</literal></entry>
  <entry>명령 태그: 세션의 현재 명령 유형</entry>
@@ -3535,7 +4066,7 @@ FROM pg_stat_activity;
  </para>
 
  <para>
-기본값은 none이다. 수퍼유저만 이 설정을 변경할 수 있다.
+기본값은 none이다. 슈퍼유저만 이 설정을 변경할 수 있다.
 The default is <literal>none</>. Only superusers can change this
 setting.
  </para>
@@ -3575,7 +4106,7 @@ setting.
 <listitem>
  <para>
 임시 파일 이름과 크기의 로깅을 제어한다. 정렬, 해시 및 임시 쿼리 결과를 위해 임시 파일을 생성할 수 있다. 로그는 각 임시 파일이 삭제된 경우 입력된다. 
-0 값은 모든 임시 파일 정보를 로깅하고, 양의 값은 크기가 지정된 킬로바이트 이상일 때만 로깅된다. 기본값은, 해당 로깅이 비활성화되는 -1이다. 수퍼유저만 이 설정을 변경할 수 있다.
+0 값은 모든 임시 파일 정보를 로깅하고, 양의 값은 크기가 지정된 킬로바이트 이상일 때만 로깅된다. 기본값은, 해당 로깅이 비활성화되는 -1이다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3685,10 +4216,11 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
     <title>프로세스 제목</title>
 
     <para>
-     이 설정은 <command>ps</command> 명령에서 보여지는
-     프로세스들의 제목을 제어한다.
-     자세한 내용은 <xref linkend="monitoring-ps">
-     에서 다룬다.
+     서버 프로세스들의 상태가 바뀔 때, 프로세스 이름을 어떻게
+     표시할지 설정한다.  이 프로세스 이름은 일반적으로
+     <application>ps</> 명령이나, 윈도우즈인 경우, 
+     <application>프로세스 탐색기</> 프로그램에서 볼 수 있다.
+     자세한 내용은 <xref linkend="monitoring-ps"> 참조.
     </para>
 
  <variablelist>
@@ -3700,7 +4232,7 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
       </term>
       <listitem>
        <para>
-        해당 클러스터에 속한 모든 프로세스 제목에 여기서 지정한 
+        해당 클러스터에 속한 모든 서버 프로세스 제목에 여기서 지정한 
         클러스터 이름을 포함해서 보여준다.
         클러스터 이름은 <symbol>NAMEDATALEN</> (기본 빌드 초기값은
         64 문자열) 길이의 임의 문자열이다. <varname>cluster_name</varname>
@@ -3709,10 +4241,6 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
         보여진다.  이 값으로 빈 문자열(<literal>''</>)(기본값)을 지정하면, 
         보여주지 않는다.  이 설정값은 서버 시작 할 때만 
         지정할 수 있다.
-       </para>
-       <para>
-        프로세스 제목은 <application>ps</> 명령어나, 
-        Windows <application>Process Explorer</> 프로그램에서 볼 수 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -3726,8 +4254,11 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
 <listitem>
  <para>
 새 SQL 명령이 서버에서 수신될 때마다 프로세스 제목 업데이트를 활성화한다. 
-프로세스 제목은 일반적으로 <command>ps</> 명령으로 보거나 <application>Process Explorer</>를 사용하여 Windows에서 볼 수 있다. 
-수퍼유저만 이 설정을 변경할 수 있다.
+대부분의 운영체제에서는 기본값이 <literal>on</>이다.
+프로세스 제목은 일반적으로 <command>ps</> 명령으로 보거나 <application>프로세스 탐색기</>를
+사용하여 Windows에서 볼 수 있다.  하지만, 윈도우즈인 경우, 
+해당 갱신 작업에 비용이 많이 들어 기본값을 <literal>off</>로 했다.
+슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3759,8 +4290,8 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
  <para>
 각 세션에서 현재 실행 중인 명령의 실행이 시작될 때 해당 명령에 대한 정보 수집을 활성화한다. 
 이 매개변수의 기본값은 on이다. 
-활성화된 경우에도 이 정보가 모든 사용자에게 보이는 것은 아니며, 수퍼유저 및 리포트되는 세션의 소유자에게만 표시되므로 보안 위험을 나타내서는 안 된다. 
-수퍼유저만 이 설정을 변경할 수 있다.
+활성화된 경우에도 이 정보가 모든 사용자에게 보이는 것은 아니며, 슈퍼유저 및 리포트되는 세션의 소유자에게만 표시되므로 보안 위험을 나타내서는 안 된다. 
+슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3789,7 +4320,7 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
  <para>
 데이터베이스 작업에 대한 통계 수집을 활성화한다. 
 autovacuum은 수집된 정보를 필요로 하므로 이 매개변수의 기본값은 on이다. 
-수퍼유저만 이 설정을 변경할 수 있다.
+슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3806,7 +4337,7 @@ autovacuum은 수집된 정보를 필요로 하므로 이 매개변수의 기본
 운영 체제에 현재 시간을 반복해서 쿼리함으로써 일부 플랫폼에서는 상당한 오버헤드가 발생되므로 이 매개변수는 기본적으로 off이다. 
 사용자 시스템에서 타이밍 오버헤드를 측정하기 위해 <xref linkend="pgtesttiming"> 도구를 사용할 수 있다. 
 I/O 타이밍 정보는 BUFFERS 옵션이 사용되는 경우 및 <xref linkend="pgstatstatements">에 의해 <xref linkend="sql-explain"> 출력에서 <xref linkend="pg-stat-database-view">에 표시된다. 
-수퍼유저만 이 설정을 변경할 수 있다.
+슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3822,7 +4353,7 @@ I/O 타이밍 정보는 BUFFERS 옵션이 사용되는 경우 및 <xref linkend=
 함수 호출 횟수 및 사용된 시간의 추적을 활성화한다. 
 프로시저 언어 함수 <literal>all</literal>만 추적하기 위해 <literal>pl</literal>를 지정하면 SQL 및 C 언어 함수도 추적한다. 
 기본값은, 함수 통계 추적을 비활성화하는 <literal>none</literal>이다. 
-수퍼유저만 이 설정을 변경할 수 있다.
+슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 
  <note>
@@ -3880,7 +4411,7 @@ I/O 타이밍 정보는 BUFFERS 옵션이 사용되는 경우 및 <xref linkend=
  <para>
 각 쿼리에 대해 각 모듈의 성능 통계를 서버 로그에 출력한다. 이것은 Unix <function>getrusage()</> 운영 체제 기능과 유사한 대략적인 프로파일링 방법이다. 
 <varname>log_statement_stats</varname>는 총 문 통계를 리포트하고, 그 외의 것은 모듈별 통계를 알려준다. 
-<varname>log_statement_stats</varname>는 모듈별 옵션과 함께 활성화될 수 없다. 이 옵션은 모두 기본적으로 비활성화된다. 수퍼유저만 이 설정을 변경할 수 있다.
+<varname>log_statement_stats</varname>는 모듈별 옵션과 함께 활성화될 수 없다. 이 옵션은 모두 기본적으로 비활성화된다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -4371,7 +4902,7 @@ linkend="sql-set-transaction">을 참고 바란다.
 <listitem>
  <para>
 복제 관련 트리거 시작 및 현재 세션의 규칙을 제어한다. 
-이 변수를 설정하려면 수퍼유저 권한이 필요하고, 따라서 이전에 캐시된 쿼리 플랜이 삭제된다. 가능한 값은 <literal>origin</>(기본값), <literal>replica</> 및 <literal>local</>이다. 
+이 변수를 설정하려면 슈퍼유저 권한이 필요하고, 따라서 이전에 캐시된 쿼리 플랜이 삭제된다. 가능한 값은 <literal>origin</>(기본값), <literal>replica</> 및 <literal>local</>이다. 
 자세한 내용은 <xref linkend="sql-altertable">을 참조 바란다.
  </para>
 </listitem>
@@ -4422,6 +4953,26 @@ FOR UPDATE</>) 및 암시적으로 획득한 잠금에 모두 적용된다.
 </listitem>
  </varlistentry>
 
+     <varlistentry id="guc-idle-in-transaction-session-timeout" xreflabel="idle_in_transaction_session_timeout">
+      <term><varname>idle_in_transaction_session_timeout</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>idle_in_transaction_session_timeout</> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+       Terminate any session with an open transaction that has been idle for
+       longer than the specified duration in milliseconds. This allows any
+       locks held by that session to be released and the connection slot to be reused;
+       it also allows tuples visible only to this transaction to be vacuumed.  See
+       <xref linkend="routine-vacuuming"> for more details about this.
+       </para>
+       <para>
+       The default value of 0 disables this feature.
+       </para>
+      </listitem>
+     </varlistentry>
+
  <varlistentry id="guc-vacuum-freeze-table-age" xreflabel="vacuum_freeze_table_age">
 <term><varname>vacuum_freeze_table_age</varname> (<type>integer</type>)
 <indexterm>
@@ -4430,9 +4981,20 @@ FOR UPDATE</>) 및 암시적으로 획득한 잠금에 모두 적용된다.
 </term>
 <listitem>
  <para>
-<command>VACUUM</>은 테이블의 <structname>pg_class</>.<structfield>relfrozenxid</> 필드가 이 설정에서 지정된 연령에 도달한 경우 전체 테이블 스캔을 수행한다. 기본값은 1억 5천만 트랜잭션이다. 
-사용자는 이 값을 0 ~ 20억 중 아무거나 설정할 수 있지만 <command>VACUUM</>은 유효 값을 <xref linkend="guc-autovacuum-freeze-max-age">의 95%로 슬며시 제한하므로 랩어라운드 방지 autovacuum이 테이블에서 실행되기 주기적으로 직접 <command>VACUUM</>할 수 있다. 
-자세한 내용은 <xref linkend="vacuum-for-wraparound">을 참조 바란다.
+<command>VACUUM</>은 어떤 테이블의 <structname>pg_class</>.<structfield>relfrozenxid</> 칼럼값으로
+계산된 나이가 이 설정에서 지정된 나이보다 많으면 
+강제 테이블 스캔을 수행한다. 
+An aggressive scan differs from
+a regular <command>VACUUM</> in that it visits every page that might
+contain unfrozen XIDs or MXIDs, not just those that might contain dead
+tuples.  
+기본값은 1억 5천만 트랜잭션이다. 
+사용자는 이 값을 0 ~ 20억 중 아무거나 설정할 수 있지만
+크게 지정해도
+<command>VACUUM</>은 유효 값을 <xref linkend="guc-autovacuum-freeze-max-age"> 값을 기준으로
+그 값의 95%로 강제 조정한다.
+이렇게 해서 트랜잭션 ID 겹침 오류를 방지한다.
+자세한 내용은 <xref linkend="vacuum-for-wraparound">에서 설명한다.
  </para>
 </listitem>
  </varlistentry>
@@ -4461,7 +5023,12 @@ linkend="vacuum-for-wraparound">을 참조 바란다.
 </term>
 <listitem>
  <para>
-<command>VACUUM</>은 테이블의 <structname>pg_class</>.<structfield>relminmxid</> 필드가 이 설정에서 지정된 연령에 도달한 경우 전체 테이블 스캔을 수행한다. 기본값은 1억 5천만 multixact이다. 
+<command>VACUUM</>은 테이블의 <structname>pg_class</>.<structfield>relminmxid</> 필드가 이 설정에서 지정된 연령에 도달한 경우 강제 테이블 스캔을 수행한다. 
+An aggressive scan differs from
+        a regular <command>VACUUM</> in that it visits every page that might
+        contain unfrozen XIDs or MXIDs, not just those that might contain dead
+        tuples.
+기본값은 1억 5천만 multixact이다. 
 사용자는 이 값을 0 ~ 20억 중 아무거나 설정할 수 있지만 <command>VACUUM</>은 유효 값을 <xref linkend="guc-autovacuum-multixact-freeze-max-age">의 95%로 슬며시 제한하므로 랩어라운드 방지가 테이블에서 실행되기 전에 주기적으로 직접 <command>VACUUM</>할 수 있다. 
 자세한 내용은 <xref linkend="vacuum-for-multixact-wraparound">을 참조 바란다.
  </para>
@@ -4700,7 +5267,7 @@ SET XML OPTION { DOCUMENT | CONTENT };
  </para>
 
  <para>
-서버 로그 및 클라이언트로 전송되는 메시지에 영향을 줄 수 있고 부적절한 값이 서버 로그의 가독성을 해칠 수 있으므로 수퍼유저만 이 설정을 변경할 수 있다.
+서버 로그 및 클라이언트로 전송되는 메시지에 영향을 줄 수 있고 부적절한 값이 서버 로그의 가독성을 해칠 수 있으므로 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -4824,7 +5391,7 @@ linkend="locale">을 참조 바란다.
  </para>
 
  <para>
-수퍼유저 이외에 사용자가 이러한 방식으로 사용할 수 있도록 모듈이 특수하게 디자인되어 있지 않는 한 이것은 일반적으로 올바른 설정 방법이 아니다. 
+슈퍼유저 이외에 사용자가 이러한 방식으로 사용할 수 있도록 모듈이 특수하게 디자인되어 있지 않는 한 이것은 일반적으로 올바른 설정 방법이 아니다. 
 대신 <xref linkend="guc-session-preload-libraries">를 찾아 보기 바란다.
  </para>
 </listitem>
@@ -4839,7 +5406,7 @@ linkend="locale">을 참조 바란다.
 </term>
 <listitem>
  <para>
-이 변수는 연결 시작 시 사전 로드되는 공유 라이브러리를 하나 이상 지정한다. 수퍼유저만 이 설정을 변경할 수 있다. 
+이 변수는 연결 시작 시 사전 로드되는 공유 라이브러리를 하나 이상 지정한다. 슈퍼유저만 이 설정을 변경할 수 있다. 
 매개변수 값은 연결 시작 시에만 효과가 있다. 후속 변경은 무효하다. 
 지정된 라이브러리를 찾지 못하면 연결 시도가 실패한다.
  </para>
@@ -4983,7 +5550,7 @@ GIN 인덱스 스캔에 의해 리턴된 설정 크기에 대한 상한. 자세�
 이 값을 늘리면 불필요한 데드록 검사를 위해 대기하는 시간이 줄어들지만 실제 데드록 에러 리포팅이 느려진다. 기본값은, 실제로 사용자가 희망하는 최소값일 가능성이 높은 1초이다(<literal>1s</>). 
 로드가 과도한 서버에서는 이 값을 올리고 싶을 것이다. 
 이상적으로, waiter가 데드록 검사를 결정하기 전에 잠금이 해제되는 이상한 상황을 개선하려면 이 설정은 사용자의 일반적인 트랜잭션 시간을 초과해야 한다. 
-수퍼유저만 이 설정을 변경할 수 있다.
+슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 
  <para>
@@ -5139,11 +5706,11 @@ SQL 표준에 따라 일반 string의 기본 동작은 역슬래시를 일반 �
  <para>
 9.0 이전의 <productname>PostgreSQL</> 릴리스에서 거대(large) 개체는 액세스 권한이 없었으며, 항상 모든 사용자에 의해 읽기 및 쓰기가 가능했었다. 
 이 변수를 <literal>on</>으로 설정하면 이전 릴리스와의 호환성에 대한 새 권한 검사가 비활성화된다. 
-기본값은 <literal>off</>이다. 수퍼유저만 이 설정을 변경할 수 있다.
+기본값은 <literal>off</>이다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
  <para>
 이 변수를 설정한다고 해서 거대(large) 개체와 관련된 모든 보안 검사가 비활성화되는 것은 아니다. 기본 동작에 대한 것만 <productname>PostgreSQL</> 9.0에서 변경되었다. 
-예를 들면, <literal>lo_import()</literal> 및 <literal>lo_export()</literal>는 이 설정과 무관하게 수퍼유저 권한이 필요하다.
+예를 들면, <literal>lo_import()</literal> 및 <literal>lo_export()</literal>는 이 설정과 무관하게 슈퍼유저 권한이 필요하다.
  </para>
 </listitem>
  </varlistentry>
@@ -5853,7 +6420,7 @@ Unconditionally trace locks on this table (OID).
 읽기 중 체크섬 실패를 감지하면 <productname>PostgreSQL</>이 에러를 보고하고, 현재 트랜잭션을 중단한다. 
 <varname>ignore_checksum_failure</>를 on으로 설정하면 시스템이 실패(그래도 경고는 리포트된다)를 무시하고 프로세싱을 계속한다. 
 이러한 동작은 <emphasis>충돌, 충돌 전파나 숨김 또는 기타 심각한 문제를 초래한다</>. 그러나, 블록 헤더가 온전한 경우에는 이것을 사용하면 에러를 무시하고 테이블에 잔존해 있을 수 있는 미손상 튜플을 검색할 수 있다. 
-블록 헤더가 손상된 경우 이 옵션이 활성화된 경우에도 에러가 보고된다. 기본값은 <literal>off</>이고 수퍼유저에 의해서만 변경 가능하다.
+블록 헤더가 손상된 경우 이 옵션이 활성화된 경우에도 에러가 보고된다. 기본값은 <literal>off</>이고 슈퍼유저에 의해서만 변경 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -5871,7 +6438,7 @@ Unconditionally trace locks on this table (OID).
 그러나, 이것을 이용하면 사용자는 에러를 무시하고 테이블에 잔존해 있을 수 있는 미손상 페이지에서 행을 검색할 수 있다. 이것은 하드웨어 또는 소프트웨어 에러에 의한 손상이 발생된 경우 데이터를 복구할 때 유용하다. 
 테이블의 손상된 페이지에서 데이터를 복구하지 않기로 결정하기 전에는 이것을 on으로 설정하면 안 된다. 
 0으로 처리된 페이지는 디스크에 강제로 쓰여지지 않으므로 이 매개변수를 off로 다시 설정하기 전에 테이블 또는 인덱스를 재생하는 것이 좋다. 
-기본값은 <literal>off</>이고 수퍼유저에 의해서만 변경 가능하다.
+기본값은 <literal>off</>이고 슈퍼유저에 의해서만 변경 가능하다.
  </para>
 </listitem>
  </varlistentry>

@@ -421,7 +421,7 @@ gen_salt(type text [, iter_count integer ]) returns text
       반복하는 프로그램을 만들어서 수집함.
       참고: <literal>john
       -test</literal> 에서는 <literal>crypt-bf/5</> 설정에서
-      초당 213번 반복했다.
+      초당 13506번 반복했다.
       (<filename>pgcrypto</> 모듈에서 구현한 <literal>crypt-bf</literal>
       해시 기능은 John the Ripper에서 사용한 것과 그 결과의 차이가 미미했다.)
      </para>
@@ -863,6 +863,19 @@ pgp_sym_encrypt(data, psw, 'compress-algo=1, cipher-algo=aes256')
 사용할 수 있는 값: 0, 1
 기본값: 0
 사용 가능한 함수: pgp_sym_encrypt
+</literallayout>
+  </sect4>
+
+  <sect4>
+   <title>s2k-count</title>
+
+   <para>
+    The number of iterations of the S2K algorithm to use.  It must
+    be a value between 1024 and 65011712, inclusive.
+   </para>
+<literallayout>
+Default: A random value between 65536 and 253952
+Applies to: pgp_sym_encrypt, only with s2k-mode=3
 </literallayout>
   </sect4>
 
@@ -1373,7 +1386,7 @@ gen_random_uuid() returns uuid
      <para>리눅스용 Jean-Luc Cooke Fortuna-기반 <filename>/dev/random</> 드라이버.</para>
     </listitem>
     <listitem>
-     <para><ulink url="http://research.cyber.ee/~lipmaa/crypto/"></ulink></para>
+     <para><ulink url="http://kodu.ut.ee/~lipmaa/crypto/"></ulink></para>
      <para>암호학에 대한 이야기 모음.</para>
     </listitem>
    </itemizedlist>

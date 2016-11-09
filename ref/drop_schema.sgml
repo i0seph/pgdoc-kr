@@ -68,6 +68,8 @@ DROP SCHEMA [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [,
     <listitem>
      <para>
           해당 스키마 소속 객체들이 있으면 모두 삭제한다. 
+물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
+      (<xref linkend="ddl-depend"> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -82,6 +84,17 @@ DROP SCHEMA [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [,
     </listitem>
    </varlistentry>
   </variablelist>
+ </refsect1>
+
+ <refsect1>
+  <title>참고</title>
+
+  <para>
+   <literal>CASCADE</literal> 옵션을 사용하는 경우, 
+   해당 스키마가 아닌 다른 스키마에 속한 객체들이 삭제 될 수도 있음을
+   주의해야 한다.
+  </para>
+
  </refsect1>
 
  <refsect1>

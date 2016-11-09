@@ -75,6 +75,10 @@ DROP AGGREGATE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
     <listitem>
      <para>
           해당 집계 함수와 의존성 관계를 가진 모든 객체도 함께 삭제 한다.
+          (뷰를 삭제 할 때와 같이)
+      물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
+      (<xref linkend="ddl-depend"> 참조).
+
      </para>
     </listitem>
    </varlistentry>

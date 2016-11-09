@@ -1,47 +1,46 @@
 <!-- doc/src/sgml/keywords.sgml -->
 
 <appendix id="sql-keywords-appendix">
- <title><acronym>SQL</acronym> Key Words</title>
+ <title><acronym>SQL</acronym> 키워드</title>
 
  <indexterm zone="sql-keywords-appendix">
-  <primary>key word</primary>
-  <secondary>list of</secondary>
+  <primary>키워드</primary>
+  <secondary>목록</secondary>
  </indexterm>
 
  <para>
-  <xref linkend="keywords-table"> lists all tokens that are key words
-  in the SQL standard and in <productname>PostgreSQL</productname>
-  &version;.  Background information can be found in <xref
-  linkend="sql-syntax-identifiers">.
-  (For space reasons, only the latest two versions of the SQL standard, and
-  SQL-92 for historical comparison, are included.  The differences between
-  those and the other intermediate standard versions are small.)
+  <xref linkend="keywords-table">는 표준 SQL과 <productname>PostgreSQL</productname>
+  &version; 에서 정의한 모든 키워드 목록이다.  키워드에 대한 배경 지식은
+  <xref linkend="sql-syntax-identifiers">에서 소개한다.
+  (지면 관계 상, 표준 SQL은 역사적인 SQL-92, 그리고 최신 두 버전만 
+  언급한다.  이들과 그 사이 중간 표준 SQL들 차이는 적다.)
  </para>
 
  <para>
-  SQL distinguishes between <firstterm>reserved</firstterm> and
-  <firstterm>non-reserved</firstterm> key words.  According to the standard,
-  reserved key words
-  are the only real key words; they are never allowed as identifiers.
-  Non-reserved key words only have a special meaning in particular
-  contexts and can be used as identifiers in other contexts.  Most
-  non-reserved key words are actually the names of built-in tables
-  and functions specified by SQL.  The concept of non-reserved key
-  words essentially only exists to declare that some predefined meaning
-  is attached to a word in some contexts.
+  SQL에서는 키워드를 <firstterm>예약어</firstterm>와
+  <firstterm>미예약어</firstterm>로 구분한다; 표준 SQL에서 말하는
+  키워드는 예약어만을 말하며, 이들은 식별자(예, 테이블 이름, 칼럼 이름)로 
+  사용할 수 없다.  
+  미예약어 키워드는 특정 문맥에서 특별한 의미를 지니며, 
+  그 외 문맥에서는 일반 식별자처럼 사용할 수 있다.  대부분의
+  미예약어 키워드는 내장 테이블 이름이거나 특정 SQL 함수 이름이다.
+  미예약어 키워드를 사용하는 핵심적인 이유는, 어떤 문맥에서
+  그 단어가 미리 정의된 의미로 사용되도록 하기 위함이다.
  </para>
 
  <para>
+  <productname>PostgreSQL</productname> 구문 분석 작업은 조금 
+  복잡하다.  
   In the <productname>PostgreSQL</productname> parser life is a bit
   more complicated. There are several different classes of tokens
   ranging from those that can never be used as an identifier to those
   that have absolutely no special status in the parser as compared to
   an ordinary identifier.  (The latter is usually the case for
-  functions specified by SQL.)  Even reserved key words are not
-  completely reserved in <productname>PostgreSQL</productname>, but
-  can be used as column labels (for example, <literal>SELECT 55 AS
-  CHECK</literal>, even though <token>CHECK</token> is a reserved key
-  word).
+  functions specified by SQL.)  
+  심지어 예약어 임에도 불구하고, <productname>PostgreSQL</productname>
+  에서는 비예약어처럼 사용할 수도 있다. (예로 <literal>SELECT 55 AS
+  CHECK</literal> 구문에서 사용한 <token>CHECK</token> 키워드는
+  예약어이다.)
  </para>
 
  <para>
@@ -1313,6 +1312,13 @@
     <entry></entry>
     <entry>reserved</entry>
     <entry>reserved</entry>
+    <entry></entry>
+   </row>
+   <row>
+    <entry><token>DEPENDS</token></entry>
+    <entry>non-reserved</entry>
+    <entry></entry>
+    <entry></entry>
     <entry></entry>
    </row>
    <row>
@@ -2731,7 +2737,7 @@
    </row>
    <row>
     <entry><token>METHOD</token></entry>
-    <entry></entry>
+    <entry>non-reserved</entry>
     <entry>reserved</entry>
     <entry>reserved</entry>
     <entry></entry>
@@ -3260,6 +3266,13 @@
     <entry>non-reserved</entry>
     <entry>non-reserved</entry>
     <entry>reserved</entry>
+   </row>
+   <row>
+    <entry><token>PARALLEL</token></entry>
+    <entry>non-reserved</entry>
+    <entry></entry>
+    <entry></entry>
+    <entry></entry>
    </row>
    <row>
     <entry><token>PARAMETER</token></entry>

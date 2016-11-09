@@ -384,8 +384,17 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
          </para>
         </listitem>
        </varlistentry>
-      </variablelist>
 
+       <varlistentry>
+        <term><literal>bsd</></term>
+        <listitem>
+         <para>
+          운영체제에서 제공하는 BSD 인증 서비스를 이용해서 인증한다. 아래
+          <xref linkend="auth-bsd">에서 자세히 설명한다.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
       </para>
      </listitem>
     </varlistentry>
@@ -396,6 +405,14 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       <para>
        <replaceable>auth-method</> 필드 이후에 인증 방법에 대한 옵션을 지정하는 <replaceable>name</><literal>=</><replaceable>value</> 형식의 필드가 있을 수 있다. 
        인증 방법에서 사용할 수 있는 옵션에 대한 자세한 내용은 아래에 나와 있다.
+      </para>
+      <para>
+       In addition to the method-specific options listed below, there is one
+       method-independent authentication option <literal>clientcert</>, which
+       can be specified in any <literal>hostssl</> record.  When set
+       to <literal>1</>, this option requires the client to present a valid
+       (trusted) SSL certificate, in addition to the other requirements of the
+       authentication method.
       </para>
      </listitem>
     </varlistentry>
@@ -525,7 +542,7 @@ local   db1,db2,@demodbs  all                                   md5
   </indexterm>
 
   <para>
-   Ident 또는 GSSAPI 같은 외부 인증 시스템을 사용하는 경우, 연결을 시작하는 운영 체제 사용자의 이름은 연결해야 하는 데이터베이스 사용자 이름과 다를 수 있다. 
+   Ident 또는 GSSAPI 같은 외부 인증 시스템을 사용하는 경우, 연결을 시작하는 운영 체제 사용자의 이름은 연결해야 하는 데이터베이스 사용자 이름(롤 이름)과 다를 수 있다. 
    이런 경우 사용자 이름 맵을 사용하여 운영 체제 사용자 이름과 데이터베이스 사용자 이름을 매핑할 수 있다. 
    사용자 이름 매핑을 사용하려면 pg_hba.conf 옵션 필드에서 <literal>map</literal>=<replaceable>map-name</replaceable>을 지정해야 한다. 
    이 옵션은 외부 사용자 이름을 수신하는 모든 인증 방법에서 지원된다. 
@@ -697,16 +714,18 @@ omicron         bryanh                  guest1
     strongly discouraged as it is then impossible to distinguish different users
     with the same user name but coming from different realms.  To enable this,
     set <literal>include_realm</> to 0.  For simple single-realm
-    installations, <literal>include_realm</> combined with the
-    <literal>krb_realm</> parameter (which checks that the realm provided
-    matches exactly what is in the <literal>krb_realm</literal> parameter) would be a secure but
-    less capable option compared to specifying an explicit mapping in
+    installations, doing that combined with setting the
+    <literal>krb_realm</> parameter (which checks that the principal's realm
+    matches exactly what is in the <literal>krb_realm</literal> parameter)
+    is still secure; but this is a
+    less capable approach compared to specifying an explicit mapping in
     <filename>pg_ident.conf</>.
-
    </para>
 
    <para>
-    사용자는 서버 키탭 파일을 <productname>PostgreSQL</productname> 서버 계정으로 판독 가능한지(기본적으로 판독만 가능한지) 확인해야 한다. (<xref linkend="postgres-user">도 참조 바란다.) 키 파일의 위치는 <xref
+    사용자는 서버 키탭 파일을 <productname>PostgreSQL</productname> 서버 계정으로
+    읽기 가능한지(읽기 가능만, 쓰기 불가) 확인해야 한다. (<xref linkend="postgres-user">도
+    참조 바란다.) 키 파일의 위치는 <xref
     linkend="guc-krb-server-keyfile"> 환경 설정 매개 변수에 의해 지정된다. 
     기본값은 <filename>/usr/local/pgsql/etc/krb5.keytab</>(또는 빌드 시 <varname>sysconfdir</>로 지정된 아무 디렉토리). 보안상의 이유로, 시스템 키탭 파일에 대한 권한을 여는 것보다는 <productname>PostgreSQL</productname> 서버에 대해 별개의 키탭을 사용하는 것이 바람직하다.
    </para>
@@ -733,10 +752,12 @@ omicron         bryanh                  guest1
         If set to 0, the realm name from the authenticated user principal is
         stripped off before being passed through the user name mapping
         (<xref linkend="auth-username-maps">). This is discouraged and is
-        primarily available for backwards compatibility as it is not secure
-        in multi-realm environments unless <literal>krb_realm</literal> is also used.  Users
-        are recommended to leave include_realm set to the default (1) and to
-        provide an explicit mapping in <filename>pg_ident.conf</>.
+        primarily available for backwards compatibility, as it is not secure
+        in multi-realm environments unless <literal>krb_realm</literal> is
+        also used.  It is recommended to
+        leave <literal>include_realm</literal> set to the default (1) and to
+        provide an explicit mapping in <filename>pg_ident.conf</> to convert
+        principal names to <productname>PostgreSQL</> user names.
        </para>
       </listitem>
      </varlistentry>
@@ -802,10 +823,49 @@ omicron         bryanh                  guest1
         If set to 0, the realm name from the authenticated user principal is
         stripped off before being passed through the user name mapping
         (<xref linkend="auth-username-maps">). This is discouraged and is
-        primarily available for backwards compatibility as it is not secure
-        in multi-realm environments unless <literal>krb_realm</literal> is also used.  Users
-        are recommended to leave include_realm set to the default (1) and to
-        provide an explicit mapping in <filename>pg_ident.conf</>.
+        primarily available for backwards compatibility, as it is not secure
+        in multi-realm environments unless <literal>krb_realm</literal> is
+        also used.  It is recommended to
+        leave <literal>include_realm</literal> set to the default (1) and to
+        provide an explicit mapping in <filename>pg_ident.conf</> to convert
+        principal names to <productname>PostgreSQL</> user names.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>compat_realm</literal></term>
+      <listitem>
+       <para>
+        If set to 1, the domain's SAM-compatible name (also known as the
+        NetBIOS name) is used for the <literal>include_realm</literal>
+        option. This is the default. If set to 0, the true realm name from
+        the Kerberos user principal name is used.
+       </para>
+       <para>
+        Do not disable this option unless your server runs under a domain
+        account (this includes virtual service accounts on a domain member
+        system) and all clients authenticating through SSPI are also using
+        domain accounts, or authentication will fail.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>upn_username</literal></term>
+      <listitem>
+       <para>
+        If this option is enabled along with <literal>compat_realm</literal>,
+        the user name from the Kerberos UPN is used for authentication. If
+        it is disabled (the default), the SAM-compatible user name is used.
+        By default, these two names are identical for new user accounts.
+       </para>
+       <para>
+        Note that <application>libpq</> uses the SAM-compatible name if no
+        explicit user name is specified. If you use
+        <application>libpq</> or a driver based on it, you should
+        leave this option disabled or explicitly specify user name in the
+        connection string.
        </para>
       </listitem>
      </varlistentry>
@@ -1185,8 +1245,14 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
    </indexterm>
 
    <para>
-    이 인증 방법은 SSL 클라이언트 인증서를 사용하여 인증을 수행한다. 따라서 SSL 연결에서만 사용 가능하다. 이 인증 방법을 사용하는 경우 서버는 클라이언트가 유효한 인증서를 제공할 것을 요구한다. 패스워드 없음 프롬프트는 클라이언트로 전송된다. 
-    인증서의 <literal>cn</literal>(공통 이름) 속성은 요청된 데이터베이스 사용자 이름과 비교되며, 일치하는 경우 로그인이 허용된다. 사용자 이름 매핑을 사용하여 <literal>cn</literal>을 데이터베이스 사용자 이름과 다르게 할 수 있다.
+    이 인증 방법은 SSL 클라이언트 인증서를 사용하여 인증을 수행한다.  따라서
+    SSL 연결에서만 사용 가능하다.  이 인증 방법을 사용하는 경우 서버는 
+    클라이언트가 유효한 (신뢰할 수 있는) 인증서를 제공할 것을
+    요구한다.  패스워드 없음 프롬프트는
+    클라이언트로 전송된다.  인증서의 <literal>cn</literal>(공통 이름) 속성은
+    요청된 데이터베이스 사용자 이름과 비교되며, 일치하는 경우 로그인이
+    허용된다.  사용자 이름 매핑을 사용하여 <literal>cn</literal>을 데이터베이스
+    사용자 이름과 다르게 할 수 있다.
    </para>
 
    <para>
@@ -1202,7 +1268,18 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
      </varlistentry>
     </variablelist>
    </para>
+
+   <para>
+    In a <filename>pg_hba.conf</> record specifying certificate
+    authentication, the authentication option <literal>clientcert</> is
+    assumed to be <literal>1</>, and it cannot be turned off since a client
+    certificate is necessary for this method.  What the <literal>cert</>
+    method adds to the basic <literal>clientcert</> certificate validity test
+    is a check that the <literal>cn</literal> attribute matches the database
+    user name.
+   </para>
   </sect2>
+
 
   <sect2 id="auth-pam">
    <title>PAM 인증</title>
@@ -1212,8 +1289,14 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
    </indexterm>
 
    <para>
-    이 인증 방법은 인증 메커니즘으로 PAM(Pluggable Authentication Modules)을 사용할 때 외에는 <literal>password</literal>와 유사하게 작동된다. 기본 PAM 서비스 이름은 <literal>postgresql</literal>이다. PAM은 사용자 이름/패스워드 쌍을 검증할 때에만 사용된다. 
-    따라서 PAM을 인증에 사용하기 전에 사용자가 데이터베이스에 존재해야 한다. PAM에 대한 자세한 내용은 <ulink url="http://www.kernel.org/pub/linux/libs/pam/">
+    이 인증 방법은 인증 메커니즘으로 PAM(Pluggable Authentication Modules)을
+    사용하며, 나머지는 <literal>password</literal> 인증 방식과 비슷하다.  기본
+    PAM 서비스 이름은 <literal>postgresql</literal>이다.  PAM 인증은 사용자
+    이름/비밀번호 조합의 유효성만 검사하거나, 선택적으로
+    접속하는 원격 호스트 이름 또는 IP 주소의 유효성을 검사하는데만 사용 된다.
+    그래서, PAM 인증에 사용될 사용자 이름은 해당 데이터베이스 사용자로
+    먼저 만들어져있어야 한다.  PAM에 대한 자세한 정보는
+    <ulink url="http://www.kernel.org/pub/linux/libs/pam/">
     <productname>Linux-PAM</> 페이지</ulink>를 참고 바란다.
    </para>
 
@@ -1228,6 +1311,20 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
        </para>
       </listitem>
      </varlistentry>
+     <varlistentry>
+      <term><literal>pam_use_hostname</literal></term>
+      <listitem>
+       <para>
+        Determines whether the remote IP address or the host name is provided
+        to PAM modules through the <symbol>PAM_RHOST</symbol> item.  By
+        default, the IP address is used.  Set this option to 1 to use the
+        resolved host name instead.  Host name resolution can lead to login
+        delays.  (Most PAM configurations don't use this information, so it is
+        only necessary to consider this setting if a PAM configuration was
+        specifically created to make use of it.)
+       </para>
+      </listitem>
+     </varlistentry>
     </variablelist>
    </para>
 
@@ -1237,6 +1334,42 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
     </para>
    </note>
   </sect2>
+
+  <sect2 id="auth-bsd">
+   <title>BSD 인증</title>
+
+   <indexterm zone="auth-bsd">
+    <primary>BSD 인증</primary>
+   </indexterm>
+
+   <para>
+    This authentication method operates similarly to
+    <literal>password</literal> except that it uses BSD Authentication
+    to verify the password. BSD Authentication is used only
+    to validate user name/password pairs. Therefore the user's role must
+    already exist in the database before BSD Authentication can be used
+    for authentication. BSD 인증 프레임워크는 현재
+    OpenBSD에서만 사용할 수 있다.
+   </para>
+
+   <para>
+    BSD Authentication in <productname>PostgreSQL</> uses
+    the <literal>auth-postgresql</literal> login type and authenticates with
+    the <literal>postgresql</literal> login class if that's defined
+    in <filename>login.conf</filename>. By default that login class does not
+    exist, and <productname>PostgreSQL</> will use the default login class.
+   </para>
+
+   <note>
+    <para>
+     To use BSD Authentication, the PostgreSQL user account (that is, the
+     operating system user running the server) must first be added to
+     the <literal>auth</literal> group.  The <literal>auth</literal> group
+     exists by default on OpenBSD systems.
+    </para>
+   </note>
+  </sect2>
+
  </sect1>
 
   <sect1 id="client-authentication-problems">

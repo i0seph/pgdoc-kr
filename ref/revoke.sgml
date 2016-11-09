@@ -112,7 +112,7 @@ REVOKE [ ADMIN OPTION FOR ]
  </refsynopsisdiv>
 
  <refsect1 id="SQL-REVOKE-description">
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    The <command>REVOKE</command> command revokes previously granted
@@ -175,7 +175,7 @@ REVOKE [ ADMIN OPTION FOR ]
  </refsect1>
 
  <refsect1 id="SQL-REVOKE-notes">
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    Use <xref linkend="app-psql">'s <command>\dp</command> command to
@@ -193,7 +193,7 @@ REVOKE [ ADMIN OPTION FOR ]
    Instead, user A could revoke the grant option from user B and use
    the <literal>CASCADE</literal> option so that the privilege is
    in turn revoked from user C.  For another example, if both A and B
-   have granted the same privilege to C, A can revoke his own grant
+   have granted the same privilege to C, A can revoke their own grant
    but not B's grant, so C will still effectively have the privilege.
   </para>
 
@@ -247,7 +247,7 @@ REVOKE [ ADMIN OPTION FOR ]
  </refsect1>
 
  <refsect1 id="SQL-REVOKE-examples">
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Revoke insert privilege for the public on table
@@ -279,7 +279,7 @@ REVOKE admins FROM joe;
  </refsect1>
 
  <refsect1 id="SQL-REVOKE-compatibility">
-  <title>호환성</title>
+  <title>Compatibility</title>
 
    <para>
     The compatibility notes of the <xref linkend="sql-grant"> command
@@ -291,7 +291,7 @@ REVOKE admins FROM joe;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simpara>
    <xref linkend="sql-grant">

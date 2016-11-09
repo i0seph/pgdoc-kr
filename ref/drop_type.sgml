@@ -62,6 +62,8 @@ DROP TYPE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, .
      <para>
           해당 자료형과 의존성 관계가 있는 모든 객체들(테이블 칼럼, 
           함수, 연산자 등)도 함께 삭제한다.
+      물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
+      (<xref linkend="ddl-depend"> 참조).
      </para>
     </listitem>
    </varlistentry>

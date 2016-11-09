@@ -426,19 +426,28 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
        </para>
        <para>
         The delay occurs once the database in recovery has reached a consistent
-        state, until the standby is promoted or triggered.
-        이후 대기 서버는 대기를 멈추고 복구를 종료한다.  
+        state, until the standby is promoted or triggered. After that the standby
+        will end recovery without further waiting.
        </para>
        <para>
-        recovery_min_apply_delay는 원래 스트리밍 리플리케이션 배치 용도로 만들어졌지만, 모든 경우에 적용된다.  
-        동기적인 리플리케이션은 트랜잭션 커밋을 동기적으로 요청하는 설정이 없기 때문에 영향을 받지 않는다.  
-        recovery_min_apply_delay을 사용하면 <varname>hot_standby_feedback</>이 지연되어 마스터 서버에 과부하가 걸릴 수 있으므로 
-        recovery_min_apply_delay와 hot_standby_feedback를 적절히 사용해야 한다.  
+        This parameter is intended for use with streaming replication deployments;
+        however, if the parameter is specified it will be honored in all cases.
+
+        <varname>hot_standby_feedback</> will be delayed by use of this feature
+        which could lead to bloat on the master; use both together with care.
+
+        <warning>
+         <para>
+          Synchronous replication is affected by this setting when <varname>synchronous_commit</varname>
+          is set to <literal>remote_apply</literal>; every <literal>COMMIT</literal>
+          will need to wait to be applied.
+         </para>
+        </warning>
        </para>
       </listitem>
      </varlistentry>
+
      </variablelist>
    </sect1>
 
 </chapter>
-

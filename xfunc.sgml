@@ -201,8 +201,10 @@ SELECT clean_emp();
     </para>
 
     <para>
-     인자가 복합 자료형이라면, 함수 내용에서 <literal>argname.fieldname</literal>
-     또는 <literal>$1.fieldname</literal> 형태로 사용한다. 물론 
+     인자가 복합 자료형이라면, 함수 내용에서
+     <literal><replaceable>argname</>.<replaceable>fieldname</></literal>
+     또는 <literal>$1.<replaceable>fieldname</></literal>
+     형태로 사용한다. 물론 
      인자 이름에서 충돌이 생긴다면, 함수 이름을 함께 사용해서 그 충돌을
      피한다.
     </para>
@@ -517,8 +519,8 @@ LINE 1: SELECT new_emp().name;
 
     <para>
      복합 자료형의 해당 속성(필드, 칼럼)을 뽑는 방법으로
-     <literal>테이블.속성</> 형태와 함께
-     <literal>속성(테이블)</> 형태도 사용할 수 있다.
+     <literal><replaceable>attribute</>(<replaceable>table</>)</> 형태와 함께
+     <literal><replaceable>table</>.<replaceable>attribute</></> 형태도 사용할 수 있다.
 
 <screen>
 SELECT name(new_emp());
@@ -759,14 +761,14 @@ SELECT mleast(VARIADIC ARRAY[]::numeric[]);
      바른 사용법 예:
 
 <screen>
-SELECT mleast(VARIADIC arr => ARRAY[10, -1, 5, 4.4]);
+SELECT mleast(VARIADIC arr =&gt; ARRAY[10, -1, 5, 4.4]);
 </screen>
 
      하지만, 아래 구문을 오류를 낸다:
 
 <screen>
-SELECT mleast(arr => 10);
-SELECT mleast(arr => ARRAY[10, -1, 5, 4.4]);
+SELECT mleast(arr =&gt; 10);
+SELECT mleast(arr =&gt; ARRAY[10, -1, 5, 4.4]);
 </screen>
     </para>
    </sect2>
@@ -1287,12 +1289,12 @@ CREATE FUNCTION test(smallint, double precision) RETURNS ...
    <para>
     A function that takes a single argument of a composite type should
     generally not have the same name as any attribute (field) of that type.
-    Recall that <literal>attribute(table)</literal> is considered equivalent
-    to <literal>table.attribute</literal>.  In the case that there is an
+    Recall that <literal><replaceable>attribute</>(<replaceable>table</>)</literal> is considered equivalent
+    to <literal><replaceable>table</>.<replaceable>attribute</></literal>.  In the case that there is an
     ambiguity between a function on a composite type and an attribute of
     the composite type, the attribute will always be used.  It is possible
     to override that choice by schema-qualifying the function name
-    (that is, <literal>schema.func(table)</literal>) but it's better to
+    (that is, <literal><replaceable>schema</>.<replaceable>func</>(<replaceable>table</>)</literal>) but it's better to
     avoid the problem by not choosing conflicting names.
    </para>
 
@@ -2807,7 +2809,7 @@ HeapTuple heap_form_tuple(TupleDesc tupdesc, Datum *values, bool *isnull)
 HeapTuple BuildTupleFromCStrings(AttInMetadata *attinmeta, char **values)
 </programlisting>
      to build a <structname>HeapTuple</> given user data
-     in C string form.  <literal>values</literal> is an array of C strings,
+     in C string form.  <parameter>values</parameter> is an array of C strings,
      one for each attribute of the return row. Each C string should be in
      the form expected by the input function of the attribute data
      type. In order to return a null value for one of the attributes,
@@ -3317,7 +3319,7 @@ CREATE FUNCTION make_array(anyelement) RETURNS anyarray
      <xref linkend="guc-shared-preload-libraries"><indexterm><primary>shared_preload_libraries</></>.
      Shared memory is reserved by calling:
 <programlisting>
-void RequestAddinShmemSpace(int size)
+void RequestNamedLWLockTranche(const char *tranche_name, int num_lwlocks)
 </programlisting>
      from your <function>_PG_init</> function.
     </para>
@@ -3326,7 +3328,10 @@ void RequestAddinShmemSpace(int size)
 <programlisting>
 void RequestAddinLWLocks(int n)
 </programlisting>
-     from <function>_PG_init</>.
+     from <function>_PG_init</>.  This will ensure that an array of
+     <literal>num_lwlocks</> LWLocks is available under the name
+     <literal>tranche_name</>.  Use <function>GetNamedLWLockTranche</>
+     to get a pointer to this array.
     </para>
     <para>
      To avoid possible race-conditions, each backend should use the LWLock
@@ -3345,7 +3350,7 @@ if (!ptr)
         {
                 initialize contents of shmem area;
                 acquire any requested LWLocks using:
-                ptr->mylockid = LWLockAssign();
+                ptr->locks = GetNamedLWLockTranche("my tranche name");
         }
         LWLockRelease(AddinShmemInitLock);
 }

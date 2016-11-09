@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP POLICY [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable>
+DROP POLICY [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -72,6 +72,18 @@ DROP POLICY [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ON
     <listitem>
      <para>
       해당 정책이 할당된 테이블 이름(선택적으로 스키마 이름을 포함 할 수 있음)
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>CASCADE</literal></term>
+    <term><literal>RESTRICT</literal></term>
+
+    <listitem>
+     <para>
+      이 구문은 현재 아무런 영향을 안 준다.  아직까지는
+      정책에 의존적인 객체가 없다.
      </para>
     </listitem>
    </varlistentry>

@@ -73,6 +73,8 @@ DROP TRIGGER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> O
     <listitem>
      <para>
           해당 트리거와 의존성 관계가 있는 모든 객체들도 함께 삭제 한다.
+      물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
+      (<xref linkend="ddl-depend"> 참조).
      </para>
     </listitem>
    </varlistentry>

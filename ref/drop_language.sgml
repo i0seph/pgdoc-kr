@@ -74,6 +74,8 @@ DROP [ PROCEDURAL ] LANGUAGE [ IF EXISTS ] <replaceable class="PARAMETER">이름
      <para>
           해당 언어와 의존성 관계가 있는 모든 객체들(이 언어를 사용하는 
           함수들)도 함께 삭제한다.
+물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
+      (<xref linkend="ddl-depend"> 참조).
      </para>
     </listitem>
    </varlistentry>

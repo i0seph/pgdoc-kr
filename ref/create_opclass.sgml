@@ -31,7 +31,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>CREATE OPERATOR CLASS</command> creates a new operator class.
@@ -82,7 +82,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -172,7 +172,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
       the input data type(s) of the function (for B-tree comparison functions
       and hash functions)
       or the class's data type (for B-tree sort support functions and all
-      functions in GiST, SP-GiST and GIN operator classes).  These defaults
+      functions in GiST, SP-GiST, GIN and BRIN operator classes).  These defaults
       are correct, and so <replaceable
       class="parameter">op_type</replaceable> need not be specified in
       <literal>FUNCTION</> clauses, except for the case of a B-tree sort
@@ -232,7 +232,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
      <para>
       The data type actually stored in the index.  Normally this is
       the same as the column data type, but some index methods
-      (currently GiST and GIN) allow it to be different.  The
+      (currently GiST, GIN and BRIN) allow it to be different.  The
       <literal>STORAGE</> clause must be omitted unless the index
       method allows a different type to be used.
      </para>
@@ -247,7 +247,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
  </refsect1>
 
  <refsect1>
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    Because the index machinery does not check access permissions on functions
@@ -273,7 +273,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    The following example command defines a GiST index operator class
@@ -289,7 +289,7 @@ CREATE OPERATOR CLASS gist__int_ops
         OPERATOR        7       @&gt;,
         OPERATOR        8       &lt;@,
         OPERATOR        20      @@ (_int4, query_int),
-        FUNCTION        1       g_int_consistent (internal, _int4, int, oid, internal),
+        FUNCTION        1       g_int_consistent (internal, _int4, smallint, oid, internal),
         FUNCTION        2       g_int_union (internal, internal),
         FUNCTION        3       g_int_compress (internal),
         FUNCTION        4       g_int_decompress (internal),
@@ -300,7 +300,7 @@ CREATE OPERATOR CLASS gist__int_ops
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    <command>CREATE OPERATOR CLASS</command> is a
@@ -311,7 +311,7 @@ CREATE OPERATOR CLASS gist__int_ops
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alteropclass"></member>

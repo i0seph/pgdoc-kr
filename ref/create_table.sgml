@@ -820,6 +820,18 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
    </varlistentry>
 
    <varlistentry>
+    <term><literal>parallel_workers</> (<type>integer</>)</term>
+    <listitem>
+     <para>
+      해당 테이블을 조회 할 때 사용할 병렬 처리 작업자 수를 지정한다.  이 값이
+      지정되어 있지 않으면, 서버는 해당 테이블의 크기를 감안해서 그 작업자 수를
+      계산한다.  실재 작업자 수는 <xref linkend="guc-max-worker-processes"> 설정값을
+      참조해서 결정 됨으로 그 수보다는 적다.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
     <term><literal>autovacuum_enabled</>, <literal>toast.autovacuum_enabled</literal> (<type>boolean</>)</term>
     <listitem>
      <para>

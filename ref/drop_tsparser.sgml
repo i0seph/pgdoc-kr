@@ -26,7 +26,7 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP TEXT SEARCH PARSER</command> drops an existing text search
@@ -35,7 +35,7 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
 
@@ -62,7 +62,9 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
     <term><literal>CASCADE</literal></term>
     <listitem>
      <para>
-      Automatically drop objects that depend on the text search parser.
+      Automatically drop objects that depend on the text search parser,
+      and in turn all objects that depend on those objects
+      (see <xref linkend="ddl-depend">).
      </para>
     </listitem>
    </varlistentry>
@@ -80,7 +82,7 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Remove the text search parser <literal>my_parser</literal>:
@@ -96,7 +98,7 @@ DROP TEXT SEARCH PARSER my_parser;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    There is no <command>DROP TEXT SEARCH PARSER</command> statement in the
@@ -105,7 +107,7 @@ DROP TEXT SEARCH PARSER my_parser;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altertsparser"></member>

@@ -42,12 +42,13 @@ COPY { <replaceable class="parameter">table_name</replaceable> [ ( <replaceable 
     ESCAPE '<replaceable class="parameter">escape_character</replaceable>'
     FORCE_QUOTE { ( <replaceable class="parameter">column_name</replaceable> [, ...] ) | * }
     FORCE_NOT_NULL ( <replaceable class="parameter">column_name</replaceable> [, ...] )
+    FORCE_NULL ( <replaceable class="parameter">column_name</replaceable> [, ...] )
     ENCODING '<replaceable class="parameter">encoding_name</replaceable>'
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>COPY</command> moves data between
@@ -70,12 +71,14 @@ COPY { <replaceable class="parameter">table_name</replaceable> [ ( <replaceable 
   <para>
    <command>COPY</command> with a file name instructs the
    <productname>PostgreSQL</productname> server to directly read from
-   or write to a file. The file must be accessible to the server and
-   the name must be specified from the viewpoint of the server. When
-   <literal>PROGRAM</literal> is specified, the server executes the
-   given command, and reads from its standard input, or writes to its
-   standard output. The command must be specified from the viewpoint of the
-   server, and be executable by the <literal>postgres</> user. When
+   or write to a file. The file must be accessible by the
+   <productname>PostgreSQL</productname> user (the user ID the server
+   runs as) and the name must be specified from the viewpoint of the
+   server. When <literal>PROGRAM</literal> is specified, the server
+   executes the given command and reads from the standard output of the
+   program, or writes to the standard input of the program. The command
+   must be specified from the viewpoint of the server, and be executable
+   by the <productname>PostgreSQL</productname> user.  When
    <literal>STDIN</literal> or <literal>STDOUT</literal> is
    specified, data is transmitted via the connection between the
    client and the server.
@@ -83,7 +86,7 @@ COPY { <replaceable class="parameter">table_name</replaceable> [ ( <replaceable 
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -109,10 +112,17 @@ COPY { <replaceable class="parameter">table_name</replaceable> [ ( <replaceable 
     <term><replaceable class="parameter">query</replaceable></term>
     <listitem>
      <para>
-      A <xref linkend="sql-select"> or
-      <xref linkend="sql-values"> command
-      whose results are to be copied.
-      Note that parentheses are required around the query.
+      A <xref linkend="sql-select">, <xref linkend="sql-values">,
+      <xref linkend="sql-insert">, <xref linkend="sql-update"> or
+      <xref linkend="sql-delete"> command whose results are to be
+      copied.  Note that parentheses are required around the query.
+     </para>
+     <para>
+      For <command>INSERT</>, <command>UPDATE</> and
+      <command>DELETE</> queries a RETURNING clause must be provided,
+      and the target relation must not have a conditional rule, nor
+      an <literal>ALSO</> rule, nor an <literal>INSTEAD</> rule
+      that expands to multiple statements.
      </para>
     </listitem>
    </varlistentry>
@@ -329,6 +339,20 @@ COPY { <replaceable class="parameter">table_name</replaceable> [ ( <replaceable 
    </varlistentry>
 
    <varlistentry>
+    <term><literal>FORCE_NULL</></term>
+    <listitem>
+     <para>
+      Match the specified columns' values against the null string, even
+      if it has been quoted, and if a match is found set the value to
+      <literal>NULL</>. In the default case where the null string is empty,
+      this converts a quoted empty string into NULL.
+      This option is allowed only in <command>COPY FROM</>, and only when
+      using <literal>CSV</> format.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
     <term><literal>ENCODING</></term>
     <listitem>
      <para>
@@ -355,6 +379,16 @@ COPY <replaceable class="parameter">count</replaceable>
    The <replaceable class="parameter">count</replaceable> is the number
    of rows copied.
   </para>
+
+  <note>
+   <para>
+    <application>psql</> will print this command tag only if the command
+    was not <literal>COPY ... TO STDOUT</>, or the
+    equivalent <application>psql</> meta-command
+    <literal>\copy ... to stdout</>.  This is to prevent confusing the
+    command tag with the data that was just printed.
+   </para>
+  </note>
  </refsect1>
 
  <refsect1>
@@ -460,6 +494,12 @@ COPY <replaceable class="parameter">count</replaceable>
     amount to a considerable amount of wasted disk space if the failure
     happened well into a large copy operation. You might wish to invoke
     <command>VACUUM</command> to recover the wasted space.
+   </para>
+
+   <para>
+    <literal>FORCE_NULL</> and <literal>FORCE_NOT_NULL</> can be used
+    simultaneously on the same column. This results in converting quoted
+    null strings to null values and unquoted null strings to empty strings.
    </para>
 
  </refsect1>
@@ -637,7 +677,9 @@ COPY <replaceable class="parameter">count</replaceable>
     string, while an empty string data value is written with double quotes
     (<literal>""</>). Reading values follows similar rules. You can
     use <literal>FORCE_NOT_NULL</> to prevent <literal>NULL</> input
-    comparisons for specific columns.
+    comparisons for specific columns. You can also use
+    <literal>FORCE_NULL</> to convert quoted null string data values to
+    <literal>NULL</>.
    </para>
 
    <para>
@@ -849,7 +891,7 @@ OIDs to be shown as null if that ever proves desirable.
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    The following example copies a table to the client
@@ -915,7 +957,7 @@ ZW      ZIMBABWE
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    There is no <command>COPY</command> statement in the SQL standard.

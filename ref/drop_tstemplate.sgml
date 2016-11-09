@@ -26,7 +26,7 @@ DROP TEXT SEARCH TEMPLATE [ IF EXISTS ] <replaceable class="PARAMETER">name</rep
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DROP TEXT SEARCH TEMPLATE</command> drops an existing text search
@@ -35,7 +35,7 @@ DROP TEXT SEARCH TEMPLATE [ IF EXISTS ] <replaceable class="PARAMETER">name</rep
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
 
@@ -63,7 +63,9 @@ DROP TEXT SEARCH TEMPLATE [ IF EXISTS ] <replaceable class="PARAMETER">name</rep
     <term><literal>CASCADE</literal></term>
     <listitem>
      <para>
-      Automatically drop objects that depend on the text search template.
+      Automatically drop objects that depend on the text search template,
+      and in turn all objects that depend on those objects
+      (see <xref linkend="ddl-depend">).
      </para>
     </listitem>
    </varlistentry>
@@ -81,7 +83,7 @@ DROP TEXT SEARCH TEMPLATE [ IF EXISTS ] <replaceable class="PARAMETER">name</rep
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Remove the text search template <literal>thesaurus</literal>:
@@ -97,7 +99,7 @@ DROP TEXT SEARCH TEMPLATE thesaurus;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    There is no <command>DROP TEXT SEARCH TEMPLATE</command> statement in the
@@ -106,7 +108,7 @@ DROP TEXT SEARCH TEMPLATE thesaurus;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altertstemplate"></member>

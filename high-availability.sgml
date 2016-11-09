@@ -997,9 +997,9 @@ postgres=# SELECT * FROM pg_create_physical_replication_slot('node_a_slot');
  node_a_slot |
 
 postgres=# SELECT * FROM pg_replication_slots;
-  slot_name  | slot_type | datoid | database | active | xmin | restart_lsn
--------------+-----------+--------+----------+--------+------+-------------
- node_a_slot | physical  |        |          | f      |      |
+  slot_name  | slot_type | datoid | database | active | xmin | restart_lsn | confirmed_flush_lsn
+-------------+-----------+--------+----------+--------+------+-------------+---------------------
+ node_a_slot | physical  |        |          | f      |      |             |
 (1 row)
 </programlisting>
      다음은 대기 서버의 <filename>recovery.conf</> 파일에, 
@@ -1101,10 +1101,12 @@ primary_slot_name = 'node_a_slot'
    </para>
 
    <para>
-    동기식 복제 방식은 하나의 트랜잭션을 대기 서버에 반영하고, 
+    동기식 복제 방식은 하나의 트랜잭션을 하나 이상의 대기 서버에 반영하고, 
         그 결과를 운영 서버가 확인하는 방식이다. 
         이 방식은 트랜잭션 커밋으로 제공하는 기본 자료 안정성을 더 확장한 것이다.
-        이것을 컴퓨터 과학 이론에서는 이중 복제라한다.
+        이것을 컴퓨터 과학 이론에서는 이중 안전 복제라 하고,
+        <varname>synchronous_commit</> 설정값이 <literal>remote_write</>
+        인 경우는 그룹 안전, 또는 단일 안전 복제라한다.
    </para>
 
    <para>
@@ -1159,9 +1161,15 @@ primary_slot_name = 'node_a_slot'
         대기 서버는 그 레코드를 자신의 WAL 세그먼트 파일에 기록한 뒤에, 
         <varname>wal_receiver_status_interval</> 환경설정 값이 0으로
         지정되어 있지 않으면, 운영 서버로 작업을 완료했다고 메시지를 보낸다.
-        대기 서버 가운데, 운영 서버에서 <varname>synchronous_standby_names</>
-        환경설정 값에 지정한 첫번째 대기 서버가 보내는 응답을 확인 해서,
-        대기 서버에서 WAL 레코드 복제를 완벽하게 했다고 운영 서버는 판단한다.
+    <varname>synchronous_commit</> 설정값이 <literal>remote_apply</>로
+    지정한 경우, 대기서버는 커밋 트랜잭션을 적용해서,
+    해당 트랜잭션이 완료되었음을 알리는 내용을 운영 서버 쪽으로 보낸다.
+    운영 서버에서 <varname>synchronous_standby_names</> 설정값으로
+    지정한 동기식 대기서버 우선순위 목록에서 동기화 대상 대기 서버로
+    선정되면, 그 대기 서버에서 보내는 응답 메시지는 
+    다른 동기식 대기 서버에서 보내는 응답 메시지와 함께 고려해서, 
+    운영 서버가
+    커밋 트랜잭션의 반영이 완료되었음을 확인하는데 사용된다.
         여기서 언급한 환경설정 매개변수들이 대기 서버의 동기화 방식에 대한 
         설정에 관계된 것들이다.
         동기식 복제 기능 설정을 할 때는 어느 환경 변수는 대기 서버에서 설정하고, 
@@ -1183,6 +1191,16 @@ primary_slot_name = 'node_a_slot'
         운영서버와, 대기 서버 모두 동시에 장애가 발생될 경우에만 일어나기 때문에다. 
    </para>
 
+
+   <para>
+    <varname>synchronous_commit</> 설정값이 <literal>remote_apply</>인 경우는
+    대기 서버에서도 해당 트랜잭션이 모두 반영되어 사용자가 반영된 
+    트랜잭션을 볼 수 있는 상태가 되었음을 대기 서버가 알릴 때까지 
+    운영 서버는 기다린다.
+    부하 분산 환경을 구축하는 경우, 자료 정합성을 유지해야 하는 경우에 
+    사용된다.
+   </para>
+
    <para>
     동기식 복제 기능을 이용하는 경우 빠른 서버 중지 명령이 실행되면, 
         운영 서버가 정상적인 빠른 서버 중지 작업을 진행하지만, 
@@ -1190,7 +1208,40 @@ primary_slot_name = 'node_a_slot'
         대기 서버로 보내야할 WAL 레코드를 연결 되어 있는 모든 대기 서버로 모두 보내고
         서버가 중지된다.
    </para>
+   </sect3>
 
+   <sect3 id="synchronous-replication-multiple-standbys">
+    <title>다중 동기식 대기 서버</title>
+
+   <para>
+    Synchronous replication supports one or more synchronous standby servers;
+    transactions will wait until all the standby servers which are considered
+    as synchronous confirm receipt of their data. The number of synchronous
+    standbys that transactions must wait for replies from is specified in
+    <varname>synchronous_standby_names</>. This parameter also specifies
+    a list of standby names, which determines the priority of each standby
+    for being chosen as a synchronous standby. The standbys whose names
+    appear earlier in the list are given higher priority and will be considered
+    as synchronous. Other standby servers appearing later in this list
+    represent potential synchronous standbys. If any of the current
+    synchronous standbys disconnects for whatever reason, it will be replaced
+    immediately with the next-highest-priority standby.
+   </para>
+   <para>
+    An example of <varname>synchronous_standby_names</> for multiple
+    synchronous standbys is:
+<programlisting>
+synchronous_standby_names = '2 (s1, s2, s3)'
+</programlisting>
+    In this example, if four standby servers <literal>s1</>, <literal>s2</>,
+    <literal>s3</> and <literal>s4</> are running, the two standbys
+    <literal>s1</> and <literal>s2</> will be chosen as synchronous standbys
+    because their names appear early in the list of standby names.
+    <literal>s3</> is a potential synchronous standby and will take over
+    the role of synchronous standby when either of <literal>s1</> or
+    <literal>s2</> fails. <literal>s4</> is an asynchronous standby since
+    its name is not in the list.
+   </para>
    </sect3>
 
    <sect3 id="synchronous-replication-performance">
@@ -1240,20 +1291,25 @@ primary_slot_name = 'node_a_slot'
     <title>고가용성을 고려한 계획</title>
 
    <para>
-    운영 서버 환경 설정에서 <varname>synchronous_commit</> 값이 <literal>on</>
-        또는 <literal>remote_write</>
-        상태이면, 운영 서버에서 일어나는 모든 커밋은 
-        대기 서버의 응답이 있을 때까지 대기하는 과정을 거치게 된다.
-        운영 서버는 반드시 적어도 하나의 대기 서버에서는 커밋 완료 응답을 받아야 한다.
-        그렇지 않으면, 운영 서버에서 일어나는 커밋은 무작정 기다리게 된다.
+    운영 서버에서 <varname>synchronous_commit</> 설정을
+    <literal>on</>, <literal>remote_apply</>,
+    <literal>remote_write</> 로 지정했고, 
+    <varname>synchronous_standby_names</> 설정값으로 지정한 
+    동기식 대기 서버 수와 그 서버 이름으로 등록한 서버가 
+    있는 경우, 그 동기화 될 대기 서버 모두 해당 트랜잭션이 
+    반영 되어야 운영 서버는 트랜잭션이 완료되었음 응용프로그램에게
+    알린다.  즉 대기 서버 중 하나라도 장애로 응답을 하지 않는다면,
+    운영 서버의 해당 트랜잭션은 영원히 완료되지 않는다.
    </para>
 
    <para>
-    자료 손실을 막는 가장 좋은 방법은 적어도 하나 이상의 동기식 대기 서버가 
+    고가용성을 구현하는 가장 좋은 방법은 요구되는 모든 동기식 대기 서버가
         장애로 멈추지 않게 만드는 것이다.  운영 서버의 환경설정에서 
         <varname>synchronous_standby_names</> 변수의 값으로 동기시 방식을 이용할 
-        대기 서버들을 나열해서 이것을 구현할 수 있다.  이 변수에 나열된(쉼표로 구분)
-        첫번째 대기 서버가 응답이 없으면, 다음 대기 서버의 응답을 기다린다.
+        대기 서버들을 나열해서 이것을 구현할 수 있다.  이 설정에서 지정한
+        대기 서버들 가운데, 동기화 작업 대상에서 제외된 다른 서버는
+        동기화 대상 대기 서버가 장애로 응답이 없을 때, 그 서버의 대기 서버로 
+        사용 된다.
    </para>
 
    <para>
@@ -1281,14 +1337,15 @@ primary_slot_name = 'node_a_slot'
         그 작업부터 진행할 것이기 때문에, 자료 손실은 없을 것이다. 
         응용 프로그램 입장에서는 이런 상황이 발생했다면, 
         - 커밋 명령이 성공적으로 끝나기 전에 데이터베이스 연결이 끊겼다면 - 
-        재연결시 반드시 해당 작업으로 자료가 정상적으로 
+        재연결시 반드시 해당 작업으로 자료가 모든 동기식 대기 서버에 정상적으로 
         반영되었는지 확인해야할 필요가 있다.
    </para>
 
    <para>
     <varname>synchronous_standby_names</> 환경 변수값에 등록된 모든 
         대기 서버들이 모두 커밋 완료 응답을 보내지 않아, 운영 서버의 커밋 작업이
-        멈춰 있는 상태라면, 이 변수의 값을 빈문자열('')로 지정하고, 
+        멈춰 있는 상태라면, 이 변수의 값에서 동기화 될 서버 개수를 줄이거나, 
+        동기식 복제를 포기하는 설정(빈문자열)으로 바꾸고
         환경 설정을 다시 적용해서 운영 서버를 정상화 할 수 있다.
    </para>
 
@@ -1999,7 +2056,8 @@ LOG:  database system is ready to accept read only connections
 </programlisting>
 
     일관성에 대한 정보는 운영 서버에 체크 포인트당 한 번 기록된다.  
-    <varname>wal_level</>이 운영 서버의 <literal>hot_standby</>로 설정돼 있지 않을 때 쓰여진 WAL을 읽으면 hot standby를 켤 수 없다.  
+    <varname>wal_level</>이 운영 서버의 <literal>replica</> 또는 <literal>logical</>로
+    설정돼 있지 않을 때 쓰여진 WAL을 읽으면 hot standby를 켤 수 없다.  
     일관적인 상태는 아래 두 조건이 충족되면 지연될 수 있다.
 
       <itemizedlist>

@@ -326,6 +326,42 @@ fi
 또는 <filename>/etc/rc.local</filename>에 추가하거나 <productname>PostgreSQL</productname> 소스 배포에서 
 <filename>contrib/start-scripts/linux</filename> 파일을 검토해야 한다.
  </para>
+
+     <para>
+      <application>systemd</application> 데몬을 이용한 호스트를 관리한다면, 
+      다음과 같은 서비스 설정 파일(예, <filename>/etc/systemd/system/postgresql.service</filename>)을
+      만들어 사용한다:
+      <indexterm><primary>systemd</primary></indexterm>
+<programlisting>
+[Unit]
+Description=PostgreSQL database server
+Documentation=man:postgres(1)
+
+[Service]
+Type=notify
+User=postgres
+ExecStart=/usr/local/pgsql/bin/postgres -D /usr/local/pgsql/data
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGINT
+TimeoutSec=0
+
+[Install]
+WantedBy=multi-user.target
+</programlisting>
+      서버를 빌드할 때, <literal>configure --with-systemd</literal> 옵션을
+      사용했다면, <literal>Type=notify</literal> 설정이 필요하다.
+     </para>
+
+     <para>
+      <literal>TimeoutSec=0</literal> 설정도 고려해야 한다.
+      <application>systemd</application> 데몬은 기본적으로 
+      90초 이내 해당 작업에 대한 처리 완료 신호를 받지 못하면, 
+      해당 프로세스를 종료해 버린다.  하지만, <productname>PostgreSQL</productname>
+      서버는 비정상 종료 뒤 서버 복구 모드로 진행될 경우 
+      트랜잭션 로그 재실행 작업으로 충분히 90초 이상이 될 수도 있다.
+      이에, 이 설정은 0으로 설정해 시간 제한 기능을 끄는 것을 권고한다.
+     </para>
 </listitem>
 
 <listitem>
@@ -1037,6 +1073,18 @@ default:\
 <sect2 id="linux-memory-overcommit">
  <title>Linux 메모리 Overcommit</title>
 
+   <indexterm>
+    <primary>memory overcommit</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>OOM</primary>
+   </indexterm>
+
+   <indexterm>
+    <primary>overcommit</primary>
+   </indexterm>
+
  <para>
 Linux 2.4 이상에서 기본 가상 메모리 동작은 <productname>PostgreSQL</productname>의 경우 최적화 되어 있지 않다.
 커널이 메모리 오버커밋을 이행하는 방식 때문에 <productname>PostgreSQL</productname> 또는 다른 프로세스의 메모리 수요가 시스템의 가상 메모리가 소진되는 원인이 되는 경우 커널은 
@@ -1072,7 +1120,10 @@ url="http://lwn.net/Articles/104179/">OOM killer</>의 호출이 전적으로 �
 sysctl -w vm.overcommit_memory=2
 </programlisting>
 또는 동일한 항목을 <filename>/etc/sysctl.conf</>에 입력해도 된다.
-사용자는 이와 관련된 설정인 <varname>vm.overcommit_ratio</>의 수정을 원할 수도 있다.자세한 내용은 커널 문서 파일 <filename>Documentation/vm/overcommit-accounting</>을 참조 바란다.
+사용자는 이와 관련된 설정인 <varname>vm.overcommit_ratio</>의 수정을 원할 수도 있다.  자세한
+내용은 커널 문서 파일
+<ulink url="https://www.kernel.org/doc/Documentation/vm/overcommit-accounting"></ulink>
+을 참조 바란다.
  </para>
 
    <para>
@@ -1120,36 +1171,78 @@ export PG_OOM_ADJUST_VALUE=0
 </sect2>
 
 <sect2 id="linux-huge-pages">
- <title>Linux huge pages</title>
+ <title>Linux Huge pages</title>
 
  <para>
-huge pages를 사용하면 <productname>PostgreSQL</productname> 같이 인접한 거대 메모리 청크 사용 시 오버헤드가 줄어든다.<productname>PostgreSQL</productname>에서 이 기능을 활성화하려면 <varname>CONFIG_HUGETLB_PAGE=y</varname> 및 <varname>CONFIG_HUGETLBFS=y</varname>를 사용하는 커널이 필요하다. 시스템 설정 <varname>vm.nr_hugepages</varname>도 튜닝해야 한다. 필요한 huge pages 수를 추정하려면 huge pages 활성화 없이 <productname>PostgreSQL</productname>을 시작하고 proc 파일 시스템에서 <varname>VmPeak</varname> 값을 확인해야 한다.
+huge pages를 사용하면 <productname>PostgreSQL</productname> 같이 
+<xref linkend="guc-shared-buffers"> 값이 크게 지정해 많은 메모리를 
+사용할 경우, 한번에 큰 메모리 영역을 작업 단위로 지정해, 
+메모리 읽기 쓰기 작업 비용을 줄일 수 있다.
+<productname>PostgreSQL</productname>에서 이 기능을
+활성화하려면 
+커널 환경 설정값이 <varname>CONFIG_HUGETLB_PAGE=y</varname> 및
+<varname>CONFIG_HUGETLBFS=y</varname>로 되어있어야 한다.
+    또한 <varname>vm.nr_hugepages</varname> 값도 
+    적당히 조절되어야 한다.  필요한 huge page 수를 계산하는 방법은,
+    huge page 설정을 끄고, <productname>PostgreSQL</productname>
+    서버를 실행한 뒤, 
+    <filename>/proc</> 파일 시스템을 이용하며
+    postmaster 프로세스의 <varname>VmPeak</varname>
+    값을 보고, 그 값 정도를 huge page 크기로 산정하면 된다.
+    이 작업은 다음과 같다:
 <programlisting>
-<prompt>$</> <userinput>head -1 /path/to/data/directory/postmaster.pid</userinput>
+$ <userinput>head -1 $PGDATA/postmaster.pid</userinput>
 4170
-<prompt>$</> <userinput>grep ^VmPeak /proc/4170/status</userinput>
+$ <userinput>grep ^VmPeak /proc/4170/status</userinput>
 VmPeak:6490428 kB
+$ <userinput>grep ^Hugepagesize /proc/meminfo</userinput>
+Hugepagesize:       2048 kB
 </programlisting>
-<literal>6490428</literal> / <literal>2048</literal> (이 경우 <varname>PAGE_SIZE</varname>는 <literal>2MB</literal>)는 대략 <literal>3169.154</literal> huge pages이므로 최소 <literal>3170</literal> huge pages가 필요하다.
+<literal>6490428</literal> / <literal>2048</literal>는 대략
+<literal>3169.154</literal> huge pages이므로 
+최소 <literal>3170</literal> huge pages가 필요해서,
+다음과 같이 지정한다:
 <programlisting>
-<prompt>$</> <userinput>sysctl -w vm.nr_hugepages=3170</userinput>
+$ <userinput>sysctl -w vm.nr_hugepages=3170</userinput>
 </programlisting>
-가끔 커널은 원하는 수의 huge pages를 할당할 수 없어서 해당 명령을 반복하거나 리부팅이 필요할 수 있다.리부팅 시에 이 설정을 유지하려면 <filename>/etc/sysctl.conf</filename>에 항목을 추가하는 것을 잊으면 안 된다.
+이 설정값은 다른 응용 프로그램에서도 huge page를 사용하다면,
+이 보다 더 크게 잡을 필요도 있다.
+리부팅 시에 이 설정을 유지하려면
+<filename>/etc/sysctl.conf</filename>에 항목을 추가하는 것을 잊으면 안 된다.
  </para>
 
  <para>
-   It is also necessary to give the database server operating system
-   user permission to use huge pages by setting
-   <varname>vm.hugetlb_shm_group</> via <application>sysctl</>, and
-   permission to lock memory with <command>ulimit -l</>.
+    가끔 커널이 원하는 만큼의 huge page 설정을 즉시 하지 못해
+    윗 명령을 여러번 해야할 경우도 있으며, 리부팅을 해야하는 경우도 있다.
+    (리부팅 다음 즉시, 머신 메모리의 대부분은 huge page로 변환할 수 
+    있기 때문에, 리부팅을 시도한다.)  시스템의 huge page 할당량은 
+    다음 명령으로 확인한다:
+<programlisting>
+$ <userinput>grep Huge /proc/meminfo</userinput>
+</programlisting>
  </para>
 
  <para>
-<productname>PostgreSQL</productname>에서 huge pages의 기본 동작은 가능할 경우 사용하는 것이고 실패할 경우 정상 페이지로 폴백(fallback)하는 것이다.<link linkend="guc-huge-pages"><varname>huge_pages</varname></link>를 <literal>on</literal>으로 설정하면 huge pages를 강제로 사용할 수 있다. 이 경우 사용 가능한 huge pages가 부족하면 <productname>PostgreSQL</productname>을 시작하지 못할 수도 있다.
+   이런 작업은 <application>sysctl</> 명령으로  알 수 있는
+   <varname>vm.hugetlb_shm_group</> 설정값에 의한 
+   huge page 설정 변경 권한을 가진 데이터베이스 서버가 운영되고 있는
+   운영체제 사용자가 필요하며, <command>ulimit -l</> 명령으로
+   확인 하는 잠금 메모리 설정을 할 수 있는 사용자여야 한다.
  </para>
 
  <para>
-<productname>Linux</productname> huge pages 기능에 대한 자세한 설명은 <ulink url="https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt">https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt</ulink>를 읽어 보기 바란다.
+<productname>PostgreSQL</productname>에서 huge pages의 기본 동작은 가능할 경우 사용하는
+것이고 실패할 경우 일반 메모리 관리 방식으로 진행 된다.
+<link linkend="guc-huge-pages"><varname>huge_pages</varname></link>를
+<literal>on</literal>으로 설정하면 huge pages를 강제로 사용할 수
+있다.  이 경우 사용 가능한 huge pages가
+부족하면 <productname>PostgreSQL</productname> 서버가 실행되지 않는다.
+ </para>
+
+ <para>
+<productname>Linux</productname> huge pages 기능에 대한 자세한
+설명은 <ulink url="https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt"></ulink>
+페이지를 읽어 보기 바란다.
  </para>
 
 </sect2>
@@ -1449,17 +1542,40 @@ pg_dumpall -p 5432 | psql -d postgres -p 5433
 </indexterm>
 
 <para>
-서버 실행 중에 악의적 사용자가 정상적인 데이터베이스 서버를 차지하는 것은 불가능하다. 단, 서버 다운 시 로컬 사용자가 자신의 서버를 시작함으로써 정상적인 서버를 스푸핑하는 것은 가능하다. 스푸핑 서버는 클라이언트가 보낸 패스워드와 쿼리를 읽을 수 있지만 디렉터리 권한 때문에 <varname>PGDATA</> 디렉터리는 보호되므로 데이터를 리턴할 수는 없다. 어떤 사용자든 데이터베이스 서버를 시작할 수 있으므로 스푸핑이 가능하다. 특수하게 환경 설정되지 않은 경우 클라이언트가 잘못된 서버를 식별해낼 수는 없다.
+   서버 실행 중에 악의적 사용자가 정상적인 데이터베이스 서버를 차지하는 것은
+   불가능하다.  단, 서버 다운 시 로컬 사용자가 자신의 서버를 시작함으로써
+   정상적인 서버를 스푸핑하는 것은 가능하다.  스푸핑 서버는 클라이언트가
+   보낸 패스워드와 쿼리를 읽을 수 있지만 디렉터리 권한 때문에
+   <varname>PGDATA</> 디렉터리는 보호되므로 데이터를 리턴할 수는 없다.  어떤
+   사용자든 데이터베이스 서버를 시작할 수 있으므로 스푸핑이 가능하다.  특수하게
+   환경 설정되지 않은 경우 클라이언트가 잘못된 서버를 식별해낼 수는 없다.
 </para>
 
 <para>
-<literal>local</> 연결에 대한 스푸핑을 방지하는 가장 간단한 방법은 신뢰된 로컬 사용자에 대해서만 쓰기 권한이 있는 Unix 도메인 소켓 디렉터리(<xref
- linkend="guc-unix-socket-directories">)를 사용하는 것이다. 이로써 악의적 사용자가 자체 소켓 파일을 해당 디렉터리에 생성하는 것이 방지된다. 일부 어플리케이션이 소켓 파일로 <filename>/tmp</>를 계속 참조해야 해서 스푸핑에 취약한 경우라면 운영 체제 시작 시에 위치 변경된 소켓 파일을 가리키는 심볼릭 링크 <filename>/tmp/.s.PGSQL.5432</>를 생성해야 한다. 또한 사용자의 <filename>/tmp</> 클린업 스크립트를 수정해서 심볼릭 링크가 삭제되지 않게 해야 한다.
+   <literal>local</> 연결에 대한 스푸핑을 방지하는 한 방법은
+   신뢰된 로컬 사용자에 대해서만 쓰기 권한이 있는 Unix 도메인 소켓 디렉터리(<xref
+   linkend="guc-unix-socket-directories">)를 사용하는 것이다. 이로써
+   악의적 사용자가 자체 소켓 파일을 해당 디렉터리에 생성하는 것이 방지된다. 일부
+   어플리케이션이 소켓 파일로 <filename>/tmp</>를 계속 참조해야 해서 스푸핑에
+   취약한 경우라면 운영 체제 시작 시에 위치 변경된 소켓 파일을 가리키는 심볼릭
+   링크 <filename>/tmp/.s.PGSQL.5432</>를 생성해야 한다. 또한 사용자의 
+   <filename>/tmp</> 클린업 스크립트를 수정해서 심볼릭 링크가 삭제되지 않게 해야 한다.
 </para>
 
 <para>
-TCP 연결에 대한 스푸핑을 방지하기 위한 최고의 해결책은 SSL 인증서를 사용하여 클라이언트가 서버 인증서를 확인하게 하는 것이다. 이렇게 하려면 <literal>hostssl</> 연결만 수락하고(<xref
- linkend="auth-pg-hba-conf">) SSL 키와 인증서 파일(<xref linkend="ssl-tcp">)을 갖도록 서버를 환경 설정해야 한다. TCP 클라이언트는 <literal>sslmode=verify-ca</> 또는 <literal>verify-full</>을 사용하여 연결해야 하며, 적절한 루트 인증서 파일이 설치되어야 한다(<xref linkend="libq-ssl-certificates">).
+   <literal>local</> 연결에 대한 스푸핑을 방지하는 다른 한 방법은 
+   <link linkend="libpq-connect-requirepeer"><literal>requirepeer</></>
+   옵션을 사용하는 방법이다.
+</para>
+
+<para>
+   TCP 연결에 대한 스푸핑을 방지하기 위한 최고의 해결책은
+   SSL 인증서를 사용하여 클라이언트가 서버 인증서를 확인하게 하는 것이다.  이렇게
+   하려면 <literal>hostssl</> 연결만 수락하고(<xref
+   linkend="auth-pg-hba-conf">) SSL 키와 인증서 파일(<xref linkend="ssl-tcp">)을
+   갖도록 서버를 환경 설정해야 한다.  TCP 클라이언트는 <literal>sslmode=verify-ca</>
+   또는 <literal>verify-full</>을 사용하여 연결해야 하며,  적절한 루트 인증서
+   파일이 설치되어야 한다(<xref linkend="libq-ssl-certificates"> 참조).
 </para>
  </sect1>
 
@@ -1589,7 +1705,17 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
 </note>
 
 <para>
-<acronym>SSL</> 모드에서 시작하려면 서버 인증서가 포함된 파일과 개인 키가 존재해야 한다. 기본적으로, 이러한 파일은 각각 서버의 데이터 디렉터리에서 이름이 <filename>server.crt</> 및 <filename>server.key</>일 것으로 예상되지만, 환경 설정 파라미터<xref linkend="guc-ssl-cert-file"> 및 <xref linkend="guc-ssl-key-file">을 사용하여 다른 이름과 위치를 지정할 수 있다. Unix 시스템에서 <filename>server.key</filename>에 대한 권한은 월드 또는 그룹에 대한 액세스를 불허해야 한다. 이것은 <command>chmod 0600 server.key</command> 명령에 의해 수행된다. 개인 키가 암호로 보호되는 경우 서버는 암호를 묻는 메시지를 표시하고 암호가 입력되기 전에는 서버가 시작되지 않는다.
+<acronym>SSL</> 모드에서 시작하려면 서버 인증서가 포함된 파일과 개인 키가 존재해야 한다. 기본적으로, 이러한 파일은 각각 서버의 데이터 디렉터리에서 이름이 <filename>server.crt</> 및 <filename>server.key</>일 것으로 예상되지만, 환경 설정 파라미터<xref linkend="guc-ssl-cert-file"> 및 <xref linkend="guc-ssl-key-file">을 사용하여 다른 이름과 위치를 지정할 수 있다. Unix 시스템에서 <filename>server.key</filename>에 대한 권한은 월드 또는 그룹에 대한 액세스를 불허해야 한다. 이것은 <command>chmod 0600 server.key</command> 명령에 의해 수행된다.
+   Alternatively, the file can be
+   owned by root and have group read access (that is, <literal>0640</literal>
+   permissions).  That setup is intended for installations where certificate
+   and key files are managed by the operating system.  The user under which
+   the <productname>PostgreSQL</productname> server runs should then be made a
+   member of the group that has access to those certificate and key files.
+</para>
+
+<para>
+개인 키가 암호로 보호되는 경우 서버는 암호를 묻는 메시지를 표시하고 암호가 입력되기 전에는 서버가 시작되지 않는다.
 </para>
 
 <para>
@@ -1599,8 +1725,17 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
 <sect2 id="ssl-client-certificates">
  <title>클라이언트 인증서 사용</title>
 
- <para>
-신뢰된 인증서 제공을 클라이언트에게 요구하려면 사용자가 신뢰하는 인증 기관(<acronym>CA</acronym>)의 인증서를 데이터 디렉터리의 <filename>root.crt</filename> 파일에 삽입하고, <filename>postgresql.conf</filename>의 <xref linkend="guc-ssl-ca-file"> 파라미터를 <literal>root.crt</literal>로 설정하고 <filename>pg_hba.conf</>의 적절한 <literal>hostssl</> 라인에서 <literal>clientcert</literal>파라미터를 1로 설정해야 한다. 그러면, SSL 연결 시작 중에 인증서가 클라이언트로부터 요청된다(클라이언트에서 인증서 설정 방법에 대한 설명은 <xref linkend="libpq-ssl"> 참조). 서버는 클라이언트 인증서가 신뢰된 인증 기관 중 한 곳에서 서명된 것인지 검증한다. 중간 <acronym>CA</>가 <filename>root.crt</filename>에 나타나면 파일에도 루트 <acronym>CA</>에 인증서 체인이 포함되어야 한다. <xref linkend="guc-ssl-crl-file"> 파라미터가 설정된 경우 Certificate Revocation List (CRL) 항목도 확인된다. (SSL 인증서 사용을 보여주는 다이어그램은 <ulink
+<para>
+   신뢰된 인증서 제공을 클라이언트에게 요구하려면 사용자가 신뢰하는 인증
+   기관(<acronym>CA</acronym>)의 인증서를 데이터 디렉터리의 <filename>root.crt</filename>
+   파일에 삽입하고, <filename>postgresql.conf</filename>의
+   <xref linkend="guc-ssl-ca-file"> 파라미터를 <literal>root.crt</literal>로
+   설정하고 <filename>pg_hba.conf</>의 적절한 <literal>hostssl</>
+   라인에서 <literal>clientcert=1</literal> 옵션을 설정해야 한다. 그러면,
+   SSL 연결 시작 중에 인증서가 클라이언트로부터 요청된다(클라이언트에서 인증서 설정 방법에 대한 설명은 <xref linkend="libpq-ssl"> 참조). 서버는 클라이언트 인증서가 신뢰된 인증 기관 중 한 곳에서 서명된 것인지 검증한다.
+</para>
+<para>
+중간 <acronym>CA</>가 <filename>root.crt</filename>에 나타나면 파일에도 루트 <acronym>CA</>에 인증서 체인이 포함되어야 한다. <xref linkend="guc-ssl-crl-file"> 파라미터가 설정된 경우 Certificate Revocation List (CRL) 항목도 확인된다. (SSL 인증서 사용을 보여주는 다이어그램은 <ulink
  url="http://h71000.www7.hp.com/doc/83final/ba554_90007/ch04s02.html"></> 참조)
 </para>
 
@@ -1615,6 +1750,9 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
 
 <para>
 사용자가 클라이언트 인증서를 설정하는 경우 <literal>cert</> 인증 방법을 사용한다면 인증서로 사용자 인증을 제어하고 연결 보안도 제공할 수 있다. 자세한 내용은 <xref linkend="auth-cert">을 참조 바란다.
+(It is not necessary to
+   specify <literal>clientcert=1</literal> explicitly when using
+   the <literal>cert</> authentication method.)
 </para>
 </sect2>
 

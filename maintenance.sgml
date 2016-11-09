@@ -113,8 +113,8 @@
      </listitem>
 
      <listitem>
-      <simpara>인덱스 전용 검색 성능을 향상하는데 이용하는 
-      실자료 지도(visibility map, vm) 정보를 갱신하는 작업이 필요하다.
+      <simpara><link linkend="indexes-index-only-scans">index-전용
+      조회</link> 속도를 높이기 위해, 실자료 지도를 갱신할 필요가 있다.
       </simpara>
      </listitem>
 
@@ -396,7 +396,8 @@
     <productname>PostgreSQL</productname>의 인덱스에는 실자료들에 대해서만 따로
     모아서 그 정보를 제공하지 않는다. 즉, 어떤 자료를 해당 세션에게 보여 주어야 
     할지를 결정 하는 정보는 그 자료의 테이블 페이지까지 살펴 보아야 알 수 있다. 
-    <firstterm>인덱스 전용 검색</>인 경우는 테이블 페이지를 검색하지 않고, 
+    <link linkend="indexes-index-only-scans"><firstterm>인덱스 전용 조회</></link>인
+    경우는 테이블 페이지를 검색하지 않고, 
     먼저 이 실자료 지도를 검색해서, 이곳에 해당 자료가 있다면, 그것을 사용한다.
     그만큼 테이블 페이지 읽기 작업을 줄일 수 있는 있다.  특히나 테이블 크기가
     큰 경우라면, 디스크 읽기 작업을 상당히 줄이는 효과를 볼 수 있다. 
@@ -419,7 +420,8 @@
 
    <para>
     <productname>PostgreSQL</productname>에서는 트랜잭션 자료에 대한 
-    MVCC 기법은 트랜잭션 ID (<acronym>XID</>)를 숫자로 처리하고
+    <link linkend="mvcc-intro">MVCC</link> 기법은 트랜잭션 ID
+    (<acronym>XID</>)를 숫자로 처리하고
     그것을 비교하는 방식이다: 한 로우의 자료 입력 XID 값이
     현재 트랜잭션 XID 보다 더 크다면 <quote>앞으로 생길</>
     - 다른 트랙잭션에서 입력된 - 
@@ -440,8 +442,10 @@
 
    <para>
     주기적인 vacuum 작업이 이 문제를 해결 할 수 있는 이유는
-    <productname>PostgreSQL</productname>은 <literal>FrozenXID</>
-    라는 특별 XID를 미리 예약 해 두었기 때문이다.
+    영구 보관용 자료들에 대해서는 그 자료의 트랜잭션 ID를
+    달리 지정해 어떤 경우에도 항상 유효한 자료로 처리한다.
+    <productname>PostgreSQL</productname>은 <literal>FrozenTransactionId</>
+    라는 특별 XID를 이 용도로 사용한다.
     이 XID는 일반적인 XID 비교 대상에서 항상 제외되어
     항상 보여지는(언제나 old version) XID이다.
     일반 XID 비교 방법은 2<superscript>32</> 나머지 연산을 이용한다.
@@ -452,12 +456,35 @@
     그 이상의 트랜잭션이 생기면, 그 현재 트랜잭션 기준으로 봤을 때, 
     그 옛 XID는 앞으로 저장될 XID로 간주해 버린다.  이 문제를 피하는 
     방법은 20억 트랜잭션이 생기기 전에, 그 옛 XID 자료의 XID 값을
-    <literal>FrozenXID</>로 바꾸는 것이다. 
+    <literal>FrozenTransactionId</>로 바꾸는 것이다. 
     이렇게 <quote>영구 보관용</> 자료로 바꿔 놓으면, 트랜잭션 XID 
     비교 작업에서 항상 제외 되기 때문에, XID 겹침 오류를 피해갈 수 있게 된다.
     이 XID 변경 작업을 바로 <command>VACUUM</> 명령으로 한다.
     (이 작업을 자료 프리징(data freezing)이라고 한다. - 옮긴이)
    </para>
+
+   <note>
+    <para>
+     <productname>PostgreSQL</> 9.4 버전까지는 이 프리징 작업은
+     해당 로우의 <structname>xmin</> 값 자체를 <literal>FrozenTransactionId</> (2)
+     로 바꾸었지만, 새 버전부터는 해당 로우가 영구 보관용으로 
+     표시만 하고, (1 bit 플래그) <structname>xmin</> 값은
+     그대로 둔다.  이는 사고 원인 분석용도로 사용될 수 있다.
+     하지만, 9.4 이전부터 사용했던 데이터베이스를
+     <application>pg_upgrade</> 명령을 이용해 업그레이드해서
+     사용하고 있다면, <structname>xmin</> 값이 
+     <literal>FrozenTransactionId</>로 바뀐 자료들이 있을 것이다.
+    </para>
+    <para>
+     또한 시스템 카탈로그 자료인 경우는  <structname>xmin</>
+     값이 <application>initdb</> 명령으로 만들어질 때
+     지정되는 <literal>BootstrapTransactionId</> (1) 로 
+     되어 있는 경우도 있을 것이다.  이 경우도, 
+     <literal>FrozenTransactionId</> 와 같이 일반 XID 보다 항상
+     오래된 자료로 처리된다.
+    </para>
+   </note>
+
 
    <para>
     <xref linkend="guc-vacuum-freeze-min-age">
@@ -469,24 +496,21 @@
    </para>
 
    <para>
-    표준 <command>VACUUM</> 작업은 한 자료 페이지에
-    모든 자료가 UPDATE나, DELETE 명령 없이 오직
-    INSERT 명령으로 자료가 입력된 것만 있다면,
-    그 페이지는 작업 대상에서 제외 한다.  그렇지만, 그 자료 페이지에도
-    아직 <literal>FrozenXID</>로 바뀌지 않은 XID들이 있을 것이다. 
-    이 XID들도 당연히 <literal>FrozenXID</>로 바뀌어야 XID 겹침 오류를 
-    피해갈 수 있다.  이 작업을 위해서,  
-    <xref linkend="guc-vacuum-freeze-table-age"> 환경 변수
-    값을 조정 해서 <command>VACUUM</> 작업에서
-    모든 자료 페이지를 대상으로 이 XID 변경 작업 할 것인지를
-    결정 할 수 있다.
-    해당 테이블의 나이가 
-    <varname>vacuum_freeze_table_age</> - <varname>vacuum_freeze_min_age</>
-    값 보다 크면 <command>VACUUM</> 작업은 모든 자료 페이지를 검사해서
-    변경 작업을 진행한다. <varname>vacuum_freeze_table_age</> 값을
-    0으로 지정하면 효율적인 작업을 위해,
-    실자료 지도를 참조하지 않고,
-    항상 모든 페이지를 검사한다.
+    <command>VACUUM</> uses the <link linkend="storage-vm">visibility map</>
+    to determine which pages of a table must be scanned.  Normally, it
+    will skip pages that don't have any dead row versions even if those pages
+    might still have row versions with old XID values.  Therefore, normal
+    <command>VACUUM</>s won't always freeze every old row version in the table.
+    Periodically, <command>VACUUM</> will perform an <firstterm>aggressive
+    vacuum</>, skipping only those pages which contain neither dead rows nor
+    any unfrozen XID or MXID values.
+    <xref linkend="guc-vacuum-freeze-table-age">
+    controls when <command>VACUUM</> does that: all-visible but not all-frozen
+    pages are scanned if the number of transactions that have passed since the
+    last such scan is greater than <varname>vacuum_freeze_table_age</> minus
+    <varname>vacuum_freeze_min_age</>. Setting
+    <varname>vacuum_freeze_table_age</> to 0 forces <command>VACUUM</> to
+    use this more aggressive strategy for all scans.
    </para>
 
    <para>
@@ -606,24 +630,24 @@ SELECT datname, age(datfrozenxid) FROM pg_database;
    </para>
 
    <para>
-    표준 <command>VACUUM</> 작업은 마지막 vacuum 작업이 있은 뒤부터
-    변경된 데이터 페이지들에 대해서만 작업 대상으로 삼는다.  하지만,
-    다음 세가지 경우에는 테이블의 모든 페이지를 조사한다.
-    첫번째, 이 <structfield>relfrozenxid</> 값을 조사해서, 
-    이 값의 나이가  <varname>vacuum_freeze_table_age</> 값 보다 크다면
-    해당 테이블의 모든 페이지를 조사한다.  두번째, <command>VACUUM</> 명령어에서
-    <literal>FREEZE</> 옵션을 사용할 때도 모든 페이지를 조사한다.
-    마지막으로 더 이상 사용되지 않는 자료를 정리하는 작업이 
-    모든 페이지에 걸쳐 있어야 하는 경우에도 같은 작업을 한다.
-    보통은 이렇게 <command>VACUUM</> 작업을 통해
-    모든 페이지가 조사 되었다면, 그 작업이 끝난 뒤 해당 테이블의 
-    <literal>age(relfrozenxid)</> 값은 <varname>vacuum_freeze_min_age</>
-    약간 큰 값으로 보여진다. (<command>VACUUM</> 작업이 시작되고, 
-    확인 할 때까지의 트랜잭션 수 만큼 증가한다) 만일, <command>VACUUM</>
-    작업을 계속 주기적으로 했으나, 항상 변경된 페이지들만 조사하는 작업만
-    했다면,  <literal>age(relfrozenxid)</> 값이 <varname>autovacuum_freeze_max_age</>
-    값만큼 이르렀을 때 autovacuum 데몬에 의해 강제로 
-    테이블의 모든 페이지를 조사해서 트랜잭션 ID 겹침 오류를 방지한다.
+    <command>VACUUM</> normally only scans pages that have been modified
+    since the last vacuum, but <structfield>relfrozenxid</> can only be
+    advanced when every page of the table
+    that might contain unfrozen XIDs is scanned.  This happens when
+    <structfield>relfrozenxid</> is more than
+    <varname>vacuum_freeze_table_age</> transactions old, when
+    <command>VACUUM</>'s <literal>FREEZE</> option is used, or when all
+    pages that are not already all-frozen happen to
+    require vacuuming to remove dead row versions. 
+    When <command>VACUUM</>
+    scans every page in the table that is not already all-frozen, it should
+    set <literal>age(relfrozenxid)</> to a value just a little more than the
+    <varname>vacuum_freeze_min_age</> setting
+    that was used (more by the number of transcations started since the
+    <command>VACUUM</> started).  If no <structfield>relfrozenxid</>-advancing
+    <command>VACUUM</> is issued on the table until
+    <varname>autovacuum_freeze_max_age</> is reached, an autovacuum will soon
+    be forced for the table.
    </para>
 
    <para>
@@ -698,21 +722,23 @@ HINT:  Stop the postmaster and use a standalone backend to VACUUM in "mydb".
     </para>
 
     <para>
-     During a <command>VACUUM</> table scan, either partial or of the whole
-     table, any multixact ID older than
+     Whenever <command>VACUUM</> scans any part of a table, it will replace
+     any multixact ID it encounters which is older than
      <xref linkend="guc-vacuum-multixact-freeze-min-age">
-     is replaced by a different value, which can be the zero value, a single
+     by a different value, which can be the zero value, a single
      transaction ID, or a newer multixact ID.  For each table,
      <structname>pg_class</>.<structfield>relminmxid</> stores the oldest
      possible multixact ID still appearing in any tuple of that table.
      If this value is older than
-     <xref linkend="guc-vacuum-multixact-freeze-table-age">, a whole-table
-     scan is forced.  <function>mxid_age()</> can be used on
+     <xref linkend="guc-vacuum-multixact-freeze-table-age">, an aggressive
+     vacuum is forced.  As discussed in the previous section, an aggressive
+     vacuum means that only those pages which are known to be all-frozen will
+     be skipped.  <function>mxid_age()</> can be used on
      <structname>pg_class</>.<structfield>relminmxid</> to find its age.
     </para>
 
     <para>
-     Whole-table <command>VACUUM</> scans, regardless of
+     Aggressive <command>VACUUM</> scans, regardless of
      what causes them, enable advancing the value for that table.
      Eventually, as all tables in all databases are scanned and their
      oldest multixact values are advanced, on-disk storage for older
@@ -720,13 +746,13 @@ HINT:  Stop the postmaster and use a standalone backend to VACUUM in "mydb".
     </para>
 
     <para>
-     As a safety device, a whole-table vacuum scan will occur for any table
+     As a safety device, an aggressive vacuum scan will occur for any table
      whose multixact-age is greater than
-     <xref linkend="guc-autovacuum-multixact-freeze-max-age">.  Whole-table
+     <xref linkend="guc-autovacuum-multixact-freeze-max-age">.  Aggressive
      vacuum scans will also occur progressively for all tables, starting with
      those that have the oldest multixact-age, if the amount of used member
      storage space exceeds the amount 50% of the addressable storage space.
-     Both of these kinds of whole-table scans will occur even if autovacuum is
+     Both of these kinds of aggressive scans will occur even if autovacuum is
      nominally disabled.
     </para>
    </sect3>
@@ -826,7 +852,7 @@ vacuum 임계치 = vacuum 초기 임계치 + vacuum 배율값 * 로우수
     있기 때문이다.)
     테이블의 <structfield>relfrozenxid</> 나이값이 
     <varname>vacuum_freeze_table_age</> 설정값보다 크다면, 
-    테이블의 모든 로우를 조사해서, 영구 보관용 XID로 바꾸고, 
+    적극적인 vacuum이 수행되어, 영구 보관 처리를 하고,
     <structfield>relfrozenxid</> 값을 변경 한다.
     그렇지 않은 경우는 마지막 vacuum 작업 뒤 변경된 
     자료 페이지만을 대상으로 작업한다.
