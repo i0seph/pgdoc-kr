@@ -5,33 +5,31 @@
   <title>Release 9.6.1</title>
 
   <note>
-  <title>Release Date</title>
+  <title>출시일</title>
   <simpara>2016-10-27</simpara>
   </note>
 
   <para>
-   This release contains a variety of fixes from 9.6.0.
-   For information about new features in the 9.6 major release, see
-   <xref linkend="release-9-6">.
+   이 릴리즈는 9.6.0 버전의 다양한 문제점들을 개선한 것이다.  9.6
+   메이저 릴리즈 새 기능에 대한 부분은 <xref linkend="release-9-6">에서 다룬다.
   </para>
 
   <sect2>
-   <title>Migration to Version 9.6.1</title>
+   <title>9.6.1 버전으로 업그레이드 하기</title>
 
    <para>
-    A dump/restore is not required for those running 9.6.X.
+    9.6.X 버전에서는 덤프/복원 작업을 할 필요는 없다.
    </para>
 
    <para>
-    However, if your installation has been affected by the bugs described in
-    the first two changelog entries below, then after updating you may need
-    to take action to repair corrupted free space maps and/or visibility
-    maps.
+    하지만, 아래에서 다루는 내용 가운데, 첫 두가지 사항에서 
+    언급하고 있는 실자료 지도와 빈 공간 지도 파일과 관련 있는 
+    시스템이라면, 아래에서 설명하는 대로 적당한 조치가 필요하다.  
    </para>
   </sect2>
 
   <sect2>
-   <title>Changes</title>
+   <title>바뀐점</title>
 
    <itemizedlist>
 
@@ -45,24 +43,26 @@ Branch: REL9_4_STABLE [2523bef15] 2016-10-19 15:00:10 +0300
 Branch: REL9_3_STABLE [1c02ee314] 2016-10-19 15:00:34 +0300
 -->
      <para>
-      Fix WAL-logging of truncation of relation free space maps and
-      visibility maps (Pavan Deolasee, Heikki Linnakangas)
+      테이블 빈 공간 지도와 실자료 지도 파일의 내용 정리 관련
+      WAL 처리를 수정함. (Pavan Deolasee, Heikki Linnakangas)
      </para>
 
      <para>
-      It was possible for these files to not be correctly restored during
-      crash recovery, or to be written incorrectly on a standby server.
-      Bogus entries in a free space map could lead to attempts to access
-      pages that have been truncated away from the relation itself, typically
-      producing errors like <quote>could not read block <replaceable>XXX</>:
-      read only 0 of 8192 bytes</quote>.  Checksum failures in the
-      visibility map are also possible, if checksumming is enabled.
+      서버 비정상 종료 뒤 복구 작업에서 이 파일들이 바르게 복구되지
+      않거나, 대기 서버에서 바르지 않게 기록될 수 있었다.
+      이미 테이블 파일에서 삭제 처리된 페이지임에도 불구하고, 
+      빈 공간 지도에는 잘못된 정보가 남아 있을 수 있었다.
+      서버 오류 메시지는 
+      <quote>could not read block <replaceable>XXX</>:
+      read only 0 of 8192 bytes</quote> 이런 형태로 나타났다.  자료
+      파일 페이지 체크섬 기능을 사용하고 있다면, 실자료 지도에서
+      체크섬 실패 오류도 함께 있을 수 있었다.
      </para>
 
      <para>
-      Procedures for determining whether there is a problem and repairing it
-      if so are discussed at
-      <ulink url="https://wiki.postgresql.org/wiki/Free_Space_Map_Problems"></>.
+      이 문제가 발생하는 환경, 그에 따른 조치 사항 등은
+      다음 페이지에서 자세히 다룬다.
+      <ulink url="https://wiki.postgresql.org/wiki/Free_Space_Map_Problems"></>
      </para>
     </listitem>
 
@@ -73,30 +73,31 @@ Branch: master [5afcd2aa7] 2016-09-30 20:40:55 -0400
 Branch: REL9_6_STABLE [b6d906073] 2016-09-30 20:39:06 -0400
 -->
      <para>
-      Fix possible data corruption when <application>pg_upgrade</> rewrites
-      a relation visibility map into 9.6 format (Tom Lane)
+      <application>pg_upgrade</> 명령을 이용해 9.6 버전으로 업그레이드
+      할 경우 실자료 지도 파일의 자료가 깨지는 문제 수정
+      (Tom Lane)
      </para>
 
      <para>
-      On big-endian machines, bytes of the new visibility map were written
-      in the wrong order, leading to a completely incorrect map.  On
-      Windows, the old map was read using text mode, leading to incorrect
-      results if the map happened to contain consecutive bytes that matched
-      a carriage return/line feed sequence.  The latter error would almost
-      always lead to a <application>pg_upgrade</> failure due to the map
-      file appearing to be the wrong length.
+      빅-엔디안 장비에서 새 실 자료 지도에 기록할 바이트가 잘못된 
+      순서로 기룩되어 잘못된 지도를 만들 수 있었다.  윈도우즈에서,
+      줄바꿈 문자에 바이트들이 연속해서 나올 경우
+      옛 실자료 지도를 텍스트 모드로 읽어 잘못된 처리를 했다.
+      이 두번째 오류는 <application>pg_upgrade</> 명령을 사용할 때
+      대부분 바로 발생했다.
      </para>
 
      <para>
-      If you are using a big-endian machine (many non-Intel architectures
-      are big-endian) and have used <application>pg_upgrade</> to upgrade
-      from a pre-9.6 release, you should assume that all visibility maps are
-      incorrect and need to be regenerated.  It is sufficient to truncate
-      each relation's visibility map
-      with <filename>contrib/pg_visibility</>'s
-      <function>pg_truncate_visibility_map()</> function.
-      For more information see
-      <ulink url="https://wiki.postgresql.org/wiki/Visibility_Map_Problems"></>.
+      빅-엔디안 장비 (많은 비인텔칩이 이 방식으로 처리된다)에서
+      9.6 이전 버전을 <application>pg_upgrade</> 명령으로 업그레이드
+      한 경우, 실자료 지도를 잘못 만들었다.  이런 경우라면, 
+      버전 업그레이드하고, 다시 만들어야 한다.  조치 방법은
+      <filename>contrib/pg_visibility</> 확장 모듈에서 제공하는
+      <function>pg_truncate_visibility_map()</> 함수를 이용해서
+      실자료 지도를 정리하면 된다.
+      자세한 이야기는
+      <ulink url="https://wiki.postgresql.org/wiki/Visibility_Map_Problems"></>
+      페이지에서 다룬다.
      </para>
     </listitem>
 
@@ -108,8 +109,10 @@ Branch: REL9_6_STABLE [c4016fcb1] 2016-10-23 18:36:13 -0400
 Branch: REL9_5_STABLE [65d85b8f9] 2016-10-23 18:36:13 -0400
 -->
      <para>
-      Don't throw serialization errors for self-conflicting insertions
-      in <command>INSERT ... ON CONFLICT</> (Thomas Munro, Peter Geoghegan)
+      <command>INSERT ... ON CONFLICT</> 명령을 이용한
+      자체 충돌 상황의 자료 입력 작업에서 순차적인 오류를 
+      막았다.
+      (Thomas Munro, Peter Geoghegan)
      </para>
     </listitem>
 
@@ -120,12 +123,13 @@ Branch: master [d8589946d] 2016-10-17 12:13:16 +0300
 Branch: REL9_6_STABLE [a5f0bd77a] 2016-10-17 12:13:35 +0300
 -->
      <para>
-      Fix use-after-free hazard in execution of aggregate functions
-      using <literal>DISTINCT</> (Peter Geoghegan)
+      <literal>DISTINCT</> 옵션이 있는 집계 함수 작업시
+      쓰고 버리는 위험성을 수정했다.
+      (Peter Geoghegan)
      </para>
 
      <para>
-      This could lead to a crash or incorrect query results.
+      이 문제는 쿼리 실패나, 잘못된 쿼리 결과를 반환했었다.
      </para>
     </listitem>
 
@@ -136,15 +140,19 @@ Branch: master [ac4a9d92f] 2016-10-09 12:49:37 -0400
 Branch: REL9_6_STABLE [dca25c256] 2016-10-09 12:49:37 -0400
 -->
      <para>
-      Fix incorrect handling of polymorphic aggregates used as window
-      functions (Tom Lane)
+      윈도우 함수를 사용할 때, 다형 집계 처리에 대한 부분을 고쳤다.
+      (Tom Lane)
      </para>
 
      <para>
+      
       The aggregate's transition function was told that its first argument
       and result were of the aggregate's output type, rather than the
-      state type.  This led to errors or crashes with
-      polymorphic transition functions.
+      state type.  
+      집계 작업에서 사용하는 전환 함수가 그 통계치 자료형을 사용하지 않고, 
+      해당 집계 함수의 반환 자료형과 첫번째 인자 자료형을 사용했다.
+      이 문제는 다형 전환 함수가 사용되었을 경우, 
+      쿼리 오류가 발생하거나, 서버 비정상 종료까지 일어날 수 있었다.
      </para>
     </listitem>
 
@@ -156,8 +164,10 @@ Branch: REL9_6_STABLE [190765a05] 2016-10-03 16:23:02 -0400
 Branch: REL9_5_STABLE [647a86e37] 2016-10-03 16:23:12 -0400
 -->
      <para>
-      Fix <command>COPY</> with a column name list from a table that has
-      row-level security enabled (Adam Brightwell)
+      로우 수준 보안 정책이 있는 테이블을
+      칼럼 이름 목록을 포함하는
+      <command>COPY</> 명령을 사용할 때 생긴 문제를 고침.
+      (Adam Brightwell)
      </para>
     </listitem>
 
@@ -172,14 +182,15 @@ Branch: REL9_3_STABLE [edb514306] 2016-10-20 17:18:09 -0400
 Branch: REL9_2_STABLE [f17c26dbd] 2016-10-20 17:18:14 -0400
 -->
      <para>
-      Fix <command>EXPLAIN</> to emit valid XML when
-      <xref linkend="guc-track-io-timing"> is on (Markus Winand)
+      <xref linkend="guc-track-io-timing"> 설정값이 on 인 경우
+      <command>EXPLAIN</> 작업에서 바르게 XML이 출력되도록 고침.
+      (Markus Winand)
      </para>
 
      <para>
-      Previously the XML output-format option produced syntactically invalid
-      tags such as <literal>&lt;I/O-Read-Time&gt;</>.  That is now
-      rendered as <literal>&lt;I-O-Read-Time&gt;</>.
+      이전 버전에서는 <literal>&lt;I/O-Read-Time&gt;</> 형태의 
+      XML 구문에 맞지 않는 태그를 사용했다.   이 부분을
+      <literal>&lt;I-O-Read-Time&gt;</> 태그를 사용하도록 고침.
      </para>
     </listitem>
 
@@ -191,8 +202,9 @@ Branch: REL9_6_STABLE [03f2bf70a] 2016-10-13 19:46:06 -0400
 Branch: REL9_5_STABLE [3cd504254] 2016-10-13 19:45:58 -0400
 -->
      <para>
-      Fix statistics update for <command>TRUNCATE</> in a prepared
-      transaction (Stas Kelvich)
+      미리 준비된 트랜잭션 내의 <command>TRUNCATE</> 작업에 대한
+      통계 정보를 고침.
+      (Stas Kelvich)
      </para>
     </listitem>
 
@@ -213,16 +225,17 @@ Branch: REL9_3_STABLE [f0bf0f233] 2016-10-13 17:05:15 -0400
 Branch: REL9_2_STABLE [6f2db29ec] 2016-10-13 17:05:15 -0400
 -->
      <para>
-      Fix bugs in merging inherited <literal>CHECK</> constraints while
-      creating or altering a table (Tom Lane, Amit Langote)
+      테이블을 만들거나 변경할 때 상속된 <literal>CHECK</> 제약조건을
+      병합할 때 생긴 문제 고침.
+      (Tom Lane, Amit Langote)
      </para>
 
      <para>
-      Allow identical <literal>CHECK</> constraints to be added to a parent
-      and child table in either order.  Prevent merging of a valid
-      constraint from the parent table with a <literal>NOT VALID</>
-      constraint on the child.  Likewise, prevent merging of a <literal>NO
-      INHERIT</> child constraint with an inherited constraint.
+      같은 <literal>CHECK</> 제약조건을 상위 테이블과 하위 테이블 모두 
+      사용할 수 있다.  <literal>NOT VALID</> 제약조건이 있는 
+      하위 테이블이 유요한 제약조건이 있는 상위 테이블과 병협되는 것을 
+      막았다.  또한 상속되는 제약 조건과  <literal>NO
+      INHERIT</> 하위 제약조건 간의 병합도 막았다.
      </para>
     </listitem>
 
@@ -234,9 +247,10 @@ Branch: REL9_6_STABLE [993d94c59] 2016-10-03 16:40:26 -0400
 Branch: REL9_5_STABLE [f50fa46cc] 2016-10-03 16:40:27 -0400
 -->
      <para>
-      Show a sensible value
-      in <structname>pg_settings</>.<structfield>unit</>
-      for <varname>min_wal_size</> and <varname>max_wal_size</> (Tom Lane)
+      <structname>pg_settings</> 뷰에서 보이는 값을 좀 더 읽기 편하게 바꿨음.
+      <varname>min_wal_size</>, <varname>max_wal_size</> 설정의
+      <structfield>unit</> 적용.
+      (Tom Lane)
      </para>
     </listitem>
 
@@ -247,13 +261,13 @@ Branch: master [9c4cc9e2c] 2016-10-13 00:25:48 -0400
 Branch: REL9_6_STABLE [0e9e64c07] 2016-10-13 00:25:28 -0400
 -->
      <para>
-      Fix replacement of array elements in <function>jsonb_set()</>
+      <function>jsonb_set()</>에서 배열 요소 변경 처리 수정
       (Tom Lane)
      </para>
 
      <para>
-      If the target is an existing JSON array element, it got deleted
-      instead of being replaced with a new value.
+      대상 자료에서 해당 JSON 배열 요소가 이미 있으면, 새 값으로
+      바꾸지 않고, 삭제 함.
      </para>
     </listitem>
 
@@ -272,8 +286,9 @@ Branch: REL9_6_STABLE [fdcee9f1f] 2016-10-23 19:14:32 -0400
 Branch: REL9_5_STABLE [beac79369] 2016-10-23 19:14:32 -0400
 -->
      <para>
-      Avoid very-low-probability data corruption due to testing tuple
-      visibility without holding buffer lock (Thomas Munro, Peter Geoghegan,
+      버퍼 잠금 없이 튜플 가시성을 검사하는 것으로 자료 손실이 
+      발생할 수 있는 아주 드문 상황을 수정함 
+      (Thomas Munro, Peter Geoghegan,
       Tom Lane)
      </para>
     </listitem>
@@ -286,13 +301,14 @@ Branch: REL9_6_STABLE [c8329f934] 2016-10-24 09:46:49 -0300
 Branch: REL9_5_STABLE [7a2fa5774] 2016-10-24 09:38:28 -0300
 -->
      <para>
-      Preserve commit timestamps across server restart
+      서버 재 실행 시 커밋 시간 처리 부분 수정
       (Julien Rouhaud, Craig Ringer)
      </para>
 
      <para>
-      With <xref linkend="guc-track-commit-timestamp"> turned on, old
-      commit timestamps became inaccessible after a clean server restart.
+      <xref linkend="guc-track-commit-timestamp"> 설정값이 on인 상태에서
+      정상적인 서버 재 시작 뒤 오래된 커밋 시간 조회가 비정상적일 수
+      있었음.
      </para>
     </listitem>
 
@@ -305,8 +321,9 @@ Branch: REL9_5_STABLE [ce603a34a] 2016-10-03 22:13:10 -0700
 Branch: REL9_4_STABLE [07172b20f] 2016-10-03 22:14:12 -0700
 -->
      <para>
-      Fix logical WAL decoding to work properly when a subtransaction's WAL
-      output is large enough to spill to disk (Andres Freund)
+      서브트랜잭션의 WAL 출력이 디스크로 저장될 만큼 충분히 클 때, 
+      논리적 WAL 디코딩 작업이 잘못 처리하던 부분을 고침.
+      (Andres Freund)
      </para>
     </listitem>
 
@@ -317,7 +334,8 @@ Branch: master [308985b0b] 2016-09-28 11:19:46 -0400
 Branch: REL9_6_STABLE [32841fa32] 2016-09-28 11:22:39 -0400
 -->
      <para>
-      Fix dangling-pointer problem in logical WAL decoding (Stas Kelvich)
+      논리적 WAL 디코딩에서 잘못된 메모리 포인터 참조 문제를 고침.
+      (Stas Kelvich)
      </para>
     </listitem>
 
@@ -330,14 +348,16 @@ Branch: REL9_5_STABLE [43d17489d] 2016-10-13 15:07:04 -0400
 Branch: REL9_4_STABLE [6d3cbbf59] 2016-10-13 15:07:11 -0400
 -->
      <para>
-      Round shared-memory allocation request to a multiple of the actual
-      huge page size when attempting to use huge pages on Linux (Tom Lane)
+      리눅스 huge 페이지를 사용하는 경우, 
+      필요한 크기의 두 배를 요청하도록 바꿈
+      (Tom Lane)
      </para>
 
      <para>
-      This avoids possible failures during <function>munmap()</> on systems
-      with atypical default huge page sizes.  Except in crash-recovery
-      cases, there were no ill effects other than a log message.
+      이 처리는 OS 기본 huge 페이지 크기가 정확하지 않은 시스템에서
+      <function>munmap()</> 함수 처리가 실패할 경우를 막는다.  비정상
+      종료에 따른 복구 작업을 할 경우가 아니고는 로그 메시지 처리하는
+      작업 외에 다른 특별한 영향을 끼치지 않는다.
      </para>
     </listitem>
 
@@ -360,13 +380,14 @@ Branch: REL9_2_STABLE [5d5dc6f68] 2016-10-07 12:53:49 +0300
 Branch: REL9_1_STABLE [e84e4761f] 2016-10-07 12:53:51 +0300
 -->
      <para>
-      Don't try to share SSL contexts across multiple connections
-      in <application>libpq</> (Heikki Linnakangas)
+      <application>libpq</> 라이브러리를 이용한 
+      다중 연결에서 SSL 컨텍스트를 공유하지 않음
+      (Heikki Linnakangas)
      </para>
 
      <para>
-      This led to assorted corner-case bugs, particularly when trying to use
-      different SSL parameters for different connections.
+      다른 연결을 위해서 다른 SSL 매개변수를 사용하는 경우, 
+      드물에 문제점이 발생했었다.
      </para>
     </listitem>
 
@@ -382,12 +403,14 @@ Branch: REL9_2_STABLE [7397f62e7] 2016-10-10 10:35:58 -0400
 Branch: REL9_1_STABLE [fb6825fe5] 2016-10-10 10:35:58 -0400
 -->
      <para>
-      Avoid corner-case memory leak in <application>libpq</> (Tom Lane)
+      <application>libpq</> 라이브러리의 발생하기 드문 메모리 누수 문제를 
+      고침.
+      (Tom Lane)
      </para>
 
      <para>
-      The reported problem involved leaking an error report
-      during <function>PQreset()</>, but there might be related cases.
+      이 문제는 <function>PQreset()</> 사용 시 오류를 출력하는 부분에서
+      발생한다고 보고되었지만, 이 문제 외에도 더 있을 수 있었다.
      </para>
     </listitem>
 
@@ -399,14 +422,15 @@ Branch: REL9_6_STABLE [bac56dbe0] 2016-10-03 10:07:39 -0400
 Branch: REL9_5_STABLE [0f259bd17] 2016-10-03 10:07:39 -0400
 -->
      <para>
-      In <application>pg_upgrade</>, check library loadability in name order
+      <application>pg_upgrade</>에서 로드 가능한 라이브러리를 이름 순으로
+      확인 함.
       (Tom Lane)
      </para>
 
      <para>
-      This is a workaround to deal with cross-extension dependencies from
-      language transform modules to their base language and data type
-      modules.
+      언어 변환 모듈에서 그 기본 언어와 자료형 모듈을 참조할 때,
+      로드 되는 라이브러리들의 의존성이 교차 참조 되는 경우 문제가 생기는 것을
+      피하기 위한 방법이다.
      </para>
     </listitem>
 
@@ -417,15 +441,17 @@ Branch: master [e8bdee277] 2016-10-02 14:31:28 -0400
 Branch: REL9_6_STABLE [f40334b85] 2016-10-02 14:31:28 -0400
 -->
      <para>
-      Fix <application>pg_upgrade</> to work correctly for extensions
-      containing index access methods (Tom Lane)
+      <application>pg_upgrade</> 명령에서 
+      인덱스 접근 방법 확장 모듈이 있는 경우에 대한 처리를 고침
+      (Tom Lane)
      </para>
 
      <para>
-      To allow this, the server has been extended to support <command>ALTER
-      EXTENSION ADD/DROP ACCESS METHOD</>.  That functionality should have
-      been included in the original patch to support dynamic creation of
-      access methods, but it was overlooked.
+      정상적으로 처리하려면, 
+      서버가 <command>ALTER
+      EXTENSION ADD/DROP ACCESS METHOD</> 명령을 지원해야 한다.  
+      이 기능은 사용자가 접근 방법을 지정할 수 있도록 한 것에 대한 
+      지원 기능인데, 이전 버전에서 빼먹었다.
      </para>
     </listitem>
 
@@ -436,8 +462,10 @@ Branch: master [f002ed2b8] 2016-09-30 20:40:56 -0400
 Branch: REL9_6_STABLE [53fbeed40] 2016-09-30 20:40:27 -0400
 -->
      <para>
-      Improve error reporting in <application>pg_upgrade</>'s file
-      copying/linking/rewriting steps (Tom Lane, &Aacute;lvaro Herrera)
+      <application>pg_upgrade</> 명령에서
+      파일 복사, 링크, 재기록 작업에서 발생하는 오류를 
+      보다 자세히 보이도록 개선함
+      (Tom Lane, &Aacute;lvaro Herrera)
      </para>
     </listitem>
 
@@ -448,7 +476,8 @@ Branch: master [4806f26f9] 2016-10-07 09:51:18 -0400
 Branch: REL9_6_STABLE [1749332ec] 2016-10-07 09:51:28 -0400
 -->
      <para>
-      Fix <application>pg_dump</> to work against pre-7.4 servers
+      7.4 이전 버전에서 <application>pg_dump</> 명령이 
+      실행 되도록 고침
       (Amit Langote, Tom Lane)
      </para>
     </listitem>
@@ -461,8 +490,9 @@ Branch: REL9_6_STABLE [2933ed036] 2016-10-07 14:35:41 +0300
 Branch: REL9_5_STABLE [010a1b561] 2016-10-07 14:35:45 +0300
 -->
      <para>
-      Disallow specifying both <option>--source-server</>
-      and <option>--source-target</> options to <application>pg_rewind</>
+      <application>pg_rewind</> 명령에서
+      <option>--source-server</> 옵션과
+      <option>--source-target</> 옵션을 같이 쓸 수 없게 막음
       (Michael Banck)
      </para>
     </listitem>
@@ -475,14 +505,15 @@ Branch: REL9_6_STABLE [aab809664] 2016-10-06 13:34:38 +0300
 Branch: REL9_5_STABLE [69da71254] 2016-10-06 13:34:32 +0300
 -->
      <para>
-      Make <application>pg_rewind</> turn off <varname>synchronous_commit</>
-      in its session on the source server (Michael Banck, Michael Paquier)
+      <application>pg_rewind</> 명령을 사용할 때, 
+      원본 서버에서 <varname>synchronous_commit</> 설정을
+      off 로 변경한다.
+      (Michael Banck, Michael Paquier)
      </para>
 
      <para>
-      This allows <application>pg_rewind</> to work even when the source
-      server is using synchronous replication that is not working for some
-      reason.
+      이 정책은 원본 서버가 동기식 복제를 사용하고 있을 때도
+      <application>pg_rewind</> 명령이 실행 될 수 있게 하기 위함이다.
      </para>
     </listitem>
 
@@ -496,13 +527,13 @@ Branch: REL9_4_STABLE [da3f71a08] 2016-09-30 11:22:49 +0200
 Branch: REL9_3_STABLE [4bff35cca] 2016-09-30 11:23:25 +0200
 -->
      <para>
-      In <application>pg_xlogdump</>, retry opening new WAL segments when
-      using <option>--follow</> option (Magnus Hagander)
+      <application>pg_xlogdump</> 명령에서 <option>--follow</>
+      옵션을 이용해서 다음 WAL 조각 파일들도 읽을 수 있도록 개선함
+      (Magnus Hagander)
      </para>
 
      <para>
-      This allows for a possible delay in the server's creation of the next
-      segment.
+      이 기능은 서버에서 다음 조각을 만들 때 지연이 생길 수 있다.
      </para>
     </listitem>
 
@@ -513,8 +544,8 @@ Branch: master [9a109452d] 2016-10-01 16:32:54 -0400
 Branch: REL9_6_STABLE [f4e787c82] 2016-10-01 16:32:55 -0400
 -->
      <para>
-      Fix <filename>contrib/pg_visibility</> to report the correct TID for
-      a corrupt tuple that has been the subject of a rolled-back update
+      업데이트 취소 작업이 있었던 튜플의 TID를 바르게 출력 할 수 있도록
+      <filename>contrib/pg_visibility</> 모듈 수정함.
       (Tom Lane)
      </para>
     </listitem>
@@ -526,8 +557,9 @@ Branch: master [7107d58ec] 2016-10-01 13:35:13 -0400
 Branch: REL9_6_STABLE [68fb75e10] 2016-10-01 13:35:20 -0400
 -->
      <para>
-      Fix makefile dependencies so that parallel make
-      of <application>PL/Python</> by itself will succeed reliably
+      <application>PL/Python</> 빌드 작업에서 
+      안정적으로 병렬 작업을 할 수 있도록
+      makefile을 수정함.
       (Pavel Raiskup)
      </para>
     </listitem>
@@ -565,29 +597,28 @@ Branch: REL9_2_STABLE [a03339aef] 2016-10-19 17:57:01 -0400
 Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
 -->
      <para>
-      Update time zone data files to <application>tzdata</> release 2016h
-      for DST law changes in Palestine and Turkey, plus historical
-      corrections for Turkey and some regions of Russia.
-      Switch to numeric abbreviations for some time zones in Antarctica,
-      the former Soviet Union, and Sri Lanka.
+      팔레스타인과 터키의 일광시간법 변경과, 터키와 러시아 일부 지역의
+      역사적 변경 사항들이 반영된 2016h <application>tzdata</> 파일로 
+      갱신함.  남극 대륙, 구 소련, 스리랑카 일부 지역 타임존 약어를
+      숫자로 바꿈.
      </para>
 
      <para>
-      The IANA time zone database previously provided textual abbreviations
-      for all time zones, sometimes making up abbreviations that have little
-      or no currency among the local population.  They are in process of
-      reversing that policy in favor of using numeric UTC offsets in zones
-      where there is no evidence of real-world use of an English
-      abbreviation.  At least for the time being, <productname>PostgreSQL</>
-      will continue to accept such removed abbreviations for timestamp input.
-      But they will not be shown in the <structname>pg_timezone_names</>
-      view nor used for output.
+      IANA 타임존 데이터베이스는 예전부터 모든 타임존의 약어로 
+      글자로 된 약어를 제공했었다.  이 때, 지역 주민들 사이에, 
+      극 소수로 사용하거나 사용하지 않는 경우에도 약어를 정했었다.
+      영어 약어를 실세계 안에서 사용되지 않는 경우 이 약어들을 
+      그냥 UTC 옵셋으로 바꾸는 작업을 정책적으로 진행 중이다.
+      당분간, <productname>PostgreSQL</>에서는
+      이런 타임존 약어들을 계속 사용할 수 있지만,
+      앞으로는 <structname>pg_timezone_names</> 뷰와 그 외의 출력에서도
+      IANA 정책에 따라 없앨 예정이다.
      </para>
 
      <para>
-      In this update, <literal>AMT</> is no longer shown as being in use to
-      mean Armenia Time.  Therefore, we have changed the <literal>Default</>
-      abbreviation set to interpret it as Amazon Time, thus UTC-4 not UTC+4.
+      이번 업데이트에서는, 아르메니아 타임존의 의미로 쓰인 <literal>AMT</>
+      약어는 더 이상 사용되지 않는다 .  이 약어는 아마존 시간으로 사용된다.
+      따라서 타임존 자료에서는 UTC+4가 아니라, UTC-4로 변경했다.
      </para>
     </listitem>
 
@@ -600,12 +631,12 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
   <title>Release 9.6</title>
 
   <note>
-   <title>Release Date</title>
+   <title>출시일</title>
    <simpara>2016-09-29</simpara>
   </note>
 
   <sect2>
-   <title>Overview</title>
+   <title>개요</title>
 
    <para>
     Major enhancements in <productname>PostgreSQL</> 9.6 include:
@@ -664,7 +695,7 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
 
   <sect2>
 
-  <title>Migration to Version 9.6</title>
+  <title>9.6 버전으로 업그레이드 하기</title>
 
    <para>
     A dump/restore using <xref linkend="app-pg-dumpall">, or use of <xref
@@ -922,7 +953,7 @@ and many others in the same vein
   </sect2>
 
   <sect2>
-   <title>Changes</title>
+   <title>바뀐점</title>
 
    <para>
     Below you will find a detailed account of the changes between
@@ -931,7 +962,7 @@ and many others in the same vein
    </para>
 
    <sect3>
-    <title>Server</title>
+    <title>서버</title>
 
     <sect4>
      <title>Parallel Queries</title>
@@ -2090,7 +2121,7 @@ XXX this is pending backpatch, may need to remove
    </sect3>
 
    <sect3>
-    <title>Replication and Recovery</title>
+    <title>복제와 복구</title>
 
      <itemizedlist>
 
@@ -2187,7 +2218,7 @@ XXX this is pending backpatch, may need to remove
    </sect3>
 
    <sect3>
-    <title>Queries</title>
+    <title>쿼리</title>
 
      <itemizedlist>
 
@@ -2503,7 +2534,7 @@ XXX this is pending backpatch, may need to remove
    </sect3>
 
    <sect3>
-    <title>Permissions Management</title>
+    <title>권한 관리</title>
 
     <itemizedlist>
 
@@ -2703,7 +2734,7 @@ XXX this is pending backpatch, may need to remove
    </sect3>
 
    <sect3>
-    <title>Functions</title>
+    <title>함수</title>
 
      <itemizedlist>
 
