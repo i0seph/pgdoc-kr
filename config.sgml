@@ -2967,11 +2967,14 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
 
 </sect2>
  <sect2 id="runtime-config-query-geqo">
- <title>제네릭 쿼리 옵티마이저</title>
+ <title>유전 쿼리 최적화</title>
 
  <para>
-제네릭 쿼리 옵티마이저(GEQO)는 휴리스틱 검색을 사용하는 쿼리 플래닝을 하는 알고리즘이다. 
-이것은 검색 비용이 많이 드는 일반 알고리즘보다 적은 플랜 생성 비용으로, 복잡한 쿼리(다수의 관계 조인)의 플래닝 시간을 줄인다. 자세한 내용은 <xref linkend="geqo">을 참조 바란다.
+유전 쿼리 최적화(Genetic Query Optimization, GEQO)는 경험적 추론 방법 검색을 사용하여
+최적의 쿼리 실행계획을 선택하는 알고리즘이다. 
+이것은 최적의 실행 계획을 찾는 비용이 많이 드는 일반 알고리즘보다
+적은 비용으로, 복잡한 쿼리(다수의 관계 조인)의 실행 계획을 짜는 시간을 줄인다.
+자세한 내용은 <xref linkend="geqo">을 참조 바란다.
  </para>
 
  <variablelist>
@@ -2979,7 +2982,7 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
  <varlistentry id="guc-geqo" xreflabel="geqo">
 <term><varname>geqo</varname> (<type>boolean</type>)
 <indexterm>
- <primary>genetic query optimization</primary>
+ <primary>유전 쿼리 최적화</primary>
 </indexterm>
 <indexterm>
  <primary>GEQO</primary>
@@ -2991,8 +2994,10 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
 </term>
 <listitem>
  <para>
-전체 쿼리 최적화를 활성화 또는 비활성화한다. 기본값은 on이다. 
-보통은 운영 중 해제하지 않는 것이 최선이며 <varname>geqo_threshold</varname> 변수는 좀 더 세분화된 GEQO 제어를 제공한다.
+모든 쿼리에 대해서 이 기능을 사용할지 지정한다.
+기본값은 on이다. 
+보통은 운영 중 해제하지 않는 것이 최선이며
+<varname>geqo_threshold</varname> 변수는 좀 더 세분화된 GEQO 제어를 제공한다.
  </para>
 </listitem>
  </varlistentry>
@@ -3005,8 +3010,12 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
 </term>
 <listitem>
  <para>
-최소한 <literal>FROM</> 항목에 관련된 수만큼 쿼리를 플랜하는 전체 쿼리 최적화을 사용한다. (<literal>FULL OUTER JOIN</> 구문은 하나의 <literal>FROM</> 항목으로 계산된다.) 기본값은 12이다. 
-단순 쿼리의 경우는 일반적으로 정규, 소모성 검색 플래너를 사용하는 것이 낫지만, 테이블이 다수 있는 쿼리의 경우 소모성 검색은 너무 오래 걸리며, 차선의 플랜을 실행하는 것보다 더 오래 걸릴 수도 있다. 
+지정한 만큼의 <literal>FROM</> 항목 이상일 때, 
+GEQO 기능을 사용한다.
+(<literal>FULL OUTER JOIN</> 구문은 하나의 <literal>FROM</> 항목으로 계산된다.) 기본값은 12이다. 
+단순 쿼리의 경우는 일반적으로 정규, 소모성 검색 실행계획기를 사용하는 것이 낫지만,
+테이블이 다수 있는 쿼리의 경우 소모성 검색은 너무 오래 걸리며,
+차선의 실행계획을 선택하는 것보다 더 오래 걸릴 수도 있다. 
 따라서 쿼리 크기에 대한 임계값은 GEQO 사용 관리에 편리한 방법이다.
  </para>
 </listitem>
@@ -3020,12 +3029,16 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
 </term>
 <listitem>
  <para>
-GEQO에서 플래닝 시간과 쿼리 플랜의 수준 간 트레이드 오프를 제어한다. 이 변수는 1 ~ 10 사이의 integer여야 한다. 
-기본값은 5이다. 값이 클수록 쿼리 플래닝에 소요되는 시간이 늘어나지만, 효율적인 쿼리 플랜이 선택될 가능성도 높아진다.
+GEQO에서 작업할 최적 쿼리 실행 계획을 찾는 시간과 
+품질을 조정하는 값이다.
+이 변수는 1 ~ 10 사이의 정수형이여야 한다. 
+기본값은 5이다. 값이 클수록 실행 계획을 짜는 시간이 늘어나지만,
+효율적인 쿼리 실행 계획이 선택될 가능성도 높아진다.
  </para>
 
  <para>
-<varname>geqo_effort</varname>가 직접 아는 일은 실제로 없다. GEQO 동작에 영향을 미치는 다른 변수에 대한 기본 값을 계산하는 데에만 이용된다(아래에 설명). 
+<varname>geqo_effort</varname>가 직접 하는 일은 실제로 없다.
+GEQO 동작에 영향을 미치는 다른 변수에 대한 기본 값을 계산하는 데에만 이용된다(아래에 설명). 
 원한다면 그 대신 다른 매개변수를 직접 설정할 수 있다.
  </para>
 </listitem>
@@ -3039,8 +3052,10 @@ GEQO에서 플래닝 시간과 쿼리 플랜의 수준 간 트레이드 오프�
 </term>
 <listitem>
  <para>
-GEQO에서 사용되는 풀 크기를 제어한다. 풀 크기는 제네틱 채우기(genetic population)에서의 개체 수를 뜻한다. 
-이것은 최소 2 이상의 유용한 값이어야 하며, 일반적으로 100 ~ 1000이다. 0으로 설정되면(기본 설정) 적정값이 <varname>geqo_effort</varname> 및 쿼리의 테이블 수에 따라 선택된다.
+GEQO에서 사용되는 풀 크기를 제어한다. 풀 크기는 만드는 실행 계획 종류의 수이다.
+이것은 최소 2 이상의 유용한 값이어야 하며, 일반적으로 100 ~ 1000이다.
+0(기본값)으로 설정되면 적정값이 <varname>geqo_effort</varname>
+값과 쿼리에서 사용하는 테이블 수를 고려하여 자동 계산된다.
  </para>
 </listitem>
  </varlistentry>
@@ -3053,8 +3068,9 @@ GEQO에서 사용되는 풀 크기를 제어한다. 풀 크기는 제네틱 채�
 </term>
 <listitem>
  <para>
-알고리즘 반복 숫자이자, GEQO에서 사용되는 생성 수를 제어한다. 이것은 최소 1 이상이어야 하며, 유용한 값은 풀 크기와 동일한 범위 내이다. 
-0으로 설정되면(기본 설정) 적정값이 <varname>geqo_pool_size</varname>에 따라 선택된다.
+알고리즘 반복 숫자이자, GEQO에서 사용되는 생성 수를 제어한다.
+이것은 최소 1 이상이어야 하며, 유용한 값은 풀 크기와 동일한 범위 내이다. 
+0(기본값)으로 설정되면 적정값이 <varname>geqo_pool_size</varname> 값에 따른다.
  </para>
 </listitem>
  </varlistentry>
@@ -3067,7 +3083,8 @@ GEQO에서 사용되는 풀 크기를 제어한다. 풀 크기는 제네틱 채�
 </term>
 <listitem>
  <para>
-GEQO에 의해 사용된 selection bias를 제어한다. selection bias는 채우기 내부의 선택적 압력이다. 값은 1.50 ~ 2.00일 수 있으며, 후자가 기본값이다.
+GEQO에 의해 사용되는 선택 편향 관련 작업을 제어한다.
+선택 편향이란 자연 선택 기준값이 된다. 값은 1.50 ~ 2.00일 수 있으며, 기본값 2.00.
  </para>
 </listitem>
  </varlistentry>
@@ -3080,8 +3097,11 @@ GEQO에 의해 사용된 selection bias를 제어한다. selection bias는 채�
 </term>
 <listitem>
  <para>
-조인 순서 검색 공간의 랜덤 경로를 선택하기 위해 GEQO에 의한 난수 발생기의 기본값을 제어한다. 값은 0(기본값) ~ 1일 수 있다. 
-값을 변경하면 탐색할 조인 경로 집합이 바뀌고 결과적으로 발견된 최상의 경로가 좋을 수도 있고 나쁠 수도 있다.
+조인 순서 검색 공간의 랜덤 경로를 선택하기 위해 
+GEQO에 의한 난수 발생기의 기본값을 제어한다.
+값은 0(기본값) ~ 1일 수 있다. 
+값을 변경하면 탐색할 조인 경로 집합이 바뀌고 결과적으로
+발견된 최상의 경로가 좋을 수도 있고 나쁠 수도 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -3089,7 +3109,7 @@ GEQO에 의해 사용된 selection bias를 제어한다. selection bias는 채�
  </variablelist>
 </sect2>
  <sect2 id="runtime-config-query-other">
- <title>Other Planner Options</title>
+ <title>실행 계획기 관련 기타 옵션들</title>
 
  <variablelist>
 

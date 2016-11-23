@@ -97,8 +97,8 @@
    </biblioentry>
 
   <biblioentry id="ELMA04">
-   <title>Fundamentals of Database Systems</title>
-   <edition>Fourth Edition</edition>
+   <title>데이터베이스 시스템 기초</title>
+   <edition>4판</edition>
    <authorgroup>
     <author>
      <firstname>Ramez</firstname>
@@ -241,7 +241,7 @@ ssimkovi@ag.or.at
   <biblioentry id="FONG">
    <title>
    <ulink url="http://db.cs.berkeley.edu/papers/UCB-MS-zfong.pdf">
-   The design and implementation of the <productname>POSTGRES</productname> query optimizer
+   <productname>POSTGRES</productname> 쿼리 최적화기 디자인과 구현
    </ulink></title>
    <author>
     <firstname>Zelaine</firstname>

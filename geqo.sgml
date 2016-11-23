@@ -1,113 +1,115 @@
 <!-- doc/src/sgml/geqo.sgml -->
 
  <chapter id="geqo">
-  <title>Genetic Query Optimizer</title>
+  <title>유전 쿼리 최적화</title>
 
   <para>
    <note>
-    <title>Author</title>
+    <title>만든이</title>
     <para>
-     Written by Martin Utesch (<email>utesch@aut.tu-freiberg.de</email>)
-     for the Institute of Automatic Control at the University of Mining and Technology in Freiberg, Germany.
+     마르틴 우테쉬 Martin Utesch (<email>utesch@aut.tu-freiberg.de</email>),
+     독일 프라이베르크 광업 기술 대학 자동 제어 연구소
     </para>
    </note>
   </para>
 
   <sect1 id="geqo-intro">
-   <title>Query Handling as a Complex Optimization Problem</title>
+   <title>복잡한 쿼리 최적화 문제 관점에서 본 쿼리 처리</title>
 
    <para>
-    Among all relational operators the most difficult one to process
-    and optimize is the <firstterm>join</firstterm>. The number of
-    possible query plans grows exponentially with the
-    number of joins in the query. Further optimization effort is
-    caused by the support of a variety of <firstterm>join
-    methods</firstterm> (e.g., nested loop, hash join, merge join in
-    <productname>PostgreSQL</productname>) to process individual joins
-    and a diversity of <firstterm>indexes</firstterm> (e.g.,
-    B-tree, hash, GiST and GIN in <productname>PostgreSQL</productname>) as
-    access paths for relations.
+    모든 관계 연산 가운데, 제일 어려운 부분은 
+    <firstterm>조인</firstterm>에 관계된 처리와 그 최적화 부분이다.
+    쿼리의 실행 계획 종류는 그 쿼리에서 사용하는 조인 수와 비례해서
+    기하급수적으로 많아진다.
+    보다 좋은 최적화 기능은 각 객체들에 대한 조인 연산을 할 경우, 
+    다양한 <firstterm>조인 방법</firstterm>
+    (예, <productname>PostgreSQL</productname>에서는 
+    중첩 순환 nested loop, 해쉬 조인 hash join, 머지 조인 merge join을
+    지원함)을 고려하는 것이고,  여러가지 인덱스 (예,
+    <productname>PostgreSQL</productname>에서는 B-트리, 해시, Gist, GIN 
+    인덱스를 지원함)를 해당 객체에서 잘 사용하는 것이다.
    </para>
 
    <para>
-    The normal <productname>PostgreSQL</productname> query optimizer
-    performs a <firstterm>near-exhaustive search</firstterm> over the
-    space of alternative strategies. This algorithm, first introduced
-    in IBM's System R database, produces a near-optimal join order,
-    but can take an enormous amount of time and memory space when the
-    number of joins in the query grows large. This makes the ordinary
-    <productname>PostgreSQL</productname> query optimizer
-    inappropriate for queries that join a large number of tables.
+    단순한 쿼리인 경우 <productname>PostgreSQL</productname> 쿼리 최적화기는 
+    최선의 실행 계획을 찾기 위해 <firstterm>거의 모든 경우의
+    수를 찾는다</firstterm>.  이 알고리즘은 IBM 시스템 R 데이터베이스에서
+    처음 소개되었으며, 쿼리에서 많은 조인이 사용될 경우, 
+    사용할 실행 계획을 결정하기 위해서는 많은 시간과 메모리를 필요로 한다.
+    이 알고리즘으로는 테이블들간의 많은 조인을 하는 
+    쿼리인 경우 <productname>PostgreSQL</productname> 쿼리 최적화기에서
+    사용하기는 부적적했다.
    </para>
 
    <para>
-    The Institute of Automatic Control at the University of Mining and
-    Technology, in Freiberg, Germany, encountered some problems when
-    it wanted to use <productname>PostgreSQL</productname> as the
-    backend for a decision support knowledge based system for the
-    maintenance of an electrical power grid. The DBMS needed to handle
-    large join queries for the inference machine of the knowledge
-    based system. The number of joins in these queries made using the
-    normal query optimizer infeasible.
+    독일 프라이베르크 광업 기술 대학 자동 제어 연구소에서
+    전력 그리드 관리용 지식 기반 시스템의 데이터베이스로 
+    <productname>PostgreSQL</productname>을 사용하려고 했는데, 
+    몇가지 문제가 있었다.
+    지식 기반 시스템의 추론을 위한 복잡한 쿼리를 DBMS가 처리해
+    내야 했다.  이런 쿼리들은 기존 쿼리 최적화기로는 좋은 
+    성능을 낼 수 없었다.
    </para>
 
    <para>
-    In the following we describe the implementation of a
-    <firstterm>genetic algorithm</firstterm> to solve the join
-    ordering problem in a manner that is efficient for queries
-    involving large numbers of joins.
+    이런 문제를 해결하기 위하여 <firstterm>유전자 알고리즘</firstterm>
+    기반 쿼리 최적화기가 도입되었으며, 복잡한 조인 쿼리를 
+    보다 효율적으로 최적화된 실행 계획을 짜는데 사용했다.  다음 절에서
+    이것에 대한 구현 방법을 자세히 소개한다.
    </para>
   </sect1>
 
   <sect1 id="geqo-intro2">
-   <title>Genetic Algorithms</title>
+   <title>유전자 알고리즘</title>
 
    <para>
-    The genetic algorithm (<acronym>GA</acronym>) is a heuristic optimization method which
-    operates through randomized search. The set of possible solutions for the
-    optimization problem is considered as a
-    <firstterm>population</firstterm> of <firstterm>individuals</firstterm>.
-    The degree of adaptation of an individual to its environment is specified
-    by its <firstterm>fitness</firstterm>.
+    유전자 알고리즘 (genetic algorithm <acronym>GA</acronym>)은 
+    무작위 검색을 통해 작동하는 경험적 최적화 방법이다.
+    최적화 문제를 풀기위한 해결책들을
+    <firstterm>개체들</firstterm>의 <firstterm>집단</firstterm>으로
+    간주한다.
+    한 개체가 그 환경에 적응하는 정도를 <firstterm>적합도</firstterm>라 한다.
    </para>
 
    <para>
-    The coordinates of an individual in the search space are represented
-    by <firstterm>chromosomes</firstterm>, in essence a set of character
-    strings. A <firstterm>gene</firstterm> is a
-    subsection of a chromosome which encodes the value of a single parameter
-    being optimized. Typical encodings for a gene could be <firstterm>binary</firstterm> or
-    <firstterm>integer</firstterm>.
+    검색 공간에서 한 개체의 위치는 <firstterm>염색체</firstterm>라고 간주하고,
+    이것은 하나의 문자열로 처리된다.  <firstterm>유전자</firstterm>는 염색체의
+    구성요소이며, 염색체는 단일 매개변수값으로 최적화된 인코딩된다.
+    유전자 인코딩은 <firstterm>이진자료형</firstterm>이나,
+    <firstterm>정수형</firstterm>으로 처리한다.
    </para>
 
    <para>
-    Through simulation of the evolutionary operations <firstterm>recombination</firstterm>,
-    <firstterm>mutation</firstterm>, and
-    <firstterm>selection</firstterm> new generations of search points are found
-    that show a higher average fitness than their ancestors.
+    진화과정을 시뮬레이션한다 - <firstterm>재조합</firstterm>,
+    <firstterm>변이</firstterm>, <firstterm>선택</firstterm> 과정을 거치면서
+    해결책 가운데 가장 적합도가 높은 것을 선택한다.
    </para>
 
    <para>
-    According to the <systemitem class="resource">comp.ai.genetic</> <acronym>FAQ</acronym> it cannot be stressed too
-    strongly that a <acronym>GA</acronym> is not a pure random search for a solution to a
-    problem. A <acronym>GA</acronym> uses stochastic processes, but the result is distinctly
-    non-random (better than random).
+    <systemitem class="resource">comp.ai.genetic</> 뉴스그룹 <acronym>FAQ</acronym>에
+    따르면, 
+    어떤 문제의 해결책을 찾는데 있어 
+    <acronym>GA</acronym> 방법은
+    순수한 무작위 검색은 아니다라고 꼭 그렇게 
+    말할 수는 없다고 한다. (순수한 무작위 선택의 결과와 같을 수도 있다 - 옮긴이)
+    <acronym>GA</acronym>는 확률론적 과정을 거치기에
+    그 결과는 분명 임의적 결과는 아니다(순수 임의 선택보다는 낫다).
    </para>
 
    <figure id="geqo-diagram">
-    <title>Structured Diagram of a Genetic Algorithm</title>
+    <title>유전자 알고리즘의 구조화된 도식</title>
 
     <informaltable frame="none">
      <tgroup cols="2">
       <tbody>
        <row>
         <entry>P(t)</entry>
-        <entry>generation of ancestors at a time t</entry>
+        <entry>t 시간에 만든 조상 세대</entry>
        </row>
 
        <row>
         <entry>P''(t)</entry>
-        <entry>generation of descendants at a time t</entry>
+        <entry>t 시간에 만든 자손 세대</entry>
        </row>
       </tbody>
      </tgroup>
@@ -140,181 +142,191 @@
   </sect1>
 
   <sect1 id="geqo-pg-intro">
-   <title>Genetic Query Optimization (<acronym>GEQO</acronym>) in PostgreSQL</title>
+   <title>PostgreSQL 유전 쿼리 최적화 Genetic Query Optimization (<acronym>GEQO</acronym>)</title>
 
    <para>
-    The <acronym>GEQO</acronym> module approaches the query
-    optimization problem as though it were the well-known traveling salesman
-    problem (<acronym>TSP</acronym>).
-    Possible query plans are encoded as integer strings. Each string
-    represents the join order from one relation of the query to the next.
-    For example, the join tree
+    <acronym>GEQO</acronym> 모듈은 
+    잘 알려진 여행하는 판매원 문제(traveling salesman
+    problem, <acronym>TSP</acronym>)를 쿼리 최적화 관점에서
+    풀어보려고 만들었다.
+    가능한 쿼리 실행 계획은 숫자로된 문자열로 인코딩된다.
+    각 문자열은 하나의 릴레이션과 다른 릴레이션을 조인 하는 순서로 구성된다.
+    예를 들어 조인 구조가 다음과 같다면:
 <literallayout class="monospaced">
    /\
   /\ 2
  /\ 3
 4  1
 </literallayout>
-    is encoded by the integer string '4-1-3-2',
-    which means, first join relation '4' and '1', then '3', and
-    then '2', where 1, 2, 3, 4 are relation IDs within the
-    <productname>PostgreSQL</productname> optimizer.
+    이것은 '4-1-3-2' 문자열로 인코딩 된 것이며, 
+    '4'와 '1'을 처음 조인하고, 
+    다음 '3', 마지막에 '2'를 조인한다.
+    1, 2, 3, 4 는 <productname>PostgreSQL</productname>
+    최적화기가 사용하는 릴레이션 ID들이다.
    </para>
 
    <para>
-    Specific characteristics of the <acronym>GEQO</acronym>
-    implementation in <productname>PostgreSQL</productname>
-    are:
+    <productname>PostgreSQL</productname>에서 구현된
+    <acronym>GEQO</acronym> 기능은 다음 특성이 있다:
 
     <itemizedlist spacing="compact" mark="bullet">
      <listitem>
       <para>
-       Usage of a <firstterm>steady state</firstterm> <acronym>GA</acronym> (replacement of the least fit
-       individuals in a population, not whole-generational replacement)
-       allows fast convergence towards improved query plans. This is
-       essential for query handling with reasonable time;
+       <firstterm>안정적인 상태</firstterm> <acronym>GA</acronym>
+       (모든 경우에 대한 비용 계산을 하지 않고, 가장 나쁜 경우를 대체하는 
+       방식) 사용으로 쿼리 실행 계획을 짜는데, 시간을 줄일 수 있다.  이
+       방식은 합리적인 시간으로 쿼리 작업을 하는 필수 요소다.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       Usage of <firstterm>edge recombination crossover</firstterm>
-       which is especially suited to keep edge losses low for the
-       solution of the <acronym>TSP</acronym> by means of a
-       <acronym>GA</acronym>;
+       <acronym>GA</acronym> 사용으로 위에서 언급한 
+       <acronym>TSP</acronym> 해결에 있어 
+       엣지(경로) 손실률을 낮추는 
+       <firstterm>엣지 교차 재조합</firstterm> 기법을 
+       쓸 수 있다.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       Mutation as genetic operator is deprecated so that no repair
-       mechanisms are needed to generate legal <acronym>TSP</acronym> tours.
+       쿼리 최적화를 위한 경로 선택을 유전자 조작 기법을 쓴다고 해서, 
+       <acronym>TSP</acronym> 해결에서 생길 수 있는 필요한 경우
+       합법적 경로를 다시 찾아야 하는 복구 작업은 필요 없다.
       </para>
      </listitem>
     </itemizedlist>
    </para>
 
    <para>
-    Parts of the <acronym>GEQO</acronym> module are adapted from D. Whitley's
-    Genitor algorithm.
+    <acronym>GEQO</acronym> 모듈의 부분은 D. Whitley의 유전자 알고리즘에서
+    가져왔다.
    </para>
 
    <para>
-    The <acronym>GEQO</acronym> module allows
-    the <productname>PostgreSQL</productname> query optimizer to
-    support large join queries effectively through
-    non-exhaustive search.
+    <acronym>GEQO</acronym> 모듈은 
+    <productname>PostgreSQL</productname> 쿼리 최적화기가 
+    많은 조인을 사용하는 쿼리의 실행 계획을 짤 때 
+    모든 경우의 수를 조사하지 않고 차선의 실행 계획을 
+    빨리 선택할 수 있도록 지원한다.
    </para>
 
   <sect2>
-   <title>Generating Possible Plans with <acronym>GEQO</acronym></title>
+   <title><acronym>GEQO</acronym>로 가능한 계획 짜기</title>
 
    <para>
-    The <acronym>GEQO</acronym> planning process uses the standard planner
-    code to generate plans for scans of individual relations.  Then join
-    plans are developed using the genetic approach.  As shown above, each
-    candidate join plan is represented by a sequence in which to join
-    the base relations.  In the initial stage, the <acronym>GEQO</acronym>
-    code simply generates some possible join sequences at random.  For each
-    join sequence considered, the standard planner code is invoked to
-    estimate the cost of performing the query using that join sequence.
-    (For each step of the join sequence, all three possible join strategies
-    are considered; and all the initially-determined relation scan plans
-    are available.  The estimated cost is the cheapest of these
-    possibilities.)  Join sequences with lower estimated cost are considered
-    <quote>more fit</> than those with higher cost.  The genetic algorithm
-    discards the least fit candidates.  Then new candidates are generated
-    by combining genes of more-fit candidates &mdash; that is, by using
-    randomly-chosen portions of known low-cost join sequences to create
-    new sequences for consideration.  This process is repeated until a
-    preset number of join sequences have been considered; then the best
-    one found at any time during the search is used to generate the finished
-    plan.
+    <acronym>GEQO</acronym> 실행 계획 처리에서
+    개별 릴레이션의 탐색을 위한 실행 계획를 짜기위해서
+    표준 실행 계획 코드를 사용한다.
+    다음, 조인 계획은 유전 기법을 이용해서 찾는다.
+    앞에서 설명한 것과 같이, 각 후보군 조인 계획은
+    기본 릴레이션과 그 연결 순서로 나열된다.
+    처음에는 <acronym>GEQO</acronym>를 통해
+    가능한 범위 안에서 단순 무작위 연결 순서로 계획을 짠다.
+    조인 순서를 고려하는 작업은, 
+    먼저 표준 실행 계획기 코드를 통해 만든 단순 실행 계획의
+    비용을 추정한다.
+    (각각의 조인 계획은 가능한 세가지 조인 전략을 모두 
+    고려하고,  초기 결정된 릴레이션 검색 계획에 모두 반영한다.
+    이 가운데, 선택되는 실행 계획은 그 추정 비용이 제일 싼 것이다.)
+    추정 비용이 싸다는 것은 비싼 계획보다 <quote>보다 적합한</>
+    계획으로 간주한다.
+    유전 알고리즘은 제일 나쁜 후보 계획을 버린다.
+    The genetic algorithm
+    discards the least fit candidates.  
+    다음, 보다 접합한 새로운 실행 계획
+    후보를 만든다. (마치, 유전자 조작으로 새로운 염색체를
+    만들 듯) &mdash;  이렇게 무작위 선택과 비용이 제일 비싼 것을
+    버리는 방식으로 미리 정의된 회수만큼 반복한다.  
+    이렇게 해서 최선의 쿼리 실행 계획은 아니지만, 
+    일정 시간 안에서 찾을 수 있는 최선의 실행 계획을 선택한다.
    </para>
 
    <para>
-    This process is inherently nondeterministic, because of the randomized
-    choices made during both the initial population selection and subsequent
-    <quote>mutation</> of the best candidates.  To avoid surprising changes
-    of the selected plan, each run of the GEQO algorithm restarts its
-    random number generator with the current <xref linkend="guc-geqo-seed">
-    parameter setting.  As long as <varname>geqo_seed</> and the other
-    GEQO parameters are kept fixed, the same plan will be generated for a
-    given query (and other planner inputs such as statistics).  To experiment
-    with different search paths, try changing <varname>geqo_seed</>.
+    이 과정은 본질적으로 비결정론적이다. 왜냐하면, 
+    처음 만드는 실행 계획과 다은 <quote>변의</> 작업으로 만들어내는 
+    보다 나은 실행 계획 사이 선택은 무작위 선택을 이용하기 때문이다.
+    선택된 실행 계획의 엉뚱한 변화를 막기 위해서, 
+    <xref linkend="guc-geqo-seed"> 환경 설정값으로 GEQO 알고리즘은 
+    매번 난수 발생기를 매번 재실행한다. 이렇게 해서, 
+    동일 입력값 (테이블 통계정보, 쿼리 내용) 환경에서는 
+    <varname>geqo_seed</>와 그 관련 환경 설정값들이 바뀌지 않으면, 
+    실행 계획도 바뀌지 않는다.  GEQO 알고리즘으로 만들어내는 
+    다른 실행 계획을 보고싶다면, <varname>geqo_seed</> 환경설정값을 
+    변경하면 된다.
    </para>
 
   </sect2>
 
   <sect2 id="geqo-future">
-   <title>Future Implementation Tasks for
-    <productname>PostgreSQL</> <acronym>GEQO</acronym></title>
+   <title><productname>PostgreSQL</> <acronym>GEQO</acronym> 개선 할 점</title>
 
      <para>
-      Work is still needed to improve the genetic algorithm parameter
-      settings.
-      In file <filename>src/backend/optimizer/geqo/geqo_main.c</filename>,
-      routines
-      <function>gimme_pool_size</function> and <function>gimme_number_generations</function>,
-      we have to find a compromise for the parameter settings
-      to satisfy two competing demands:
+      유전 알고리즘 매개변수 설정에 관련하여 여전히 작업이 필요하다.
+      <filename>src/backend/optimizer/geqo/geqo_main.c</filename> 파일 안,
+      <function>gimme_pool_size</function>, <function>gimme_number_generations</function> 
+      함수 부분이며, 작업은 다음 두가지 서로 상충한 부분을 어떻게 적절하게 타협하여
+      최적화하는가이다.
       <itemizedlist spacing="compact">
        <listitem>
         <para>
-         Optimality of the query plan
+         최고의 실행 계획
         </para>
        </listitem>
        <listitem>
         <para>
-         Computing time
+         그것을 찾기 위한 처리 시간
         </para>
        </listitem>
       </itemizedlist>
      </para>
 
      <para>
-      In the current implementation, the fitness of each candidate join
-      sequence is estimated by running the standard planner's join selection
-      and cost estimation code from scratch.  To the extent that different
-      candidates use similar sub-sequences of joins, a great deal of work
-      will be repeated.  This could be made significantly faster by retaining
-      cost estimates for sub-joins.  The problem is to avoid expending
-      unreasonable amounts of memory on retaining that state.
+      현재까지 구현된 것의 한계점은, 
+      일단 표준 실행계획기에서 각 릴레이션 탐색 비용과, 
+      그 릴레이션과 조인 비용을 먼저 계산해서 그 값을 가지고, 
+      적합성을 판단한다.  또한 비슷한 쿼리 패턴을 띈 하위 쿼리들에 
+      대해서도 같은 알고리즘을 적용해 최적 계획을 찾기 위한 반복작업을
+      한다.  이런 부분을 좀더 개선하면, 하위 조인 작업들이 있는 
+      쿼리들에 대한 쿼리 최적화 작업은 보다 빨라질 것이다.
+      물론 메모리 사용에 있어서도 효율성이 좋아질 것이다.
      </para>
 
      <para>
-      At a more basic level, it is not clear that solving query optimization
-      with a GA algorithm designed for TSP is appropriate.  In the TSP case,
-      the cost associated with any substring (partial tour) is independent
-      of the rest of the tour, but this is certainly not true for query
-      optimization.  Thus it is questionable whether edge recombination
-      crossover is the most effective mutation procedure.
+      좀 더 원론적인 이야기로, TSP 해결책으로 제시된 유전 알고리즘을 
+      쿼리 최적화에 쓰겠다는 것이 좋은 방법인지는 아직 명확하지 않다.
+      TSP에서는 각 하위 문자열 (개별 여행)과 관계된 비용이 그 전체 
+      여행 계획과 독립적인 비용이지만, 쿼리 최적화 관점에서는 
+      각각의 실행 계획 비용이 전체 비용에 영향을 미친다.
+      따라서 가장자리 edge 재조합 교차 변의가 과연 
+      효과적인 의문이 남아있다.
      </para>
 
    </sect2>
   </sect1>
 
  <sect1 id="geqo-biblio">
-  <title>Further Reading</title>
+  <title>더 읽을 거리</title>
 
   <para>
-   The following resources contain additional information about
-   genetic algorithms:
+   유전 알고리즘에 대한 추가 자료는 다음과 같다:
 
    <itemizedlist>
     <listitem>
      <para>
       <ulink url="http://www.aip.de/~ast/EvolCompFAQ/">
-      The Hitch-Hiker's Guide to Evolutionary Computation</ulink>, (FAQ for <ulink
-      url="news://comp.ai.genetic"></ulink>)
+      진화론적 계산에 대한 히치하이커를 위한 안내서
+      </ulink>, (<ulink
+      url="news://comp.ai.genetic"></ulink> 뉴스 그룹의 FAQ)
      </para>
     </listitem>
 
     <listitem>
      <para>
       <ulink url="http://www.red3d.com/cwr/evolve.html">
-      Evolutionary Computation and its application to art and design</ulink>, by
-      Craig Reynolds
+      Craig Reynolds, 진화론적 계산과 예술, 디자인 분양 응용 프로그램
+      </ulink>
      </para>
     </listitem>
 

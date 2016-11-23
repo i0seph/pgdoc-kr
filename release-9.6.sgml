@@ -639,7 +639,7 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
    <title>개요</title>
 
    <para>
-    Major enhancements in <productname>PostgreSQL</> 9.6 include:
+    <productname>PostgreSQL</> 9.6 주요 개선 사항: 
    </para>
 
    <!-- Items in this list summarize one or more items below -->
@@ -648,47 +648,48 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
 
     <listitem>
      <para>
-      Parallel execution of sequential scans, joins and aggregates
+      순차적 탐색 sequential scan, 조인, 집계 작업을 병렬로 처리할 수 있음
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Avoid scanning pages unnecessarily during vacuum freeze operations
+      vacuum freeze 작업에서 불필요한 페이지를 건너 뜀으로 페이지 검색을 최소화 함
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Synchronous replication now allows multiple standby servers for
-      increased reliability
+      안정성을 높이기 위해 동기식 복제에서 하나 이상의 대기 서버를 
+      사용할 수 있음
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Full-text search can now search for phrases (multiple adjacent words)
+      전문 검색에서 복합어의 그 구성 단어를 검색할 수 있음.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <filename>postgres_fdw</> now supports remote joins, sorts,
-      <command>UPDATE</>s, and <command>DELETE</>s
+      <filename>postgres_fdw</> 확장 모듈에서
+      원격 조인, 정렬, <command>UPDATE</>, <command>DELETE</>
+      기능 추가됨
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Substantial performance improvements, especially in the area of
-      scalability on multi-<acronym>CPU</>-socket servers
+      다중 CPU 소켓을 사용하는 서버의 확장성 측면에서
+      상당한 성능 향상
      </para>
     </listitem>
 
    </itemizedlist>
 
    <para>
-    The above items are explained in more detail in the sections below.
+     위 내용은 아래 각 단락에서 보다 자세히 소개한다.
    </para>
 
   </sect2>
@@ -698,14 +699,14 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
   <title>9.6 버전으로 업그레이드 하기</title>
 
    <para>
-    A dump/restore using <xref linkend="app-pg-dumpall">, or use of <xref
-    linkend="pgupgrade">, is required for those wishing to migrate data
-    from any previous release.
+    메이져 버전 업그레이드를 하려면, <xref linkend="app-pg-dumpall"> 명령을
+    이용한 덤프/복원 작업하거나, <xref linkend="pgupgrade"> 명령을
+    이용해야 한다. 
    </para>
 
    <para>
-    Version 9.6 contains a number of changes that may affect compatibility
-    with previous releases.  Observe the following incompatibilities:
+    9.6 버전에서는 이전 버전과의 호환성 측명에서 영향을 줄 수 있는 
+    변경 사항들이 많다.  아래 호환성 문제가 되는 부분을 잙 읽어야 한다:
    </para>
 
    <itemizedlist>
@@ -715,19 +716,23 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
 2016-03-10 [53be0b1ad] Provide much better wait information in pg_stat_activity
 -->
        <para>
+        세션 프로세스의 대기 정보에 대한 내용이
+        <link
+        linkend="pg-stat-activity-view"><structname>pg_stat_activity</></link>
+        뷰를 통해 개선 되었다.
         Improve the <link
         linkend="pg-stat-activity-view"><structname>pg_stat_activity</></link>
-        view's information about what a process is waiting for (Amit
-        Kapila, Ildus Kurbangaliev)
+        (Amit Kapila, Ildus Kurbangaliev)
        </para>
 
        <para>
-        Historically a process has only been shown as waiting if it was
-        waiting for a heavyweight lock.  Now waits for lightweight locks
-        and buffer pins are also shown in <structname>pg_stat_activity</>.
-        Also, the type of lock being waited for is now visible.
-        These changes replace the <structfield>waiting</> column with
-        <structfield>wait_event_type</> and <structfield>wait_event</>.
+        이전 버전까지는 세션 프로세스의 대기 정보는 강력한 잠금에 대한 
+        것이였다.  새 버번에서는 <structname>pg_stat_activity</> 뷰에서
+        가벼운 잠금에 대한 정보, 버퍼 점유 정보도 보여준다.
+        또한 그 잠금의 종류도 함께 볼 수 있다.
+        기존 <structfield>waiting</> 칼럼이 
+        <structfield>wait_event_type</>, <structfield>wait_event</>
+        두 칼럼으로 보다 상세하게 바뀌었다.
        </para>
       </listitem>
 
@@ -736,15 +741,17 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
 2015-10-05 [2d87eedc1] to_char(): Do not count negative sign as a digit for tim
 -->
        <para>
-        In <link
-        linkend="functions-formatting-table"><function>to_char()</></>,
-        do not count a minus sign (when needed) as part of the field
-        width for time-related fields (Bruce Momjian)
+        <link
+        linkend="functions-formatting-table"><function>to_char()</></>
+        함수에서 시간 관련 출력 양식을 지정할 경우, 
+        음수 기호(-)는 그 길이에서 제외되었다.
+        (Bruce Momjian)
        </para>
 
        <para>
-        For example, <literal>to_char('-4 years'::interval, 'YY')</>
-        now returns <literal>-04</>, rather than <literal>-4</>.
+        예를 들어, <literal>to_char('-4 years'::interval, 'YY')</>
+        함수는 이제 <literal>-4</>를 반환하지 않고, 
+        <literal>-04</>를 반환한다.
        </para>
       </listitem>
 
@@ -753,20 +760,20 @@ Branch: REL9_1_STABLE [22cf97635] 2016-10-19 17:57:06 -0400
 2016-01-21 [647d87c56] Make extract() do something more reasonable with infinit
 -->
        <para>
-        Make <link
-        linkend="functions-datetime-table"><function>extract()</></> behave
-        more reasonably with infinite inputs (Vitaly Burovoy)
+        <link
+        linkend="functions-datetime-table"><function>extract()</></>
+        함수의 입력값으로 무한을 지정한 경우 보다 합리적으로 처리한다.
+        (Vitaly Burovoy)
        </para>
 
        <para>
-        Historically the <function>extract()</> function just returned
-        zero given an infinite timestamp, regardless of the given
-        field name.  Make it return <literal>infinity</literal>
-        or <literal>-infinity</literal> as appropriate when the
-        requested field is one that is monotonically increasing (e.g,
-        <literal>year</>, <literal>epoch</>), or <literal>NULL</> when
-        it is not (e.g., <literal>day</>, <literal>hour</>).  Also,
-        throw the expected error for bad field names.
+        이전 버전까지는 무한 시간인 경우, 해당 추출 항목에 관계 없이 
+        무조건 0을 반환했다.  새 버전부터는 추출 되는 항목이
+        계속 증가나 감소하는 경우(예, <literal>year</>, <literal>epoch</>)에는
+        <literal>infinity</literal> 또는 <literal>-infinity</literal>
+        를 반환하며, 순환하는 경우(예, <literal>day</>, <literal>hour</>)에는
+        <literal>NULL</>을 반환한다.  또한 이렇게 반환될 수 없는
+        잘못된 이름을 사용한 경우에는 오류를 낸다.
        </para>
       </listitem>
 
@@ -778,7 +785,8 @@ This commit is also listed under libpq and psql
        <para>
         Remove PL/pgSQL's <quote>feature</> that suppressed the
         innermost line of <literal>CONTEXT</> for messages emitted by
-        <command>RAISE</> commands (Pavel Stehule)
+        <command>RAISE</> commands
+        (Pavel Stehule)
        </para>
 
        <para>
