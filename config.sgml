@@ -1775,65 +1775,52 @@ value.
 </term>
 <listitem>
        <para>
-        Specifies whether transaction commit will wait for WAL records
-        to be written to disk before the command returns a <quote>success</>
-        indication to the client.  Valid values are <literal>on</>,
-        <literal>remote_apply</>, <literal>remote_write</>, <literal>local</>,
-        and <literal>off</>.  The default, and safe, setting
-        is <literal>on</>.  When <literal>off</>, there can be a delay between
-        when success is reported to the client and when the transaction is
-        really guaranteed to be safe against a server crash.  (The maximum
-        delay is three times <xref linkend="guc-wal-writer-delay">.)  Unlike
-        <xref linkend="guc-fsync">, setting this parameter to <literal>off</>
-        does not create any risk of database inconsistency: an operating
-        system or database crash might
-        result in some recent allegedly-committed transactions being lost, but
-        the database state will be just the same as if those transactions had
-        been aborted cleanly.  So, turning <varname>synchronous_commit</> off
-        can be a useful alternative when performance is more important than
-        exact certainty about the durability of a transaction.  For more
-        discussion see <xref linkend="wal-async-commit">.
+        클라이언트에게 <quote>success</>를 반환하기 전, 디스크에 WAL 값이
+        쓰여질 때까지 트랜잭션 커밋을 대기시킬 것인지 여부를 설정하는
+        변수이다. <literal>on</>, <literal>remote_apply</>,
+        <literal>remote_write</>, <literal>local</>, <literal>off</> 중 하나로
+        설정할 수 있고, 기본값은 on이다.  off로 설정할 경우 클라이언트에게
+        success를 반환하는 시점과 서버 crash에 대해 트랜잭션의 안전이 보장되는
+        시점 사이에 지연이 발생할 수 있다.  (최장 지연은
+        <xref linkend="guc-wal-writer-delay">의 3배) 하지만
+        <xref linkend="guc-fsync"> 설정과 달리 이 설정값을 <literal>off</>로
+        설정해도 DB 불일치가 발생하진 않는다:  OS나 DB crash로 인해 커밋된
+        트랜잭션 일부가 손실될 수 있지만, DB는 해당 트랜잭션이 정상적으로
+        종료된 것과 같은 상태이다.  따라서 트랜잭션의 내구성보다 성능이
+        우선시되는 경우에 <varname>synchronous_commit</>을 끄면(off) 유용하다.
+        (<xref linkend="wal-async-commit"> 참조)
        </para>
        <para>
-        If <xref linkend="guc-synchronous-standby-names"> is non-empty, this
-        parameter also controls whether or not transaction commits will wait
-        for their WAL records to be replicated to the standby server(s).
-        When set to <literal>on</>, commits will wait until replies
-        from the current synchronous standby(s) indicate they have received
-        the commit record of the transaction and flushed it to disk.  This
-        ensures the transaction will not be lost unless both the primary and
-        all synchronous standbys suffer corruption of their database storage.
-        When set to <literal>remote_apply</>, commits will wait until replies
-        from the current synchronous standby(s) indicate they have received the
-        commit record of the transaction and applied it, so that it has become
-        visible to queries on the standby(s).
-        When set to <literal>remote_write</>, commits will wait until replies
-        from the current synchronous standby(s) indicate they have
-        received the commit record of the transaction and written it out to
-        their operating system. This setting is sufficient to
-        ensure data preservation even if a standby instance of
-        <productname>PostgreSQL</> were to crash, but not if the standby
-        suffers an operating-system-level crash, since the data has not
-        necessarily reached stable storage on the standby.
-        Finally, the setting <literal>local</> causes commits to wait for
-        local flush to disk, but not for replication.  This is not usually
-        desirable when synchronous replication is in use, but is provided for
-        completeness.
+        만약 <xref linkend="guc-synchronous-standby-names">가 설정되어있다면,
+        이 설정은 대기 서버로 WAL 값이 복제될 때까지 트랜잭션 커밋을 기다릴
+        것인지도 제어한다.  값을 <literal>on</>으로 설정하면, 현재 동기화된
+        대기 서버가 트랜잭션의 커밋 레코드를 받았고, 그것을 디스크에
+        flush했음을 나타낼 때까지 커밋은 대기한다. 이 경우 대기 서버의 스토리지가
+        손상되지 않는 한 트랜잭션은 손실되지 않는다.  <literal>remote_apply</>로
+        설정하면, 대기 서버가 트랜잭션의 커밋 레코드를 받고 그것을 적용시켰다는
+        응답이 올 때까지 커밋은 대기한다.  따라서 대기 서버에서 쿼리를 확인할
+        수 있다. <literal>remote_write</>로 설정된 경우, 대기 서버가 트랜잭션의
+        커밋 레코드를 받아서 OS에 기록했다는 응답이 올 때까지 커밋은
+        대기한다.  이 설정에선 데이터가 아직 스토리지에 도달하지 않았기 때문에
+        대기 서버의 DB 인스턴스가 죽더라도 데이터는 보존된다.  하지만 대기
+        서버의 OS 레벨에서 문제가 발생한 경우엔 데이터가 보존되지
+        않는다.  마지막으로, <literal>local</>로 설정하면
+        로컬에선 디스크로 flush될 때까지 기다리지만 복제에선 기다리지
+        않는다.  바람직하진 않은 설정이지만 완전성을 위해 제공하고 있다.
        </para>
        <para>
-        If <varname>synchronous_standby_names</> is empty, the settings
-        <literal>on</>, <literal>remote_apply</>, <literal>remote_write</>
-        and <literal>local</> all provide the same synchronization level:
-        transaction commits only wait for local flush to disk.
+        <varname>synchronous_standby_names</> 값이 없을 경우엔
+        <literal>on</>, <literal>remote_apply</>, <literal>remote_write</>,
+        <literal>local</> 모두 같은 동기화 레벨을 갖는다: 트랜잭션
+        커밋은 로컬에서 디스크로 flush하는 작업만 대기한다.
        </para>
        <para>
-        This parameter can be changed at any time; the behavior for any
-        one transaction is determined by the setting in effect when it
-        commits.  It is therefore possible, and useful, to have some
-        transactions commit synchronously and others asynchronously.
-        For example, to make a single multistatement transaction commit
-        asynchronously when the default is the opposite, issue <command>SET
-        LOCAL synchronous_commit TO OFF</> within the transaction.
+        이 설정은 아무 때나 변경 가능하다; 한 트랜잭션에 대한 동작은
+        트랜잭션이 커밋될 때 적용되는 설정에 따른다. 따라서 일부 트랜잭션은
+        동기적으로, 다른 트랜잭션은 비동기적으로 커밋하는 것이
+        가능하다. 예를 들어, 기본 값이 반대일 때 비동기적으로 단일
+        multistatement 트랜잭션을 커밋하려면 세션 단에서 <command>SET LOCAL
+        synchronous_commit TO OFF</>를 수행하면 된다.
        </para>
 </listitem>
  </varlistentry>
