@@ -391,7 +391,7 @@ SELECT name, double_salary(emp.*) AS dream
      함수에서 해당 로우의 개별 칼럼을 사용하려면,
      <literal>$1.salary</literal> 형태로 사용한다.
      또한 이 함수를 사용할 때, 입력 인자는 
-     <command>SELECT</> 명령에서 <literal>*</>
+     <command>SELECT</> 명령에서 <replaceable>테이블이름</><literal>.*</>
      문자를 사용해서 해당 로우 전체를 지정한다. 
      물론 위 예제와 같은 경우라면, 아래와 같이 참조하는 
      테이블 이름만을 인자로 사용할 수 있다.
@@ -401,6 +401,8 @@ SELECT name, double_salary(emp) AS dream
     WHERE emp.cubicle ~= point '(2,1)';
 </screen>
      하지만 이 방식은 읽는데 혼란을 초래해 그리 권장하지는 않는다.
+     (테이블 로우의 복합 자료형 값을 표시하는 두가지 방법에 대한
+     자세한 설명은 <xref linkend="rowtypes-usage">에 있다.)
     </para>
 
     <para>
@@ -473,7 +475,7 @@ $$ LANGUAGE SQL;
     </para>
 
     <para>
-     이 함수는 다음과 같이 두 가지 방식으로 사용된다:
+     이 함수는 아래와 같이 스칼라 함수를 호출 하듯이 사용할 수 있고:
 
 <screen>
 SELECT new_emp();
@@ -481,7 +483,11 @@ SELECT new_emp();
          new_emp
 --------------------------
  (None,1000.0,25,"(2,2)")
+</screen>
 
+      또는, 아래와 같이 테이블 함수처럼 호출 할 수도 있다:
+
+<screen>
 SELECT * FROM new_emp();
 
  name | salary | age | cubicle
@@ -518,9 +524,7 @@ LINE 1: SELECT new_emp().name;
     </para>
 
     <para>
-     복합 자료형의 해당 속성(필드, 칼럼)을 뽑는 방법으로
-     <literal><replaceable>attribute</>(<replaceable>table</>)</> 형태와 함께
-     <literal><replaceable>table</>.<replaceable>attribute</></> 형태도 사용할 수 있다.
+     또 다른 방법으로는 뽑으려는 속성을 마치 함수처럼 사용하는 방법도 있다:
 
 <screen>
 SELECT name(new_emp());
@@ -530,48 +534,9 @@ SELECT name(new_emp());
  None
 </screen>
 
-<screen>
--- 이 명령은 다음 명령과 같다:
--- SELECT emp.name AS youngster FROM emp WHERE emp.age &lt; 30;
-
-SELECT name(emp) AS youngster FROM emp WHERE age(emp) &lt; 30;
-
- youngster
------------
- Sam
- Andy
-</screen>
+     <xref linkend="rowtypes-usage">에서 설명하고 있는 것처럼,
+     필드 지정방식이나, 함수 지정 방식은 같다.
     </para>
-
-    <tip>
-     <para>
-      이렇게 함수 호출 표기법과 속성 표기법을 같이 사용하는 이유는
-      이렇게 하면, <quote>계산된 필드</>를 구현하기 위해서다.
-      <indexterm>
-       <primary>계산된 필드</primary>
-      </indexterm>
-      <indexterm>
-       <primary>필드</primary>
-       <secondary>계산된</secondary>
-      </indexterm>
-      예를 들어, 위에서 소개한 <literal>double_salary(emp)</>
-      함수는 아래와 같이 마치 테이블을 그냥 호출 한 것 처럼
-      사용할 수 있다:
-
-<screen>
-SELECT emp.name, emp.double_salary FROM emp;
-</screen>
-
-      응용 프로그램은 <literal>double_salary</> 칼럼이 해당 테이블에
-      실재로 있는지 몰라도 잘 작동할 것이다.  (이런 계산된 필드는
-      뷰로도 구현할 수 있다.)
-     </para>
-
-     <para>
-      이런 특성 때문에, 복합 자료형을 반환하는 함수의 이름으로 그 자료형의
-      한 속성과 같은 이름을 사용하는 것은 바람직한 방법이 아니다.
-     </para>
-    </tip>
 
     <para>
      복합 자료형을 반환하는 함수의 또 다른 사용법은
@@ -588,12 +553,6 @@ SELECT getname(new_emp());
  None
 (1 row)
 </screen>
-    </para>
-
-    <para>
-     또 다른 사용법으로는 <xref
-     linkend="xfunc-sql-table-functions">에서 자세히 소개하고 있는
-     테이블 반환 함수를 이용하는 것이다.
     </para>
    </sect2>
 
@@ -2857,7 +2816,7 @@ HeapTupleGetDatum(HeapTuple tuple)
      is used to hold a pointer to <structname>FuncCallContext</>
      across calls.
 <programlisting>
-typedef struct
+typedef struct FuncCallContext
 {
     /*
      * Number of times we've been called before
@@ -2865,7 +2824,7 @@ typedef struct
      * call_cntr is initialized to 0 for you by SRF_FIRSTCALL_INIT(), and
      * incremented for you every time SRF_RETURN_NEXT() is called.
      */
-    uint32 call_cntr;
+    uint64 call_cntr;
 
     /*
      * OPTIONAL maximum number of calls
@@ -2874,7 +2833,7 @@ typedef struct
      * If not set, you must provide alternative means to know when the
      * function is done.
      */
-    uint32 max_calls;
+    uint64 max_calls;
 
     /*
      * OPTIONAL pointer to result slot

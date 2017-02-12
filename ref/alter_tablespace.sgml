@@ -81,15 +81,17 @@ ALTER TABLESPACE <replaceable>이름</replaceable> RESET ( <replaceable class="P
     <term><replaceable class="parameter">tablespace_option</replaceable></term>
     <listitem>
      <para>
-          테이블스페이스 속성을 새롭게 바꾸거나 초기값으로 지정한다.  현재
-          <varname>seq_page_cost</>, <varname>random_page_cost</> 설정값을
-          변경 할 수 있다.  이 값들은 해당 테이블스페이스에 저장되어진
-          테이블들 조회 시 쿼리 실행 계획을 수립할 때 사용할 서버 환경
-          매개변수값이다. (
-      <xref linkend="guc-seq-page-cost">,
-      <xref linkend="guc-random-page-cost"> 참조).  이 설정값들은
-          해당 테이블스페이스의 디스크 I/O 속도를 감안해서 해당 
-          테이블스페이스 고유의 설정값을 지정할 수 있도록 한다.
+      A tablespace parameter to be set or reset.  Currently, the only
+      available parameters are <varname>seq_page_cost</>,
+      <varname>random_page_cost</> and <varname>effective_io_concurrency</>.
+      Setting either value for a particular tablespace will override the
+      planner's usual estimate of the cost of reading pages from tables in
+      that tablespace, as established by the configuration parameters of the
+      same name (see <xref linkend="guc-seq-page-cost">,
+      <xref linkend="guc-random-page-cost">,
+      <xref linkend="guc-effective-io-concurrency">).  This may be useful if
+      one tablespace is located on a disk which is faster or slower than the
+      remainder of the I/O subsystem.
      </para>
     </listitem>
    </varlistentry>
