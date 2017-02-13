@@ -811,8 +811,12 @@ SSL 서버 개인 키가 포함된 파일 이름을 지정한다. 기본값은 <
 </term>
 <listitem>
  <para>
-보안 연결에 사용할 수 있는 <acronym>SSL</> cipher 스위트suite 목록을 지정한다. 이 설정 구문 및 지원되는 값 목록은 <application>OpenSSL</> 패키지의 <citerefentry><refentrytitle>ciphers</></citerefentry> 설명서를 참조 바란다. 
-기본값은 <literal>HIGH:MEDIUM:+3DES:!aNULL</>이다. 이것은 특별한 보안 요구사항이 없을 경우에 일반적으로 합당하다.
+  보안 연결에 사용할 수 있는 <acronym>SSL</> cipher 스위트suite 목록을
+  지정한다.  이 설정 구문 및 지원되는 값 목록은 <application>OpenSSL</>
+  패키지의 <citerefentry><refentrytitle>ciphers</></citerefentry> 설명서를
+  참조 바란다.  기본값은 <literal>HIGH:MEDIUM:+3DES:!aNULL</>이다.  이것은 
+  특별한 보안 요구사항이 없을 경우에 일반적으로 합당하다.  이 설정은 서버를
+  실행 할 때만 지정할 수 있다.
  </para>
 
  <para>
@@ -874,7 +878,9 @@ SSL 서버 개인 키가 포함된 파일 이름을 지정한다. 기본값은 <
 </term>
 <listitem>
  <para>
-SSL cipher 기본 설정을 서버 것으로 사용할 것인지, 클라이언트 것으로 사용할 것인지 지정한다. 기본값은 true이다.
+  SSL cipher 기본 설정을 서버 것으로 사용할 것인지, 클라이언트
+  것으로 사용할 것인지 지정한다.  기본값은 true이다.  이 설정은 서버를 실행할 때만
+  지정할 수 있다.
  </para>
 
  <para>
@@ -893,8 +899,11 @@ SSL cipher 기본 설정을 서버 것으로 사용할 것인지, 클라이언�
 </term>
 <listitem>
  <para>
-<acronym>ECDH</> 키 교환에서 사용할 곡선 이름을 지정한다. 연결하는 모든 클라이언트에서 지원되어야 한다. 
-서버의 타원 곡선 키에서 사용되는 것과 동일한 곡선일 필요는 없다. 기본값은 <literal>prime256v1</>이다.
+  <acronym>ECDH</> 키 교환에서 사용할 곡선 이름을
+  지정한다.  연결하는 모든 클라이언트에서 지원되어야
+  한다.  서버의 타원 곡선 키에서 사용되는 것과 동일한
+  곡선일 필요는 없다.  기본값은 <literal>prime256v1</>이다. 이
+  설정은 서버를 실행할 때만 지정할 수 있다.
  </para>
 
  <para>
@@ -1466,9 +1475,10 @@ value.
          <xref linkend="guc-shared-buffers">, but smaller than the OS's page
          cache, where performance might degrade.  This setting may have no
          effect on some platforms.  The valid range is between
-         <literal>0</literal>, which disables controlled writeback, and
+         <literal>0</literal>, which disables forced writeback, and
          <literal>2MB</literal>.  The default is <literal>512kB</> on Linux,
-         <literal>0</> elsewhere.  (Non-default values of
+         <literal>0</> elsewhere.  (If <symbol>BLCKSZ</symbol> is not 8kB,
+         the default and maximum values scale proportionally to it.)
          <symbol>BLCKSZ</symbol> change the default and maximum.)
          This parameter can only be set in the <filename>postgresql.conf</>
          file or on the server command line.
@@ -1603,10 +1613,10 @@ value.
          that are bigger than <xref linkend="guc-shared-buffers">, but smaller
          than the OS's page cache, where performance might degrade.  This
          setting may have no effect on some platforms.  The valid range is
-         between <literal>0</literal>, which disables controlled writeback,
-         and <literal>2MB</literal>.  The default is <literal>0</> (i.e. no
-         flush control).  (Non-default values of <symbol>BLCKSZ</symbol>
-         change the maximum.)
+         between <literal>0</literal>, which disables forced writeback,
+         and <literal>2MB</literal>.  The default is <literal>0</>, i.e., no
+         forced writeback.  (If <symbol>BLCKSZ</symbol> is not 8kB,
+         the maximum value scales proportionally to it.)
         </para>
        </listitem>
       </varlistentry>
@@ -1980,15 +1990,16 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
       <para>
         Specifies how often the WAL writer flushes WAL. After flushing WAL it
         sleeps for <varname>wal_writer_delay</> milliseconds, unless woken up
-        by an asynchronously committing transaction. In case the last flush
+        by an asynchronously committing transaction. If the last flush
         happened less than <varname>wal_writer_delay</> milliseconds ago and
         less than <varname>wal_writer_flush_after</> bytes of WAL have been
-        produced since, WAL is only written to the OS, not flushed to disk.
+        produced since, then WAL is only written to the operating system, not
+        flushed to disk.
         The default value is 200 milliseconds (<literal>200ms</>).  Note that
         on many systems, the effective resolution of sleep delays is 10
         milliseconds; setting <varname>wal_writer_delay</> to a value that is
         not a multiple of 10 might have the same results as setting it to the
-        next higher multiple of 10. 
+        next higher multiple of 10.
 이 매개변수는 <filename>postgresql.conf</> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
        </para>
       </listitem>
@@ -2002,14 +2013,14 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
       </term>
       <listitem>
       <para>
-        Specifies how often the WAL writer flushes WAL. In case the last flush
+        Specifies how often the WAL writer flushes WAL. If the last flush
         happened less than <varname>wal_writer_delay</> milliseconds ago and
         less than <varname>wal_writer_flush_after</> bytes of WAL have been
-        produced since, WAL is only written to the OS, not flushed to disk.
-        If <varname>wal_writer_flush_after</> is set to <literal>0</> WAL is
-        flushed every time the WAL writer has written WAL.  The default is
-        <literal>1MB</literal>. 
-이 매개변수는 <filename>postgresql.conf</> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+        produced since, then WAL is only written to the operating system, not
+        flushed to disk.  If <varname>wal_writer_flush_after</> is set
+        to <literal>0</> then WAL data is flushed immediately.  The default is
+        <literal>1MB</literal>.  이 매개변수는 <filename>postgresql.conf</>
+        파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -2103,8 +2114,8 @@ checkpoints 간 총 시간 분할로써, checkpoints 완료 목표를 지정한�
         setting may have no effect on some platforms.  The valid range is
         between <literal>0</literal>, which disables controlled writeback,
         and <literal>2MB</literal>.  The default is <literal>256kB</> on
-        Linux, <literal>0</> elsewhere.  (Non-default values of
-        <symbol>BLCKSZ</symbol> change the default and maximum.)
+        Linux, <literal>0</> elsewhere.  (If <symbol>BLCKSZ</symbol> is not
+        8kB, the default and maximum values scale proportionally to it.)
         This parameter can only be set in the <filename>postgresql.conf</>
         file or on the server command line.
        </para>
