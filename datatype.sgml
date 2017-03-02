@@ -1,15 +1,15 @@
 <!-- doc/src/sgml/datatype.sgml -->
 
  <chapter id="datatype">
-  <title>Data Types</title>
+  <title>자료 유형s</title>
 
   <indexterm zone="datatype">
-   <primary>data type</primary>
+   <primary>자료 유형</primary>
   </indexterm>
 
   <indexterm>
    <primary>type</primary>
-   <see>data type</see>
+   <see>자료 유형</see>
   </indexterm>
 
   <para>
@@ -29,7 +29,7 @@
   </para>
 
    <table id="datatype-table">
-    <title>Data Types</title>
+    <title>자료 유형s</title>
     <tgroup cols="3">
      <thead>
       <row>
@@ -308,7 +308,7 @@
   </note>
 
   <para>
-   Each data type has an external representation determined by its input
+   Each 자료 유형 has an external representation determined by its input
    and output functions.  Many of the built-in types have
    obvious external formats.  However, several types are either unique
    to <productname>PostgreSQL</productname>, such as geometric
@@ -323,7 +323,7 @@
    <title>Numeric Types</title>
 
    <indexterm zone="datatype-numeric">
-    <primary>data type</primary>
+    <primary>자료 유형</primary>
     <secondary>numeric</secondary>
    </indexterm>
 
@@ -484,7 +484,7 @@
     <title>Arbitrary Precision Numbers</title>
 
     <indexterm>
-     <primary>numeric (data type)</primary>
+     <primary>numeric (자료 유형)</primary>
     </indexterm>
 
    <indexterm>
@@ -582,7 +582,7 @@ NUMERIC
 
     <indexterm>
      <primary>not a number</primary>
-     <secondary>numeric (data type)</secondary>
+     <secondary>numeric (자료 유형)</secondary>
     </indexterm>
 
     <para>
@@ -666,7 +666,7 @@ FROM generate_series(-3.5, 3.5, 1) as x;
     </indexterm>
 
     <para>
-     The data types <type>real</type> and <type>double
+     The 자료 유형s <type>real</type> and <type>double
      precision</type> are inexact, variable-precision numeric types.
      In practice, these types are usually implementations of
      <acronym>IEEE</acronym> Standard 754 for Binary Floating-Point
@@ -832,7 +832,7 @@ FROM generate_series(-3.5, 3.5, 1) as x;
     </indexterm>
 
     <para>
-     The data types <type>smallserial</type>, <type>serial</type> and
+     The 자료 유형s <type>smallserial</type>, <type>serial</type> and
      <type>bigserial</type> are not true types, but merely
      a notational convenience for creating unique identifier columns
      (similar to the <literal>AUTO_INCREMENT</literal> property
@@ -947,7 +947,7 @@ ALTER SEQUENCE <replaceable class="parameter">tablename</replaceable>_<replaceab
     </table>
 
    <para>
-    Since the output of this data type is locale-sensitive, it might not
+    Since the output of this 자료 유형 is locale-sensitive, it might not
     work to load <type>money</> data into a database that has a different
     setting of <varname>lc_monetary</>.  To avoid problems, before
     restoring a dump into a new database make sure <varname>lc_monetary</> has
@@ -956,9 +956,9 @@ ALTER SEQUENCE <replaceable class="parameter">tablename</replaceable>_<replaceab
 
    <para>
     Values of the <type>numeric</type>, <type>int</type>, and
-    <type>bigint</type> data types can be cast to <type>money</type>.
+    <type>bigint</type> 자료 유형s can be cast to <type>money</type>.
     Conversion from the <type>real</type> and <type>double precision</type>
-    data types can be done by casting to <type>numeric</type> first, for
+    자료 유형s can be done by casting to <type>numeric</type> first, for
     example:
 <programlisting>
 SELECT '12.34'::float8::numeric::money;
@@ -989,7 +989,7 @@ SELECT '52093.89'::money::numeric::float8;
 
    <indexterm zone="datatype-character">
     <primary>character string</primary>
-    <secondary>data types</secondary>
+    <secondary>자료 유형s</secondary>
    </indexterm>
 
    <indexterm>
@@ -1238,7 +1238,7 @@ SELECT b, char_length(b) FROM test2;
   </sect1>
 
  <sect1 id="datatype-binary">
-  <title>Binary Data Types</title>
+  <title>Binary 자료 유형s</title>
 
   <indexterm zone="datatype-binary">
    <primary>binary data</primary>
@@ -1249,12 +1249,12 @@ SELECT b, char_length(b) FROM test2;
   </indexterm>
 
    <para>
-    The <type>bytea</type> data type allows storage of binary strings;
+    The <type>bytea</type> 자료 유형 allows storage of binary strings;
     see <xref linkend="datatype-binary-table">.
    </para>
 
    <table id="datatype-binary-table">
-    <title>Binary Data Types</title>
+    <title>Binary 자료 유형s</title>
     <tgroup cols="3">
      <thead>
       <row>
@@ -1553,7 +1553,7 @@ SELECT E'\\xDEADBEEF';
     <productname>PostgreSQL</productname> supports the full set of
     <acronym>SQL</acronym> date and time types, shown in <xref
     linkend="datatype-datetime-table">.  The operations available
-    on these data types are described in
+    on these 자료 유형s are described in
     <xref linkend="functions-datetime">.
     Dates are counted according to the Gregorian calendar, even in
     years before that calendar was introduced (see <xref
@@ -2845,7 +2845,7 @@ P <optional> <replaceable>years</>-<replaceable>months</>-<replaceable>days</> <
 
    <indexterm zone="datatype-boolean">
     <primary>Boolean</primary>
-    <secondary>data type</secondary>
+    <secondary>자료 유형</secondary>
    </indexterm>
 
    <indexterm zone="datatype-boolean">
@@ -2867,7 +2867,7 @@ P <optional> <replaceable>years</>-<replaceable>months</>-<replaceable>days</> <
    </para>
 
    <table id="datatype-boolean-table">
-    <title>Boolean Data Type</title>
+    <title>Boolean 자료 유형</title>
     <tgroup cols="3">
      <thead>
       <row>
@@ -2945,7 +2945,7 @@ SELECT * FROM test1 WHERE a;
    <title>Enumerated Types</title>
 
    <indexterm zone="datatype-enum">
-    <primary>data type</primary>
+    <primary>자료 유형</primary>
     <secondary>enumerated (enum)</secondary>
    </indexterm>
 
@@ -2954,7 +2954,7 @@ SELECT * FROM test1 WHERE a;
    </indexterm>
 
    <para>
-    Enumerated (enum) types are data types that
+    Enumerated (enum) types are 자료 유형s that
     comprise a static, ordered set of values.
     They are equivalent to the <type>enum</type>
     types supported in a number of programming languages. An example of an enum
@@ -3033,7 +3033,7 @@ WHERE current_mood = (SELECT MIN(current_mood) FROM person);
     <title>Type Safety</title>
 
     <para>
-     Each enumerated data type is separate and cannot
+     Each enumerated 자료 유형 is separate and cannot
      be compared with other enumerated types.  See this example:
 
 <programlisting>
@@ -3099,7 +3099,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
    <title>Geometric Types</title>
 
    <para>
-    Geometric data types represent two-dimensional spatial
+    Geometric 자료 유형s represent two-dimensional spatial
     objects. <xref linkend="datatype-geo-table"> shows the geometric
     types available in <productname>PostgreSQL</productname>.
    </para>
@@ -3272,7 +3272,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
     <title>Boxes</title>
 
     <indexterm>
-     <primary>box (data type)</primary>
+     <primary>box (자료 유형)</primary>
     </indexterm>
 
     <indexterm>
@@ -3313,7 +3313,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
     <title>Paths</title>
 
     <indexterm>
-     <primary>path (data type)</primary>
+     <primary>path (자료 유형)</primary>
     </indexterm>
 
     <para>
@@ -3418,11 +3418,11 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 
    <indexterm zone="datatype-net-types">
     <primary>network</primary>
-    <secondary>data types</secondary>
+    <secondary>자료 유형s</secondary>
    </indexterm>
 
    <para>
-    <productname>PostgreSQL</> offers data types to store IPv4, IPv6, and MAC
+    <productname>PostgreSQL</> offers 자료 유형s to store IPv4, IPv6, and MAC
     addresses, as shown in <xref linkend="datatype-net-types-table">.  It
     is better to use these types instead of plain text types to store
     network addresses, because
@@ -3465,7 +3465,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
     </table>
 
    <para>
-    When sorting <type>inet</type> or <type>cidr</type> data types,
+    When sorting <type>inet</type> or <type>cidr</type> 자료 유형s,
     IPv4 addresses will always sort before IPv6 addresses, including
     IPv4 addresses encapsulated or mapped to IPv6 addresses, such as
     ::10.2.3.4 or ::ffff:10.4.3.2.
@@ -3476,7 +3476,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
     <title><type>inet</type></title>
 
     <indexterm>
-     <primary>inet (data type)</primary>
+     <primary>inet (자료 유형)</primary>
     </indexterm>
 
     <para>
@@ -3637,7 +3637,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 
     <para>
     The essential difference between <type>inet</type> and <type>cidr</type>
-    data types is that <type>inet</type> accepts values with nonzero bits to
+    자료 유형s is that <type>inet</type> accepts values with nonzero bits to
     the right of the netmask, whereas <type>cidr</type> does not.
     </para>
 
@@ -3654,7 +3654,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
     <title><type>macaddr</type></title>
 
     <indexterm>
-     <primary>macaddr (data type)</primary>
+     <primary>macaddr (자료 유형)</primary>
     </indexterm>
 
     <indexterm>
@@ -3707,7 +3707,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 
    <indexterm zone="datatype-bit">
     <primary>bit string</primary>
-    <secondary>data type</secondary>
+    <secondary>자료 유형</secondary>
    </indexterm>
 
    <para>
@@ -3783,16 +3783,16 @@ SELECT * FROM test;
 
    <indexterm zone="datatype-textsearch">
     <primary>full text search</primary>
-    <secondary>data types</secondary>
+    <secondary>자료 유형s</secondary>
    </indexterm>
 
    <indexterm zone="datatype-textsearch">
     <primary>text search</primary>
-    <secondary>data types</secondary>
+    <secondary>자료 유형s</secondary>
    </indexterm>
 
    <para>
-    <productname>PostgreSQL</productname> provides two data types that
+    <productname>PostgreSQL</productname> provides two 자료 유형s that
     are designed to support full text search, which is the activity of
     searching through a collection of natural-language <firstterm>documents</>
     to locate those that best match a <firstterm>query</>.
@@ -3808,7 +3808,7 @@ SELECT * FROM test;
     <title><type>tsvector</type></title>
 
     <indexterm>
-     <primary>tsvector (data type)</primary>
+     <primary>tsvector (자료 유형)</primary>
     </indexterm>
 
     <para>
@@ -3918,7 +3918,7 @@ SELECT to_tsvector('english', 'The Fat Rats');
     <title><type>tsquery</type></title>
 
     <indexterm>
-     <primary>tsquery (data type)</primary>
+     <primary>tsquery (자료 유형)</primary>
     </indexterm>
 
     <para>
@@ -4033,9 +4033,9 @@ SELECT to_tsvector( 'postgraduate' ), to_tsquery( 'postgres:*' );
    </indexterm>
 
    <para>
-    The data type <type>uuid</type> stores Universally Unique Identifiers
+    The 자료 유형 <type>uuid</type> stores Universally Unique Identifiers
     (UUID) as defined by RFC 4122, ISO/IEC 9834-8:2005, and related standards.
-    (Some systems refer to this data type as a globally unique identifier, or
+    (Some systems refer to this 자료 유형 as a globally unique identifier, or
     GUID,<indexterm><primary>GUID</primary></indexterm> instead.)  This
     identifier is a 128-bit quantity that is generated by an algorithm chosen
     to make it very unlikely that the same identifier will be generated by
@@ -4091,13 +4091,12 @@ a0ee-bc99-9c0b-4ef8-bb6d-6bb9-bd38-0a11
    </indexterm>
 
    <para>
-    The <type>xml</type> data type can be used to store XML data.  Its
-    advantage over storing XML data in a <type>text</type> field is that it
-    checks the input values for well-formedness, and there are support
-    functions to perform type-safe operations on it; see <xref
-    linkend="functions-xml">.  Use of this data type requires the
-    installation to have been built with <command>configure
-    --with-libxml</>.
+    <type>xml</type> 자료 유형은 XML 자료를 저장할 때 사용할 수 있다.
+    <type>text</type> 필드 안에 XML 자료를 저장하는 것의 좋은 점은
+    입력값의 well-formedness를 점검하고, 그 위에type-safe연산을 수행하는 지원함수가 있다는 것이다; 
+	<xref
+    linkend="functions-xml">.  이 자료 유형을 쓰려면 <command>configure
+    --with-libxml</>로 설치해야 한다.
    </para>
 
    <para>
@@ -4254,7 +4253,7 @@ SET xmloption TO { DOCUMENT | CONTENT };
    <title>Accessing XML Values</title>
 
    <para>
-    The <type>xml</type> data type is unusual in that it does not
+    The <type>xml</type> 자료 유형 is unusual in that it does not
     provide any comparison operators.  This is because there is no
     well-defined and universally useful comparison algorithm for XML
     data.  One consequence of this is that you cannot retrieve rows by
@@ -4268,7 +4267,7 @@ SET xmloption TO { DOCUMENT | CONTENT };
 
    <para>
     Since there are no comparison operators for the <type>xml</type>
-    data type, it is not possible to create an index directly on a
+    자료 유형, it is not possible to create an index directly on a
     column of this type.  If speedy searches in XML data are desired,
     possible workarounds include casting the expression to a
     character string type and indexing that, or indexing an XPath
@@ -4298,7 +4297,7 @@ SET xmloption TO { DOCUMENT | CONTENT };
 
    <indexterm zone="datatype-oid">
     <primary>object identifier</primary>
-    <secondary>data type</secondary>
+    <secondary>자료 유형</secondary>
    </indexterm>
 
    <indexterm zone="datatype-oid">
@@ -4465,7 +4464,7 @@ SELECT * FROM pg_attribute
        <row>
         <entry><type>regtype</></entry>
         <entry><structname>pg_type</></entry>
-        <entry>data type name</entry>
+        <entry>자료 유형 name</entry>
         <entry><literal>integer</></entry>
        </row>
 
@@ -4538,19 +4537,19 @@ SELECT * FROM pg_attribute
 
    <para>
     Another identifier type used by the system is <type>xid</>, or transaction
-    (abbreviated <abbrev>xact</>) identifier.  This is the data type of the system columns
+    (abbreviated <abbrev>xact</>) identifier.  This is the 자료 유형 of the system columns
     <structfield>xmin</> and <structfield>xmax</>.  Transaction identifiers are 32-bit quantities.
    </para>
 
    <para>
     A third identifier type used by the system is <type>cid</>, or
-    command identifier.  This is the data type of the system columns
+    command identifier.  This is the 자료 유형 of the system columns
     <structfield>cmin</> and <structfield>cmax</>. Command identifiers are also 32-bit quantities.
    </para>
 
    <para>
     A final identifier type used by the system is <type>tid</>, or tuple
-    identifier (row identifier).  This is the data type of the system column
+    identifier (row identifier).  This is the 자료 유형 of the system column
     <structfield>ctid</>.  A tuple ID is a pair
     (block number, tuple index within block) that identifies the
     physical location of the row within its table.
@@ -4570,7 +4569,7 @@ SELECT * FROM pg_attribute
    </indexterm>
 
    <para>
-    The <type>pg_lsn</type> data type can be used to store LSN (Log Sequence
+    The <type>pg_lsn</type> 자료 유형 can be used to store LSN (Log Sequence
     Number) data which is a pointer to a location in the XLOG. This type is a
     representation of <type>XLogRecPtr</type> and an internal system type of
     <productname>PostgreSQL</productname>.
@@ -4667,11 +4666,11 @@ SELECT * FROM pg_attribute
     The <productname>PostgreSQL</productname> type system contains a
     number of special-purpose entries that are collectively called
     <firstterm>pseudo-types</>.  A pseudo-type cannot be used as a
-    column data type, but it can be used to declare a function's
+    column 자료 유형, but it can be used to declare a function's
     argument or result type.  Each of the available pseudo-types is
     useful in situations where a function's behavior does not
     correspond to simply taking or returning a value of a specific
-    <acronym>SQL</acronym> data type.  <xref
+    <acronym>SQL</acronym> 자료 유형.  <xref
     linkend="datatype-pseudotypes-table"> lists the existing
     pseudo-types.
    </para>
@@ -4689,37 +4688,37 @@ SELECT * FROM pg_attribute
       <tbody>
        <row>
         <entry><type>any</></entry>
-        <entry>Indicates that a function accepts any input data type.</entry>
+        <entry>Indicates that a function accepts any input 자료 유형.</entry>
        </row>
 
        <row>
         <entry><type>anyelement</></entry>
-        <entry>Indicates that a function accepts any data type
+        <entry>Indicates that a function accepts any 자료 유형
         (see <xref linkend="extend-types-polymorphic">).</entry>
        </row>
 
        <row>
         <entry><type>anyarray</></entry>
-        <entry>Indicates that a function accepts any array data type
+        <entry>Indicates that a function accepts any array 자료 유형
         (see <xref linkend="extend-types-polymorphic">).</entry>
        </row>
 
        <row>
         <entry><type>anynonarray</></entry>
-        <entry>Indicates that a function accepts any non-array data type
+        <entry>Indicates that a function accepts any non-array 자료 유형
         (see <xref linkend="extend-types-polymorphic">).</entry>
        </row>
 
        <row>
         <entry><type>anyenum</></entry>
-        <entry>Indicates that a function accepts any enum data type
+        <entry>Indicates that a function accepts any enum 자료 유형
         (see <xref linkend="extend-types-polymorphic"> and
         <xref linkend="datatype-enum">).</entry>
        </row>
 
        <row>
         <entry><type>anyrange</></entry>
-        <entry>Indicates that a function accepts any range data type
+        <entry>Indicates that a function accepts any range 자료 유형
         (see <xref linkend="extend-types-polymorphic"> and
         <xref linkend="rangetypes">).</entry>
        </row>
@@ -4732,7 +4731,7 @@ SELECT * FROM pg_attribute
        <row>
         <entry><type>internal</></entry>
         <entry>Indicates that a function accepts or returns a server-internal
-        data type.</entry>
+        자료 유형.</entry>
        </row>
 
        <row>
@@ -4790,7 +4789,7 @@ SELECT * FROM pg_attribute
 
    <para>
     Functions coded in C (whether built-in or dynamically loaded) can be
-    declared to accept or return any of these pseudo data types.  It is up to
+    declared to accept or return any of these pseudo 자료 유형s.  It is up to
     the function author to ensure that the function will behave safely
     when a pseudo-type is used as an argument type.
    </para>
