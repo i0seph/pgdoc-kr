@@ -2461,37 +2461,38 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
  </sect1>
 
  <sect1 id="progress-reporting">
-  <title>Progress Reporting</title>
+  <title>진행 상태 보고</title>
 
   <para>
-   <productname>PostgreSQL</> has the ability to report the progress of
-   certain commands during command execution.  Currently, the only command
-   which supports progress reporting is <command>VACUUM</>.  This may be
-   expanded in the future.
+   <productname>PostgreSQL</>에서는 특정 명령이 실행 되고 있는 동안
+   그 작업의 진행 상태를 살펴 볼 수 있다.  이 기능은 현재
+   <command>VACUUM</> 명령에 대해서만 사용할 수 있다.  앞으로
+   계속 추가 될 것이다.
   </para>
 
  <sect2 id="vacuum-progress-reporting">
-  <title>VACUUM Progress Reporting</title>
+  <title>VACUUM 진행 상태 보고</title>
 
   <para>
-   Whenever <command>VACUUM</> is running, the
-   <structname>pg_stat_progress_vacuum</structname> view will contain
-   one row for each backend (including autovacuum worker processes) that is
-   currently vacuuming.  The tables below describe the information
-   that will be reported and provide information about how to interpret it.
-   Progress reporting is not currently supported for <command>VACUUM FULL</>
-   and backends running <command>VACUUM FULL</> will not be listed in this
-   view.
+   <command>VACUUM</> 명령이 실행 될 때마다, 
+   <structname>pg_stat_progress_vacuum</structname> 뷰에
+   하나의 로우 단위로 각 개별 작업에 대한 진행 상태를 
+   보관한다. (autovacuum 작업자 프로세스도 포함한다.)
+   이 뷰의 각 칼럼에 대한 설명과 그 값을 어떻게 해석할 것인가는
+   아래에서 다룬다.
+   이 진행 상태 보고에는 <command>VACUUM FULL</> 작업에 대해서는 
+   제외한다.  따라서 사용자의 <command>VACUUM FULL</> 명령에 대한 
+   진행 상태는 볼 수 없다.
   </para>
 
   <table id="pg-stat-progress-vacuum-view" xreflabel="pg_stat_progress_vacuum">
-   <title><structname>pg_stat_progress_vacuum</structname> View</title>
+   <title><structname>pg_stat_progress_vacuum</structname> 뷰</title>
    <tgroup cols="3">
     <thead>
     <row>
-      <entry>Column</entry>
-      <entry>Type</entry>
-      <entry>Description</entry>
+      <entry>칼럼</entry>
+      <entry>자료형</entry>
+      <entry>설명</entry>
      </row>
     </thead>
 
@@ -2499,82 +2500,82 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
     <row>
      <entry><structfield>pid</></entry>
      <entry><type>integer</></entry>
-     <entry>Process ID of backend.</entry>
+     <entry>해당 PID</entry>
     </row>
     <row>
      <entry><structfield>datid</></entry>
      <entry><type>oid</></entry>
-     <entry>OID of the database to which this backend is connected.</entry>
+     <entry>해당 프로세스가 접속한 데이터베이스 OID</entry>
     </row>
     <row>
      <entry><structfield>datname</></entry>
      <entry><type>name</></entry>
-     <entry>Name of the database to which this backend is connected.</entry>
+     <entry>해당 프로세스가 접속한 데이터베이스 이름</entry>
     </row>
     <row>
      <entry><structfield>relid</></entry>
      <entry><type>oid</></entry>
-     <entry>OID of the table being vacuumed.</entry>
+     <entry>현재 vacuum 작업 중인 테이블 OID</entry>
     </row>
     <row>
      <entry><structfield>phase</></entry>
      <entry><type>text</></entry>
      <entry>
-       Current processing phase of vacuum.  See <xref linkend='vacuum-phases'>.
+       현재 진행 상태.  <xref linkend='vacuum-phases'> 참조.
      </entry>
     </row>
     <row>
      <entry><structfield>heap_blks_total</></entry>
      <entry><type>bigint</></entry>
      <entry>
-       Total number of heap blocks in the table.  This number is reported
-       as of the beginning of the scan; blocks added later will not be (and
-       need not be) visited by this <command>VACUUM</>.
+       테이블의 힙 블럭 전체 수량.  이 숫자는 테이블 탐색 작업
+       시작 때 결정된다.  <command>VACUUM</> 작업 진행 과정 
+       속에서 추가 되거나 삭제되는 블럭에 대해서는 고려하지 않는다.
      </entry>
     </row>
     <row>
      <entry><structfield>heap_blks_scanned</></entry>
      <entry><type>bigint</></entry>
      <entry>
-       Number of heap blocks scanned.  Because the
-       <link linkend="storage-vm">visibility map</> is used to optimize scans,
-       some blocks will be skipped without inspection; skipped blocks are
-       included in this total, so that this number will eventually become
-       equal to <structfield>heap_blks_total</> when the vacuum is complete.
-       This counter only advances when the phase is <literal>scanning heap</>.
+       탐색한 힙 블럭 수.  탐색 최적화를 위해서 
+       <link linkend="storage-vm">visibility map</>을 이용하기 때문에, 
+       vacuum 대상 블럭인지 조사하는 작업을 몇몇 블럭에서 하지 않을
+       수도 있다.  이렇게 건너뛴 블럭도 이 수에 모두 포함한다.  이렇게
+       해서 이 수가 <structfield>heap_blks_total</> 수와 같으면, 
+       vacuum 작업이 완료된 것이다.  이 수는 <literal>scanning heap</>
+       상태에서만 증가한다.
      </entry>
     </row>
     <row>
      <entry><structfield>heap_blks_vacuumed</></entry>
      <entry><type>bigint</></entry>
      <entry>
-       Number of heap blocks vacuumed.  Unless the table has no indexes, this
-       counter only advances when the phase is <literal>vacuuming heap</>.
-       Blocks that contain no dead tuples are skipped, so the counter may
-       sometimes skip forward in large increments.
+       vacuum 작업을 한 힙 블럭 수.  테이블에 인덱스가 없다면, 
+       이 수는 <literal>vacuuming heap</> 상태에서만 증가한다.  더 이상
+       사용하지 않는 자료(dead tuple)가 없는 블럭에 대해서는 건너
+       뛰기 때문에 이 수는 한꺼번에 많은 수가 증가 할 수도 있다.
      </entry>
     </row>
     <row>
      <entry><structfield>index_vacuum_count</></entry>
      <entry><type>bigint</></entry>
      <entry>
-       Number of completed index vacuum cycles.
+       vacuum 작업이 완료된 인덱스 수
      </entry>
     </row>
     <row>
      <entry><structfield>max_dead_tuples</></entry>
      <entry><type>bigint</></entry>
      <entry>
-      Number of dead tuples that we can store before needing to perform
-      an index vacuum cycle, based on
-      <xref linkend="guc-maintenance-work-mem">.
+      인덱스 vacuum 작업을 수행해야 할 경우 고려해야할 dead tuple 수
+      이 수는 <xref linkend="guc-maintenance-work-mem"> 환경 설정값에 기초한다.
      </entry>
     </row>
     <row>
      <entry><structfield>num_dead_tuples</></entry>
      <entry><type>bigint</></entry>
      <entry>
-       Number of dead tuples collected since the last index vacuum cycle.
+       인덱스 vacuum 작업으로 처리한 dead tuple 수
      </entry>
     </row>
    </tbody>
@@ -2582,12 +2583,12 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
   </table>
 
   <table id="vacuum-phases">
-   <title>VACUUM phases</title>
+   <title>VACUUM 상태</title>
    <tgroup cols="2">
     <thead>
     <row>
-      <entry>Phase</entry>
-      <entry>Description</entry>
+      <entry>상태</entry>
+      <entry>설명</entry>
      </row>
     </thead>
 
@@ -2595,63 +2596,63 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
     <row>
      <entry><literal>initializing</literal></entry>
      <entry>
-       <command>VACUUM</> is preparing to begin scanning the heap.  This
-       phase is expected to be very brief.
+       <command>VACUUM</> 탐색 작업 초기화 중.
+       이 상태는 순십간에 지나갈 것이다.
      </entry>
     </row>
     <row>
      <entry><literal>scanning heap</literal></entry>
      <entry>
-       <command>VACUUM</> is currently scanning the heap.  It will prune and
-       defragment each page if required, and possibly perform freezing
-       activity.  The <structfield>heap_blks_scanned</> column can be used
-       to monitor the progress of the scan.
+       <command>VACUUM</> 작업이 테이블 탐색 중.  각 블럭을 청소하고, 
+       필요하다면, 블럭을 버리는 작업, 또는 자료 영구 보관 작업까지
+       진행한다.  한 블럭 작업이 마무리 할 때마다
+       <structfield>heap_blks_scanned</> 칼럼 값이 증가된다.
      </entry>
     </row>
     <row>
      <entry><literal>vacuuming indexes</literal></entry>
      <entry>
-       <command>VACUUM</> is currently vacuuming the indexes.  If a table has
-       any indexes, this will happen at least once per vacuum, after the heap
-       has been completely scanned.  It may happen multiple times per vacuum
-       if <xref linkend="guc-maintenance-work-mem"> is insufficient to
-       store the number of dead tuples found.
+       <command>VACUUM</> 작업이 인덱스 청소 중.
+       테이블에 인덱스가 있다면, 이 상태는 테이블 탐색이 끝난 뒤
+       한 번 나타난다.
+       <xref linkend="guc-maintenance-work-mem"> 설정값이 충분히 크지 않아
+       모든 dead tuple을 한 번에 처리할 수 없다면, 
+       한 번의 vacuum 작업에서 여러번 나타날 수도 있다.
      </entry>
     </row>
     <row>
      <entry><literal>vacuuming heap</literal></entry>
      <entry>
-       <command>VACUUM</> is currently vacuuming the heap.  Vacuuming the heap
-       is distinct from scanning the heap, and occurs after each instance of
-       vacuuming indexes.  If <structfield>heap_blks_scanned</> is less than
-       <structfield>heap_blks_total</>, the system will return to scanning
-       the heap after this phase is completed; otherwise, it will begin
-       cleaning up indexes after this phase is completed.
+       <command>VACUUM</> 작업이 테이블 힙을 청소 중.  청소 작업은
+       힙 탐색 작업과 다르며, 인덱스 청소 작업 뒤에 한 번 나타난다.
+       만일 <structfield>heap_blks_scanned</> 수가 
+       <structfield>heap_blks_total</> 수보다 적다면, 
+       이 상태 다음에 힙 탐색 상태가 되며, 
+       그렇지 않다면, 인덱스 정리 상태로 넘어간다.
      </entry>
     </row>
     <row>
      <entry><literal>cleaning up indexes</literal></entry>
      <entry>
-       <command>VACUUM</> is currently cleaning up indexes.  This occurs after
-       the heap has been completely scanned and all vacuuming of the indexes
-       and the heap has been completed.
+       <command>VACUUM</> 작업에서 인덱스들을 정리 하는 중.  이 상태는
+       힙 탐색이 끝났고, 모든 인덱스와 힙의 정리 작업도 끝난 다음에 나타난다.
      </entry>
     </row>
     <row>
      <entry><literal>truncating heap</literal></entry>
      <entry>
-       <command>VACUUM</> is currently truncating the heap so as to return
-       empty pages at the end of the relation to the operating system.  This
-       occurs after cleaning up indexes.
+       <command>VACUUM</> 작업에서 해당 테이블 끝 부분에 있는 비어있는 블럭을
+       OS로 반환하는 작업 상태.  이 상태는 인덱스 정리 작업 다음에 나타난다.
      </entry>
     </row>
     <row>
      <entry><literal>performing final cleanup</literal></entry>
      <entry>
-       <command>VACUUM</> is performing final cleanup.  During this phase,
-       <command>VACUUM</> will vacuum the free space map, update statistics
-       in <literal>pg_class</>, and report statistics to the statistics
-       collector.  When this phase is completed, <command>VACUUM</> will end.
+       <command>VACUUM</> 최종 마무리 단계.  이 상태에서는
+       <command>VACUUM</> 작업은 여유 공간 지도 파일을 정리하고, 
+       <literal>pg_class</>의 통계 정보를 갱신하고, 통계 수집기로
+       통계 정보를 보낸다.   이 상태가 끝나면, <command>VACUUM</> 
+       작업은 끝난다.
      </entry>
     </row>
    </tbody>
