@@ -16,60 +16,60 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER DEFAULT PRIVILEGES</refname>
-  <refpurpose>define default access privileges</refpurpose>
+  <refpurpose>기본 접근 권한 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
 ALTER DEFAULT PRIVILEGES
-    [ FOR { ROLE | USER } <replaceable>target_role</replaceable> [, ...] ]
-    [ IN SCHEMA <replaceable>schema_name</replaceable> [, ...] ]
-    <replaceable class="parameter">abbreviated_grant_or_revoke</replaceable>
+    [ FOR { ROLE | USER } <replaceable>대상_롤</replaceable> [, ...] ]
+    [ IN SCHEMA <replaceable>스키마_이름</replaceable> [, ...] ]
+    <replaceable class="parameter">grant_또는_revoke_표현식</replaceable>
 
-<phrase>where <replaceable class="parameter">abbreviated_grant_or_revoke</replaceable> is one of:</phrase>
+<phrase><replaceable class="parameter">grant_또는_revoke_표현식</replaceable> 구문:</phrase>
 
 GRANT { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
     [, ...] | ALL [ PRIVILEGES ] }
     ON TABLES
-    TO { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+    TO { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
 
 GRANT { { USAGE | SELECT | UPDATE }
     [, ...] | ALL [ PRIVILEGES ] }
     ON SEQUENCES
-    TO { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+    TO { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
 
 GRANT { EXECUTE | ALL [ PRIVILEGES ] }
     ON FUNCTIONS
-    TO { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+    TO { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
 
 GRANT { USAGE | ALL [ PRIVILEGES ] }
     ON TYPES
-    TO { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+    TO { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
 
 REVOKE [ GRANT OPTION FOR ]
     { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
     [, ...] | ALL [ PRIVILEGES ] }
     ON TABLES
-    FROM { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...]
+    FROM { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...]
     [ CASCADE | RESTRICT ]
 
 REVOKE [ GRANT OPTION FOR ]
     { { USAGE | SELECT | UPDATE }
     [, ...] | ALL [ PRIVILEGES ] }
     ON SEQUENCES
-    FROM { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...]
+    FROM { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...]
     [ CASCADE | RESTRICT ]
 
 REVOKE [ GRANT OPTION FOR ]
     { EXECUTE | ALL [ PRIVILEGES ] }
     ON FUNCTIONS
-    FROM { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...]
+    FROM { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...]
     [ CASCADE | RESTRICT ]
 
 REVOKE [ GRANT OPTION FOR ]
     { USAGE | ALL [ PRIVILEGES ] }
     ON TYPES
-    FROM { [ GROUP ] <replaceable class="PARAMETER">role_name</replaceable> | PUBLIC } [, ...]
+    FROM { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...]
     [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
@@ -78,29 +78,31 @@ REVOKE [ GRANT OPTION FOR ]
   <title>설명</title>
 
   <para>
-   <command>ALTER DEFAULT PRIVILEGES</> allows you to set the privileges
-   that will be applied to objects created in the future.  (It does not
-   affect privileges assigned to already-existing objects.)  Currently,
-   only the privileges for tables (including views and foreign tables),
-   sequences, functions, and types (including domains) can be altered.
+   <command>ALTER DEFAULT PRIVILEGES</> 명령은 앞으로 만들어질 
+   객체에 기본적으로 적용할 접근 권한을 미리 지정하는 일을 한다.  (이 명령은
+   기존 이미 있는 객체들에 대한 접근 권한을 바꾸는 일은 하지 않는다. 현재,
+   테이블 (뷰와 외부 테이블 포함), 시퀀스, 함수, 자료형 (도메인 포함)
+   객체들에 대해서만 사용할 수 있다.
   </para>
 
   <para>
-   You can change default privileges only for objects that will be created by
-   yourself or by roles that you are a member of.  The privileges can be set
-   globally (i.e., for all objects created in the current database),
-   or just for objects created in specified schemas.  Default privileges
-   that are specified per-schema are added to whatever the global default
-   privileges are for the particular object type.
+   이 접근 권한 설정은 현재 접속한 사용자나, 명령에서 지정한 
+   롤(또는 소속원)이 만들 객체들에 대해서만 적용된다.  접근 권한은
+   현재 접속한 데이터베이스 소속 모든 객체에 대해서 지정할 수도 
+   있고, 지정한 특정 스키마 안의 모든 객체로 한정할 수도 있다.  스키마별로 
+   지정한 기본 접근 권한은 특정 객체 종류에 지정한 데이터베이스
+   단위 기본 접근 권한이 있다면 그 권한에 더해진다.
   </para>
 
   <para>
-   As explained under <xref linkend="sql-grant">,
-   the default privileges for any object type normally grant all grantable
-   permissions to the object owner, and may grant some privileges to
-   <literal>PUBLIC</> as well.  However, this behavior can be changed by
-   altering the global default privileges with
-   <command>ALTER DEFAULT PRIVILEGES</>.
+   <xref linkend="sql-grant"> 명령에서 설명한 것처럼,
+   어떤 객체에 대한 기본 접근 권한은 일반적으로 그 객체의
+   소유주에게는 모든 권한을 부여하고, <literal>PUBLIC</> (아무나)에게
+   몇몇 권한을 부여할 수도 있다.  (예, public 스키마에 함수를 만들면, 
+   해당 데이터베이스를 접근하는 모든 사용자는 해당 함수를
+   실행할 수 있다. - 옮긴이)
+   이 때, 이런 기본 접근 권한 정책을 바꾸고자 한다면, 
+   <command>ALTER DEFAULT PRIVILEGES</> 명령을 이용하면 된다.
   </para>
 
  <refsect2>
@@ -108,39 +110,38 @@ REVOKE [ GRANT OPTION FOR ]
 
   <variablelist>
    <varlistentry>
-    <term><replaceable>target_role</replaceable></term>
+    <term><replaceable>대상_롤</replaceable></term>
     <listitem>
      <para>
+      현재 접속한 사용자의 소속 롤 이름.
       The name of an existing role of which the current role is a member.
-      If <literal>FOR ROLE</> is omitted, the current role is assumed.
+      <literal>FOR ROLE</> 옵션이 빠지면 현재 접속한 사용자로 간주한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>schema_name</replaceable></term>
+    <term><replaceable>스키마_이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing schema.  If specified, the default privileges
-      are altered for objects later created in that schema.
-      If <literal>IN SCHEMA</> is omitted, the global default privileges
-      are altered.
+      대상 스키마 이름.  이 옵션을 지정하면, 해당 스키마 안에 
+      만들어지는 객체들에 대해서만 기본 접근 권한을 지정한다.
+      <literal>IN SCHEMA</> 옵션이 빠지면, 데이터베이스 전체 객체를
+      대상으로 한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>role_name</replaceable></term>
+    <term><replaceable>롤_이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing role to grant or revoke privileges for.
-      This parameter, and all the other parameters in
-      <replaceable class="parameter">abbreviated_grant_or_revoke</>,
-      act as described under
-      <xref linkend="sql-grant"> or
-      <xref linkend="sql-revoke">,
-      except that one is setting permissions for a whole class of objects
-      rather than specific named objects.
+      접근 권한을 부여하거나 박탈할 롤 이름.
+      이 옵션은 <replaceable class="parameter">grant_또는_revoke_표현식</replaceable>
+      에서 항상 있으며, 사용법은 <xref linkend="sql-grant"> , 
+      <xref linkend="sql-grant"> 명령에서 사용하는 것과 
+      동일하다.  차이점은 여기서는 앞으로 만들어질 모든 
+      같은 종류의 객체들을 대상으로 한다는 점만 다르다.
      </para>
     </listitem>
    </varlistentry>
@@ -149,21 +150,18 @@ REVOKE [ GRANT OPTION FOR ]
  </refsect1>
 
  <refsect1 id="sql-alterdefaultprivileges-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Use <xref linkend="app-psql">'s <command>\ddp</command> command
-   to obtain information about existing assignments of default privileges.
-   The meaning of the privilege values is the same as explained for
-   <command>\dp</command> under
-   <xref linkend="sql-grant">.
+   <xref linkend="app-psql">에서 <command>\ddp</command>
+   명령으로 이 기본 접근 권한 정보를 볼 수 있다.  <xref linkend="sql-grant">
+   명령으로 지정한 접근 권한은 <command>\dp</command>
+   명령으로 살펴 볼 수 있다.
   </para>
 
   <para>
-   If you wish to drop a role for which the default privileges have been
-   altered, it is necessary to reverse the changes in its default privileges
-   or use <command>DROP OWNED BY</> to get rid of the default privileges entry
-   for the role.
+   이미 지정한 기본 접근 권한을 없애려면, 같은 명령으로 revoke 작업을 
+   하거나, <xref linkend="sql-drop-owned"> 명령을 이용해서 삭제할 수 있다.
   </para>
  </refsect1>
 
@@ -171,9 +169,10 @@ REVOKE [ GRANT OPTION FOR ]
   <title>예제</title>
 
   <para>
-   Grant SELECT privilege to everyone for all tables (and views) you
-   subsequently create in schema <literal>myschema</literal>, and allow
-   role <literal>webuser</> to INSERT into them too:
+   앞으로 <literal>myschema</literal> 스키마 안에 만들어질
+   모든 테이블(과 뷰)에 대해서 모든 사용자들은 그 테이블을 
+   select 할 수 있고, <literal>webuser</> 롤에 대해서는 
+   insert 할 수 있도록 설정하는 방법:
 
 <programlisting>
 ALTER DEFAULT PRIVILEGES IN SCHEMA myschema GRANT SELECT ON TABLES TO PUBLIC;
@@ -182,8 +181,8 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA myschema GRANT INSERT ON TABLES TO webuser;
   </para>
 
   <para>
-   Undo the above, so that subsequently-created tables won't have any
-   more permissions than normal:
+   위에서 지정한 정책을 취소(박탈)하려면(이미 기존에 지정된 접근 권한은 
+   바뀌지 않는다 - 옮긴이):
 
 <programlisting>
 ALTER DEFAULT PRIVILEGES IN SCHEMA myschema REVOKE SELECT ON TABLES FROM PUBLIC;
@@ -192,8 +191,8 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA myschema REVOKE INSERT ON TABLES FROM webuser
   </para>
 
   <para>
-   Remove the public EXECUTE permission that is normally granted on functions,
-   for all functions subsequently created by role <literal>admin</>:
+   <literal>admin</> 롤로 만들어지는 모든 함수들을 익명 사용자가 
+   실행할 수 없도록 지정하는 방법:
 
 <programlisting>
 ALTER DEFAULT PRIVILEGES FOR ROLE admin REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
@@ -204,8 +203,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE admin REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
   <title>호환성</title>
 
   <para>
-   There is no <command>ALTER DEFAULT PRIVILEGES</command> statement in the SQL
-   standard.
+   <command>ALTER DEFAULT PRIVILEGES</command> 구문은 표준 SQL 문법은 아니다.
   </para>
  </refsect1>
 
