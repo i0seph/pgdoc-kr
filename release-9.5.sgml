@@ -6228,7 +6228,7 @@ Add GUC and storage parameter to set the maximum size of GIN pending list.
     </sect4>
 
     <sect4>
-     <title>집계함수들</title>
+     <title>집계 함수들</title>
 
      <itemizedlist>
 

@@ -527,7 +527,7 @@ SELECT salary, sum(salary) OVER (ORDER BY salary) FROM empsalary;
         <literal>WHERE</literal> 절에서는 사용할 수 없다.  이는
     논리적으로 이 함수의 처리 대상이 되는 입력 매개 변수값이 
         이미 결정이 나야하기 때문이다.  이와 같은 이유로, 
-        윈도우 함수의 입력 매개 변수로 집계함수의 결과를 
+        윈도우 함수의 입력 매개 변수로 집계 함수의 결과를 
         사용 할 수는 있지만, 그 반대는 불가능 하다.
    </para>
 

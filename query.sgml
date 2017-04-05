@@ -716,7 +716,7 @@ SELECT city FROM weather WHERE temp_lo = max(temp_lo);     <lineannotation>잘�
 </programlisting>
 
     하지만, 윗 쿼리의 결과는 오류를 냅니다. 왜냐하면, <literal>WHERE</literal>
-    절 다음에는 집계함수를 사용할 수 없기 때문입니다. (이렇게 되는
+    절 다음에는 집계 함수를 사용할 수 없기 때문입니다. (이렇게 되는
     이유는 윗 예를 들어, <function>max</function> 함수 자체가
     select를 하지 않으면 나올 수 없는 값이기 때문입니다) 이런 문제는
     다음과 같은 <firstterm>서브쿼리</firstterm>
@@ -810,7 +810,7 @@ SELECT city, max(temp_lo)
     집계된 자료에 대한 조건입니다.  그래서, <literal>WHERE</literal> 절의
     조건으로 <literal>HAVING</literal> 절이 사용될
     수 없습니다.  일반적으로 <literal>HAVING</literal> 절
-    다음에는 집계함수가 사용됩니다.  물론 더 깊게 이야기하면,
+    다음에는 집계 함수가 사용됩니다.  물론 더 깊게 이야기하면,
     <literal>WHERE</literal> 다음에 <literal>HAVING</literal>이
     올 수 있고, <literal>HAVING</literal> 다음에 집계 함수가
     오지 않을 수도 있습니다.  하지만, 이런 골치 아픈 부분에 대해서는
