@@ -1,34 +1,29 @@
 <!-- doc/src/sgml/parallel.sgml -->
 
  <chapter id="parallel-query">
-  <title>Parallel Query</title>
+  <title>병렬 쿼리</title>
 
   <indexterm zone="parallel-query">
-   <primary>parallel query</primary>
+   <primary>병렬 쿼리</primary>
   </indexterm>
 
   <para>
-   <productname>PostgreSQL</> can devise query plans which can leverage
-   multiple CPUs in order to answer queries faster.  This feature is known
-   as parallel query.  Many queries cannot benefit from parallel query, either
-   due to limitations of the current implementation or because there is no
-   imaginable query plan which is any faster than the serial query plan.
-   However, for queries that can benefit, the speedup from parallel query
-   is often very significant.  Many queries can run more than twice as fast
-   when using parallel query, and some queries can run four times faster or
-   even more.  Queries that touch a large amount of data but return only a
-   few rows to the user will typically benefit most.  This chapter explains
-   some details of how parallel query works and in which situations it can be
-   used so that users who wish to make use of it can understand what to expect.
+   <productname>PostgreSQL</>은 쿼리를 빠르게 처리하기 위해 여러
+   CPU를 활용하는 실행 계획을 사용할 수 있다.  이 기능은 병렬 쿼리라고
+   알려져 있다.  많은 쿼리는 병렬 처리의 이점을 누리기 어려운 이유는
+   현재 구현의 제한이나 직렬 쿼리 계획보다 더 빠른 실행 계획이 없기
+   때문이다.  그러나 병렬 쿼리의 속도향상에 종종 매우 중요하다.  병렬
+   처리 시, 2배 혹은 4배 그 이상 빠르게 실행할 수 있다.  대량의 데이터
+   중 몇몇 행만 반환할 경우 가장 큰 효과가 있다. 
   </para>
 
  <sect1 id="how-parallel-query-works">
-  <title>How Parallel Query Works</title>
+  <title>병렬 쿼리 작동 원리</title>
 
    <para>
-    When the optimizer determines that parallel query is the fastest execution
-    strategy for a particular query, it will create a query plan which includes
-    a <firstterm>Gather node</firstterm>.  Here is a simple example:
+    옵티마이저가 특정 쿼리의 빠른 실행을 위해 병렬 처리를 할 때,
+    아래와 같이 <firstterm>Gather node</firstterm>를 포함하여
+    실행계획을 세운다:
 
 <screen>
 EXPLAIN SELECT * FROM pgbench_accounts WHERE filler LIKE '%x%';
@@ -43,155 +38,140 @@ EXPLAIN SELECT * FROM pgbench_accounts WHERE filler LIKE '%x%';
    </para>
 
    <para>
-    In all cases, the <literal>Gather</literal> node will have exactly one
-    child plan, which is the portion of the plan that will be executed in
-    parallel.  If the <literal>Gather</> node is at the very top of the plan
-    tree, then the entire query will execute in parallel.  If it is somewhere
-    else in the plan tree, then only that portion of the query will run in
-    parallel.  In the example above, the query accesses only one table, so
-    there is only one plan node other than the <literal>Gather</> node itself;
-    since that plan node is a child of the <literal>Gather</> node, it will
-    run in parallel.
+    위 실행 계획 경우, <literal>Gather</literal> 노드는 병렬로 실행되는
+    계획에 정확히 하나의 하위 계획을 갖는다. <literal>Gather</literal> 노드가
+    실행 계획 트리의 맨 위에 있는 경우 모든 쿼리는 병렬로 실행된다.  실행
+    계획 트리에 어딘 가에 (<literal>Gather</literal> 노드가) 있다면, 일부
+    쿼리만 병렬로 실행된다.  위의 예에서 하나의 테이블만을 접근하는 쿼리는
+    <literal>Gather</literal> 노드 외에 하나의 실행 계획만 있다; 실행 계획
+    노드는 <literal>Gather</literal> 노드의 하위 실행 계획으로 병렬로 실행 된다.
    </para>
 
    <para>
-    <link linkend="using-explain">Using EXPLAIN</>, you can see the number of
-    workers chosen by the planner.  When the <literal>Gather</> node is reached
-    during query execution, the process which is implementing the user's
-    session will request a number of <link linkend="bgworker">background
-    worker processes</link> equal to the number
-    of workers chosen by the planner.  The total number of background
-    workers that can exist at any one time is limited by
-    <xref linkend="guc-max-worker-processes">, so it is possible for a
-    parallel query to run with fewer workers than planned, or even with
-    no workers at all.  The optimal plan may depend on the number of workers
-    that are available, so this can result in poor query performance.  If this
-    occurrence is frequent, considering increasing
-    <varname>max_worker_processes</> so that more workers can be run
-    simultaneously or alternatively reducing
-    <xref linkend="guc-max-parallel-workers-per-gather"> so that the planner
-    requests fewer workers.
+    <link linkend="using-explain">EXPLAN 명령 사용하기</>를 통해서, 플래너가
+    선택한 작업자의 수를 확인할 수 있다. <literal>Gather</literal> 노드가
+    쿼리를 실행할 때, 사용자 세션은
+    <link linkend="bgworker">백그라운드 작업자 프로세스</link> 수와
+    플래너가 선택한 작업자 수와 동일한 프로세스가 요청된다.  한
+    번에 존재할 수 있는 백그라운드 작업자의 수는
+    <xref linkend="guc-max-worker-processes"> 설정값에 의해 제한되므로,
+    병렬 쿼리가 계획된 작업자보다 적거나 작업자 없이 실행될
+    수 있다.  최적의 계획은 사용 가능한 작업자 수에 따라 달라질 수
+    있으므로 쿼리 성능이 저하 될 수 있다. 이런 현상이 빈번한 경우
+    <varname>max_worker_processes</> 설정값을 늘리면 더 많은 작업자가
+    동시에 실행되거나 <xref linkend="guc-max-parallel-workers-per-gather">
+    설정값을 줄여 플래너가 더 적은 수의 작업자를 요청할 수 있다. 
    </para>
 
    <para>
-    Every background worker process which is successfully started for a given
-    parallel query will execute the portion of the plan which is a descendent
-    of the <literal>Gather</> node.  The leader will also execute that portion
-    of the plan, but it has an additional responsibility: it must also read
-    all of the tuples generated by the workers.  When the parallel portion of
-    the plan generates only a small number of tuples, the leader will often
-    behave very much like an additional worker, speeding up query execution.
-    Conversely, when the parallel portion of the plan generates a large number
-    of tuples, the leader may be almost entirely occupied with reading the
-    tuples generated by the workers and performing any further processing
-    steps which are required by plan nodes above the level of the
-    <literal>Gather</literal> node.  In such cases, the leader will do very
-    little of the work of executing the parallel portion of the plan.
+    모든 백그라운드 작업 프로세스는 <literal>Gather</> 노드의 일부로
+    실행계획으로 병렬 쿼리를 실행한다.  리더는 또한 실행계획의 일부를
+    실행하긴 하지만 추가적인 책임이 있다: 작업자가 생성한 모든 튜플을
+    읽어야만 한다.  적은 수의 튜블에 의해 병렬처리 실행계획이 생성될 때,
+    쿼리 속도를 빠르게 하기 위해 리더는 종종 추가적인 작업자처럼
+    행동한다.  이와 반대로, 많은 수의 튜블을 처리하는 실행계획이 
+    생성될 때 리더는 작업자에 의해 생성된 튜블을 읽고, 
+    <literal>Gather</> 노드 레벨 이상의 실행계획에서 필요한 추가적인
+    작업 처리한다. 이러한 경우, 리더는 실행계획의 병렬 처리 부분을
+    거의 수행하지 않는다.
    </para>
  </sect1>
 
  <sect1 id="when-can-parallel-query-be-used">
-  <title>When Can Parallel Query Be Used?</title>
+  <title>병렬 쿼리가 가능한 경우</title>
 
   <para>
-    There are several settings which can cause the query planner not to
-    generate a parallel query plan under any circumstances.  In order for
-    any parallel query plans whatsoever to be generated, the following
-    settings must be configured as indicated.
+    어떤 상황에서도 쿼리 플래너가 병렬 쿼리 계획을 생성하지 못하게
+    하는 몇 가지 설정이 있다.  모든 병렬 쿼리 계획을 생성하려면
+    아래와 같이 설정을 해야 한다.
   </para>
 
   <itemizedlist>
     <listitem>
       <para>
-        <xref linkend="guc-max-parallel-workers-per-gather"> must be set to a
-        value which is greater than zero. This is a special case of the more
-        general principle that no more workers should be used than the number
-        configured via <varname>max_parallel_workers_per_gather</varname>.
+        <xref linkend="guc-max-parallel-workers-per-gather"> 설정값은
+        0보다 큰 수로 설정해야 한다.
+        <varname>max_parallel_workers_per_gather</varname>에 설정한 수보다
+        더 많은 작업자가 사용되는 것은 특수한 경우다. 
       </para>
     </listitem>
 
     <listitem>
       <para>
-        <xref linkend="guc-dynamic-shared-memory-type"> must be set to a
-        value other than <literal>none</>.  Parallel query requires dynamic
-        shared memory in order to pass data between cooperating processes.
+        <xref linkend="guc-dynamic-shared-memory-type"> 설정이
+        지정되어야 한다. 병렬 쿼리는 프로세스 협력에 데이터를 전달하기
+        위하여 동적 공유 메모리가 필요하다. 
       </para>
     </listitem>
   </itemizedlist>
 
   <para>
-    In addition, the system must not be running in single-user mode.  Since
-    the entire database system is running in single process in this situation,
-    no background workers will be available.
+    또한 데이터베이스 서버는 단일 사용자 모드로 실행되어서는 안된다.  전체
+    데이터베이스 시스템이 싱글 프로세스로 실행되기 때문에 백그라운드 작업자는
+    사용할 수 없다.
   </para>
 
   <para>
-    Even when it is in general possible for parallel query plans to be
-    generated, the planner will not generate them for a given query
-    if any of the following are true:
+    병렬 쿼리 계획을 생성 할 수 있는 일반적인 경우에도, 플래너는 다음 중
+    하나라도 해당되면 병렬 쿼리 실행 계획을 생성하지 않는다:
   </para>
 
   <itemizedlist>
     <listitem>
       <para> 
-        The query writes any data or locks any database rows. If a query
-        contains a data-modifying operation either at the top level or within
-        a CTE, no parallel plans for that query will be generated. This is a
-        limitation of the current implementation which could be lifted in a
-        future release. 
+        쿼리가 데이터베이스의 로우를 쓰거나 락을 발생할 경우.  최상위
+        레벨이나 CTE 내 수정 작업이 포함된 쿼리는 병렬 실행 계획은
+        세워지지 않는다.  이 제한은 개선 될 예정이다.
       </para>
     </listitem>
 
     <listitem>
       <para>
-        The query might be suspended during execution. In any situation in
-        which the system thinks that partial or incremental execution might
-        occur, no parallel plan is generated. For example, a cursor created
-        using <link linkend="sql-declare">DECLARE CURSOR</link> will never use
-        a parallel plan. Similarly, a PL/pgsql loop of the form
-        <literal>FOR x IN query LOOP .. END LOOP</literal> will never use a
-        parallel plan, because the parallel query system is unable to verify
-        that the code in the loop is safe to execute while parallel query is
-        active. 
+        쿼리가 실행 중에 중단될 수 있는 경우, 시스템은 (쿼리가) 부분 또는
+        추가로 실행 가능할 수 있다고 생각하기 때문에 병렬 실행 계획이
+        생성되지 않는다. 예를 들어,
+        <link linkend="sql-declare">DECLARE CURSOR</link> 명령을 이용하여
+        커서를 생성한 경우, PL/pgsql의 
+        <literal>FOR x IN 쿼리 LOOP .. END LOOP</literal> 형식과 같은
+        루프는 병렬 쿼리로 절대로 실행되지 않는다.  왜냐하면 병렬 쿼리
+        시스템은 병렬 쿼리가 실행 중일 때, 루프 내의 코드가 안전하게
+        실행되는 지 검증할 수 없기 때문이다.
       </para>
     </listitem>
 
     <listitem>
       <para>
-        The query uses any function marked <literal>PARALLEL UNSAFE</literal>.
-        Most system-defined functions are <literal>PARALLEL SAFE</literal>,
-        but user-defined functions are marked <literal>PARALLEL
-        UNSAFE</literal> by default. See the discussion of
-        <xref linkend="parallel-safety">.
+        쿼리가 <literal>PARALLEL UNSAFE</literal> 설정된 함수를 사용할
+        경우.  대부분의 시스템 함수는 <literal>PARALLEL SAFE</literal>이지만
+        기본값으로 사용자 정의 함수는 <literal>PARALLEL UNSAFE</literal>
+        설정으로 만들어진다.
+        이 옵션에 대한 설명은 <xref linkend="parallel-safety">에서 다룬다.
       </para>
     </listitem>
 
     <listitem>
       <para>
-        The query is running inside of another query that is already parallel.
-        For example, if a function called by a parallel query issues an SQL
-        query itself, that query will never use a parallel plan. This is a
-        limitation of the current implementation, but it may not be desirable
-        to remove this limitation, since it could result in a single query
-        using a very large number of processes. 
+        쿼리가 이미 다른 쿼리 내부에서 병렬처리로 실행될 경우.  예를
+        들어, 병렬 쿼리에 의해 호출된 함수가 SQL 쿼리 자체에 실행되면,
+        쿼리는 병렬 실행 계획을 결코 사용하지 않는다.  현재 구현에서
+        제한되어 있는데, 하나의 쿼리가 많은 수의 프로세스를 사용할
+        수 있기 때문에 이 제한은 계속 유지될 예정이다.
       </para>
     </listitem>
 
     <listitem>
       <para>
-        The transaction isolation level is serializable.  This is
-        a limitation of the current implementation.
+        트랜잭션 격리 수준이 serializable일 경우.  아직 구현하지 못했음.
       </para>
     </listitem>
   </itemizedlist>
 
   <para>
-    Even when parallel query plan is generated for a particular query, there
-    are several circumstances under which it will be impossible to execute
-    that plan in parallel at execution time.  If this occurs, the leader
-    will execute the portion of the plan below the <literal>Gather</>
-    node entirely by itself, almost as if the <literal>Gather</> node were
-    not present.  This will happen if any of the following conditions are met:
+    병렬 쿼리 계획이 특정 쿼리에서 생성된 경우라도 여러 상황에 따라
+    병렬로 쿼리가 실행되지 않는다.  이 경우 <literal>Gather</> 노드가 없는
+    것처럼 리더는 <literal>Gather</> 노드 아래에 있는 실행 계획 부분을
+    전체를 자체적으로 실행한다.  이런 경우는 다음 조건 중 하나가 충족
+    될 경우 발생한다.
   </para>
 
   <itemizedlist>
