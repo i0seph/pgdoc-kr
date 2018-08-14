@@ -16,18 +16,18 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER LANGUAGE</refname>
-  <refpurpose>change the definition of a procedural language</refpurpose>
+  <refpurpose>프로시져 언어 등록 정보 변경</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER [ PROCEDURAL ] LANGUAGE <replaceable>name</replaceable> RENAME TO <replaceable>new_name</replaceable>
-ALTER [ PROCEDURAL ] LANGUAGE <replaceable>name</replaceable> OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER [ PROCEDURAL ] LANGUAGE <replaceable>이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER [ PROCEDURAL ] LANGUAGE <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
    <command>ALTER LANGUAGE</command> changes the definition of a
@@ -38,32 +38,32 @@ ALTER [ PROCEDURAL ] LANGUAGE <replaceable>name</replaceable> OWNER TO { <replac
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable>name</replaceable></term>
+    <term><replaceable>이름</replaceable></term>
     <listitem>
      <para>
-      Name of a language
+      언어 이름
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>new_name</replaceable></term>
+    <term><replaceable>새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the language
+      새 언어 이름
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>new_owner</replaceable></term>
+    <term><replaceable>새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the language
+      그 언어의 새 소유주
      </para>
     </listitem>
    </varlistentry>
@@ -71,16 +71,15 @@ ALTER [ PROCEDURAL ] LANGUAGE <replaceable>name</replaceable> OWNER TO { <replac
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER LANGUAGE</command> statement in the SQL
-   standard.
+   <command>ALTER LANGUAGE</command> 구문은 SQL 표준에 없다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createlanguage"></member>

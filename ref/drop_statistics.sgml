@@ -16,45 +16,46 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>DROP STATISTICS</refname>
-  <refpurpose>remove extended statistics</refpurpose>
+  <refpurpose>확장된 통계 정보 삭제</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-DROP STATISTICS [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable> [, ...]
+DROP STATISTICS [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>DROP STATISTICS</command> removes statistics object(s) from the
-   database.  Only the statistics object's owner, the schema owner, or a
-   superuser can drop a statistics object.
+   <command>DROP STATISTICS</command> 명령은 
+   사용자 정의 통계 정보를 삭제한다.
+   해당 사용자 정의 개체 삭제 권한은 슈퍼 유저이거나,
+   그 개체의 소유주에게만 있다.
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
     <term><literal>IF EXISTS</literal></term>
     <listitem>
      <para>
-      Do not throw an error if the statistics object does not exist. A notice
-      is issued in this case.
+      해당 개체가 없어도 알림 메시지만 보여주고, 
+      오류 없이 정상적으로 명령을 실행한다. 
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">name</replaceable></term>
+    <term><replaceable class="PARAMETER">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the statistics object to drop.
+      삭제 하려는 사용자 정의 통계 정보 이름(스키마 이름을 포함 할 수도 있고).
      </para>
     </listitem>
    </varlistentry>
@@ -63,11 +64,10 @@ DROP STATISTICS [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable> 
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To destroy two statistics objects in different schemas, without failing
-   if they don't exist:
+   두 개의 다른 스키마 안에 있는 통계 정보를 없어도 오류 없이 지우려면:
 
 <programlisting>
 DROP STATISTICS IF EXISTS
@@ -77,15 +77,15 @@ DROP STATISTICS IF EXISTS
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>DROP STATISTICS</command> command in the SQL standard.
+   <command>DROP STATISTICS</command> 명령은 SQL 표준에 없다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterstatistics"></member>

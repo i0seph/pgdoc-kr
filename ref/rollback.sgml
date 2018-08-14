@@ -59,9 +59,8 @@ ROLLBACK [ WORK | TRANSACTION ]
   </para>
 
   <para>
-   
-   Issuing <command>ROLLBACK</> when not inside a transaction does
-   no harm, but it will provoke a warning message.
+   트랜잭션 작업 상태가 아닌 상황에서 <command>ROLLBACK</>
+   명령을 사용하면, 경고 메시지를 보이며 아무런 작업을 하지 않는다.
   </para>
  </refsect1>
 
@@ -69,7 +68,7 @@ ROLLBACK [ WORK | TRANSACTION ]
   <title>예제</title>
 
   <para>
-   To abort all changes:
+   모든 작업을 취소 할 때:
 <programlisting>
 ROLLBACK;
 </programlisting></para>
@@ -79,9 +78,9 @@ ROLLBACK;
   <title>호환성</title>
 
   <para>
-   The SQL standard only specifies the two forms
-   <literal>ROLLBACK</literal> and <literal>ROLLBACK
-   WORK</literal>. Otherwise, this command is fully conforming.
+   SQL 표준에서는 <literal>ROLLBACK</literal> 명령과
+   <literal>ROLLBACK WORK</literal> 명령만 지정하고 있다.
+   이 명령은 표준을 잘 준수하고 있다.
   </para>
  </refsect1>
 
