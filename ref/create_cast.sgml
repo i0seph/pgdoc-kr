@@ -19,7 +19,7 @@
  <refsynopsisdiv>
 <synopsis>
 CREATE CAST (<replaceable>source_type</replaceable> AS <replaceable>target_type</replaceable>)
-    WITH FUNCTION <replaceable>function_name</replaceable> (<replaceable>argument_type</replaceable> [, ...])
+    WITH FUNCTION <replaceable>function_name</replaceable> [ (<replaceable>argument_type</replaceable> [, ...]) ]
     [ AS ASSIGNMENT | AS IMPLICIT ]
 
 CREATE CAST (<replaceable>source_type</replaceable> AS <replaceable>target_type</replaceable>)
@@ -33,7 +33,7 @@ CREATE CAST (<replaceable>source_type</replaceable> AS <replaceable>target_type<
  </refsynopsisdiv>
 
  <refsect1 id="sql-createcast-description">
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>CREATE CAST</command> defines a new cast.  A cast
@@ -168,7 +168,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
    <variablelist>
     <varlistentry>
@@ -192,7 +192,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>function_name</replaceable>(<replaceable>argument_type</replaceable> [, ...])</term>
+     <term><literal><replaceable>function_name</replaceable>[(<replaceable>argument_type</replaceable> [, ...])]</literal></term>
 
      <listitem>
       <para>
@@ -200,6 +200,8 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
        be schema-qualified.  If it is not, the function will be looked
        up in the schema search path.  The function's result data type must
        match the target type of the cast.   Its arguments are discussed below.
+       If no argument list is specified, the function name must be unique in
+       its schema.
       </para>
      </listitem>
     </varlistentry>
@@ -296,7 +298,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
  </refsect1>
 
  <refsect1 id="sql-createcast-notes">
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    Use <xref linkend="sql-dropcast"> to remove user-defined casts.
@@ -329,17 +331,6 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
    should think twice about whether it's a good idea.  (A small number of
    the built-in types do indeed have different behaviors for conversions,
    mostly because of requirements of the SQL standard.)
-  </para>
-
-  <para>
-   Prior to <productname>PostgreSQL</> 7.3, every function that had
-   the same name as a data type, returned that data type, and took one
-   argument of a different type was automatically a cast function.
-   This convention has been abandoned in face of the introduction of
-   schemas and to be able to represent binary-coercible casts in the
-   system catalogs.  The built-in cast functions still follow this naming
-   scheme, but they have to be shown as casts in the system catalog
-   <structname>pg_cast</> as well.
   </para>
 
   <para>
@@ -391,7 +382,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
 
 
  <refsect1 id="sql-createcast-examples">
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    To create an assignment cast from type <type>bigint</type> to type
@@ -404,7 +395,7 @@ CREATE CAST (bigint AS int4) WITH FUNCTION int4(bigint) AS ASSIGNMENT;
  </refsect1>
 
  <refsect1 id="sql-createcast-compat">
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    The <command>CREATE CAST</command> command conforms to the
@@ -418,7 +409,7 @@ CREATE CAST (bigint AS int4) WITH FUNCTION int4(bigint) AS ASSIGNMENT;
 
 
  <refsect1 id="sql-createcast-seealso">
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <para>
    <xref linkend="sql-createfunction">,

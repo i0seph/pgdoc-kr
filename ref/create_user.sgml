@@ -33,7 +33,7 @@ CREATE USER <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
     | CONNECTION LIMIT <replaceable class="PARAMETER">connlimit</replaceable>
-    | [ ENCRYPTED | UNENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
     | VALID UNTIL '<replaceable class="PARAMETER">timestamp</replaceable>'
     | IN ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
     | IN GROUP <replaceable class="PARAMETER">롤이름</replaceable> [, ...]

@@ -104,6 +104,7 @@ CREATE EXTENSION <replaceable>모듈이름</> FROM unpackaged;
  </para>
 
  &adminpack;
+ &amcheck;
  &auth-delay;
  &auto-explain;
  &bloom;
@@ -143,7 +144,6 @@ CREATE EXTENSION <replaceable>모듈이름</> FROM unpackaged;
  &tablefunc;
  &tcn;
  &test-decoding;
- &tsearch2;
  &tsm-system-rows;
  &tsm-system-time;
  &unaccent;

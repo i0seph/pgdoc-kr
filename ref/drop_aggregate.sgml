@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP AGGREGATE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> ( <replaceable class="PARAMETER">자료형</replaceable> [ , ... ] ) [ CASCADE | RESTRICT ]
+DROP AGGREGATE [ IF EXISTS ] <replaceable>name</replaceable> ( <replaceable>aggregate_signature</replaceable> ) [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -103,6 +103,12 @@ DROP AGGREGATE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
    집계 함수를 삭제 하려면:
 <programlisting>
 DROP AGGREGATE myavg(integer);
+</programlisting></para>
+
+  <para>
+   여러 집계 함수를 하나의 명령으로 지우려면:
+<programlisting>
+DROP AGGREGATE myavg(integer), myavg(bigint);
 </programlisting></para>
  </refsect1>
 

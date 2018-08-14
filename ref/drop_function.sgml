@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP FUNCTION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ( [ [ <replaceable class="parameter">변수종류</replaceable> ] [ <replaceable class="parameter">변수명</replaceable> ] <replaceable class="parameter">변수자료형</replaceable> [, ...] ] )
+DROP FUNCTION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [ ( [ [ <replaceable class="parameter">변수종류</replaceable> ] [ <replaceable class="parameter">변수명</replaceable> ] <replaceable class="parameter">변수자료형</replaceable> [, ...] ] ) ] [, ...]
     [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
@@ -33,7 +33,8 @@ DROP FUNCTION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> 
    <command>DROP FUNCTION</command> 명령은 지정한 함수를 삭제한다.  이 명령은
    해당 함수의 소유주만 실행 할 수 있다.  같은 이름의 함수가 여러개
    있을 수 있기 때문에, 삭제 하려는 함수에는 반드시 해당 매개변수의 자료형을 
-   입력해야한다.
+   입력해야한다. 매개변수를 지정하지 않으면 해당 스키마에서 그 이름의 함수가
+   딱 하나만 있어야 한다.
   </para>
  </refsect1>
 
@@ -131,6 +132,27 @@ DROP FUNCTION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> 
 <programlisting>
 DROP FUNCTION sqrt(integer);
 </programlisting></para>
+
+  <para>
+   하나의 명령으로 여러 함수를 삭제하려면:
+<programlisting>
+DROP FUNCTION sqrt(integer), sqrt(bigint);
+</programlisting></para>
+
+  <para>
+   해당 스키마에 해당 이름의 함수가 하나 뿐일 때:
+<programlisting>
+DROP FUNCTION update_employee_salaries;
+</programlisting>
+   윗 명령은 아래 명령과 다르다:
+<programlisting>
+DROP FUNCTION update_employee_salaries();
+</programlisting>
+   이 경우는 해당 함수의 입력 인자가 없는 함수를 지우는 것이고, 
+   그 위에 있는 것은 입력 인자의 개수와 상관 없이, 해당 스키마 안에 있는 
+   그 이름의 함수를 삭제하는 것이다.
+  </para>
+
  </refsect1>
 
  <refsect1 id="SQL-DROPFUNCTION-compatibility">
@@ -138,7 +160,18 @@ DROP FUNCTION sqrt(integer);
 
   <para>
    표준 SQL에서도 <command>DROP FUNCTION</command> 명령을 제공하나
-   정확히 이 구문과 같지는 않다.
+   다음은 <productname>PostgreSQL</productname> 확장 기능이다:
+   <itemizedlist>
+    <listitem>
+     <para>표준 SQL에서는 하나의 명령으로 하나의 함수만 삭제</para>
+    </listitem>
+    <listitem>
+     <para><literal>IF EXISTS</literal> 옵션</para>
+    </listitem>
+    <listitem>
+     <para>인자 종류와 인자 이름 지정</para>
+    </listitem>
+   </itemizedlist>
   </para>
  </refsect1>
 

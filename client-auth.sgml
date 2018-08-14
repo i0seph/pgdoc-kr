@@ -100,8 +100,11 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       </para>
 
       <para>
-       이 옵션을 사용하려면 서버는 <acronym>SSL</acronym> 지원이 내장되어 있어야 한다. 
-       또한 <acronym>SSL</acronym>은 <xref linkend="guc-ssl"> 환경 설정 매개 변수를 설정함으로써 서버 시작 시에 활성화되어야 한다(자세한 내용은 <xref linkend="ssl-tcp"> 참조).
+       이 옵션을 사용하려면 서버는 <acronym>SSL</acronym> 지원이 내장되어 있어야 한다.  또한
+       <acronym>SSL</acronym>은 <xref linkend="guc-ssl"> 환경 설정 매개 변수 값
+       지정으로 활성화되어야 한다(자세한 내용은 <xref linkend="ssl-tcp"> 참조).
+       한편, <literal>hostssl</literal> 레코드 지정으로 접속 예외 처리 되는 
+       정보는 경고 로그를 남기지 않는다.
       </para>
      </listitem>
     </varlistentry>
@@ -122,7 +125,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       <para>
        이 레코드가 일치하는 데이터베이스 이름을 지정한다. <literal>all</literal> 값은 모든 데이터베이스와 일치하도록 지정한다. <literal>sameuser</> 값은 요청된 데이터베이스가 요청된 사용자와 이름이 동일한 경우에 레코드가 일치하도록 지정한다. 
        <literal>samerole</> 값은 요청된 사용자가 요청된 데이터베이스와 이름이 동일한 role의 멤버여야 하는지 지정한다. (<literal>samegroup</>은 폐지되었지만 <literal>samerole</>은 계속 쓸 수 있다.) 
-       수퍼유저는 직간접적으로 role의 명시적인 멤버가 아닐 경우, 단지 수퍼유저라는 이유로 <literal>samerole</>에 대한 role의 멤버로 간주되지 않는다. <literal>replication</> 값은 복제 연결이 요청되는 경우 레코드가 일치하도록 지정한다(복제 연결은 특정 데이터베이스를 지정하지는 않는다). 
+       수퍼유저는 직간접적으로 role의 명시적인 멤버가 아닐 경우, 단지 수퍼유저라는 이유로 <literal>samerole</>에 대한 role의 멤버로 간주되지 않는다. <literal>replication</> 값은 물리 복제 연결이 요청되는 경우 레코드가 일치하도록 지정한다(복제 연결은 특정 데이터베이스를 지정하지는 않는다). 
        이 경우가 아니라면 특정 <productname>PostgreSQL</productname> 데이터베이스의 이름으로 사용된다. 쉼표로 구분해서 데이터베이스 이름을 여러 개 쓸 수 있다. 데이터베이스 이름이 포함된 파일은 파일 이름 앞에 <literal>@</>를 붙여서 지정 가능하다.
       </para>
      </listitem>
@@ -216,7 +219,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
        이 필드는 <literal>host</literal>, <literal>hostssl</literal> 및 <literal>hostnossl</> 레코드에 적용된다.
       </para>
 
-      <sidebar>
+      <note>
        <para>
         클라이언트 IP 주소의 역방향 조회를 비롯한 두 가지 이름 분석 같이 이렇게 복잡한 방식으로 호스트 이름을 처리하는 이유를 궁금해 하는 사용자도 있다. 
         이것은 클라이언트의 역방향 DNS 항목이 설정되지 않았거나 바람직하지 않은 호스트 이름을 넘겨주는 경우에는 기능 사용을 복잡하게 만든다. 이것은 기본적으로 효율성을 위한 것이다. 
@@ -232,7 +235,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
        <para>
         이러한 동작은 Apache HTTP 서버 및 TCP 래퍼 같은 다른 유명한 호스트 이름 기반 액세스 제어 구현과 일치한다.
        </para>
-      </sidebar>
+      </note>
      </listitem>
     </varlistentry>
 
@@ -283,12 +286,23 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
         </listitem>
        </varlistentry>
 
+      <varlistentry>
+        <term><literal>scram-sha-256</></term>
+        <listitem>
+         <para>
+          Perform SCRAM-SHA-256 authentication to verify the user's
+          password. See <xref linkend="auth-password"> for details.
+         </para>
+        </listitem>
+       </varlistentry>
+
        <varlistentry>
         <term><literal>md5</></term>
         <listitem>
          <para>
-          클라이언트가 인증을 위해 double-MD5-hashed 패스워드를 제공해야 한다. 
-          자세한 내용은 <xref linkend="auth-password">을 참조 바란다.
+          Perform SCRAM-SHA-256 or MD5 authentication to verify the
+          user's password. See <xref linkend="auth-password">
+          for details.
          </para>
         </listitem>
        </varlistentry>
@@ -434,6 +448,24 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
    활성 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다(<literal>pg_ctl reload</> 또는 <literal>kill -HUP</> 사용).
   </para>
 
+  <note>
+   <para>
+    The preceding statement is not true on Microsoft Windows: there, any
+    changes in the <filename>pg_hba.conf</filename> file are immediately
+    applied by subsequent new connections.
+   </para>
+  </note>
+
+  <para>
+   The system view
+   <link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>
+   can be helpful for pre-testing changes to the <filename>pg_hba.conf</>
+   file, or for diagnosing problems if loading of the file did not have the
+   desired effects.  Rows in the view with
+   non-null <structfield>error</structfield> fields indicate problems in the
+   corresponding lines of the file.
+  </para>
+
   <tip>
    <para>
     특수한 데이터베이스에 연결하려면 <filename>pg_hba.conf</filename> 검사만 통과해서는 안 되며 데이터베이스에 대한 <literal>CONNECT</> 권한이 사용자에게 있어야 한다. 
@@ -486,13 +518,18 @@ host    postgres        all             192.168.93.0/24         ident
 # "postgres" if the user's password is correctly supplied.
 #
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
-host    postgres        all             192.168.12.10/32        md5
+host    postgres        all             192.168.12.10/32        scram-sha-256
 
 # Allow any user from hosts in the example.com domain to connect to
 # any database if the user's password is correctly supplied.
 #
+# Require SCRAM authentication for most users, but make an exception
+# for user 'mike', who uses an older client that doesn't support SCRAM
+# authentication.
+#
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 host    all             all             .example.com            md5
+host    all             all             .example.com            scram-sha-256
 
 # In the absence of preceding "host" lines, these two lines will
 # reject all connections from 192.168.54.1 (since that entry will be
@@ -650,26 +687,124 @@ omicron         bryanh                  guest1
     <primary>MD5</>
    </indexterm>
    <indexterm>
+    <primary>SCRAM</>
+   </indexterm>
+   <indexterm>
     <primary>패스워드</primary>
     <secondary>인증</secondary>
    </indexterm>
 
    <para>
-    패스워드 기반 인증 방법은 <literal>md5</> 및 <literal>password</>이다. 패스워드가 연결 간에, 즉 MD5 해시 및 일반 텍스트로 각각 전송되는 방법을 제외하고는 이 방법은 유사하게 작동된다.
+    There are several password-based authentication methods.  These methods
+    operate similarly but differ in how the users' passwords are stored on the
+    server and how the password provided by a client is sent across the
+    connection.
+   </para>
+
+   <variablelist>
+    <varlistentry>
+     <term><literal>scram-sha-256</literal></term>
+     <listitem>
+      <para>
+       The method <literal>scram-sha-256</> performs SCRAM-SHA-256
+       authentication, as described in
+       <ulink url="https://tools.ietf.org/html/rfc7677">RFC 7677</ulink>.  It
+       is a challenge-response scheme that prevents password sniffing on
+       untrusted connections and supports storing passwords on the server in a
+       cryptographically hashed form that is thought to be secure.
+      </para>
+
+      <para>
+       This is the most secure of the currently provided methods, but it is
+       not supported by older client libraries.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>md5</literal></term>
+     <listitem>
+      <para>
+       The method <literal>md5</> uses a custom less secure challenge-response
+       mechanism.  It prevents password sniffing and avoids storing passwords
+       on the server in plain text but provides no protection if an attacker
+       manages to steal the password hash from the server.  Also, the MD5 hash
+       algorithm is nowadays no longer considered secure against determined
+       attacks.
+      </para>
+
+      <para>
+       The <literal>md5</literal> method cannot be used with
+       the <xref linkend="guc-db-user-namespace"> feature.
+      </para>
+
+      <para>
+       To ease transition from the <literal>md5</literal> method to the newer
+       SCRAM method, if <literal>md5</literal> is specified as a method
+       in <filename>pg_hba.conf</filename> but the user's password on the
+       server is encrypted for SCRAM (see below), then SCRAM-based
+       authentication will automatically be chosen instead.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>password</literal></term>
+     <listitem>
+      <para>
+       The method <literal>password</> sends the password in clear-text and is
+       therefore vulnerable to password <quote>sniffing</> attacks. It should
+       always be avoided if possible. If the connection is protected by SSL
+       encryption then <literal>password</> can be used safely, though.
+       (Though SSL certificate authentication might be a better choice if one
+       is depending on using SSL).
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>
+    <productname>PostgreSQL</productname> 데이터베이스 패스워드는 운영 체제 사용자 패스워드와
+    구분된다.  각 데이터베이스 사용자에 대한 패스워드는 <literal>pg_authid</>
+    시스템 카탈로그에 저장된다.  패스워드는 SQL 명령 <xref linkend="sql-createuser">
+    및 <xref linkend="sql-alterrole">으로 관리할 수 있으며, 예를
+    들면 <userinput>CREATE USER foo WITH PASSWORD 'secret'</userinput>, 
+    또는 <application>psql</application> 내장 명령어
+    <literal>\password</literal> 같은 작업으로 처리한다.  패스워드가 사용자에 대해 설정되지 않은
+    경우 저장된 패스워드는 null이고 패스워드 인증은 해당 사용자에 대해 항상 실패한다.
    </para>
 
    <para>
-    어쨌든 패스워드 <quote>스니핑</> 공격에 관심이 있는 경우에는 <literal>md5</>가 바람직하다. 항상 일반 <literal>password</>는 가능하면 피해야 한다. 단, <literal>md5</>는 db_user_namespace<xref
-    linkend="guc-db-user-namespace"> 기능과 함께 사용할 수 없다. 
-    연결이 SSL 암호화로 보호되는 경우 <literal>password</>를 안전하게 사용할 수 있다(SSL을 사용하는 경우 SSL 인증서 인증이 더 나을 수 있지만).
+    The availability of the different password-based authentication methods
+    depends on how a user's password on the server is encrypted (or hashed,
+    more accurately).  This is controlled by the configuration
+    parameter <xref linkend="guc-password-encryption"> at the time the
+    password is set.  If a password was encrypted using
+    the <literal>scram-sha-256</literal> setting, then it can be used for the
+    authentication methods <literal>scram-sha-256</literal>
+    and <literal>password</literal> (but password transmission will be in
+    plain text in the latter case).  The authentication method
+    specification <literal>md5</literal> will automatically switch to using
+    the <literal>scram-sha-256</literal> method in this case, as explained
+    above, so it will also work.  If a password was encrypted using
+    the <literal>md5</literal> setting, then it can be used only for
+    the <literal>md5</literal> and <literal>password</literal> authentication
+    method specifications (again, with the password transmitted in plain text
+    in the latter case).  (Previous PostgreSQL releases supported storing the
+    password on the server in plain text.  This is no longer possible.)  To
+    check the currently stored password hashes, see the system
+    catalog <literal>pg_authid</literal>.
    </para>
 
    <para>
-    <productname>PostgreSQL</productname> 데이터베이스 패스워드는 운영 체제 사용자 패스워드와 구분된다. 각 데이터베이스 사용자에 대한 패스워드는 <literal>pg_authid</> 시스템 카탈로그에 저장된다. 
-    패스워드는 SQL 명령 <xref linkend="sql-createuser"> 및 <xref linkend="sql-alterrole">으로 관리할 수 있으며, 예를 들면 <userinput>CREATE USER foo WITH PASSWORD 'secret'</userinput>와 같다. 
-    패스워드가 사용자에 대해 설정되지 않은 경우 저장된 패스워드는 null이고 패스워드 인증은 해당 사용자에 대해 항상 실패한다.
+    To upgrade an existing installation from <literal>md5</literal>
+    to <literal>scram-sha-256</literal>, after having ensured that all client
+    libraries in use are new enough to support SCRAM,
+    set <literal>password_encryption = 'scram-sha-256'</literal>
+    in <filename>postgresql.conf</filename>, make all users set new passwords,
+    and change the authentication method specifications
+    in <filename>pg_hba.conf</filename> to <literal>scram-sha-256</literal>.
    </para>
-
   </sect2>
 
   <sect2 id="gssapi-auth">
@@ -984,7 +1119,7 @@ omicron         bryanh                  guest1
 
    <para>
     피어(Peer) 인증은 <function>getpeereid()</> 함수, <symbol>SO_PEERCRED</symbol> 소켓 매개 변수 또는 유사 메커니즘이 제공되는 운영 체제에서만 사용할 수 있다. 현재 <systemitem class="osname">Linux</>가 포함되며, 
-    <systemitem class="osname">OS X</> 및 <systemitem class="osname">Solaris</systemitem>를 비롯한 <systemitem class="osname">BSD</>가 가장 선호된다.
+    <systemitem class="osname">macOS</> 및 <systemitem class="osname">Solaris</systemitem>를 비롯한 <systemitem class="osname">BSD</>가 가장 선호된다.
    </para>
 
   </sect2>
@@ -1187,19 +1322,31 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
    </para>
 
    <para>
+    Multiple RADIUS servers can be specified, in which case they will
+    be tried sequentially. If a negative response is received from
+    a server, the authentication will fail. If no response is received,
+    the next server in the list will be tried. To specify multiple
+    servers, put the names within quotes and separate the server names
+    with a comma. If multiple servers are specified, all other RADIUS
+    options can also be given as a comma separate list, to apply
+    individual values to each server. They can also be specified as
+    a single value, in which case this value will apply to all servers.
+   </para>
+
+   <para>
     다음 구성 옵션이 RADIUS에 대해 지원된다.
      <variablelist>
       <varlistentry>
-       <term><literal>radiusserver</literal></term>
+       <term><literal>radiusservers</literal></term>
        <listitem>
         <para>
-         연결할 RADIUS 서버의 이름 또는 IP 주소. 이 매개 변수는 필수이다.
+         연결할 RADIUS 서버의 이름 또는 IP 주소. 이 매개 변수는 필수이다. (쉼표 구분으로 여러개 지정 가능)
         </para>
        </listitem>
       </varlistentry>
 
       <varlistentry>
-       <term><literal>radiussecret</literal></term>
+       <term><literal>radiussecrets</literal></term>
        <listitem>
         <para>
          보안을 유지하면서 RADIUS 서버와 통신할 때 사용되는 공유 비밀. 이것은 PostgreSQL 및 RADIUS 서버에서 값이 정확하게 동일해야 한다. 최소 16자의 string이 권장된다. 이 매개 변수는 필수이다.
@@ -1214,7 +1361,7 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
       </varlistentry>
 
       <varlistentry>
-       <term><literal>radiusport</literal></term>
+       <term><literal>radiusports</literal></term>
        <listitem>
         <para>
          연결할 RADIUS 서버의 포트 번호. 포트가 지정되지 않으면 기본 포트 <literal>1812</>가 사용된다.
@@ -1223,7 +1370,7 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
       </varlistentry>
 
       <varlistentry>
-       <term><literal>radiusidentifier</literal></term>
+       <term><literal>radiusidentifiers</literal></term>
        <listitem>
         <para>
          RADIUS 요청에서 <literal>NAS Identifier</>로 사용되는 string. 

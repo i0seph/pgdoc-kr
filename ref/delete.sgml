@@ -30,7 +30,7 @@ DELETE FROM [ ONLY ] <replaceable class="PARAMETER">table_name</replaceable> [ *
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DELETE</command> deletes rows that satisfy the
@@ -41,8 +41,7 @@ DELETE FROM [ ONLY ] <replaceable class="PARAMETER">table_name</replaceable> [ *
 
    <tip>
     <para>
-     <xref linkend="sql-truncate"> is a
-     <productname>PostgreSQL</productname> extension that provides a
+     <xref linkend="sql-truncate"> provides a
      faster mechanism to remove all rows from a table.
     </para>
    </tip>
@@ -74,7 +73,7 @@ DELETE FROM [ ONLY ] <replaceable class="PARAMETER">table_name</replaceable> [ *
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -186,7 +185,7 @@ DELETE FROM [ ONLY ] <replaceable class="PARAMETER">table_name</replaceable> [ *
  </refsect1>
 
  <refsect1>
-  <title>출력</title>
+  <title>Outputs</title>
 
   <para>
    On successful completion, a <command>DELETE</> command returns a command
@@ -213,7 +212,7 @@ DELETE <replaceable class="parameter">count</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    <productname>PostgreSQL</productname> lets you reference columns of
@@ -238,7 +237,7 @@ DELETE FROM films
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Delete all films but musicals:
@@ -270,7 +269,7 @@ DELETE FROM tasks WHERE CURRENT OF c_tasks;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    This command conforms to the <acronym>SQL</acronym> standard, except
@@ -278,5 +277,13 @@ DELETE FROM tasks WHERE CURRENT OF c_tasks;
    are <productname>PostgreSQL</productname> extensions, as is the ability
    to use <literal>WITH</> with <command>DELETE</>.
   </para>
+ </refsect1>
+
+ <refsect1>
+  <title>See Also</title>
+
+  <simplelist type="inline">
+   <member><xref linkend="sql-truncate"></member>
+  </simplelist>
  </refsect1>
 </refentry>

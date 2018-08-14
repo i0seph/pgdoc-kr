@@ -245,8 +245,6 @@ initdb --locale=sv_SE
  <sect1 id="collation">
   <title>콜레이션 지원</title>
 
-  <indexterm zone="collation"><primary>콜레이션</></>
-
   <para>
    콜레이션 기능으로 칼럼별 및 연산별 데이터의 정렬 순서 및 문자 분류 동작을 지정할 수 있다. 
    이것은 데이터베이스 생성 후 <symbol>LC_COLLATE</symbol> 및 <symbol>LC_CTYPE</symbol> 설정을 변경하지 못하도록 하는 제한을 완화한다.
@@ -370,16 +368,49 @@ SELECT * FROM test1 ORDER BY a || b COLLATE "fr_FR";
    </para>
   </sect2>
 
-  <sect2>
+  <sect2 id="collation-managing">
    <title>콜레이션 관리</title>
 
    <para>
-    콜레이션은 SQL 이름을 운영 체제 로케일(locale)에 매핑하는 SQL 스키마 개체이다. 
-    특히, <symbol>LC_COLLATE</symbol> 및 <symbol>LC_CTYPE</symbol> 조합에 매핑한다. (이름이 암시하듯 콜레이션의 주요 목적은, 정렬 순서를 제어하는 <symbol>LC_COLLATE</symbol>를 설정하는 것이다. 
-    그러나, 실제로는 <symbol>LC_COLLATE</symbol>와 다른 <symbol>LC_CTYPE</symbol>를 갖는 것은 거의 불필요하므로 표현식별로 
-    <symbol>LC_CTYPE</symbol> 설정에 대한 다른 인프라를 생성하는 대신 한 가지 개념 하에서 이것을 수집하는 것이 더 편리하다.) 
-    또한 콜레이션은 문자 집합 인코딩에 연결된다(<xref linkend="multibyte"> 참조). 다른 인코딩으로 동일한 콜레이션 이름이 존재할 수도 있다.
+    A collation is an SQL schema object that maps an SQL name to locales
+    provided by libraries installed in the operating system.  A collation
+    definition has a <firstterm>provider</firstterm> that specifies which
+    library supplies the locale data.  One standard provider name
+    is <literal>libc</literal>, which uses the locales provided by the
+    operating system C library.  These are the locales that most tools
+    provided by the operating system use.  Another provider
+    is <literal>icu</literal>, which uses the external
+    ICU<indexterm><primary>ICU</></> library.  ICU locales can only be
+    used if support for ICU was configured when PostgreSQL was built.
    </para>
+
+   <para>
+    A collation object provided by <literal>libc</literal> maps to a
+    combination of <symbol>LC_COLLATE</symbol> and <symbol>LC_CTYPE</symbol>
+    settings, as accepted by the <literal>setlocale()</literal> system library call.  (As
+    the name would suggest, the main purpose of a collation is to set
+    <symbol>LC_COLLATE</symbol>, which controls the sort order.  But
+    it is rarely necessary in practice to have an
+    <symbol>LC_CTYPE</symbol> setting that is different from
+    <symbol>LC_COLLATE</symbol>, so it is more convenient to collect
+    these under one concept than to create another infrastructure for
+    setting <symbol>LC_CTYPE</symbol> per expression.)  Also,
+    a <literal>libc</literal> collation
+    is tied to a character set encoding (see <xref linkend="multibyte">).
+    다른 인코딩으로 동일한 콜레이션 이름이 존재할 수도 있다.
+   </para>
+
+   <para>
+    A collation object provided by <literal>icu</literal> maps to a named
+    collator provided by the ICU library.  ICU does not support
+    separate <quote>collate</quote> and <quote>ctype</quote> settings, so
+    they are always the same.  Also, ICU collations are independent of the
+    encoding, so there is always only one ICU collation of a given name in
+    a database.
+   </para>
+
+  <sect3>
+    <title>표준 콜레이션</title>
 
    <para>
     모든 플랫폼에서 이름이 <literal>default</> 및 <literal>C</>, <literal>POSIX</>인 콜레이션을 사용할 수 있다. 
@@ -389,10 +420,35 @@ SELECT * FROM test1 ORDER BY a || b COLLATE "fr_FR";
     문자 코드 바이트 값으로 엄격하게 정렬이 되는 <quote>전형적인 C</> 동작을 지정한다.
    </para>
 
+  <para>
+    덧붙여, <literal>UTF8</literal> 인코딩인 경우, 
+    SQL 표준 콜레이션 이름은 <literal>ucs_basic</literal>이다.  이것은
+    다른 이름으로 <literal>C</literal> 이며, 유니코드 문자 정렬과 같다.
+   </para>
+  </sect3>
+
+  <sect3>
+   <title>미리 정의된 콜레이션</title>
+
    <para>
-    운영 체제가 단일 프로그램(<function>newlocale</> 및 관련 함수) 내에서 복수의 로케일(locale)을 사용하는 지원을 제공하는 경우 데이터베이스 클러스터가 초기화되면, 
-    <command>initdb</command>는 당시에 운영 체제에서 찾은 모든 로케일(locale)에 따라 콜레이션으로 시스템 카탈로그 <literal>pg_collation</literal>을 채운다. 
-    예를 들면, 운영 체제는 <literal>de_DE.utf8</literal>이라는 이름의 로케일(locale)을 제공할 수도 있다. 
+    하나의 프로그램에서 (<function>newlocale</> 관련 함수를 이용해서) 여러 로케일을 
+    사용할 수 있는 운영 체제인 경우나, ICU 라이브러리를 이용할 수 있는 환경이라면,
+    <command>initdb</command> 명령을 이용해 데이터베이스 클러스터가
+    초기화되면, 당시에 운영 체제에서 찾은 모든 로케일에
+    따라 콜레이션으로 시스템 카탈로그 <literal>pg_collation</literal>을 채운다.
+   </para>
+
+   <para>
+    To inspect the currently available locales, use the query <literal>SELECT
+    * FROM pg_collation</literal>, or the command <command>\dOS+</command>
+    in <application>psql</application>.
+   </para>
+
+  <sect4>
+   <title>libc collations</title>
+
+   <para>예를
+    들면, 운영 체제는 <literal>de_DE.utf8</literal>이라는 이름의 로케일(locale)을 제공할 수도 있다. 
     그러면 <command>initdb</command>는 <symbol>LC_COLLATE</symbol> 및 <symbol>LC_CTYPE</symbol>가 둘 다 <literal>de_DE.utf8</literal>로 설정된 
     <literal>UTF8</literal> 인코딩에 대해 <literal>de_DE.utf8</literal>이라는 콜레이션을 생성한다. 
     또한 이것은 이름 일부만 추려낸 <literal>.utf8</literal> 태그를 사용하여 콜레이션을 생성한다. 
@@ -401,9 +457,16 @@ SELECT * FROM test1 ORDER BY a || b COLLATE "fr_FR";
    </para>
 
    <para>
-    <symbol>LC_COLLATE</symbol> 및 <symbol>LC_CTYPE</symbol>에 대한 값이 서로 다른 콜레이션이 필요한 경우 
-    <xref linkend="sql-createcollation"> 명령을 사용하여 새로운 콜레이션을 생성할 수도 있다. 
-    또한 해당 명령으로 기존 콜레이션에서 새 콜레이션을 생성할 수도 있으며, 이것은 애플리케이션에서 운영 체제로부터 독립된 콜레이션 이름을 사용할 때 유용하다.
+    The default set of collations provided by <literal>libc</literal> map
+    directly to the locales installed in the operating system, which can be
+    listed using the command <literal>locale -a</literal>.  In case
+    a <literal>libc</literal> collation is needed that has different values
+    for <symbol>LC_COLLATE</symbol> and <symbol>LC_CTYPE</symbol>, or if new
+    locales are installed in the operating system after the database system
+    was initialized, then a new collation may be created using
+    the <xref linkend="sql-createcollation"> command.
+    New operating system locales can also be imported en masse using
+    the <link linkend="functions-admin-collation"><function>pg_import_system_collations()</function></link> function.
    </para>
 
    <para>
@@ -423,6 +486,255 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
     이 구문은 <literal>C</> 및 <literal>POSIX</> 콜레이션의 동작이 동일하더라도 에러가 발생된다. 
     따라서 추려낸 콜레이션 이름과 추려내지 않은 콜레이션 이름의 혼용은 권장하지 않는다.
    </para>
+  </sect4>
+
+  <sect4>
+   <title>ICU collations</title>
+
+   <para>
+    With ICU, it is not sensible to enumerate all possible locale names.  ICU
+    uses a particular naming system for locales, but there are many more ways
+    to name a locale than there are actually distinct locales.
+    <command>initdb</command> uses the ICU APIs to extract a set of distinct
+    locales to populate the initial set of collations.  Collations provided by
+    ICU are created in the SQL environment with names in BCP 47 language tag
+    format, with a <quote>private use</quote>
+    extension <literal>-x-icu</literal> appended, to distinguish them from
+    libc locales.
+   </para>
+
+   <para>
+    Here are some example collations that might be created:
+
+    <variablelist>
+     <varlistentry>
+      <term><literal>de-x-icu</literal></term>
+      <listitem>
+       <para>German collation, default variant</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>de-AT-x-icu</literal></term>
+      <listitem>
+       <para>German collation for Austria, default variant</para>
+       <para>
+        (There are also, say, <literal>de-DE-x-icu</literal>
+        or <literal>de-CH-x-icu</literal>, but as of this writing, they are
+        equivalent to <literal>de-x-icu</literal>.)
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>und-x-icu</literal> (for <quote>undefined</quote>)</term>
+      <listitem>
+       <para>
+        ICU <quote>root</quote> collation.  Use this to get a reasonable
+        language-agnostic sort order.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+
+   <para>
+    Some (less frequently used) encodings are not supported by ICU.  When the
+    database encoding is one of these, ICU collation entries
+    in <literal>pg_collation</literal> are ignored.  Attempting to use one
+    will draw an error along the lines of <quote>collation "de-x-icu" for
+    encoding "WIN874" does not exist</>.
+   </para>
+  </sect4>
+  </sect3>
+
+  <sect3 id="collation-create">
+   <title>Creating New Collation Objects</title>
+
+   <para>
+    If the standard and predefined collations are not sufficient, users can
+    create their own collation objects using the SQL
+    command <xref linkend="sql-createcollation">.
+   </para>
+
+   <para>
+    The standard and predefined collations are in the
+    schema <literal>pg_catalog</literal>, like all predefined objects.
+    User-defined collations should be created in user schemas.  This also
+    ensures that they are saved by <command>pg_dump</command>.
+   </para>
+
+   <sect4>
+    <title>libc collations</title>
+
+    <para>
+     New libc collations can be created like this:
+<programlisting>
+CREATE COLLATION german (provider = libc, locale = 'de_DE');
+</programlisting>
+     The exact values that are acceptable for the <literal>locale</literal>
+     clause in this command depend on the operating system.  On Unix-like
+     systems, the command <literal>locale -a</literal> will show a list.
+    </para>
+
+    <para>
+     Since the predefined libc collations already include all collations
+     defined in the operating system when the database instance is
+     initialized, it is not often necessary to manually create new ones.
+     Reasons might be if a different naming system is desired (in which case
+     see also <xref linkend="collation-copy">) or if the operating system has
+     been upgraded to provide new locale definitions (in which case see
+     also <link linkend="functions-admin-collation"><function>pg_import_system_collations()</function></link>).
+    </para>
+   </sect4>
+
+   <sect4>
+    <title>ICU collations</title>
+
+   <para>
+    ICU allows collations to be customized beyond the basic language+country
+    set that is preloaded by <command>initdb</command>.  Users are encouraged
+    to define their own collation objects that make use of these facilities to
+    suit the sorting behavior to their requirements.
+    See <ulink url="http://userguide.icu-project.org/locale"></ulink>
+    and <ulink url="http://userguide.icu-project.org/collation/api"></ulink> for
+    information on ICU locale naming.  The set of acceptable names and
+    attributes depends on the particular ICU version.
+   </para>
+
+   <para>
+    Here are some examples:
+
+    <variablelist>
+     <varlistentry>
+      <term><literal>CREATE COLLATION "de-u-co-phonebk-x-icu" (provider = icu, locale = 'de-u-co-phonebk');</literal></term>
+      <term><literal>CREATE COLLATION "de-u-co-phonebk-x-icu" (provider = icu, locale = 'de@collation=phonebook');</literal></term>
+      <listitem>
+       <para>German collation with phone book collation type</para>
+       <para>
+        The first example selects the ICU locale using a <quote>language
+        tag</quote> per BCP 47.  The second example uses the traditional
+        ICU-specific locale syntax.  The first style is preferred going
+        forward, but it is not supported by older ICU versions.
+       </para>
+       <para>
+        Note that you can name the collation objects in the SQL environment
+        anything you want.  In this example, we follow the naming style that
+        the predefined collations use, which in turn also follow BCP 47, but
+        that is not required for user-defined collations.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>CREATE COLLATION "und-u-co-emoji-x-icu" (provider = icu, locale = 'und-u-co-emoji');</literal></term>
+      <term><literal>CREATE COLLATION "und-u-co-emoji-x-icu" (provider = icu, locale = '@collation=emoji');</literal></term>
+      <listitem>
+       <para>
+        Root collation with Emoji collation type, per Unicode Technical Standard #51
+       </para>
+       <para>
+        Observe how in the traditional ICU locale naming system, the root
+        locale is selected by an empty string.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>CREATE COLLATION digitslast (provider = icu, locale = 'en-u-kr-latn-digit');</literal></term>
+      <term><literal>CREATE COLLATION digitslast (provider = icu, locale = 'en@colReorder=latn-digit');</literal></term>
+      <listitem>
+       <para>
+        Sort digits after Latin letters.  (The default is digits before letters.)
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>CREATE COLLATION upperfirst (provider = icu, locale = 'en-u-kf-upper');</literal></term>
+      <term><literal>CREATE COLLATION upperfirst (provider = icu, locale = 'en@colCaseFirst=upper');</literal></term>
+      <listitem>
+       <para>
+        Sort upper-case letters before lower-case letters.  (The default is
+        lower-case letters first.)
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>CREATE COLLATION special (provider = icu, locale = 'en-u-kf-upper-kr-latn-digit');</literal></term>
+      <term><literal>CREATE COLLATION special (provider = icu, locale = 'en@colCaseFirst=upper;colReorder=latn-digit');</literal></term>
+      <listitem>
+       <para>
+        Combines both of the above options.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>CREATE COLLATION numeric (provider = icu, locale = 'en-u-kn-true');</literal></term>
+      <term><literal>CREATE COLLATION numeric (provider = icu, locale = 'en@colNumeric=yes');</literal></term>
+      <listitem>
+       <para>
+        Numeric ordering, sorts sequences of digits by their numeric value,
+        for example: <literal>A-21</literal> &lt; <literal>A-123</literal>
+        (also known as natural sort).
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+
+    See <ulink url="http://unicode.org/reports/tr35/tr35-collation.html">Unicode
+    Technical Standard #35</ulink>
+    and <ulink url="https://tools.ietf.org/html/bcp47">BCP 47</ulink> for
+    details.  The list of possible collation types (<literal>co</literal>
+    subtag) can be found in
+    the <ulink url="http://www.unicode.org/repos/cldr/trunk/common/bcp47/collation.xml">CLDR
+    repository</ulink>.
+    The <ulink url="https://ssl.icu-project.org/icu-bin/locexp">ICU Locale
+    Explorer</ulink> can be used to check the details of a particular locale
+    definition.  The examples using the <literal>k*</literal> subtags require
+    at least ICU version 54.
+   </para>
+
+   <para>
+    Note that while this system allows creating collations that <quote>ignore
+    case</quote> or <quote>ignore accents</quote> or similar (using
+    the <literal>ks</literal> key), PostgreSQL does not at the moment allow
+    such collations to act in a truly case- or accent-insensitive manner.  Any
+    strings that compare equal according to the collation but are not
+    byte-wise equal will be sorted according to their byte values.
+   </para>
+
+   <note>
+    <para>
+     By design, ICU will accept almost any string as a locale name and match
+     it to the closest locale it can provide, using the fallback procedure
+     described in its documentation.  Thus, there will be no direct feedback
+     if a collation specification is composed using features that the given
+     ICU installation does not actually support.  It is therefore recommended
+     to create application-level test cases to check that the collation
+     definitions satisfy one's requirements.
+    </para>
+   </note>
+   </sect4>
+
+   <sect4 id="collation-copy">
+   <title>Copying Collations</title>
+
+   <para>
+    The command <xref linkend="sql-createcollation"> can also be used to
+    create a new collation from an existing collation, which can be useful to
+    be able to use operating-system-independent collation names in
+    applications, create compatibility names, or use an ICU-provided collation
+    under a more readable name.  For example:
+<programlisting>
+CREATE COLLATION german FROM "de_DE";
+CREATE COLLATION french FROM "fr-x-icu";
+</programlisting>
+   </para>
+   </sect4>
+   </sect3>
   </sect2>
  </sect1>
 
@@ -442,8 +754,11 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
 
   <para>
    하지만, 각 데이터베이스 문자 집합은 데이터베이스의 <envar>LC_CTYPE</>(문자 분류) 및 <envar>LC_COLLATE</>(string 정렬 순서) 로케일(locale) 설정과 호환되어야 한다는 중요한 제약이 있다. 
-   <literal>C</> 또는 <literal>POSIX</> 로케일(locale)의 경우 임의의 문자 집합이 허용되지만, 다른 로케일(locale)의 경우 올바로 작동되는 문자 집합은 하나밖에 없다. 
+   <literal>C</> 또는 <literal>POSIX</> 로케일(locale)의 경우 멀티바이트 문자 집합이 허용되지만, libc 라이브러리에 기반한 다른 로케일(locale)의 경우 싱글바이트 문자 집합에 대해서만 정상 작동한다.
    (그러나 Windows의 경우 UTF-8 인코딩은 모든 로케일(locale)에서 사용할 수 있다.)
+   If you have ICU support configured, ICU-provided locales can be used
+   with most but not all server-side encodings.
+
   </para>
 
    <sect2 id="multibyte-charset-supported">
@@ -455,13 +770,14 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
 
      <table id="charset-table">
       <title><productname>PostgreSQL</productname> 문자 집합</title>
-      <tgroup cols="6">
+      <tgroup cols="7">
        <thead>
         <row>
          <entry>이름</entry>
          <entry>설명</entry>
          <entry>언어</entry>
          <entry>서버?</entry>
+         <entry>ICU?</entry>
          <!--
           The Bytes/Char field is populated by looking at the values returned
           by pg_wchar_table.mblen function for each encoding.
@@ -476,6 +792,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Big Five</entry>
          <entry>중국어 번체</entry>
          <entry>아니요</entry>
+         <entry>아니요</entry>
          <entry>1-2</entry>
          <entry><literal>WIN950</>, <literal>Windows950</></entry>
         </row>
@@ -483,6 +800,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>EUC_CN</literal></entry>
          <entry>Extended UNIX Code-CN</entry>
          <entry>중국어 간체</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1-3</entry>
          <entry></entry>
@@ -492,6 +810,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Extended UNIX Code-JP</entry>
          <entry>일본어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1-3</entry>
          <entry></entry>
         </row>
@@ -500,6 +819,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Extended UNIX Code-JP, JIS X 0213</entry>
          <entry>일본어</entry>
          <entry>예</entry>
+         <entry>아니요</entry>
          <entry>1-3</entry>
          <entry></entry>
         </row>
@@ -507,6 +827,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>EUC_KR</literal></entry>
          <entry>Extended UNIX Code-KR</entry>
          <entry>한국어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1-3</entry>
          <entry></entry>
@@ -516,6 +837,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Extended UNIX Code-TW</entry>
          <entry>중국어 번체, 대만</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1-3</entry>
          <entry></entry>
         </row>
@@ -523,6 +845,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>GB18030</literal></entry>
          <entry>National Standard</entry>
          <entry>중국어</entry>
+         <entry>아니요</entry>
          <entry>아니요</entry>
          <entry>1-4</entry>
          <entry></entry>
@@ -532,6 +855,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Extended National Standard</entry>
          <entry>중국어 간체</entry>
          <entry>아니요</entry>
+         <entry>아니요</entry>
          <entry>1-2</entry>
          <entry><literal>WIN936</>, <literal>Windows936</></entry>
         </row>
@@ -539,6 +863,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>ISO_8859_5</literal></entry>
          <entry>ISO 8859-5, <acronym>ECMA</> 113</entry>
          <entry>라틴어/키릴어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
@@ -548,6 +873,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-6, <acronym>ECMA</> 114</entry>
          <entry>라틴어/아랍어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
         </row>
@@ -555,6 +881,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>ISO_8859_7</literal></entry>
          <entry>ISO 8859-7, <acronym>ECMA</> 118</entry>
          <entry>라틴어/그리스어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
@@ -564,6 +891,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-8, <acronym>ECMA</> 121</entry>
          <entry>라틴어/히브리어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
         </row>
@@ -571,6 +899,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>JOHAB</literal></entry>
          <entry><acronym>JOHAB</></entry>
          <entry>한국어 (한글)</entry>
+         <entry>아니요</entry>
          <entry>아니요</entry>
          <entry>1-3</entry>
          <entry></entry>
@@ -580,6 +909,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><acronym>KOI</acronym>8-R</entry>
          <entry>키릴어 (러시아어)</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry><literal>KOI8</></entry>
         </row>
@@ -587,6 +917,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>KOI8U</literal></entry>
          <entry><acronym>KOI</acronym>8-U</entry>
          <entry>키릴어 (우크라이나어)</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
@@ -596,6 +927,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-1, <acronym>ECMA</> 94</entry>
          <entry>서유럽어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO88591</></entry>
         </row>
@@ -603,6 +935,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>LATIN2</literal></entry>
          <entry>ISO 8859-2, <acronym>ECMA</> 94</entry>
          <entry>중유럽어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO88592</></entry>
@@ -612,6 +945,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-3, <acronym>ECMA</> 94</entry>
          <entry>남유럽어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO88593</></entry>
         </row>
@@ -619,6 +953,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>LATIN4</literal></entry>
          <entry>ISO 8859-4, <acronym>ECMA</> 94</entry>
          <entry>북유럽어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO88594</></entry>
@@ -628,6 +963,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-9, <acronym>ECMA</> 128</entry>
          <entry>터키어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO88599</></entry>
         </row>
@@ -635,6 +971,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>LATIN6</literal></entry>
          <entry>ISO 8859-10, <acronym>ECMA</> 144</entry>
          <entry>스칸디나비아어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO885910</></entry>
@@ -644,6 +981,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-13</entry>
          <entry>발트어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO885913</></entry>
         </row>
@@ -651,6 +989,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>LATIN8</literal></entry>
          <entry>ISO 8859-14</entry>
          <entry>켈트어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO885914</></entry>
@@ -660,6 +999,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-15</entry>
          <entry>유로 및 액센트 사용 LATIN1</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ISO885915</></entry>
         </row>
@@ -668,6 +1008,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>ISO 8859-16, <acronym>ASRO</> SR 14111</entry>
          <entry>루마니아어</entry>
          <entry>예</entry>
+         <entry>아니요</entry>
          <entry>1</entry>
          <entry><literal>ISO885916</></entry>
         </row>
@@ -676,6 +1017,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Mule 내부 코드</entry>
          <entry>Multilingual Emacs</entry>
          <entry>예</entry>
+         <entry>아니요</entry>
          <entry>1-4</entry>
          <entry></entry>
         </row>
@@ -683,6 +1025,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>SJIS</literal></entry>
          <entry>Shift JIS</entry>
          <entry>일본어</entry>
+         <entry>아니요</entry>
          <entry>아니요</entry>
          <entry>1-2</entry>
          <entry><literal>Mskanji</>, <literal>ShiftJIS</>, <literal>WIN932</>, <literal>Windows932</></entry>
@@ -692,6 +1035,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Shift JIS, JIS X 0213</entry>
          <entry>일본어</entry>
          <entry>아니요</entry>
+         <entry>아니요</entry>
          <entry>1-2</entry>
          <entry></entry>
         </row>
@@ -700,6 +1044,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>미지정 (텍스트 참조)</entry>
          <entry><emphasis>아무거나</></entry>
          <entry>예</entry>
+         <entry>아니요</entry>
          <entry>1</entry>
          <entry></entry>
         </row>
@@ -707,6 +1052,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>UHC</literal></entry>
          <entry>Unified Hangul Code</entry>
          <entry>한국어</entry>
+         <entry>아니요</entry>
          <entry>아니요</entry>
          <entry>1-2</entry>
          <entry><literal>WIN949</>, <literal>Windows949</></entry>
@@ -716,6 +1062,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>유니코드, 8비트</entry>
          <entry><emphasis>모두</></entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1-4</entry>
          <entry><literal>Unicode</></entry>
         </row>
@@ -723,6 +1070,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>WIN866</literal></entry>
          <entry>Windows CP866</entry>
          <entry>키릴어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ALT</></entry>
@@ -732,6 +1080,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Windows CP874</entry>
          <entry>태국어</entry>
          <entry>예</entry>
+         <entry>아니요</entry>
          <entry>1</entry>
          <entry></entry>
         </row>
@@ -739,6 +1088,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>WIN1250</literal></entry>
          <entry>Windows CP1250</entry>
          <entry>중유럽어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
@@ -748,6 +1098,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Windows CP1251</entry>
          <entry>키릴어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry><literal>WIN</></entry>
         </row>
@@ -755,6 +1106,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>WIN1252</literal></entry>
          <entry>Windows CP1252</entry>
          <entry>서유럽어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
@@ -764,6 +1116,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Windows CP1253</entry>
          <entry>그리스어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
         </row>
@@ -771,6 +1124,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>WIN1254</literal></entry>
          <entry>Windows CP1254</entry>
          <entry>터키어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
@@ -780,6 +1134,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Windows CP1255</entry>
          <entry>히브리어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
         </row>
@@ -787,6 +1142,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>WIN1256</literal></entry>
          <entry>Windows CP1256</entry>
          <entry>아랍어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
@@ -796,6 +1152,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry>Windows CP1257</entry>
          <entry>발트어</entry>
          <entry>예</entry>
+         <entry>예</entry>
          <entry>1</entry>
          <entry></entry>
         </row>
@@ -803,6 +1160,7 @@ SELECT a COLLATE "C" &lt; b COLLATE "POSIX" FROM test1;
          <entry><literal>WIN1258</literal></entry>
          <entry>Windows CP1258</entry>
          <entry>베트남어</entry>
+         <entry>예</entry>
          <entry>예</entry>
          <entry>1</entry>
          <entry><literal>ABC</>, <literal>TCVN</>, <literal>TCVN5712</>, <literal>VSCII</></entry>

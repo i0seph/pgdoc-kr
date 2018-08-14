@@ -1,27 +1,27 @@
 <!--
-doc/src/sgml/ref/pg_xlogdump.sgml
+doc/src/sgml/ref/pg_waldump.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="pgxlogdump">
- <indexterm zone="pgxlogdump">
-  <primary>pg_xlogdump</primary>
+<refentry id="pgwaldump">
+ <indexterm zone="pgwaldump">
+  <primary>pg_waldump</primary>
  </indexterm>
 
  <refmeta>
-  <refentrytitle><application>pg_xlogdump</application></refentrytitle>
+  <refentrytitle><application>pg_waldump</application></refentrytitle>
   <manvolnum>1</manvolnum>
   <refmiscinfo>Application</refmiscinfo>
  </refmeta>
 
  <refnamediv>
-  <refname>pg_xlogdump</refname>
+  <refname>pg_waldump</refname>
   <refpurpose>display a human-readable rendering of the write-ahead log of a <productname>PostgreSQL</productname> database cluster</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
-   <command>pg_xlogdump</command>
+   <command>pg_waldump</command>
    <arg rep="repeat" choice="opt"><option>option</option></arg>
    <arg choice="opt"><option>startseg</option>
     <arg choice="opt"><option>endseg</option></arg>
@@ -29,10 +29,10 @@ PostgreSQL documentation
   </cmdsynopsis>
  </refsynopsisdiv>
 
- <refsect1 id="R1-APP-PGXLOGDUMP-1">
+ <refsect1 id="R1-APP-PGWALDUMP-1">
   <title>Description</title>
   <para>
-   <command>pg_xlogdump</command> displays the write-ahead log (WAL) and is mainly
+   <command>pg_waldump</command> displays the write-ahead log (WAL) and is mainly
    useful for debugging or educational purposes.
   </para>
 
@@ -85,7 +85,7 @@ PostgreSQL documentation
       <term><option>--end=<replaceable>end</replaceable></option></term>
       <listitem>
        <para>
-        Stop reading at the specified log position, instead of reading to the
+        Stop reading at the specified WAL location, instead of reading to the
         end of the log stream.
        </para>
       </listitem>
@@ -118,10 +118,10 @@ PostgreSQL documentation
       <listitem>
        <para>
         Specifies a directory to search for log segment files or a
-        directory with a <literal>pg_xlog</literal> subdirectory that
+        directory with a <literal>pg_wal</literal> subdirectory that
         contains such files.  The default is to search in the current
-        directory, the <literal>pg_xlog</literal> subdirectory of the
-        current directory, and the <literal>pg_xlog</literal> subdirectory
+        directory, the <literal>pg_wal</literal> subdirectory of the
+        current directory, and the <literal>pg_wal</literal> subdirectory
         of <envar>PGDATA</envar>.
        </para>
       </listitem>
@@ -144,7 +144,7 @@ PostgreSQL documentation
       <term><option>--start=<replaceable>start</replaceable></option></term>
       <listitem>
        <para>
-        Log position at which to start reading. The default is to start reading
+        WAL location at which to start reading. The default is to start reading
         the first valid log record found in the earliest file found.
        </para>
       </listitem>
@@ -167,7 +167,7 @@ PostgreSQL documentation
        <term><option>--version</></term>
        <listitem>
        <para>
-       Print the <application>pg_xlogdump</application> version and exit.
+       Print the <application>pg_waldump</application> version and exit.
        </para>
        </listitem>
      </varlistentry>
@@ -199,7 +199,7 @@ PostgreSQL documentation
       <term><option>--help</></term>
        <listitem>
         <para>
-         Show help about <application>pg_xlogdump</application> command line
+         Show help about <application>pg_waldump</application> command line
          arguments, and exit.
         </para>
        </listitem>
@@ -220,7 +220,7 @@ PostgreSQL documentation
   </para>
 
   <para>
-    <application>pg_xlogdump</> cannot read WAL files with suffix
+    <application>pg_waldump</> cannot read WAL files with suffix
     <literal>.partial</>. If those files need to be read, <literal>.partial</>
     suffix needs to be removed from the file name.
   </para>

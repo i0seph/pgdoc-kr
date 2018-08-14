@@ -345,7 +345,7 @@
     <listitem>
      <para>
       <ulink
-      url="http://git.postgresql.org/gitweb?p=postgresql.git;a=blob;f=src/backend/access/heap/README.HOT;hb=HEAD">힙 단독 튜플 Heap-Only
+      url="https://git.postgresql.org/gitweb?p=postgresql.git;a=blob;f=src/backend/access/heap/README.HOT;hb=HEAD">힙 단독 튜플 Heap-Only
       Tuples</ulink>
      </para>
     </listitem>
@@ -442,6 +442,16 @@
       <ulink
       url="http://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol">Lightweight
       Directory Access Protocol</ulink>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><acronym>LSN</acronym></term>
+    <listitem>
+     <para>
+      로그 시퀀스 번호 Log Sequence Number, <link linkend="datatype-pg-lsn"><type>pg_lsn</></link>,
+      또는 <link linkend="wal-internals">WAL 내부</link> 참조.
      </para>
     </listitem>
    </varlistentry>

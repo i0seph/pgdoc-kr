@@ -71,6 +71,13 @@
      </row>
 
     <row>
+      <entry><structfield>queryid</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry></entry>
+      <entry>쿼리 고유 번호</entry>
+     </row>
+
+    <row>
       <entry><structfield>query</structfield></entry>
       <entry><type>text</type></entry>
       <entry></entry>
@@ -221,10 +228,11 @@
   </table>
 
   <para>
-   보안 문제로, 슈퍼유저가 아닌 일반 사용자는 다른 사용자의 쿼리 내용과
-   <structfield>queryid</structfield>를 볼 수 없지만, 
-   그것들의 통계 정보는 볼 수 있다. (물론 해당 데이터베이스 이 모듈의 확장 기능이 
-   설치 되어 있는 경우를 말한다)
+   보안 문제로, 슈퍼 유저와 <literal>pg_read_all_stats</literal> 롤 소속
+   사용자만 다른 사용자가 실행한
+   <structfield>queryid</structfield>나 쿼리 내용을를 볼 수 있다. 한편,
+   그 외 통계 정보는 일반 사용자도 볼 수 있다. (물론 해당 데이터베이스
+   이 모듈의 확장 기능이 설치 되어 있는 경우를 말한다)
   </para>
 
   <para>
@@ -239,14 +247,10 @@
 
   <para>
    <structname>pg_stat_statements</> 뷰에서 상수 부분에 
-   <literal>?</literal> 표시된 것이 앞에서 설명한 동일 쿼리로 취급하기 위한
+   <literal>$1</literal> 형태로 표시된 것이 앞에서 설명한 동일 쿼리로 취급하기 위한
    상수 값의 변경된 값이다. 
-   첫번째 쿼리는 <structname>pg_stat_statements</> 뷰의 항목과 
-   관련된 특정 해시 값을 가진다.  그래서 다음 실행되는 쿼리가 이렇게 변환된 것과 같은
-   해시 값을 가진다면, 같은 쿼리로 간주한다. ( - 다음 문장 의역임) 
-   The rest of the query
-   text is that of the first query that had the particular hash value
-   associated with the <structname>pg_stat_statements</> entry.
+   이렇게 변경된 쿼리 문이 다음에도 사용된다면, 그 <structfield>queryid</>로
+   같이 취급한다.
   </para>
 
   <para>
@@ -293,6 +297,18 @@
    identical in all relevant details, so <structfield>queryid</> will
    not be a useful identifier for accumulating costs across a set of logical
    replicas.  If in doubt, direct testing is recommended.
+  </para>
+
+  <para>
+   The parameter symbols used to replace constants in
+   representative query texts start from the next number after the
+   highest <literal>$</><replaceable>n</> parameter in the original query
+   text, or <literal>$1</> if there was none.  It's worth noting that in
+   some cases there may be hidden parameter symbols that affect this
+   numbering.  For example, <application>PL/pgSQL</> uses hidden parameter
+   symbols to insert values of function local variables into queries, so that
+   a <application>PL/pgSQL</> statement like <literal>SELECT i + 1 INTO j</>
+   would have representative text like <literal>SELECT i + $2</>.
   </para>
 
   <para>
@@ -475,13 +491,13 @@ bench=# SELECT query, calls, total_time, rows, 100.0 * shared_blks_hit /
                nullif(shared_blks_hit + shared_blks_read, 0) AS hit_percent
           FROM pg_stat_statements ORDER BY total_time DESC LIMIT 5;
 -[ RECORD 1 ]---------------------------------------------------------------------
-query       | UPDATE pgbench_branches SET bbalance = bbalance + ? WHERE bid = ?;
+query       | UPDATE pgbench_branches SET bbalance = bbalance + $1 WHERE bid = $2;
 calls       | 3000
 total_time  | 9609.00100000002
 rows        | 2836
 hit_percent | 99.9778970000200936
 -[ RECORD 2 ]---------------------------------------------------------------------
-query       | UPDATE pgbench_tellers SET tbalance = tbalance + ? WHERE tid = ?;
+query       | UPDATE pgbench_tellers SET tbalance = tbalance + $1 WHERE tid = $2;
 calls       | 3000
 total_time  | 8015.156
 rows        | 2990
@@ -493,7 +509,7 @@ total_time  | 310.624
 rows        | 100000
 hit_percent | 0.30395136778115501520
 -[ RECORD 4 ]---------------------------------------------------------------------
-query       | UPDATE pgbench_accounts SET abalance = abalance + ? WHERE aid = ?;
+query       | UPDATE pgbench_accounts SET abalance = abalance + $1 WHERE aid = $2;
 calls       | 3000
 total_time  | 271.741999999997
 rows        | 3000

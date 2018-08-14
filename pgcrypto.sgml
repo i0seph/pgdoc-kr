@@ -1088,7 +1088,7 @@ decrypt_iv(data bytea, key bytea, iv bytea, type text) returns bytea
 
   <itemizedlist>
    <listitem><para><literal>bf</literal> &mdash; Blowfish</para></listitem>
-   <listitem><para><literal>aes</literal> &mdash; AES (Rijndael-128)</para></listitem>
+   <listitem><para><literal>aes</literal> &mdash; AES (Rijndael-128, -192, -256)</para></listitem>
   </itemizedlist>
    <replaceable>모드</>는 다음 중 하나다:
   <itemizedlist>
@@ -1212,12 +1212,12 @@ gen_random_uuid() returns uuid
       <row>
        <entry>SHA224/256/384/512</entry>
        <entry>yes</entry>
-       <entry>yes (참고 1)</entry>
+       <entry>yes</entry>
       </row>
       <row>
        <entry>Other digest algorithms</entry>
        <entry>no</entry>
-       <entry>yes (참고 2)</entry>
+       <entry>yes (참고 1)</entry>
       </row>
       <row>
        <entry>Blowfish</entry>
@@ -1227,7 +1227,7 @@ gen_random_uuid() returns uuid
       <row>
        <entry>AES</entry>
        <entry>yes</entry>
-       <entry>yes (참고 3)</entry>
+       <entry>yes</entry>
       </row>
       <row>
        <entry>DES/3DES/CAST5</entry>
@@ -1260,22 +1260,8 @@ gen_random_uuid() returns uuid
    <orderedlist>
     <listitem>
      <para>
-      SHA2 알고리즘은 OpenSSL 0.9.8 버전에서 포함 되었다.
-      이 버전보다 오래된 OpenSSL 라이브러리를 사용한다면,
-      <filename>pgcrypto</> 모듈은 내장 코드를 사용한다.
-     </para>
-    </listitem>
-    <listitem>
-     <para>
       사용하는 OpenSSL 라이브러리가 제공하는 기타 제반 다이제스트 
       알고리즘.  이것들은 암복호화로 사용할 수 없다.
-     </para>
-    </listitem>
-    <listitem>
-     <para>
-      AES 알고리즘은 OpenSSL 0.9.7 버전에서 포함 되었다.
-      이 버전보다 오래된 OpenSSL 라이브러리를 사용한다면,
-      <filename>pgcrypto</> 모듈은 내장 코드를 사용한다.
      </para>
     </listitem>
    </orderedlist>
@@ -1358,15 +1344,15 @@ gen_random_uuid() returns uuid
 
    <itemizedlist>
     <listitem>
-     <para><ulink url="http://www.ietf.org/rfc/rfc4880.txt"></ulink></para>
+     <para><ulink url="https://tools.ietf.org/html/rfc4880"></ulink></para>
      <para>OpenPGP 메시지 양식.</para>
     </listitem>
     <listitem>
-     <para><ulink url="http://www.ietf.org/rfc/rfc1321.txt"></ulink></para>
+     <para><ulink url="https://tools.ietf.org/html/rfc1321"></ulink></para>
      <para>MD5 메시지-다이제스트 알고리즘.</para>
     </listitem>
     <listitem>
-     <para><ulink url="http://www.ietf.org/rfc/rfc2104.txt"></ulink></para>
+     <para><ulink url="https://tools.ietf.org/html/rfc2104"></ulink></para>
      <para>HMAC: 메시지 인증용 키기반-해시.</para>
     </listitem>
     <listitem>

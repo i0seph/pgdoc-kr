@@ -48,7 +48,7 @@
 
   <para>
    <ulink
-   url="http://bucardo.org/wiki/Check_postgres"><application>check_postgres</></ulink>
+   url="https://bucardo.org/check_postgres/"><application>check_postgres</></ulink>
    프로그램은 데이터베이스 상태를 지켜보고, 비정상적인 상태에 대해서 
    보고하는 일을 한다.  Nagios나 MRTG에서 <application>check_postgres</>
    프로그램을 이용하면 유용하게 쓰일 것이다. 물론 이 프로그램 단독으로 
@@ -568,19 +568,24 @@
    <para>
     <varname>autovacuum_freeze_max_age</> 값(
     <varname>vacuum_freeze_table_age</> 값도 포함해서)을 크게
-    설정 할 때의 유일한 단점은 데이터베이스 클러스터 디렉토리의 하위
-    디렉토리인 <filename>pg_clog</> 디렉토리의 디스크 사용량이 커진다는
-    점이다.  왜냐하면, 그 만큼의 트랜잭션 커밋 정보를 보관하고 
+    설정 할 때의 유일한 단점은 데이터베이스 클러스터 디렉터리의 하위
+    디렉터리인 <filename>pg_xact</> 디렉터리와 
+    <filename>pg_commit_ts</filename> 디렉터리의 디스크 사용량이 커진다는
+    점이다.  왜냐하면, 그 만큼의 트랜잭션 커밋 정보와 
+    (<varname>track_commit_timestamp</> 설정값을 활성화 했다면) 그 시간
+    까지 보관하고 
     있어야 하기 때문이다.  트랜잭션 커밋 정보는 2비트를 사용함으로
-    <varname>autovacuum_freeze_max_age</> 갑을 최대치인 20억으로 
-    지정 했다면, 그 디렉토리는 0.5GB의 공간이 필요하다.
+    <varname>autovacuum_freeze_max_age</> 값을 최대치인 20억으로 
+    지정 했다면, 그 디렉터리는 0.5GB의 공간이 필요하며, 
+    <filename>pg_commit_ts</filename> 디렉터리는 20GB가 필요하다.
     이 정도의 크기가 데이터 클러스터 전체 크기에 비해서 
     별로 신경 쓸 크기가 아니라면, <varname>autovacuum_freeze_max_age</>
     값으로 최대값을 지정하는 것이 좋을 것이다.
     그렇지 않은 경우라면, 이 값을 적당히 조절 해서, 
-    <filename>pg_clog</> 디렉토리의 저장 공간을 조절할 필요가 있을
+    <filename>pg_clog</> 디렉터리의 저장 공간을 조절할 필요가 있을
     것이다. (기본값인 2억 트랜잭션이라면 <filename>pg_clog</>
-    디렉토리는 최대 50MB 공간을 사용한다.)
+    디렉터리는 최대 50MB 공간과, <filename>pg_commit_ts</> 디렉터리는
+    최대 2GB 공간이 필요하다.)
    </para>
 
    <para>
@@ -990,7 +995,7 @@ analyze 임계치 = analyze 초기 임계치 + analyze 배율값 * 로우수
    로그를 크기나, 날짜 단위로 쪼개서 로그 파일의 크기를 
    분석하기 편하도록 하는 일과
    아주 오래된 로그 파일들을 지워 
-   로그 파일이 쌓이는 디렉토리의 여유 공간을 일정하게 유지 하도록
+   로그 파일이 쌓이는 디렉터리의 여유 공간을 일정하게 유지 하도록
    하는 일 등이다.
   </para>
 
@@ -1085,7 +1090,7 @@ pg_ctl start | rotatelogs /var/log/pgsql_log 86400
    라는 서버가 남긴 로그 파일을 정교하게 분석해서 보여주는 
    외부 프로젝트가 있다.
    <ulink
-   url="http://bucardo.org/wiki/Check_postgres"><productname>check_postgres</productname></ulink>
+   url="https://bucardo.org/check_postgres"><productname>check_postgres</productname></ulink>
    스크립트는 Nagios 경고 모듈로 사용할 수 있다.
    이것으로 로그 파일에 기록 된 내용들 가운데, 
    경고가 필요한 내용을 정교하게 지정해서 찾을 수도 있다.

@@ -14,11 +14,11 @@
     <listitem>
      <para>
        <productname>PostgreSQL</productname> <ulink
-       url="http://wiki.postgresql.org">위키</ulink> 사이트에서
+       url="https://wiki.postgresql.org">위키</ulink> 사이트에서
        <ulink
-       url="http://wiki.postgresql.org/wiki/Frequently_Asked_Questions">FAQ</> (흔히 하는 질문과 답변) 문서 작업을
+       url="https://wiki.postgresql.org/wiki/Frequently_Asked_Questions">FAQ</> (흔히 하는 질문과 답변) 문서 작업을
        진행하며, <ulink
-       url="http://wiki.postgresql.org/wiki/Todo">할 일들</>에 대해서 소개하고 있으며,
+       url="https://wiki.postgresql.org/wiki/Todo">할 일들</>에 대해서 소개하고 있으며,
        보다 많은, 보다 다양한 정보들을 소개하고 있다.
      </para>
     </listitem>
@@ -29,7 +29,7 @@
     <listitem>
      <para>
       <productname>PostgreSQL</productname>
-      <ulink url="http://www.postgresql.org">공식 웹 사이트</ulink>
+      <ulink url="https://www.postgresql.org">공식 웹 사이트</ulink>
       에서는 최신판 배포 소식과 <productname>PostgreSQL</productname>을
       사용하는데 필요한 다양한 정보들을 다루고 있다.
      </para>

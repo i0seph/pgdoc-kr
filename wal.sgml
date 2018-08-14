@@ -85,7 +85,7 @@
 
     <listitem>
       <para>
-        <productname>OS X</productname>에서 <varname>wal_sync_method</>를 <literal>fsync_writethrough</>로 설정하면 쓰기 캐싱을 금지할 수 있다.
+        <productname>macOS</productname>에서 <varname>wal_sync_method</>를 <literal>fsync_writethrough</>로 설정하면 쓰기 캐싱을 금지할 수 있다.
       </para>
     </listitem>
   </itemizedlist>
@@ -141,7 +141,7 @@
     </listitem>
     <listitem>
      <para>
-      <filename>pg_clog</filename>, <filename>pg_subtrans</filename>, <filename>pg_multixact</filename>,
+      <filename>pg_xact</filename>, <filename>pg_subtrans</filename>, <filename>pg_multixact</filename>,
       <filename>pg_serial</filename>, <filename>pg_notify</filename>, <filename>pg_stat</filename>, <filename>pg_snapshots</filename> 같은 내부 데이터 구조는 직접적으로 체크섬되지 않거나, 
       전체 페이지 쓰기에 의해 보호되는 페이지가 아니다. 그러나, 이러한 데이터 구조가 지속적인 경우, 
       WAL 레코드는 최근의 변경 사항이 충돌 시에 정확하게 리빌드되도록 하고, 이러한 WAL 레코드는 위에서 언급된 대로 보호된다.
@@ -366,7 +366,7 @@
   </para>
 
   <para>
-  The number of WAL segment files in <filename>pg_xlog</> directory depends on
+  The number of WAL segment files in <filename>pg_wal</> directory depends on
    <varname>min_wal_size</>, <varname>max_wal_size</> and
    the amount of WAL generated in previous checkpoint cycles. When old log
    segment files are no longer needed, they are removed or recycled (that is,
@@ -378,7 +378,7 @@
    removes the rest. The estimate is based on a moving average of the number
    of WAL files used in previous checkpoint cycles. The moving average
    is increased immediately if the actual usage exceeds the estimate, so it
-   accommodates peak usage rather average usage to some extent.
+   accommodates peak usage rather than average usage to some extent.
    <varname>min_wal_size</> puts a minimum on the amount of WAL files
    recycled for future usage; that much WAL is always recycled for future use,
    even if the system is idle and the WAL usage estimate suggests that little
@@ -391,7 +391,7 @@
    kept at all times. Also, if WAL archiving is used, old segments can not be
    removed or recycled until they are archived. If WAL archiving cannot keep up
    with the pace that WAL is generated, or if <varname>archive_command</varname>
-   fails repeatedly, old WAL files will accumulate in <filename>pg_xlog</>
+   fails repeatedly, old WAL files will accumulate in <filename>pg_wal</>
    until the situation is resolved. A slow or failed standby server that
    uses a replication slot will have the same effect (see
    <xref linkend="streaming-replication-slots">).
@@ -399,7 +399,7 @@
 
   <para>
    아카이브 복구 또는 스탠바이 모드에서 서버는 주기적으로 <firstterm>restartpoints</>,<indexterm><primary>restartpoint</></>를 수행하는데, 이것은 정상 실행된 checkpoints와 유사하다. 
-   서버는 모든 상태를 디스크에 강제로 기록하고, <filename>pg_control</> 파일을 업데이트하여 이미 처리된 WAL 데이터를 다시 스캔할 필요가 없음을 표시하여 <filename>pg_xlog</> 디렉토리에 있는 예전 로그 세그먼트 파일을 재활용할 수 있게 한다. 
+   서버는 모든 상태를 디스크에 강제로 기록하고, <filename>pg_control</> 파일을 업데이트하여 이미 처리된 WAL 데이터를 다시 스캔할 필요가 없음을 표시하여 <filename>pg_wal</> 디렉토리에 있는 예전 로그 세그먼트 파일을 재활용할 수 있게 한다. 
    restartpoints는 checkpoint 레코드에서만 수행될 수 있으므로 restartpoints는 마스터에서의 수행 빈도가 checkpoints보다 적다. 
    마지막 restartpoint 이후에 최소한 <varname>checkpoint_timeout</> 초를 경과한 경우나, 
    WAL 크기가 <varname>max_wal_size</> 값을 초과하는 경우
@@ -469,6 +469,10 @@
  <sect1 id="wal-internals">
   <title>WAL 인터널</title>
 
+  <indexterm zone="wal-internals">
+   <primary>LSN</primary>
+  </indexterm>
+
   <para>
    <acronym>WAL</acronym>은 자동으로 활성화된다. 
    <acronym>WAL</acronym> 로그에 대한 디스크 공간 요구사항을 맞춰야 할 때 및 필수 튜닝이 완료되었을 때 외에는 관리자의 개입이 불필요하다(<xref
@@ -476,7 +480,19 @@
   </para>
 
   <para>
-   <acronym>WAL</acronym> 로그는 각각의 크기가 보통 16 MB인 세그먼트 파일 집합으로, 데이터 디렉토리 하위인 <filename>pg_xlog</filename> 디렉토리에 저장된다(서버 빌드 시 <option>--with-wal-segsize</> 환경 설정 옵션을 변경하면 크기를 바꿀 수 있다). 
+   <acronym>WAL</acronym> records are appended to the <acronym>WAL</acronym>
+   logs as each new record is written. The insert position is described by
+   a Log Sequence Number (<acronym>LSN</acronym>) that is a byte offset into
+   the logs, increasing monotonically with each new record.
+   <acronym>LSN</acronym> values are returned as the datatype
+   <link linkend="datatype-pg-lsn"><type>pg_lsn</></link>. Values can be
+   compared to calculate the volume of <acronym>WAL</acronym> data that
+   separates them, so they are used to measure the progress of replication
+   and recovery.
+  </para>
+
+  <para>
+   <acronym>WAL</acronym> 로그는 각각의 크기가 보통 16 MB인 세그먼트 파일 집합으로, 데이터 디렉토리 하위인 <filename>pg_wal</filename> 디렉토리에 저장된다(서버 빌드 시 <option>--with-wal-segsize</> 환경 설정 옵션을 변경하면 크기를 바꿀 수 있다). 
    각 세그먼트는 일반적으로 각각 8 kB의 페이지로 분할된다(이 크기는 <option>--with-wal-blocksize</> 환경 설정 옵션을 통해 변경할 수 있다). 
    로그 레코드 헤더는 <filename>access/xlogrecord.h</filename>에 설명되어 있다. 
    레코드 내용은 로깅된 이벤트 유형에 따라 다르다. 세그먼트 파일 이름은 <filename>000000010000000000000000</filename>에서 시작되며 숫자가 계속 증가한다. 
@@ -485,7 +501,7 @@
 
   <para>
    로그가 메인 데이터베이스 파일이 아닌 다른 디스크에 위치한 경우에 이것은 장점이 된다. 
-   서버가 종료된 상태에서 <filename>pg_xlog</filename> 디렉토리를 다른 위치로 옮기고, 메인 데이터 디렉토리의 원래 위치로부터 새 위치로 심볼릭 링크를 생성하면 된다.
+   서버가 종료된 상태에서 <filename>pg_wal</filename> 디렉토리를 다른 위치로 옮기고, 메인 데이터 디렉토리의 원래 위치로부터 새 위치로 심볼릭 링크를 생성하면 된다.
   </para>
 
   <para>

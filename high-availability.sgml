@@ -47,12 +47,13 @@
   한 가지 해결책은 오직 하나의 데이터베이스만 읽기/쓰기를 허용하는 것이다.
   이 때, 이 서버를 <firstterm>마스터</> 또는 <firstterm>프라이머리</> 서버라고 한다.
   마스터 서버의 변경된 내용이 그대로 내부적으로 동기화 되는 서버를 
-  <firstterm>스탠바이</> 또는 <firstterm>슬래이브</> 서버라고 한다. 
+  <firstterm>스탠바이</> 또는 <firstterm>세컨더리</> 서버라고 한다. 
   마스터 서버의 장애로 운영 제어권을 스탠바이 서버로 남기기 전까지 
   스탠바이 서버를 사용할 없는 환경을 <firstterm>warm standby</> 서버 환경이라고 하고, 
   이와 달리 스탠바이 서버를 읽기 전용으로 사용이 가능한 환경을 
   <firstterm>hot standby</> 서버 환경이라고 한다.
-  (일단은 용어들을 영어 단어 그대로 옮겼다. 운영 서버, 대기 서버, 주 서버, 보조 서버 등
+  (일단은 용어들을 영어 단어 그대로 옮겼다.
+   운영 서버, 대기 서버, 주 서버, 보조 서버 등
   우리말 옮기고 싶었으나, 혼돈이 있을 것 같아, 그냥 그대로 옮겼다. 
   이 설명서 전체에 걸쳐 이렇게 명확히 구분해야하지 않을 상황이면, 
   운영 서버와 대기 서버를 사용한다.)
@@ -87,9 +88,6 @@
  <para>
   다음은 장애처리 failover, 복제 replication, 부하 분산 load balancing 
   기능을 제공하는 여러 기법을 대략적으로 소개하고 있다.
-  각 용어들의 자세한 설명은 <ulink
-    url="http://www.postgres-r.org/documentation/terms">용어설명</ulink>
-        페이지를 참조하라.
  </para>
 
  <sect1 id="different-replication-solutions">
@@ -125,7 +123,7 @@
   </varlistentry>
 
   <varlistentry>
-   <term>파일 시스템 (블록-장치) 복제</term>
+   <term>파일 시스템 (블록 장치) 복제</term>
    <listitem>
 
     <para>
@@ -149,7 +147,7 @@ protocol to make nodes agree on a serializable transactional order.
   </varlistentry>
 
   <varlistentry>
-   <term>트랜잭션 로그 전달</term>
+   <term>미리-쓰기 로그 전달</term>
    <listitem>
 
     <para>
@@ -168,6 +166,24 @@ protocol to make nodes agree on a serializable transactional order.
          방식, 이 두 방법을 혼용해서 사용할 수 있다. 
          hot standby 서버 구축에 대한 자세한 설명은 <xref linkend="hot-standby">
          에서 자세히 다루고 있다.
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term>논리 복제</term>
+   <listitem>
+    <para>
+     논리 복제란 한 데이터베이스에서 변경된 내용을 스트림으로 다른 
+     서버로 보내는 것을 말한다.  <productname>PostgreSQL</productname>
+     논리 복제는 WAL 기반으로 논리적 변경 내용을 흘려 보낸다(stream). 논리
+     복제는 개별 테이블 단위로 복제할 수 있다.  논리 복제를 위해
+     운영 서버와 복제 서버에서 특별하게 따로 준비해야할 것은 없으며, 여러 
+     복제 서버를 하나의 운영 서버로부터 구축할 수 있다.  논리 복제에
+     대한 자세한 내용은 <xref linkend="logical-replication">에서
+     다룬다.  또한 논리 디코딩을 이용한 제3제공자 확장 모듈 제작을 
+     위한 인터페이스 설명은 <xref linkend="logicaldecoding">에서
+     다룬다.
     </para>
    </listitem>
   </varlistentry>
@@ -296,13 +312,14 @@ protocol to make nodes agree on a serializable transactional order.
 
  <table id="high-availability-matrix">
   <title>고가용성, 부하 분산, 복제 기능 도표</title>
-  <tgroup cols="8">
+  <tgroup cols="9">
    <thead>
     <row>
      <entry>기능</entry>
      <entry>공유 디스크 장애처리</entry>
      <entry>파일 시스템 복제</entry>
-     <entry>트랜잭션 로그 전달</entry>
+     <entry>미리-쓰기 로그 전달</entry>
+     <entry>논리 복제</entry>
      <entry>트리거 기반 운영-대기 복제</entry>
      <entry>명령 구문 기반 미들웨어</entry>
      <entry>비동기식 다중 운영 복제</entry>
@@ -316,8 +333,9 @@ protocol to make nodes agree on a serializable transactional order.
      <entry>많이 알려진 제품</entry>
      <entry align="center">NAS</entry>
      <entry align="center">DRBD</entry>
-     <entry align="center">스트리밍 리플리케이션</entry>
-     <entry align="center">Slony</entry>
+     <entry align="center">내장 스트리밍 복제</entry>
+     <entry align="center">내장 논리 복제, pglogical</entry>
+     <entry align="center">Londiste, Slony</entry>
      <entry align="center">pgpool-II</entry>
      <entry align="center">Bucardo</entry>
      <entry align="center"></entry>
@@ -328,7 +346,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry align="center">공유 디스크</entry>
      <entry align="center">디스크 블럭</entry>
      <entry align="center">WAL</entry>
-     <entry align="center">테이블 로우</entry>
+     <entry align="center">논리 디코딩</entry>
      <entry align="center">SQL</entry>
      <entry align="center">테이블 로우</entry>
      <entry align="center">테이블 로우와 로우 잠금</entry>
@@ -343,6 +361,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
+     <entry align="center">&bull;</entry>
     </row>
 
     <row>
@@ -350,6 +369,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry align="center"></entry>
      <entry align="center"></entry>
      <entry align="center"></entry>
+     <entry align="center">&bull;</entry>
      <entry align="center"></entry>
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
@@ -360,6 +380,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry>운영 서버 측 복제 부하 없음</entry>
      <entry align="center">&bull;</entry>
      <entry align="center"></entry>
+     <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
      <entry align="center"></entry>
      <entry align="center">&bull;</entry>
@@ -372,6 +393,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry align="center">&bull;</entry>
      <entry align="center"></entry>
      <entry align="center">비동기식일 때</entry>
+     <entry align="center">비동기식일 때</entry>
      <entry align="center">&bull;</entry>
      <entry align="center"></entry>
      <entry align="center">&bull;</entry>
@@ -382,6 +404,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry>운영서버 장애시 자료 손실 없음</entry>
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
+     <entry align="center">동기식일 때</entry>
      <entry align="center">동기식일 때</entry>
      <entry align="center"></entry>
      <entry align="center">&bull;</entry>
@@ -398,6 +421,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
+     <entry align="center">&bull;</entry>
     </row>
 
     <row>
@@ -405,6 +429,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry align="center"></entry>
      <entry align="center"></entry>
      <entry align="center"></entry>
+     <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
      <entry align="center"></entry>
      <entry align="center">&bull;</entry>
@@ -416,6 +441,7 @@ protocol to make nodes agree on a serializable transactional order.
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
      <entry align="center">&bull;</entry>
+     <entry align="center"></entry>
      <entry align="center">&bull;</entry>
      <entry align="center"></entry>
      <entry align="center"></entry>
@@ -612,11 +638,11 @@ protocol to make nodes agree on a serializable transactional order.
         (<xref linkend="restore-command"> 참조), 
         TCP 연결 방식을 이용해서 운영 서버와 직접 연결하고, 커밋된 트랜잭션을 
         즉시 대기 서버로 반영하는 방식(스트리밍 복제)도 있다.
-        또 내부적으로 보면, 대기 서버의 <filename>pg_xlog</> 디렉토리에 있는 
+        또 내부적으로 보면, 대기 서버의 <filename>pg_wal</> 디렉토리에 있는 
         WAL 파일을 참조하는 경우도 있다. 이 경우는 스트리밍 복제 환경에서 
         운영 서버에서 보낸 트랜잭션을 미쳐 반영하기 전에 대기 서버가 중지 되었다가 
         다시 실행될 경우에 일어난다. 물론 관리자가 직접
-        <filename>pg_xlog</> 디렉토리에 직접 WAL 파일을 두고 서버를 실행할 수도 있다.
+        <filename>pg_wal</> 디렉토리에 직접 WAL 파일을 두고 서버를 실행할 수도 있다.
    </para>
 
    <para>
@@ -627,7 +653,7 @@ protocol to make nodes agree on a serializable transactional order.
         명령은 실패로 끝나야한다. 그러면, 
         복구 환경이 스트리밍 복제 방식이라면, 운영 서버 쪽으로 접속 해서, 
         운영 서버가 데이터베이스 연결을 통해 보내는 트랜잭션들을 자신의
-        <filename>pg_xlog</> 디렉토리 내 해당 WAL 로그 파일에 추가한다.
+        <filename>pg_wal</> 디렉토리 내 해당 WAL 로그 파일에 추가한다.
         다음부터는 서버가 알아서 해당 작업을 수행하고, 
         커밋 되었다고 기록하고, 체크포인트 작업을 하는 등 일련의 자료 변경 작업을 수행한다.
         반면, 복구 환경이 warm standy 방식이라면, <varname>restore_command</> 설정값에 지정된
@@ -641,7 +667,7 @@ protocol to make nodes agree on a serializable transactional order.
     대기 모드는  <command>pg_ctl promote</> 명령을 실행하거나, 
         트리거 파일(<varname>trigger_file</> 설정값에 지정한 파일)이 
         생기면 끝난다. 물론 적용해야할 WAL 파일이, 
-        아카이브 디렉토리에 아직 있거나, <filename>pg_xlog</> 디렉토리 내에 
+        아카이브 디렉토리에 아직 있거나, <filename>pg_wal</> 디렉토리 내에 
         있다면, 이것들을 모두 적용하고 대기 모드를 끝낸다.
         이때 스트리밍 복제를 위한 운영 서버와의 연결도 더 이상 재시도하지 않는다.
    </para>
@@ -906,8 +932,8 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
          이 작업은 운영 서버의 현재 WAL 쓸 위치와, 
          대기 서버의 마지막 처리된 WAL 쓸 위치 차이를 계산하는 방식을 
          이용하면 된다. 이 작업을 위해서, 
-         운영 서버에서는 <function>pg_current_xlog_location</>, 
-         대기 서버에서는 <function>pg_last_xlog_receive_location</> 두 함수를
+         운영 서버에서는 <function>pg_current_wal_lsn</>, 
+         대기 서버에서는 <function>pg_last_wal_receive_lsn</> 두 함수를
          사용한다. (이 함수의 구체적인 사용법은 
          <xref linkend="functions-admin-backup-table">,
          <xref linkend="functions-recovery-info-table">에서 다룬다.)
@@ -918,11 +944,11 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     </para>
     <para>
          또한 운영 서버에서 사용하는 WAL sender 프로세스의 정보는 
-         <link linkend="monitoring-stats-views-table"></> 뷰로 확인할 수 있다.
-         이 뷰에서 <function>pg_current_xlog_location</> 값과, 
-         <literal>sent_location</> 값이 차이가 많이 나면, 
+         <link linkend="pg-stat-replication-view"><literal>pg_stat_replication</></link> 뷰로 확인할 수 있다.
+         이 뷰에서 <function>pg_current_wal_lsn</> 값과, 
+         <literal>sent_lsn</> 값이 차이가 많이 나면, 
          운영 서버가 많이 바쁜 상황이고, 
-         <literal>sent_location</> 값과, <function>pg_last_xlog_receive_location</>
+         <literal>sent_lsn</> 값과, <function>pg_last_wal_receive_lsn</>
          값이 차이가 많이 나면, 대기 서버가 많이 바쁘거나, 
          네트워크 상황이 좋지 않은 경우다.
     </para>
@@ -957,7 +983,7 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     서버를 다시 만들어야 하는 문제를 피해 갈 수 있게 되었다. 
     하지만, 이 방법을 이용하게 되면 예상치 않게 트랜잭션 로그 파일의 개수가
     많아질 수도 있다. 물론 대기 서버와 동기화를 위한 옛 트랜잭션 로그만 보관
-    하지만,  이 기능을 사용하고 할 때는 <literal>pg_xlog</> 디렉토리의
+    하지만,  이 기능을 사용하고 할 때는 <literal>pg_wal</> 디렉토리의
     여유 공간을 충분히 확보해야 할 것이다. 현재로써는 트랜잭션 로그를 남기면서
     이 디렉토리의 여유 공간을 항상 일정하게 유지할 수 있는 방법은 없다.
    </para>
@@ -992,8 +1018,8 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
      먼저 운영 서버에서 아래와 같은 슬롯을 하나 만든다:
 <programlisting>
 postgres=# SELECT * FROM pg_create_physical_replication_slot('node_a_slot');
-  slot_name  | xlog_position
--------------+---------------
+  slot_name  | lsn
+-------------+-----
  node_a_slot |
 
 postgres=# SELECT * FROM pg_replication_slots;
@@ -1131,6 +1157,18 @@ primary_slot_name = 'node_a_slot'
         이중 커밋(2PC)에 대해서는 모든 작업에 대해서 확인한다.
    </para>
 
+   <para>
+    A synchronous standby can be a physical replication standby or a logical
+    replication subscriber.  It can also be any other physical or logical WAL
+    replication stream consumer that knows how to send the appropriate
+    feedback messages.  Besides the built-in physical and logical replication
+    systems, this includes special programs such
+    as <command>pg_receivewal</command> and <command>pg_recvlogical</command>
+    as well as some third-party replication systems and custom programs.
+    Check the respective documentation for details on synchronous replication
+    support.
+   </para>
+
    <sect3 id="synchronous-replication-config">
     <title>기본 환경설정</title>
 
@@ -1174,6 +1212,7 @@ primary_slot_name = 'node_a_slot'
         설정에 관계된 것들이다.
         동기식 복제 기능 설정을 할 때는 어느 환경 변수는 대기 서버에서 설정하고, 
         어느 환경 변수는 운영 서버에서 설정하는지 잘 파악하고 있어야한다.
+
         또한, 대기 서버로 등록되는 서버들은 반드시 운영 서버와 직접 연결된 
         서버들이여야한다. 대기 서버의 하위 대기 서버는 동기식 복제를 사용할 수 없다.
    </para>
@@ -1190,7 +1229,6 @@ primary_slot_name = 'node_a_slot'
         시스템 전체적인 입장에서 본다면, 자료가 손실 되는 경우는 
         운영서버와, 대기 서버 모두 동시에 장애가 발생될 경우에만 일어나기 때문에다. 
    </para>
-
 
    <para>
     <varname>synchronous_commit</> 설정값이 <literal>remote_apply</>인 경우는
@@ -1219,19 +1257,25 @@ primary_slot_name = 'node_a_slot'
     as synchronous confirm receipt of their data. The number of synchronous
     standbys that transactions must wait for replies from is specified in
     <varname>synchronous_standby_names</>. This parameter also specifies
-    a list of standby names, which determines the priority of each standby
-    for being chosen as a synchronous standby. The standbys whose names
-    appear earlier in the list are given higher priority and will be considered
-    as synchronous. Other standby servers appearing later in this list
-    represent potential synchronous standbys. If any of the current
-    synchronous standbys disconnects for whatever reason, it will be replaced
-    immediately with the next-highest-priority standby.
+    a list of standby names and the method (<literal>FIRST</> and
+    <literal>ANY</>) to choose synchronous standbys from the listed ones.
    </para>
    <para>
-    An example of <varname>synchronous_standby_names</> for multiple
-    synchronous standbys is:
+    The method <literal>FIRST</> specifies a priority-based synchronous
+    replication and makes transaction commits wait until their WAL records are
+    replicated to the requested number of synchronous standbys chosen based on
+    their priorities. The standbys whose names appear earlier in the list are
+    given higher priority and will be considered as synchronous. Other standby
+    servers appearing later in this list represent potential synchronous
+    standbys. If any of the current synchronous standbys disconnects for
+    whatever reason, it will be replaced immediately with the
+    next-highest-priority standby.
+   </para>
+   <para>
+    An example of <varname>synchronous_standby_names</> for
+    a priority-based multiple synchronous standbys is:
 <programlisting>
-synchronous_standby_names = '2 (s1, s2, s3)'
+synchronous_standby_names = 'FIRST 2 (s1, s2, s3)'
 </programlisting>
     In this example, if four standby servers <literal>s1</>, <literal>s2</>,
     <literal>s3</> and <literal>s4</> are running, the two standbys
@@ -1241,6 +1285,28 @@ synchronous_standby_names = '2 (s1, s2, s3)'
     the role of synchronous standby when either of <literal>s1</> or
     <literal>s2</> fails. <literal>s4</> is an asynchronous standby since
     its name is not in the list.
+   </para>
+   <para>
+    The method <literal>ANY</> specifies a quorum-based synchronous
+    replication and makes transaction commits wait until their WAL records
+    are replicated to <emphasis>at least</> the requested number of
+    synchronous standbys in the list.
+   </para>
+   <para>
+    An example of <varname>synchronous_standby_names</> for
+    a quorum-based multiple synchronous standbys is:
+<programlisting>
+synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
+</programlisting>
+    In this example, if four standby servers <literal>s1</>, <literal>s2</>,
+    <literal>s3</> and <literal>s4</> are running, transaction commits will
+    wait for replies from at least any two standbys of <literal>s1</>,
+    <literal>s2</> and <literal>s3</>. <literal>s4</> is an asynchronous
+    standby since its name is not in the list.
+   </para>
+   <para>
+    The synchronous states of standby servers can be viewed using
+    the <structname>pg_stat_replication</structname> view.
    </para>
    </sect3>
 
@@ -1306,10 +1372,21 @@ synchronous_standby_names = '2 (s1, s2, s3)'
     고가용성을 구현하는 가장 좋은 방법은 요구되는 모든 동기식 대기 서버가
         장애로 멈추지 않게 만드는 것이다.  운영 서버의 환경설정에서 
         <varname>synchronous_standby_names</> 변수의 값으로 동기시 방식을 이용할 
-        대기 서버들을 나열해서 이것을 구현할 수 있다.  이 설정에서 지정한
-        대기 서버들 가운데, 동기화 작업 대상에서 제외된 다른 서버는
-        동기화 대상 대기 서버가 장애로 응답이 없을 때, 그 서버의 대기 서버로 
-        사용 된다.
+        대기 서버들을 나열해서 이것을 구현할 수 있다.
+   </para>
+
+   <para>
+    In a priority-based synchronous replication, the standbys whose names
+    appear earlier in the list will be used as synchronous standbys.
+    Standbys listed after these will take over the role of synchronous standby
+    if one of current ones should fail.
+   </para>
+
+   <para>
+    In a quorum-based synchronous replication, all the standbys appearing
+    in the list will be used as candidates for synchronous standbys.
+    Even if one of them should fail, the other standbys will keep performing
+    the role of candidates of synchronous standby.
    </para>
 
    <para>
@@ -1324,6 +1401,8 @@ synchronous_standby_names = '2 (s1, s2, s3)'
         모두 처리하는 시간이다.
         이 따라잡기 시간은 대기 서버가 얼마 동안 중지해 있었고, 
         그 사이 얼마나 많은 자료 변경 트랜잭션이 일어났냐에 따라 결정된다.
+    이 작업의 상태는 <structname>pg_stat_replication</structname> 뷰를 
+    통해서 살펴볼 수 있다.
    </para>
 
    <para>
@@ -1663,7 +1742,7 @@ if (!triggered)
    </para>
 
    <para>
-    <function>pg_xlogfile_name_offset()</> 함수 (<xref linkend="functions-admin"> 참조)
+    <function>pg_walfile_name_offset()</> 함수 (<xref linkend="functions-admin"> 참조)
     를 호출해서 파일명과 현재 마지막 WAL의 정확한 바이트 오프셋을 구할 수 있다. 
     pg_xlogfile_name_offset 함수는 WAL 파일에 직접 접근할 수 있고 WAL 파일 마지막 데이터를 대기 서버에 복사할 수 있다. 
     이 방법을 쓰면 데이터 손실은 프로그램을 복사하는 폴링polling 순환 시기에 발생하는데, 손실은 매우 적고, 부분적으로 사용되는 세그먼트 파일을 강제로 아카이빙할 때 낭비하는 대역폭은 없다. 대
@@ -1869,8 +1948,10 @@ if (!triggered)
    </para>
 
    <para>
-    보통은 <quote>읽기 전용</> 트랜잭션이 시퀀스를 수정하고 <command>LISTEN</>, <command>UNLISTEN</>, and
-    <command>NOTIFY</>를 사용하기 때문에 Hot Standby 세션들이 정상적인 읽기 전용 세션보다 조금 더 엄격하게 작업해야 한다. 추후 버전에선 이런 점이 완화될 수도 있다.
+    보통은 <quote>읽기 전용</> 트랜잭션이 <command>LISTEN</>, 
+    <command>UNLISTEN</>, <command>NOTIFY</>를 사용하기 때문에
+    Hot Standby 세션들이 정상적인 읽기 전용 세션보다 조금 더
+    엄격하게 작업해야 한다. 추후 버전에선 이런 점이 완화될 수도 있다.
    </para>
 
    <para>
@@ -2040,11 +2121,15 @@ if (!triggered)
    <title>관리자 측면 개요</title>
 
    <para>
-    <filename>postgresql.conf</>에서 <varname>hot_standby</> 상태가 <literal>on</>이고,
-    <filename>recovery.conf</> 파일이 존재하면, 서버는 Hot Standby 모드로 실행될 것이다.  
-    그러나 Hot Standby 접속이 허용되려면 시간이 꽤 걸릴 수도 있다.  서버가 일관적으로 어떤 쿼리를 실행하기 위해 복구를 끝낼 때까지 연결을 수락하지 않기 때문이다.  
-    이 시간 동안에 연결을 시도하는 클라이언트는 에러 메시지가 뜨면서 거부될 것이다.  
-    서버가 연결할 준비가 되었는지 확인하기 위해서는 애플리케이션 접속을 시도하는 루프를 돌거나 서버 로그에서 아래 메시지들을 찾아 볼 수 있다.  
+    <filename>postgresql.conf</>에서 <varname>hot_standby</> 상태가
+    <literal>on</>이고(기본값),  <filename>recovery.conf</> 파일이
+    존재하면, 서버는 Hot Standby 모드로 실행될 것이다.  
+    그러나 Hot Standby 접속이 허용되려면 시간이 꽤 걸릴 수도 있다.  서버가
+    일관적으로 어떤 쿼리를 실행하기 위해 복구를 끝낼 때까지 연결을
+    수락하지 않기 때문이다.  이 시간 동안에 연결을 시도하는
+    클라이언트는 에러 메시지가 뜨면서 거부될 것이다.  서버가 연결할
+    준비가 되었는지 확인하기 위해서는 애플리케이션 접속을 시도하는 루프를
+    돌거나 서버 로그에서 아래 메시지들을 찾아 볼 수 있다.  
 
 <programlisting>
 LOG:  entering standby mode
@@ -2156,8 +2241,8 @@ LOG:  database system is ready to accept read only connections
 
    <para>
     <function>pg_cancel_backend()</>와 <function>pg_terminate_backend()</>는 사용자 백엔드에서 작동하고, 복구 작업을 하는 스타트업Startup 프로세스에서는 작동하지 않는다.  
-    <structname>pg_stat_activity</structname>는 스타트업 프로세스에 대한 엔트리와 활성화된 복구 트랜잭션을 보여 주지 않는다.  
-    즉, <structname>pg_prepared_xacts</structname>는 복구 중에 항상 비어 있다.  
+    <structname>pg_stat_activity</structname>는 이 복구 작업 중인 세션 정보는
+    보여 주지 않는다.  즉, <structname>pg_prepared_xacts</structname>는 복구 중에 항상 비어 있다.  
     prepared transaction을 분석하려면, 운영 서버에 있는 <literal>pg_prepared_xacts</>을 보고 명령어를 실행해서 트랜잭션을 분석해야 한다.
    </para>
 
@@ -2177,7 +2262,7 @@ LOG:  database system is ready to accept read only connections
    </para>
 
    <para>
-    WAL 파일을 조절하는 명령어는 복구 중에 작동하지 않는다.  예를 들면 <function>pg_start_backup</>, <function>pg_switch_xlog</> 등이 있다.
+    WAL 파일을 조절하는 명령어는 복구 중에 작동하지 않는다.  예를 들면 <function>pg_start_backup</>, <function>pg_switch_wal</> 등이 있다.
    </para>
 
    <para>
@@ -2270,11 +2355,6 @@ LOG:  database system is ready to accept read only connections
     Hot Standby사용 시 몇 가지 조건이 있다.  향후 버전에서 개선될 예정이다.  
 
   <itemizedlist>
-   <listitem>
-    <para>
-    해시 인덱스 작업을 재실행하면 WAL에 기록되지 않아서, 인덱스가 업데이트되지 않는다.  
-    </para>
-   </listitem>
    <listitem>
     <para>
      스냅샷을 찍기 전에 트랜잭션 수행에 대한 모든 정보가 필요하다.  

@@ -35,9 +35,17 @@ PostgreSQL documentation
 
   <para>
    이 명령은 복제용 연결을 사용한다.  이런 이유로 
-   <xref linkend="app-pgreceivexlog">  명령어의 제약 사항과 같은 
+   <xref linkend="app-pgreceivewal">  명령어의 제약 사항과 같은 
    제약 사항이 있다. 더불어 논리 복제의 제약 사항도 있다.
    (<xref linkend="logicaldecoding"> 참조)
+  </para>
+ 
+  <para>
+   <command>pg_recvlogical</> has no equivalent to the logical decoding
+   SQL interface's peek and get modes. It sends replay confirmations for
+   data lazily as it receives it and on clean exit. To examine pending data on
+    a slot without consuming it, use
+   <link linkend="functions-replication"><function>pg_logical_slot_peek_changes</></>.
   </para>
  </refsect1>
 
@@ -105,6 +113,32 @@ PostgreSQL documentation
     것들이다:
 
     <variablelist>
+     <varlistentry>
+      <term><option>-E <replaceable>lsn</replaceable></option></term>
+      <term><option>--endpos=<replaceable>lsn</replaceable></option></term>
+      <listitem>
+       <para>
+        In <option>--start</option> mode, automatically stop replication
+        and exit with normal exit status 0 when receiving reaches the
+        specified LSN.  If specified when not in <option>--start</option>
+        mode, an error is raised.
+       </para>
+
+       <para>
+        If there's a record with LSN exactly equal to <replaceable>lsn</>,
+        the record will be output.
+       </para>
+
+       <para>
+        The <option>--endpos</option> option is not aware of transaction
+        boundaries and may truncate output partway through a transaction.
+        Any partially output transaction will not be consumed and will be
+        replayed again when the slot is next read from. Individual messages
+        are never truncated.
+       </para>
+      </listitem>
+     </varlistentry>
+
      <varlistentry>
       <term><option>-f <replaceable>파일이름</replaceable></option></term>
       <term><option>--file=<replaceable>파일이름</replaceable></option></term>
@@ -204,7 +238,7 @@ PostgreSQL documentation
       <term><option>--status-interval=<replaceable>간격_초</replaceable></option></term>
       <listitem>
        <para>
-        이 옵션은 <xref linkend="app-pgreceivexlog"> 명령의 옵션과 같다.
+        이 옵션은 <xref linkend="app-pgreceivewal"> 명령의 옵션과 같다.
         자세한 설명은 그 명령어 설명서를 참조한다.
        </para>
       </listitem>
@@ -380,7 +414,7 @@ PostgreSQL documentation
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="app-pgreceivexlog"></member>
+   <member><xref linkend="app-pgreceivewal"></member>
   </simplelist>
  </refsect1>
 </refentry>

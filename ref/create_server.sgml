@@ -21,14 +21,14 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE SERVER <replaceable class="parameter">server_name</replaceable> [ TYPE '<replaceable class="parameter">server_type</replaceable>' ] [ VERSION '<replaceable class="parameter">server_version</replaceable>' ]
+CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">server_name</replaceable> [ TYPE '<replaceable class="parameter">server_type</replaceable>' ] [ VERSION '<replaceable class="parameter">server_version</replaceable>' ]
     FOREIGN DATA WRAPPER <replaceable class="parameter">fdw_name</replaceable>
     [ OPTIONS ( <replaceable class="PARAMETER">option</replaceable> '<replaceable class="PARAMETER">value</replaceable>' [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>CREATE SERVER</command> defines a new foreign server.  The
@@ -53,9 +53,21 @@ CREATE SERVER <replaceable class="parameter">server_name</replaceable> [ TYPE '<
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
+  <varlistentry>
+    <term><literal>IF NOT EXISTS</></term>
+    <listitem>
+     <para>
+      Do not throw an error if a server with the same name already exists.
+      A notice is issued in this case.  Note that there is no guarantee that
+      the existing server is anything like the one that would have been
+      created.
+     </para>
+    </listitem>
+   </varlistentry>
+
    <varlistentry>
     <term><replaceable class="parameter">server_name</replaceable></term>
     <listitem>
@@ -120,7 +132,7 @@ CREATE SERVER <replaceable class="parameter">server_name</replaceable> [ TYPE '<
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    Create a server <literal>myserver</> that uses the
@@ -133,7 +145,7 @@ CREATE SERVER myserver FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host 'foo', db
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    <command>CREATE SERVER</command> conforms to ISO/IEC 9075-9 (SQL/MED).
@@ -141,7 +153,7 @@ CREATE SERVER myserver FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host 'foo', db
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterserver"></member>

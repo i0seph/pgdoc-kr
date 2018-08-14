@@ -23,7 +23,9 @@
  </para>
 
  <para>
-  보안상 이슈가 될 여지가 있어, 이 두 기능은 소유주와 슈퍼 유저만 사용할 수 있다.
+  보안상 이슈가 될 여지가 있어, 이 두 기능은 슈퍼 유저와
+  <literal>pg_read_all_stats</literal> 롤 소속 사용자만 사용할 수 있다.
+  필요하다면, <command>GRANT</command> 명령을 통해 권한을 부여한다.
  </para>
 
  <sect2>

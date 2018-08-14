@@ -146,11 +146,24 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
   <sect1 id="recovery-target-settings">
 
     <title>복구 시점 설정</title>
+
+     <para>
+      기본값으로, 복구 작업은 WAL 로그 마지막까지 복구한다. 다음 설정들은
+      이 기본 설정을 무시하고, 어느 특정 이전 시점에서 이 복구 작업을 
+      멈추게 한다. 보통
+      <varname>recovery_target</>,
+      <varname>recovery_target_lsn</>, <varname>recovery_target_name</>,
+      <varname>recovery_target_time</>, <varname>recovery_target_xid</>
+      이런 설정 가운데 하나를 선택한다.
+      이 설정들이 중복해서 사용되었다면, 설정 파일 맨 마지막에 지정한 값을
+      사용한다.
+     </para>
+
      <variablelist>
      <varlistentry id="recovery-target" xreflabel="recovery_target">
       <term><varname>recovery_target</varname><literal> = 'immediate'</literal>
       <indexterm>
-        <primary><varname>recovery_target</> recovery parameter</primary>
+        <primary><varname>recovery_target</> 복구 매개변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -176,10 +189,6 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
             이 매개변수는 특정 복구 위치를 이름으로 지정한다.
                 그 이름은 <function>pg_create_restore_point()</> 함수에서 
                 지정한 이름이다. 
-                대개  <varname>recovery_target_name</> 값이나, 
-                <xref linkend="recovery-target-time">, <xref linkend="recovery-target-xid">
-                값 가운데 하나를 지정한다. 
-                이 값을 지정하지 않으면, 복구할 WAL 파일의 마지막까지 복구한다.
        </para>
       </listitem>
      </varlistentry>
@@ -194,10 +203,6 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <listitem>
        <para>
             이 매개변수는 특정 시점을 시간으로 지정한다.
-                대개 <varname>recovery_target_time</> 값이나, 
-                <xref linkend="recovery-target-name">, <xref linkend="recovery-target-xid">
-                값 가운데 하나를 지정한다.
-                이 값을 지정하지 않으면, 복구할 WAL 파일의 마지막까지 복구한다.
                 또한 <xref linkend="recovery-target-inclusive"> 값에 영향을 받아서
                 정확한 중지 위치가 결정되기도 한다.
        </para>
@@ -219,16 +224,35 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
                 않을 수 있음을 기억 해야한다.
                 복구되는 트랜잭션은 지정한 트랜잭션 이전에 커밋된 모든 트랜잭션들이다.
                 (선택적으로 지정한 트랜잭션도 포함될 수 있다.)
-        대개 <varname>recovery_target_xid</> 값이나,
-        <xref linkend="recovery-target-name">,
-        <xref linkend="recovery-target-time"> 값 가운데 하나를 지정한다.
-        이 값을 지정하지 않으며, 복구할 WAL 파일의 마지막 트랜잭션까지 복구한다.
                 또한 <xref linkend="recovery-target-inclusive"> 값에 영향을 받아서
                 정확한 중지 위치가 결정되기도 한다.
        </para>
       </listitem>
      </varlistentry>
 
+     <varlistentry id="recovery-target-lsn" xreflabel="recovery_target_lsn">
+      <term><varname>recovery_target_lsn</varname> (<type>pg_lsn</type>)
+      <indexterm>
+        <primary><varname>recovery_target_lsn</> 복구 매개변수</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies the LSN of the write-ahead log location up
+        to which recovery will proceed. The precise stopping point is also
+        influenced by <xref linkend="recovery-target-inclusive">. This
+        parameter is parsed using the system data type
+        <link linkend="datatype-pg-lsn"><type>pg_lsn</></link>.
+       </para>
+      </listitem>
+     </varlistentry>
+     </variablelist>
+
+     <para>
+       다음 설정들은 복구 작업을 끝낼 때 어떻게 끝낼 것인지를 결정한다:
+     </para>
+
+     <variablelist>
      <varlistentry id="recovery-target-inclusive"
                    xreflabel="recovery_target_inclusive">
       <term><varname>recovery_target_inclusive</varname>
@@ -239,13 +263,14 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       </term>
       <listitem>
        <para>
-            위에서 지정한 지점을 포함해서 복구 할 것인지, 
-                포함하지 않고 복구 할 것인지를 결정한다.
-                기본값은 <literal>true</>이다.
-                <literal>false</literal>로 지정하면, 특정 지점(트랜잭션 ID나, 시간) 전까지만
-                복구를 하고 복구 작업을 중지한다.
-                이 값은 <xref linkend="recovery-target-time">, <xref linkend="recovery-target-xid">
-                설정값의 작동에 영향을 준다.
+        위에서 지정한 지점을 포함해서 복구 할 것인지, 
+        포함하지 않고 복구 할 것인지를 결정한다.
+        기본값은 <literal>true</>이다.
+        <literal>false</literal>로 지정하면, 특정 지점(LSN, 트랜잭션 ID나, 시간) 전까지만
+        복구를 하고 복구 작업을 중지한다.
+        이 값은 <xref linkend="recovery-target-lsn">, 
+        <xref linkend="recovery-target-time">, <xref linkend="recovery-target-xid">
+        설정값의 작동에 영향을 준다.
        </para>
       </listitem>
      </varlistentry>
@@ -293,7 +318,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
           이 설정값으로 <literal>pause</>로 설정 했다면, 
           복구 작업을 마지막까지 했을 때, 그 위치가 원하는 
           위치인지 확인 할 수 있는 쿼리를 실행할 수 있는지를 결정한다.
-          임시 중지 상태라면, <function>pg_xlog_replay_resume()</> 함수를 
+          임시 중지 상태라면, <function>pg_wal_replay_resume()</> 함수를 
           이용해서, 복구 작업을 이어서 다시 할 수 있다.(자세한 이야기는 
           <xref linkend="functions-recovery-control-table">를 참조)
                 복구 작업을 하다가 원하는 마지막 위치에서 멈출 수 없으면, 

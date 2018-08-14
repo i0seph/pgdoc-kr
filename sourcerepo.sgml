@@ -12,13 +12,13 @@
 
  <para>
   <ulink
-  url="http://wiki.postgresql.org/wiki/Working_with_Git"></ulink>,
+  url="https://wiki.postgresql.org/wiki/Working_with_Git"></ulink>,
   에는 Git으로 작업하기 위한 설명이 있다.
  </para>
 
   <para>
    <productname>PostgreSQL</productname> 소스로 빌드하기위해서는 
-    최신의 <application>bison</>,<application>flex</>, 그리고 <application>Perl</>이 필요하다. 빌드하는데 필요한 도구들이 tarball에 포함되어있기 때문에 tarball로 빌드할 경우, 위 도구들은 필요하지않다. 그외 도구들은 <xref linkend="installation">과 동일하다.
+    최신의 <application>bison</>,<application>flex</>, 그리고 <application>Perl</>이 필요하다. 빌드하는데 필요한 도구들이 tarball에 포함되어있기 때문에 tarball로 빌드할 경우, 위 도구들은 필요하지않다. 그외 도구들은 <xref linkend="install-requirements">과 동일하다.
   </para>
 
  <sect1 id="git">
@@ -36,7 +36,7 @@
 
    <step>
     <para>
-     <ulink url="http://git-scm.com"></ulink>에서 <productname>Git</>을 설치한다.
+     <ulink url="https://git-scm.com"></ulink>에서 <productname>Git</>을 설치한다.
      대부분의 시스템에서는 기본으로 최신 버전 또는 각자의 시스템에 맞는 
      패키지의 <application>Git</>이 설치되어있다. 
     </para>
@@ -47,7 +47,7 @@
      Git 저장소를 사용하기 위해서는, 공식 미러 저장소를 clone 해야한다.:
 
 <programlisting>
-git clone git://git.postgresql.org/git/postgresql.git
+git clone https://git.postgresql.org/git/postgresql.git
 </programlisting>
 
      당신의 컴퓨터의 전체 저장소가 복사 될것이다. 인터넷 속도가 느리다면 
@@ -57,16 +57,13 @@ git clone git://git.postgresql.org/git/postgresql.git
     </para>
 
     <para>
-     Git프로토콜이 방화벽에 막혀있다면,
-     HTTP 프로토콜로 Git 미러에 접속 할 수있다.
-     다음과 같이, 접두사만 <literal>http</>로 바꾸면 된다:
+     Git프로토콜로 Git 미러에 접속 할 수있다면
+     다음과 같이, 접두사만 <literal>git</>으로 바꾸면 된다:
 
 <programlisting>
-git clone http://git.postgresql.org/git/postgresql.git
+git clone git://git.postgresql.org/git/postgresql.git
 </programlisting>
 
-     HTTP 프로토콜은 Git 프로토콜보다는 효율적이지 않다. 
-     그래서 사용하는데 좀 더 느릴것이다.
     </para>
    </step>
 
@@ -85,7 +82,7 @@ git fetch
   <para>
    <productname>Git</> 은 소스 가져오는것 외에 더 많은 일을 할 수 있다.
    자세한 내용은, <productname>Git</> man 페이지나,
-   <ulink url="http://git-scm.com"></>을 통해 얻을 수 있다.
+   <ulink url="https://git-scm.com"></>을 통해 얻을 수 있다.
   </para>
  </sect1>
 

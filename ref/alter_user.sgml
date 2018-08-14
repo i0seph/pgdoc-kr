@@ -33,19 +33,20 @@ ALTER USER <replaceable class="PARAMETER">이름</replaceable> [ WITH ] <replace
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
     | CONNECTION LIMIT <replaceable class="PARAMETER">connlimit</replaceable>
-    | [ ENCRYPTED | UNENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
     | VALID UNTIL '<replaceable class="PARAMETER">timestamp</replaceable>'
 
 ALTER USER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 
-ALTER USER <replaceable class="PARAMETER">이름</replaceable> SET <replaceable>환경설정매개변수</replaceable> { TO | = } { <replaceable>값</replaceable> | DEFAULT }
-ALTER USER <replaceable class="PARAMETER">이름</replaceable> SET <replaceable>환경설정매개변수</replaceable> FROM CURRENT
-ALTER USER <replaceable class="PARAMETER">이름</replaceable> RESET <replaceable>환경설정매개변수</replaceable>
-ALTER USER <replaceable class="PARAMETER">이름</replaceable> RESET ALL
+ALTER USER { <replaceable class="PARAMETER">이름</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스_이름</replaceable> ] SET <replaceable>환경설정_매개변수</replaceable> { TO | = } { <replaceable>value</replaceable> | DEFAULT }
+ALTER USER { <replaceable class="PARAMETER">이름</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스_이름</replaceable> ] SET <replaceable>환경설정_매개변수</replaceable> FROM CURRENT
+ALTER USER { <replaceable class="PARAMETER">이름</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스_이름</replaceable> ] RESET <replaceable>환경설정_매개변수</replaceable>
+ALTER USER { <replaceable class="PARAMETER">이름</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스_이름</replaceable> ] RESET ALL
 
-<phrase>where <replaceable class="PARAMETER">이름</replaceable> 위치에는 다음 값을 사용할 수 있음:</phrase>
 
-    [ GROUP ] <replaceable class="PARAMETER">롤이름</replaceable>
+<phrase><replaceable class="PARAMETER">이름</replaceable> 위치에는 다음 값을 사용할 수 있음:</phrase>
+
+  <replaceable class="PARAMETER">롤이름</replaceable>
   | CURRENT_USER
   | SESSION_USER
 </synopsis>

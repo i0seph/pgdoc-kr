@@ -9,12 +9,13 @@ postgresql.conf, pg_hba.conf,
         recovery.conf           <filename>
 [A-Z][A-Z_ ]+[A-Z_]             <command>, <literal>, <envar>, <acronym>
 [A-Za-z_][A-Za-z0-9_]+()        <function>
--[-A-Za-z_]+                    <option>
+\-\-?[A-Za-z_]+[-A-Za-z_]*      <option> (use backslashes to avoid SGML markup)
 [A-Za-z_]+/[A-Za-z_]+           <filename>
 psql                            <application>
 pg_[A-Za-z0-9_]+                <application>, <structname>
 [A-Z][A-Z][A-Z_ ]*              <type>
-[a-z]+_[a-z_]+                  <varname>
+[a-z]+_[a-z_]+                  <varname>, <structfield>
+                                <systemitem class="osname">
 
 non-ASCII characters            find using grep -P '[\x80-\xFF]'
                                 convert to HTML4 named entity (&) escapes
@@ -55,9 +56,9 @@ For new features, add links to the documentation sections.
    각 배포판별 가장 완벽한 변경 사항을 살펴보는 방법은 
    <link linkend="git">Git</link> 로그를 살펴보는 것이다.
    <ulink
-   url="http://archives.postgresql.org/pgsql-committers/"><literal>pgsql-committers</literal>
+   url="https://archives.postgresql.org/pgsql-committers/"><literal>pgsql-committers</literal>
    메일링 리스트</ulink>에서도 코드 변경 사항을 충실히 발표하고 있다.  웹 페이지로는
-   <ulink url="http://git.postgresql.org/gitweb?p=postgresql.git;a=summary">여기서</ulink>
+   <ulink url="https://git.postgresql.org/gitweb?p=postgresql.git;a=summary">여기서</ulink>
    자세한 변경 사항을 살펴 볼 수 있다.
   </para>
 
@@ -72,6 +73,7 @@ For new features, add links to the documentation sections.
   The reason for splitting the release notes this way is so that appropriate
   subsets can easily be copied into back branches.
 -->
+&release-10;
 &release-9.6;
 &release-9.5;
 &release-9.4;

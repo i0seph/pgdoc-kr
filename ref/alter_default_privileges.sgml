@@ -46,6 +46,10 @@ GRANT { USAGE | ALL [ PRIVILEGES ] }
     ON TYPES
     TO { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
 
+GRANT { USAGE | CREATE | ALL [ PRIVILEGES ] }
+    ON SCHEMAS
+    TO { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...] [ WITH GRANT OPTION ]
+
 REVOKE [ GRANT OPTION FOR ]
     { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
     [, ...] | ALL [ PRIVILEGES ] }
@@ -71,6 +75,12 @@ REVOKE [ GRANT OPTION FOR ]
     ON TYPES
     FROM { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...]
     [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { USAGE | CREATE | ALL [ PRIVILEGES ] }
+    ON SCHEMAS
+    FROM { [ GROUP ] <replaceable class="PARAMETER">롤_이름</replaceable> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -81,7 +91,7 @@ REVOKE [ GRANT OPTION FOR ]
    <command>ALTER DEFAULT PRIVILEGES</> 명령은 앞으로 만들어질 
    객체에 기본적으로 적용할 접근 권한을 미리 지정하는 일을 한다.  (이 명령은
    기존 이미 있는 객체들에 대한 접근 권한을 바꾸는 일은 하지 않는다. 현재,
-   테이블 (뷰와 외부 테이블 포함), 시퀀스, 함수, 자료형 (도메인 포함)
+   스키마, 테이블 (뷰와 외부 테이블 포함), 시퀀스, 함수, 자료형 (도메인 포함)
    객체들에 대해서만 사용할 수 있다.
   </para>
 
@@ -128,6 +138,8 @@ REVOKE [ GRANT OPTION FOR ]
       만들어지는 객체들에 대해서만 기본 접근 권한을 지정한다.
       <literal>IN SCHEMA</> 옵션이 빠지면, 데이터베이스 전체 객체를
       대상으로 한다.
+      <literal>ON SCHEMAS</> 옵션을 쓴 경우에는 <literal>IN SCHEMA</>
+      옵션을 쓸 수 없다.
      </para>
     </listitem>
    </varlistentry>

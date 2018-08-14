@@ -26,7 +26,7 @@ PREPARE TRANSACTION <replaceable class="PARAMETER">transaction_id</replaceable>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>PREPARE TRANSACTION</command> prepares the current transaction
@@ -61,7 +61,7 @@ PREPARE TRANSACTION <replaceable class="PARAMETER">transaction_id</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -80,7 +80,7 @@ PREPARE TRANSACTION <replaceable class="PARAMETER">transaction_id</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    <command>PREPARE TRANSACTION</> is not intended for use in applications
@@ -100,7 +100,8 @@ PREPARE TRANSACTION <replaceable class="PARAMETER">transaction_id</replaceable>
    It is not currently allowed to <command>PREPARE</> a transaction that
    has executed any operations involving temporary tables,
    created any cursors <literal>WITH HOLD</>, or executed
-   <command>LISTEN</> or <command>UNLISTEN</>.
+   <command>LISTEN</>, <command>UNLISTEN</>, or
+   <command>NOTIFY</>.
    Those features are too tightly
    tied to the current session to be useful in a transaction to be prepared.
   </para>
@@ -157,7 +158,7 @@ PREPARE TRANSACTION 'foobar';
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    <command>PREPARE TRANSACTION</command> is a
@@ -169,7 +170,7 @@ PREPARE TRANSACTION 'foobar';
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-commit-prepared"></member>

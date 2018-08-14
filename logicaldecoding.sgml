@@ -55,8 +55,8 @@
 <programlisting>
 postgres=# -- 슬롯 이름은 'regression_slot'로 출력 플러그인은 'test_decoding' 사용하는 논리적 복제 슬롯을 만든다.
 postgres=# SELECT * FROM pg_create_logical_replication_slot('regression_slot', 'test_decoding');
-    slot_name    | xlog_position
------------------+---------------
+    slot_name    |    lsn
+-----------------+-----------
  regression_slot | 0/16B1970
 (1 row)
 
@@ -68,8 +68,8 @@ postgres=# SELECT slot_name, plugin, slot_type, database, active, restart_lsn, c
 
 postgres=# -- 아직 원본 서버에서 변경된 부분이 없다
 postgres=# SELECT * FROM pg_logical_slot_get_changes('regression_slot', NULL, NULL);
- location | xid | data
-----------+-----+------
+ lsn | xid | data
+-----+-----+------
 (0 rows)
 
 postgres=# CREATE TABLE data(id serial primary key, data text);
@@ -77,7 +77,7 @@ CREATE TABLE
 
 postgres=# -- DDL 구문은 복제되지 않는다. 그래서 다음과 같이 보인다.
 postgres=# SELECT * FROM pg_logical_slot_get_changes('regression_slot', NULL, NULL);
- location  | xid |    data
+    lsn    | xid |    data
 -----------+-----+------------
  0/16D5D48 | 688 | BEGIN 688
  0/16E0380 | 688 | COMMIT 688
@@ -86,8 +86,8 @@ postgres=# SELECT * FROM pg_logical_slot_get_changes('regression_slot', NULL, NU
 postgres=# -- 변경 사항을 한 번 꺼냈기 때문에 더 이상 변경 분이 없다면
 postgres=# -- 같은 명령에 대해서 다음과 같이 아주 내용도 보여주지 않는다.
 postgres=# SELECT * FROM pg_logical_slot_get_changes('regression_slot', NULL, NULL);
- location | xid | data
-----------+-----+------
+ lsn | xid | data
+-----+-----+------
 (0 rows)
 
 postgres=# BEGIN;
@@ -96,7 +96,7 @@ postgres=# INSERT INTO data(data) VALUES('2');
 postgres=# COMMIT;
 
 postgres=# SELECT * FROM pg_logical_slot_get_changes('regression_slot', NULL, NULL);
- location  | xid |                     data
+    lsn    | xid |                     data
 -----------+-----+-----------------------------------------------
  0/16E0478 | 689 | BEGIN 689
  0/16E0478 | 689 | table public.data: INSERT: id[integer]:1 data[text]:'1'
@@ -108,7 +108,7 @@ postgres=# INSERT INTO data(data) VALUES('3');
 
 postgres=# -- 변경 사항 확인, 꺼낸 것 아님
 postgres=# SELECT * FROM pg_logical_slot_peek_changes('regression_slot', NULL, NULL);
- location  | xid |                     data
+    lsn    | xid |                     data
 -----------+-----+-----------------------------------------------
  0/16E09C0 | 690 | BEGIN 690
  0/16E09C0 | 690 | table public.data: INSERT: id[integer]:3 data[text]:'3'
@@ -117,7 +117,7 @@ postgres=# SELECT * FROM pg_logical_slot_peek_changes('regression_slot', NULL, N
 
 postgres=# -- pg_logical_slot_peek_changes() 함수 기능 확인
 postgres=# SELECT * FROM pg_logical_slot_peek_changes('regression_slot', NULL, NULL);
- location  | xid |                     data
+    lsn    | xid |                     data
 -----------+-----+-----------------------------------------------
  0/16E09C0 | 690 | BEGIN 690
  0/16E09C0 | 690 | table public.data: INSERT: id[integer]:3 data[text]:'3'
@@ -126,7 +126,7 @@ postgres=# SELECT * FROM pg_logical_slot_peek_changes('regression_slot', NULL, N
 
 postgres=# -- 출력 플러그인의 옵션 사용
 postgres=# SELECT * FROM pg_logical_slot_peek_changes('regression_slot', NULL, NULL, 'include-timestamp', 'on');
- location  | xid |                     data
+    lsn    | xid |                     data
 -----------+-----+-----------------------------------------------
  0/16E09C0 | 690 | BEGIN 690
  0/16E09C0 | 690 | table public.data: INSERT: id[integer]:3 data[text]:'3'
@@ -275,7 +275,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
    <sect2>
     <title>스냅샷 추출</title>
     <para>
-     스트리밍 복제 인터페이스를 이용해서 새로운 복제 슬롯이 만들어질 때,
+     스트리밍 복제 인터페이스(<xref linkend="protocol-replication-create-slot"> 참조)를 이용해서 새로운 복제 슬롯이 만들어질 때,
      스냅샷이 추출된다(<xref linkend="functions-snapshot-synchronization"> 참조).
      슬롯이 만들어지는 시점 이후부터 데이터베이스의 변경 사항을 보관함을 
      의미한다.  이 기능은 <link linkend="sql-set-transaction"><literal>SET TRANSACTION
@@ -283,6 +283,12 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
      복제본을 만드는데 사용할 수 있다.
      이렇게 해서, 그 뒤에 발생하는 자료 변경에 관계 없이
      데이터베이스의 한 시점을 기준으로 덤프하는 트랜잭션으로 사용할 수 있다.
+    </para>
+    <para>
+     Creation of a snapshot is not always possible.  In particular, it will
+     fail when connected to a hot standby.  Applications that do not require
+     snapshot export may suppress it with the <literal>NOEXPORT_SNAPSHOT</>
+     option.
     </para>
    </sect2>
   </sect1>
@@ -298,7 +304,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
      </listitem>
 
      <listitem>
-      <para><literal>DROP_REPLICATION_SLOT <replaceable>슬롯이름</replaceable></literal></para>
+      <para><literal>DROP_REPLICATION_SLOT <replaceable>slot_name</replaceable></literal> <optional> <literal>WAIT</> </></para>
      </listitem>
 
      <listitem>
@@ -338,7 +344,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
    <para>
     <link linkend="view-pg-replication-slots"><structname>pg_replication_slots</structname></link>
     뷰와
-    <link linkend="monitoring-stats-views-table"><structname>pg_stat_replication</structname></link>
+    <link linkend="pg-stat-replication-view"><structname>pg_stat_replication</structname></link>
     뷰에서 현재 복제 슬롯에 대한 등록정보와 
     현재 스트리밍 복제 접속을 이용해서 사용중인 복제 상태 정보를 제공한다.
     이들은 물리적 복제와 논리적 복제 모두 지원한다.
@@ -356,7 +362,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
    </para>
    <sect2 id="logicaldecoding-output-init">
     <title>Initialization Function</title>
-    <indexterm zone="logicaldecoding">
+    <indexterm zone="logicaldecoding-output-init">
      <primary>_PG_output_plugin_init</primary>
     </indexterm>
     <para>
@@ -380,7 +386,7 @@ typedef struct OutputPluginCallbacks
     LogicalDecodeShutdownCB shutdown_cb;
 } OutputPluginCallbacks;
 
-typedef void (*LogicalOutputPluginInit)(struct OutputPluginCallbacks *cb);
+typedef void (*LogicalOutputPluginInit) (struct OutputPluginCallbacks *cb);
 </programlisting>
      The <function>begin_cb</function>, <function>change_cb</function>
      and <function>commit_cb</function> callbacks are required,
@@ -419,7 +425,7 @@ CREATE TABLE another_catalog_table(data text) WITH (user_catalog_table = true);
      data in a data type that can contain arbitrary data (e.g., <type>bytea</type>) is
      cumbersome. If the output plugin only outputs textual data in the
      server's encoding, it can declare that by
-     setting <literal>OutputPluginOptions.output_mode</>
+     setting <literal>OutputPluginOptions.output_type</>
      to <literal>OUTPUT_PLUGIN_TEXTUAL_OUTPUT</> instead
      of <literal>OUTPUT_PLUGIN_BINARY_OUTPUT</> in
      the <link linkend="logicaldecoding-output-plugin-startup">startup
@@ -465,11 +471,9 @@ CREATE TABLE another_catalog_table(data text) WITH (user_catalog_table = true);
       a replication slot is created or asked to stream changes, independent
       of the number of changes that are ready to be put out.
 <programlisting>
-typedef void (*LogicalDecodeStartupCB) (
-    struct LogicalDecodingContext *ctx,
-    OutputPluginOptions *options,
-    bool is_init
-);
+typedef void (*LogicalDecodeStartupCB) (struct LogicalDecodingContext *ctx,
+                                        OutputPluginOptions *options,
+                                        bool is_init);
 </programlisting>
       The <literal>is_init</literal> parameter will be true when the
       replication slot is being created and false
@@ -504,9 +508,7 @@ typedef struct OutputPluginOptions
       be used to deallocate resources private to the output plugin. The slot
       isn't necessarily being dropped, streaming is just being stopped.
 <programlisting>
-typedef void (*LogicalDecodeShutdownCB) (
-    struct LogicalDecodingContext *ctx
-);
+typedef void (*LogicalDecodeShutdownCB) (struct LogicalDecodingContext *ctx);
 </programlisting>
      </para>
     </sect3>
@@ -519,10 +521,8 @@ typedef void (*LogicalDecodeShutdownCB) (
       start of a committed transaction has been decoded. Aborted transactions
       and their contents never get decoded.
 <programlisting>
-typedef void (*LogicalDecodeBeginCB) (
-    struct LogicalDecodingContext *,
-    ReorderBufferTXN *txn
-);
+typedef void (*LogicalDecodeBeginCB) (struct LogicalDecodingContext *ctx,
+                                      ReorderBufferTXN *txn);
 </programlisting>
       The <parameter>txn</parameter> parameter contains meta information about
       the transaction, like the time stamp at which it has been committed and
@@ -540,10 +540,9 @@ typedef void (*LogicalDecodeBeginCB) (
       rows will have been called before this, if there have been any modified
       rows.
 <programlisting>
-typedef void (*LogicalDecodeCommitCB) (
-    struct LogicalDecodingContext *,
-    ReorderBufferTXN *txn
-);
+typedef void (*LogicalDecodeCommitCB) (struct LogicalDecodingContext *ctx,
+                                       ReorderBufferTXN *txn,
+                                       XLogRecPtr commit_lsn);
 </programlisting>
      </para>
     </sect3>
@@ -559,12 +558,10 @@ typedef void (*LogicalDecodeCommitCB) (
       several rows at once the callback will be called individually for each
       row.
 <programlisting>
-typedef void (*LogicalDecodeChangeCB) (
-    struct LogicalDecodingContext *ctx,
-    ReorderBufferTXN *txn,
-    Relation relation,
-    ReorderBufferChange *change
-);
+typedef void (*LogicalDecodeChangeCB) (struct LogicalDecodingContext *ctx,
+                                       ReorderBufferTXN *txn,
+                                       Relation relation,
+                                       ReorderBufferChange *change);
 </programlisting>
       The <parameter>ctx</parameter> and <parameter>txn</parameter> parameters
       have the same contents as for the <function>begin_cb</function>
@@ -594,10 +591,8 @@ typedef void (*LogicalDecodeChangeCB) (
        from <parameter>origin_id</parameter> is of interest to the
        output plugin.
 <programlisting>
-typedef bool (*LogicalDecodeFilterByOriginCB) (
-    struct LogicalDecodingContext *ctx,
-    RepNodeId origin_id
-);
+typedef bool (*LogicalDecodeFilterByOriginCB) (struct LogicalDecodingContext *ctx,
+                                               RepOriginId origin_id);
 </programlisting>
       The <parameter>ctx</parameter> parameter has the same contents
       as for the other callbacks. No information but the origin is
@@ -623,22 +618,20 @@ typedef bool (*LogicalDecodeFilterByOriginCB) (
       The optional <function>message_cb</function> callback is called whenever
       a logical decoding message has been decoded.
 <programlisting>
-typedef void (*LogicalDecodeMessageCB) (
-    struct LogicalDecodingContext *,
-    ReorderBufferTXN *txn,
-    XLogRecPtr message_lsn,
-    bool transactional,
-    const char *prefix,
-    Size message_size,
-    const char *message
-);
+typedef void (*LogicalDecodeMessageCB) (struct LogicalDecodingContext *ctx,
+                                        ReorderBufferTXN *txn,
+                                        XLogRecPtr message_lsn,
+                                        bool transactional,
+                                        const char *prefix,
+                                        Size message_size,
+                                        const char *message);
 </programlisting>
       The <parameter>txn</parameter> parameter contains meta information about
       the transaction, like the time stamp at which it has been committed and
       its XID. Note however that it can be NULL when the message is
       non-transactional and the XID was not assigned yet in the transaction
       which logged the message. The <parameter>lsn</parameter> has WAL
-      position of the message. The <parameter>transactional</parameter> says
+      location of the message. The <parameter>transactional</parameter> says
       if the message was sent as transactional or not.
       The <parameter>prefix</parameter> is arbitrary null-terminated prefix
       which can be used for identifying interesting messages for the current

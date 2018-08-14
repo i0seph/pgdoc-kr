@@ -406,9 +406,9 @@ su - postgres -c "/usr/local/pgsql/bin/pg_ctl start -l logfile -D /usr/local/pgs
 <para>
 <screen>
 <computeroutput>
-LOG:could not bind IPv4 socket: Address already in use
-HINT:Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
-FATAL:could not create TCP/IP listen socket
+LOG:  could not bind IPv4 address "127.0.0.1": Address already in use
+HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+FATAL:  could not create any TCP/IP sockets
 </computeroutput>
 </screen>
  일반적으로 이것은 서버가 이미 실행되고 있는 포트에서 사용자가 다른 서버를 시작하려고 했음을 의미한다.
@@ -417,9 +417,9 @@ FATAL:could not create TCP/IP listen socket
 <screen>
 <prompt>$</> <userinput>postgres -p 666</userinput>
 <computeroutput>
-LOG:could not bind IPv4 socket: Permission denied
-HINT:Is another postmaster already running on port 666? If not, wait a few seconds and retry.
-FATAL:could not create TCP/IP listen socket
+LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+HINT:  Is another postmaster already running on port 666? If not, wait a few seconds and retry.
+FATAL:  could not create any TCP/IP sockets
 </computeroutput>
 </screen>
 </para>
@@ -427,8 +427,8 @@ FATAL:could not create TCP/IP listen socket
 <para>
 메시지는 다음과 같이 나타난다.
 <screen>
-FATAL:could not create shared memory segment: Invalid argument
-DETAIL:Failed system call was shmget(key=5440001, size=4011376640, 03600).
+FATAL:  could not create shared memory segment: Invalid argument
+DETAIL:  Failed system call was shmget(key=5440001, size=4011376640, 03600).
 </screen>
  이것은 공유 메모리 크기에 대한 커널 제한이 <productname>PostgreSQL</productname>
  이 생성하려고 하는 작업 영역보다 작다는 것을 의미하는 것일 수 있다(이 예시에서 4011376640바이트).
@@ -436,13 +436,14 @@ DETAIL:Failed system call was shmget(key=5440001, size=4011376640, 03600).
  임시 해결책으로, 버퍼 수를 정상보다 작게 해서 서버 시작을 시도해볼 수 있다(<xref linkend="guc-shared-buffers">).
  결국에는 허용된 공유 메모리 크기를 늘리기 위해 사용자는 커널을 다시 환경 설정할 수 있다.
  또한 동일한 머신에서 다중 서버를 시작하려는 경우 총 요청 공간이 커널 제한을 초과하면 이 메시지가 나타날 수도 있다.
+
 </para>
 
 <para>
  에러가 다음과 같을 수 있다.
 <screen>
-FATAL:could not create semaphores: No space left on device
-DETAIL:Failed system call was semget(5440126, 17, 03600).
+FATAL:  could not create semaphores: No space left on device
+DETAIL:  Failed system call was semget(5440126, 17, 03600).
 </screen>
  이것은 사용자의 디스크 공간이 소진되었음을 의미하지 <emphasis>않는다</emphasis>.
  이것은 <systemitem class="osname">System V</> 세마포어에 대한 커널 수 제한이 생성하려는 
@@ -451,7 +452,7 @@ DETAIL:Failed system call was semget(5440126, 17, 03600).
 </para>
 
 <para>
- <quote>illegal system call</> 에러가 나타난 경우 공유 메모리 또는 세마포어가 사용자의 커널에서 일절 지원되지 않는 것일 수 있다. 이런 경우 유일한 방법은 이 기능이 가능하도록 커널을 다시 환경 설정하는 것뿐이다.
+ <quote><errorname>Illegal system call</></quote> 에러가 나타난 경우 공유 메모리 또는 세마포어가 사용자의 커널에서 일절 지원되지 않는 것일 수 있다. 이런 경우 유일한 방법은 이 기능이 가능하도록 커널을 다시 환경 설정하는 것뿐이다.
 </para>
 
 <para>
@@ -471,8 +472,8 @@ DETAIL:Failed system call was semget(5440126, 17, 03600).
 <para>
 <screen>
 psql: could not connect to server: Connection refused
-Is the server running on host "server.joe.com" and accepting
-TCP/IP connections on port 5432?
+        Is the server running on host "server.joe.com" and accepting
+        TCP/IP connections on port 5432?
 </screen>
  이것은 일반적인 <quote>I couldn't find a server to talk
  to</quote> 실패이다.
@@ -483,8 +484,8 @@ TCP/IP connections on port 5432?
  그 대신, 로컬 서버에 대한 Unix 도메인 소켓 통신을 시도할 때 연결할 수도 있다.
 <screen>
 psql: could not connect to server: No such file or directory
-Is the server running locally and accepting
-connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
+        Is the server running locally and accepting
+        connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
 </screen>
 </para>
 
@@ -520,26 +521,31 @@ connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
  </indexterm>
 
  <para>
-공유 메모리 및 세마포어는 통칭 
-<quote><systemitem class="osname">System V</>
-<acronym>IPC</></quote>라고 한다(<productname>PostgreSQL</>과 무관한 메시지 큐와 함께).
-<systemitem class="osname">Windows</> 외에, <productname>PostgreSQL</>이 이러한 기능에 대한 자체적인 대체 구현을 제공하는 경우 
-<productname>PostgreSQL</>을 실행하기 위해 이러한 기능이 요구된다.
+    <productname>PostgreSQL</> 서버는 내부-프로세스
+    통신(inter-process communication, <acronym>IPC</>) - 구체적으로
+    공유 메모리와, 세마포어를 여러 프로세스가 함께 사용하는 것 - 을 제공하는 
+    OS에서 실행된다. 유닉스 계열에서는 일반적으로
+    <quote><systemitem class="osname">System V</></> <acronym>IPC</>,
+    <quote><systemitem class="osname">POSIX</></> <acronym>IPC</>
+    중 하나나, 둘 모두를 제공한다.  <systemitem class="osname">Windows</>에서는
+    자체적인 방법으로 이 기능을 제공하며, 여기서는 언급하지 않는다.
  </para>
 
  <para>
-이러한 기능의 완전한 부재는 서버 시작 시 
-<errorname>잘못된 시스템 호출</> 에러에 의해 보통 드러난다.
-이런 경우 커널을 다시 환경 설정하는 것 외에는 대안이 없다.
-<productname>PostgreSQL</>은 커널 없이 작동되지 않는다.
+이러한 기능을 제공하지 않는 OS에서 서버를 실행하면,
+<quote><errorname>Illegal system call</></quote> 오류를 내면서 실행되지 않는다.
+커널이 이런 기능을 제공하지 않는다면, 커널을 다시 만들거나, OS 환경 설정을
+다시 하거나 해야한다.
 이러한 상황은 최신 운영 체제에서는 거의 일어나지 않는다.
  </para>
 
  <para>
-<productname>PostgreSQL</>이 다양한 하드 
-<acronym>IPC</>제한 하나를 초과한 경우 서버는 시작을 거부하고 문제와 조치를 설명하는 지시적 에러 메시지를 남긴다(<xref linkend="server-start-failures"> 참조).
-관련 커널 파라미터의 이름은 각종 시스템 간에 동일하며, <xref linkend="sysvipc-parameters">에 개략적인 내용이 나와 있다.
-단, 파라미터 설정 방법은 다를 수 있다.일부 플랫폼에 대한 제시는 아래에 나와 있다.
+    <productname>PostgreSQL</> 서버는 아주 적은 System V 공유 메모리와, 
+    서버에서 사용할 공용 메모리로 POSIX (<function>mmap</> 함수 이용)
+    공유 메모리를 사용한다.
+    또한 OS 세마포어도 필요한데, 이 수량도 서버가 실행될 때 확보한다.
+    현재 리눅스나 FreeBSD 인 경우는 POSIX 세마포어를 사용하고, 
+    나머지 OS에서는 System V 세마포어를 사용한다.
  </para>
 
  <note>
@@ -549,6 +555,19 @@ connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
  </para>
  </note>
 
+   <para>
+    System V <acronym>IPC</>를 사용하는 경우, 이들 자원(공유 메모리와 세마포어)은
+    OS 전역에서 공용으로 사용된다.  <productname>PostgreSQL</> 서버를
+    실행 할 때, 필요한 만큼의 자원을 확보할 수 없다면, 
+    서버 오류 메시지를 보이며 서버는 중지된다.  (
+    <xref linkend="server-start-failures"> 참조). 
+    이 OS 설정은 <xref
+    linkend="sysvipc-parameters"> 에서 대략적으로 설명한다.  
+    하지만, 이들 설정은 OS 마다 서로 다르기 때문에, 
+    사용하는 OS 설명서를 참조해야 한다.
+    몇몇 OS에 대해서는 아래에서 설명하고 있다.
+   </para>
+
  <table id="sysvipc-parameters">
 <title><systemitem class="osname">System V</> <acronym>IPC</> 파라미터</title>
 
@@ -557,7 +576,7 @@ connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
 <row>
  <entry>이름</>
  <entry>설명</>
- <entry>적절한 값</>
+ <entry>하나의 <productname>PostgreSQL</> 서버 인스턴스가 실행 될 때 필요한 값</>
 </row>
  </thead>
 
@@ -565,7 +584,7 @@ connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
 <row>
  <entry><varname>SHMMAX</></>
  <entry>공유 메모리 세그먼트의 최대 크기(바이트)</>
- <entry>최소 1kB(서버 사본이 다수 실행되는 경우 그 이상)</entry>
+ <entry>최소 1kB, 기본값은 더 크기 때문에 더 많이 필요하다.</entry>
 </row>
 
 <row>
@@ -577,7 +596,7 @@ connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
 <row>
  <entry><varname>SHMALL</></>
  <entry>사용 가능한 공유 메모리의 총 양(바이트 또는 페이지)</>
- <entry>바이트인 경우 <varname>SHMMAX</varname>와 동일; 페이지인 경우 <literal>ceil(SHMMAX/PAGE_SIZE)</literal></>
+ <entry>바이트인 경우 <varname>SHMMAX</varname>와 동일; 페이지인 경우 <literal>ceil(SHMMAX/PAGE_SIZE)</literal>, 다른 응용 프로그램에서도 쓴다면 더 많이.</>
 </row>
 
 <row>
@@ -595,7 +614,7 @@ connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
  <row>
 <entry><varname>SEMMNI</></>
 <entry>세마포어 식별자의 최대 수(예: 세트)</>
-<entry>최소한 <literal>ceil((max_connections + autovacuum_max_workers + max_worker_processes + 5) / 16)</literal></>
+<entry>최소한 <literal>ceil((max_connections + autovacuum_max_workers + max_worker_processes + 5) / 16)</literal>, 다른 응용 프로그램에서도 쓴다면 더 많이.</>
  </row>
 
  <row>
@@ -627,9 +646,10 @@ connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
  </table>
 
  <para>
-<productname>PostgreSQL</>은 서버 사본별로 System V 공유 메모리 수 바이트가 필요하다(64비트 플랫폼의 경우 보통 48바이트).
+<productname>PostgreSQL</>은 서버 인스턴스별로 System V 공유 메모리 수 바이트가 필요하다(64비트 플랫폼의 경우 보통 48바이트).
 최신 운영 체제에서 이 정도 양은 손쉽게 할당 가능하다.
-그러나, 서버 사본을 다수 실행 중이거나 다른 어플리케이션도 System V 공유 메모리를 사용 중인 경우 바이트 단위의 공유 메모리 최대 크기인 <varname>SHMMAX</>를 늘려야 하거나 시스템 차원(system-wide)의 System V 공유 메모리인 <varname>SHMALL</>를 늘려야 할 수 있다.
+그러나, 서버 인스턴스를 다수 실행 중이거나 다른 어플리케이션도 System V 공유 메모리를 사용 중인 경우 
+시스템 차원(system-wide)의 System V 공유 메모리인 <varname>SHMALL</>를 늘려야 할 수 있다.
 <varname>SHMALL</>는 여러 시스템에서 바이트 단위가 아니라 페이지 단위로 처리된다는 점에 유의하라.
  </para>
 
@@ -666,14 +686,20 @@ left on device</>라는 애매한 메시지를 받게 된다.
  </para>
 
  <para>
-세트에 포함될 수 있는 세마포어 수를 결정하는 <varname>SEMMSL</>은 
-<productname>PostgreSQL</>의 경우 최소 17이어야 한다.
- </para>
-
- <para>
 <varname>SEMMNU</> 및 <varname>SEMUME</> 같은 <quote>semaphore undo</>와 관련된 다양한 기타 설정은 
 <productname>PostgreSQL</>에 영향을 미치지 않는다.
  </para>
+
+ <para>
+    POSIX 세마포어를 쓰는 경우는 System V 경우와 같다.
+    that is one semaphore per allowed connection
+    (<xref linkend="guc-max-connections">), allowed autovacuum worker process
+    (<xref linkend="guc-autovacuum-max-workers">) and allowed background
+    process (<xref linkend="guc-max-worker-processes">).
+    On the platforms where this option is preferred, there is no specific
+    kernel limit on the number of POSIX semaphores.
+ </para>
+
 
 
 <variablelist>
@@ -847,12 +873,12 @@ Administration Manager</> (<acronym>SAM</>)에서 설정할 수 있다. 완료 �
 
 
  <varlistentry>
-<term><systemitem class="osname">OS X</>
-<indexterm><primary>OS X</><secondary>IPC 설정</></>
+<term><systemitem class="osname">macOS</>
+<indexterm><primary>macOS</><secondary>IPC 설정</></>
 </term>
 <listitem>
  <para>
-OS X에서 공유 메모리를 환경 설정하는 권장 방법은 다음과 같은 변수 할당이 포함된 <filename>/etc/sysctl.conf</> 파일을 생성하는 것이다.
+macOS에서 공유 메모리를 환경 설정하는 권장 방법은 다음과 같은 변수 할당이 포함된 <filename>/etc/sysctl.conf</> 파일을 생성하는 것이다.
 <programlisting>
 kern.sysv.shmmax=4194304
 kern.sysv.shmmin=1
@@ -860,13 +886,13 @@ kern.sysv.shmmni=32
 kern.sysv.shmseg=8
 kern.sysv.shmall=1024
 </programlisting>
-일부 OS X 버전에서, 
+일부 macOS 버전에서, 
 <emphasis>모두 5개</>의 공유 메모리 파라미터를 
 <filename>/etc/sysctl.conf</>에 설정해야 하며, 그렇지 않으면 값이 무시된다는 점에 유의해야 한다.
  </para>
 
  <para>
-OS X 최근 릴리스는 설정된 <varname>SHMMAX</>가 정확히 4096의 배수가 아니면 이 값을 무시한다.
+macOS 최근 릴리스는 설정된 <varname>SHMMAX</>가 정확히 4096의 배수가 아니면 이 값을 무시한다.
  </para>
 
  <para>
@@ -874,13 +900,13 @@ OS X 최근 릴리스는 설정된 <varname>SHMMAX</>가 정확히 4096의 배�
  </para>
 
  <para>
-OS X 구 버전에서는 공유 메모리 파라미터에 대한 변경 내용이 적용되려면 리부팅 해야 한다.
+macOS 구 버전에서는 공유 메모리 파라미터에 대한 변경 내용이 적용되려면 리부팅 해야 한다.
 10.5는 현재, <application>sysctl</>을 사용하여 <varname>SHMMNI</>를 제외한 모두를 상황에 따라 변경 가능하다.
 그러나 리부팅 사이에 값이 유지될 수 있도록 <filename>/etc/sysctl.conf</>를 통해 원하는 값을 설정하는 것이 최선이다.
  </para>
 
  <para>
-<filename>/etc/sysctl.conf</> 파일은 OS X 10.3.9 이상에서만 유효하다.
+<filename>/etc/sysctl.conf</> 파일은 macOS 10.3.9 이상에서만 유효하다.
 이전 10.3.x 릴리스를 실행 중인 경우 <filename>/etc/rc</>
 파일을 편집하여 다음 명령으로 값을 변경해야 한다.
 <programlisting>
@@ -891,40 +917,15 @@ sysctl -w kern.sysv.shmseg
 sysctl -w kern.sysv.shmall
 </programlisting>
 Note that
-<filename>/etc/rc</>는 일반적으로 OS X 시스템 업데이트 시 덮어쓰기 되므로 업데이트가 있을 때마다 사용자는 이러한 편집을 반복해야 한다.
+<filename>/etc/rc</>는 일반적으로 macOS 시스템 업데이트 시 덮어쓰기 되므로 업데이트가 있을 때마다 사용자는 이러한 편집을 반복해야 한다.
  </para>
 
  <para>
-OS X 10.2 이전 버전에서는 <filename>/System/Library/StartupItems/SystemTuning/SystemTuning</> 파일에서 이 명령을 편집해야 한다.
+macOS 10.2 이전 버전에서는 <filename>/System/Library/StartupItems/SystemTuning/SystemTuning</> 파일에서 이 명령을 편집해야 한다.
  </para>
 </listitem>
  </varlistentry>
 
-
- <varlistentry>
-<term><systemitem class="osname">SCO OpenServer</>
-<indexterm><primary>SCO OpenServer</><secondary>IPC configuration</></>
-</term>
-<listitem>
- <para>
-기본 환경 설정에서 세그먼트당 512 kB의 공유 메모리만 허용된다.
-설정을 변경하려면 먼저 <filename>/etc/conf/cf.d</>디렉터리로 이동해야 한다.
-<varname>SHMMAX</>의 현재 값을 표시하려면 다음을 실행한다.
-<programlisting>
-./configure -y SHMMAX
-</programlisting>
-<varname>SHMMAX</>에 새 값을 설정하려면 다음을 실행한다.
-<programlisting>
-./configure SHMMAX=<replaceable>value</>
-</programlisting>
-여기서 <replaceable>value</>는 사용하려는 새 값이다(바이트 단위).<varname>SHMMAX</>를 설정한 후에는 커널을 리빌드한다.
-<programlisting>
-./link_unix
-</programlisting>
-그런 다음 리부팅한다.
- </para>
-</listitem>
- </varlistentry>
  <varlistentry>
 <term><systemitem class="osname">Solaris</> 2.6 to 2.9 (Solaris
 6 ~ Solaris 9)
@@ -986,33 +987,88 @@ project.max-msg-ids=(priv,4096,deny)
 </listitem>
  </varlistentry>
 
-
- <varlistentry>
-<term><systemitem class="osname">UnixWare</>
-<indexterm><primary>UnixWare</><secondary>IPC 설정</></>
-</term>
-<listitem>
- <para>
-<productname>UnixWare</> 7에서 공유 메모리 세그먼트의 최대 크기는 기본 환경 설정에서 512 kB이다.<varname>SHMMAX</>의 현재 값을 표시하려면 다음을 실행한다.
-<programlisting>
-/etc/conf/bin/idtune -g SHMMAX
-</programlisting>
-이것은 현재값, 기본값, 최소값 및 최대값을 표시한다. <varname>SHMMAX</>에 새 값을 설정하려면 다음을 실행한다.
-<programlisting>
-/etc/conf/bin/idtune SHMMAX <replaceable>value</>
-</programlisting>
-여기서 <replaceable>value</>는 사용하려는 바이트 단위의 새 값이다.<varname>SHMMAX</>를 설정한 후에는 커널을 리빌드한다.
-<programlisting>
-/etc/conf/bin/idbuild -B
-</programlisting>
-그런 다음 리부팅한다.
- </para>
-</listitem>
- </varlistentry>
-
 </variablelist>
 
 </sect2>
+
+  <sect2 id="systemd-removeipc">
+   <title>systemd RemoveIPC</title>
+
+   <indexterm>
+    <primary>systemd</primary>
+    <secondary>RemoveIPC</secondary>
+   </indexterm>
+
+   <para>
+    If <productname>systemd</productname> is in use, some care must be taken
+    that IPC resources (shared memory and semaphores) are not prematurely
+    removed by the operating system.  This is especially of concern when
+    installing PostgreSQL from source.  Users of distribution packages of
+    PostgreSQL are less likely to be affected, as
+    the <literal>postgres</literal> user is then normally created as a system
+    user.
+   </para>
+
+   <para>
+    The setting <literal>RemoveIPC</literal>
+    in <filename>logind.conf</filename> controls whether IPC objects are
+    removed when a user fully logs out.  System users are exempt.  This
+    setting defaults to on in stock <productname>systemd</productname>, but
+    some operating system distributions default it to off.
+   </para>
+
+   <para>
+    A typical observed effect when this setting is on is that the semaphore
+    objects used by a PostgreSQL server are removed at apparently random
+    times, leading to the server crashing with log messages like
+<screen>
+LOG: semctl(1234567890, 0, IPC_RMID, ...) failed: Invalid argument
+</screen>
+    Different types of IPC objects (shared memory vs. semaphores, System V
+    vs. POSIX) are treated slightly differently
+    by <productname>systemd</productname>, so one might observe that some IPC
+    resources are not removed in the same way as others.  But it is not
+    advisable to rely on these subtle differences.
+   </para>
+
+   <para>
+    A <quote>user logging out</quote> might happen as part of a maintenance
+    job or manually when an administrator logs in as
+    the <literal>postgres</literal> user or something similar, so it is hard
+    to prevent in general.
+   </para>
+
+   <para>
+    What is a <quote>system user</quote> is determined
+    at <productname>systemd</productname> compile time from
+    the <symbol>SYS_UID_MAX</symbol> setting
+    in <filename>/etc/login.defs</filename>.
+   </para>
+
+   <para>
+    Packaging and deployment scripts should be careful to create
+    the <literal>postgres</literal> user as a system user by
+    using <literal>useradd -r</literal>, <literal>adduser --system</literal>,
+    or equivalent.
+   </para>
+
+   <para>
+    Alternatively, if the user account was created incorrectly or cannot be
+    changed, it is recommended to set
+<programlisting>
+RemoveIPC=no
+</programlisting>
+    in <filename>/etc/systemd/logind.conf</filename> or another appropriate
+    configuration file.
+   </para>
+
+   <caution>
+    <para>
+     At least one of these two things has to be ensured, or the PostgreSQL
+     server will be very unreliable.
+    </para>
+   </caution>
+  </sect2>
 
 <sect2>
  <title>리소스 제한</title>
@@ -1332,9 +1388,24 @@ pg_ctl 프로그램은 이러한 서버 셧다운 신호를 전송하기 위한 
 이 절에서는 <productname>PostgreSQL</> 릴리스의 데이터베이스 데이터를 새로운 것으로 업그레이드하는 방법을 다룬다.
 </para>
 
-<para>
-<productname>PostgreSQL</> 메이저 버전은 버전 번호의 첫 두 자리이며, 예를 들면 8.4이다.<productname>PostgreSQL</> 마이너 버전은 버전 번호의 세 번째 자릿수부터이다.예를 들면, 8.4.2는 8.4의 두 번째 부 릴리스이다.마이너 릴리스는 내부 스토리지 형식을 절대 변경하지 않으며 메이저 버전 번호가 동일하면 이전 및 이후 마이너 릴리스와 항상 호환된다. 예를 들면, 8.4.2는 8.4, 8.4.1 및 8.4.6과 호환된다. 호환 버전 간에 업데이트를 하려면 서버를 다운한 상태에서 실행 파일을 간단히 교체하고 서버를 시작하면 된다. 데이터 디렉터리는 변경되지 않고 유지된다. 마이너 업그레이드는 간단하다.
-</para>
+  <para>
+   현재 <productname>PostgreSQL</productname> 버전 번호는 메이저 버전과
+   마이너 버전 번호로 구성된다.  예를 들어 10.1 이라면 10이 메이저 버전이고, 
+   1이 마이너 버전이다. 마이너 버전 1 이라 함은 10 버전 가운데 첫번째 
+   패치 버전을 의미한다.  <productname>PostgreSQL</productname> 10.0 버전부터
+   이렇게 하기로 했으며, 그 이전 버전에서는 메이저 버전이 앞 부분 두 영역이다.
+   예를 들어, 9.5.3 이라면, 메이져 버전이 9.5 이며, 3이 마이너 버전이며, 
+   9.5 버전 가운데 세번째 패치 버전임을 뜻한다.
+  </para>
+
+  <para>
+   메이저 버전은 그대로이고, 마이너 버전만 바뀌는 경우는
+   내부 저장 형식이 바뀌지 않는 경우이다.  즉, 10.1 버전이나, 
+   10.6 버전은 호환되며, 9.5.3과는 호환되지 않는다. 9.5.3은
+   9.5.0, 9.5.1, 9.5.6 버전과 호환된다.  호환되는 버전간의 업그레이드는
+   자료 구조가 바뀌지 않기 때문에, 
+   단순하게, 서버를 중지하고, 실행 파일을 바꾸기만 하면 된다. &mdash; 쉽다.
+  </para>
 
 <para>
 <productname>PostgreSQL</>의 <emphasis>메이저</> 릴리스의 경우, 내부 데이터 스토리지 형식이 변경되므로 업그레이드가 복잡하다. 데이터를 새로운 메이저 버전으로 옮기는 전형적인 방법은 느릴 수 있지만 데이터베이스를 덤프하고 다시 불러오는 것이다. 더 빠른 방법은 <xref linkend="pgupgrade">이다. 복제 방법도 아래에 언급된 바와 같이 사용 가능하다.
@@ -1593,11 +1664,18 @@ pg_dumpall -p 5432 | psql -d postgres -p 5433
 <variablelist>
 
 <varlistentry>
- <term>패스워드 스토리지 암호화</term>
+ <term>패스워드 암호화</term>
  <listitem>
 
 <para>
-기본적으로 데이터베이스 사용자 패스워드는 MD5 해시로 저장되므로 사용자에게 할당된 실제 패스워드를 관리자가 판단할 수 없다. 클라이언트 인증에 MD5 암호화를 사용하는 경우, 네트워크를 통해 전송하기 전에 클라이언트가 MD5 암호화를 실행하므로 잠시라도 암호화되지 않는 패스워드가 서버에 제공되지 않는다.
+     Database user passwords are stored as hashes (determined by the setting
+     <xref linkend="guc-password-encryption">), so the administrator cannot
+     determine the actual password assigned to the user. If SCRAM or MD5
+     encryption is used for client authentication, the unencrypted password is
+     never even temporarily present on the server because the client encrypts
+     it before being sent across the network. SCRAM is preferred, because it
+     is an Internet standard and is more secure than the PostgreSQL-specific
+     MD5 authentication protocol.
 </para>
  </listitem>
 </varlistentry>
@@ -1628,16 +1706,6 @@ pg_dumpall -p 5432 | psql -d postgres -p 5433
 드라이브 또는 전제 컴퓨터가 도난 당한 경우 이 메커니즘은 암호화되지 않은 데이터를 드라이브에서 읽지 못하게 한다. 파일 시스템이 마운트될 때 운영 체제가 암호화되지 않은 데이터 뷰를 제공하므로 파일 시스템이 마운트된 상태에서는 공격으로부터 데이터를 보호하지 못한다. 그러나, 파일 시스템을 마운트하려면 암호화 키를 운영 체제에 전달하는 방법이 필요하며, 디스크를 마운트하는 호스트 어딘가에 키를 저장해야 할 때도 있다.
 </para>
  </listitem>
-</varlistentry>
-
-<varlistentry>
- <term>네트워크에서 패스워드 암호화</term>
-
- <listitem>
- <para>
-<literal>MD5</> 인증 방법은 서버로 전송하기 전에 클라이언트에서 패스워드를 이중으로 암호화한다. 데이터베이스가 연결되면 이것은 먼저 사용자 이름을 기준으로 MD5 암호화한 다음, 서버에 의해 전송되는 랜덤 salt를 기준으로 암호화된다. 이것이 네트워크를 통해 서버에 전송되는 이중 암호화된 값이다. 이중 암호화는 패스워드 검색을 방지하는 것 외에도, 동일한 암호화된 패스워드를 사용하여 나중에 데이터베이스 서버에 연결하는 새로운 연결도 방지한다.
- </para>
-</listitem>
 </varlistentry>
 
 <varlistentry>
@@ -1716,45 +1784,80 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
 
 <para>
 개인 키가 암호로 보호되는 경우 서버는 암호를 묻는 메시지를 표시하고 암호가 입력되기 전에는 서버가 시작되지 않는다.
+물론 이 암호 묻는 작업을 생략하도록 SSL 설정을 바꿀 수도 있으며, 
+추가적으로 Windows 환경에서는 반대로 암호를 묻는 개인키를 사용할 수 없다.
 </para>
+
 
 <para>
 경우에 따라 서버 인증서를 클라이언트가 직접 신뢰하지 않고 <quote>중간</> 인증 기관에서 서명할 수 있다. 해당 인증서를 사용하려면 <filename>server.crt</> 파일에 서명 기관의 인증서를 첨부한 다음, 해당 상급 기관의 인증서를 첨부하는 순으로 클라이언트에 의해 신뢰된 인증 기관, <quote>root</> 또는 <quote>중간</>까지 첨부한다(예를 들면 클라이언트의 <filename>root.crt</filename> 파일에서 인증서로 서명된).
 </para>
 
-<sect2 id="ssl-client-certificates">
- <title>클라이언트 인증서 사용</title>
+  <para>
+   The first certificate in <filename>server.crt</> must be the
+   server's certificate because it must match the server's private key.
+   The certificates of <quote>intermediate</> certificate authorities
+   can also be appended to the file.  Doing this avoids the necessity of
+   storing intermediate certificates on clients, assuming the root and
+   intermediate certificates were created with <literal>v3_ca</>
+   extensions.  This allows easier expiration of intermediate certificates.
+  </para>
 
-<para>
-   신뢰된 인증서 제공을 클라이언트에게 요구하려면 사용자가 신뢰하는 인증
-   기관(<acronym>CA</acronym>)의 인증서를 데이터 디렉터리의 <filename>root.crt</filename>
-   파일에 삽입하고, <filename>postgresql.conf</filename>의
-   <xref linkend="guc-ssl-ca-file"> 파라미터를 <literal>root.crt</literal>로
-   설정하고 <filename>pg_hba.conf</>의 적절한 <literal>hostssl</>
-   라인에서 <literal>clientcert=1</literal> 옵션을 설정해야 한다. 그러면,
-   SSL 연결 시작 중에 인증서가 클라이언트로부터 요청된다(클라이언트에서 인증서 설정 방법에 대한 설명은 <xref linkend="libpq-ssl"> 참조). 서버는 클라이언트 인증서가 신뢰된 인증 기관 중 한 곳에서 서명된 것인지 검증한다.
-</para>
-<para>
-중간 <acronym>CA</>가 <filename>root.crt</filename>에 나타나면 파일에도 루트 <acronym>CA</>에 인증서 체인이 포함되어야 한다. <xref linkend="guc-ssl-crl-file"> 파라미터가 설정된 경우 Certificate Revocation List (CRL) 항목도 확인된다. (SSL 인증서 사용을 보여주는 다이어그램은 <ulink
- url="http://h71000.www7.hp.com/doc/83final/ba554_90007/ch04s02.html"></> 참조)
-</para>
+  <para>
+   It is not necessary to add the root certificate to
+   <filename>server.crt</>.  Instead, clients must have the root
+   certificate of the server's certificate chain.
+  </para>
 
-<para>
- <filename>pg_hba.conf</>의 <literal>clientcert</literal> 옵션은 모든 인증 방법에서 사용할 수 있지만 <literal>hostssl</>로 지정된 행에만 해당된다. <literal>clientcert</literal>가 지정되지 않았거나 0으로 설정되면, 환경 설정된 것이 있을 경우 서버가 CA 목록 대비 제공된 클라이언트 인증서를 계속 검증하지만, 클라이언트 인증서의 제공을 요구하지는 않는다.
-</para>
+  <sect2 id="ssl-client-certificates">
+   <title>Using Client Certificates</title>
 
-<para>
-서버의 <filename>root.crt</filename>는 클라이언트 인증서 서명을 위해 신뢰된 것으로 간주되는 최상위 CA가 나열되어 있다. 대부분의 경우 클라이언트 인증서에 대해 CA를 신뢰하더라도 원칙적으로는 서버의 인증서를 서명한 CA를 나열할 필요는 없다.
+  <para>
+   To require the client to supply a trusted certificate,
+   place certificates of the root certificate authorities
+   (<acronym>CA</>s) you trust in a file in the data
+   directory, set the parameter <xref linkend="guc-ssl-ca-file"> in
+   <filename>postgresql.conf</> to the new file name, and add the
+   authentication option <literal>clientcert=1</> to the appropriate
+   <literal>hostssl</> line(s) in <filename>pg_hba.conf</>.
+   A certificate will then be requested from the client during SSL
+   connection startup.  (See <xref linkend="libpq-ssl"> for a description
+   of how to set up certificates on the client.)  The server will
+   verify that the client's certificate is signed by one of the trusted
+   certificate authorities.
+  </para>
 
-</para>
+  <para>
+   Intermediate certificates that chain up to existing root certificates
+   can also appear in the file <filename>root.crt</filename> if
+   you wish to avoid storing them on clients (assuming the root and
+   intermediate certificates were created with <literal>v3_ca</>
+   extensions).  Certificate Revocation List (CRL) entries are also
+   checked if the parameter <xref linkend="guc-ssl-crl-file"> is set.
+   <!-- If this URL changes replace it with a URL to www.archive.org. -->
+   (See <ulink
+   url="http://h71000.www7.hp.com/doc/83final/ba554_90007/ch04s02.html"></>
+   for diagrams showing SSL certificate usage.)
+  </para>
 
-<para>
-사용자가 클라이언트 인증서를 설정하는 경우 <literal>cert</> 인증 방법을 사용한다면 인증서로 사용자 인증을 제어하고 연결 보안도 제공할 수 있다. 자세한 내용은 <xref linkend="auth-cert">을 참조 바란다.
-(It is not necessary to
+  <para>
+   The <literal>clientcert</literal> authentication option is available for
+   all authentication methods, but only in <filename>pg_hba.conf</> lines
+   specified as <literal>hostssl</>.  When <literal>clientcert</literal> is
+   not specified or is set to 0, the server will still verify any presented
+   client certificates against its CA file, if one is configured &mdash; but
+   it will not insist that a client certificate be presented.
+  </para>
+
+  <para>
+   If you are setting up client certificates, you may wish to use
+   the <literal>cert</> authentication method, so that the certificates
+   control user authentication as well as providing connection security.
+   See <xref linkend="auth-cert"> for details.  (It is not necessary to
    specify <literal>clientcert=1</literal> explicitly when using
    the <literal>cert</> authentication method.)
-</para>
-</sect2>
+  </para>
+  </sect2>
 
 <sect2 id="ssl-server-files">
  <title>SSL 서버 파일 사용</title>
@@ -1811,36 +1914,110 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
  </para>
 </sect2>
 
-<sect2 id="ssl-certificate-creation">
- <title>자체 서명된 인증서 생성</title>
+  <sect2 id="ssl-certificate-creation">
+   <title>Creating Certificates</title>
 
- <para>
-서버용 자체 서명된 인증서를 빠르게 생성하려면 다음과 같은 <productname>OpenSSL</productname> 명령을 사용해야 한다.
+   <para>
+     To create a simple self-signed certificate for the server, valid for 365
+     days, use the following <productname>OpenSSL</productname> command,
+     replacing <replaceable>dbhost.yourdomain.com</> with the
+     server's host name:
 <programlisting>
-openssl req -new -text -out server.req
+openssl req -new -x509 -days 365 -nodes -text -out server.crt \
+  -keyout server.key -subj "/CN=<replaceable>dbhost.yourdomain.com</>"
 </programlisting>
-<application>openssl</>이 요청하는 정보를 입력하고, 로컬 호스트 이름을 <quote>Common Name</>으로 입력했는지 확인한다. 챌린지 패스워드는 비워둘 수 있다. 프로그램은 보호된 패스프레이즈인 키를 생성한다. 4글자 미만의 패스프레이즈는 수락되지 않는다. 패스프레이즈를 삭제하려면(서버의 자동 시작을 원하는 경우처럼) 다음 명령을 실행한다.
-<programlisting>
-openssl rsa -in privkey.pem -out server.key
-rm privkey.pem
-</programlisting>
-이전 패스프레이즈를 입력하여 기존 키를 해제하기 위해 아래와 같이 입력한다.
-<programlisting>
-openssl req -x509 -in server.req -text -key server.key -out server.crt
-</programlisting>
-그러면 인증서가 자체 서명된 인증서로 전환되고, 서버가 찾는 위치로 키와 인증서가 복사된다. 마지막으로, 다음과 같이 입력한다.
+    Then do:
 <programlisting>
 chmod og-rwx server.key
 </programlisting>
-이렇게 하는 이유는 권한이 이것보다 좀 더 자유로운 경우에 서버가 파일을 거부하기 때문이다. 서버 개인 키와 인증서를 생성하는 방법에 대한 자세한 내용은 <productname>OpenSSL</> 문서를 참조 바란다.
- </para>
+    because the server will reject the file if its permissions are more
+    liberal than this.
+    For more details on how to create your server private key and
+    certificate, refer to the <productname>OpenSSL</> documentation.
+   </para>
 
- <para>
-자체 서명된 인증서를 테스트용으로 사용할 수 있지만 클라이언트가 서버 ID를 검증할 수 있도록 인증 기관(<acronym>CA</>) (전역 <acronym>CA</> 또는 로컬 CA 중 하나)에 의해 서명된 인증서는 실제 운영 중에 사용되어야 한다. 모든 클라이언트가 기관에 대해 로컬인 경우 로컬 <acronym>CA</>를 사용하는 것이 권장된다.
- </para>
+   <para>
+    While a self-signed certificate can be used for testing, a certificate
+    signed by a certificate authority (<acronym>CA</>) (usually an
+    enterprise-wide root <acronym>CA</>) should be used in production.
+   </para>
 
-</sect2>
+   <para>
+    To create a server certificate whose identity can be validated
+    by clients, first create a certificate signing request
+    (<acronym>CSR</>) and a public/private key file:
+<programlisting>
+openssl req -new -nodes -text -out root.csr \
+  -keyout root.key -subj "/CN=<replaceable>root.yourdomain.com</>"
+chmod og-rwx root.key
+</programlisting>
+    Then, sign the request with the key to create a root certificate
+    authority (using the default <productname>OpenSSL</>
+    configuration file location on <productname>Linux</>):
+<programlisting>
+openssl x509 -req -in root.csr -text -days 3650 \
+  -extfile /etc/ssl/openssl.cnf -extensions v3_ca \
+  -signkey root.key -out root.crt
+</programlisting>
+    Finally, create a server certificate signed by the new root certificate
+    authority:
+<programlisting>
+openssl req -new -nodes -text -out server.csr \
+  -keyout server.key -subj "/CN=<replaceable>dbhost.yourdomain.com</>"
+chmod og-rwx server.key
 
+openssl x509 -req -in server.csr -text -days 365 \
+  -CA root.crt -CAkey root.key -CAcreateserial \
+  -out server.crt
+</programlisting>
+    <filename>server.crt</> and <filename>server.key</>
+    should be stored on the server, and <filename>root.crt</> should
+    be stored on the client so the client can verify that the server's leaf
+    certificate was signed by its trusted root certificate. 
+    <filename>root.key</> should be stored offline for use in
+    creating future certificates.
+   </para>
+
+   <para>
+    It is also possible to create a chain of trust that includes
+    intermediate certificates:
+<programlisting>
+# root
+openssl req -new -nodes -text -out root.csr \
+  -keyout root.key -subj "/CN=<replaceable>root.yourdomain.com</>"
+chmod og-rwx root.key
+openssl x509 -req -in root.csr -text -days 3650 \
+  -extfile /etc/ssl/openssl.cnf -extensions v3_ca \
+  -signkey root.key -out root.crt
+
+# intermediate
+openssl req -new -nodes -text -out intermediate.csr \
+  -keyout intermediate.key -subj "/CN=<replaceable>intermediate.yourdomain.com</>"
+chmod og-rwx intermediate.key
+openssl x509 -req -in intermediate.csr -text -days 1825 \
+  -extfile /etc/ssl/openssl.cnf -extensions v3_ca \
+  -CA root.crt -CAkey root.key -CAcreateserial \
+  -out intermediate.crt
+
+# leaf
+openssl req -new -nodes -text -out server.csr \
+  -keyout server.key -subj "/CN=<replaceable>dbhost.yourdomain.com</>"
+chmod og-rwx server.key
+openssl x509 -req -in server.csr -text -days 365 \
+  -CA intermediate.crt -CAkey intermediate.key -CAcreateserial \
+  -out server.crt
+</programlisting>
+    <filename>server.crt</> and
+    <filename>intermediate.crt</> should be concatenated
+    into a certificate file bundle and stored on the server.
+    <filename>server.key</> should also be stored on the server.
+    <filename>root.crt</> should be stored on the client so
+    the client can verify that the server's leaf certificate was signed
+    by a chain of certificates linked to its trusted root certificate.
+    <filename>root.key</> and <filename>intermediate.key</>
+    should be stored offline for use in creating future certificates.
+   </para>
+  </sect2>
  </sect1>
 
  <sect1 id="ssh-tunnels">

@@ -37,7 +37,7 @@
    유틸리티 프로그램이 <xref linkend="app-pgdump"> 이다.
    기본적인 사용법은 다음과 같다:
 <synopsis>
-pg_dump <replaceable class="parameter">데이터베이스이름</replaceable> &gt; <replaceable class="parameter">출력파일</replaceable>
+pg_dump <replaceable class="parameter">데이터베이스이름</replaceable> &gt; <replaceable class="parameter">덤프파일</replaceable>
 </synopsis>
    위와 같이, <application>pg_dump</> 명령의 결과는 
    표준 출력(stdout)으로 출력된다.
@@ -117,9 +117,9 @@ pg_dump <replaceable class="parameter">데이터베이스이름</replaceable> &g
         <application>psql</application> 프로그램에서 바로 사용할 수 있다. 
         일반적인 사용법은 다음과 같다:
 <synopsis>
-psql <replaceable class="parameter">데이터베이스이름</replaceable> &lt; <replaceable class="parameter">입력파일</replaceable>
+psql <replaceable class="parameter">데이터베이스이름</replaceable> &lt; <replaceable class="parameter">덤프파일</replaceable>
 </synopsis>
-    <replaceable class="parameter">입력파일</replaceable> 자리에, 
+    <replaceable class="parameter">덤프파일</replaceable> 자리에, 
         <application>pg_dump</> 명령으로 만든 덤프 파일을 지정한다.
         <replaceable class="parameter">dbname</replaceable> 자리에는
         <application>psql</> 클라이언트가 접속 해서, 
@@ -156,7 +156,7 @@ psql <replaceable class="parameter">데이터베이스이름</replaceable> &lt; 
         리턴 코드 3으로 종료된다.
     다음은 그 사용 방법이다:
 <programlisting>
-psql --set ON_ERROR_STOP=on dbname &lt; infile
+psql --set ON_ERROR_STOP=on dbname &lt; 덤프파일
 </programlisting>
     이 방법은 스크립트에서 정상적으로 실행된 작업들에 대해서는
         해당 데이터베이스에 반영되었다는 것을 의미한다. 
@@ -219,7 +219,7 @@ pg_dump -h <replaceable>호스트1</> <replaceable>데이터베이스이름</> |
         <xref linkend="app-pg-dumpall"> 프로그램을 이용한다. 
         일반적인 사용법은 다음과 같다:
 <synopsis>
-pg_dumpall &gt; <replaceable>outfile</>
+pg_dumpall &gt; <replaceable>덤프파일</>
 </synopsis>
     이 덤프 파일은 <application>psql</> 프로그램에서 다음과 같이 사용한다:
 <synopsis>
@@ -402,7 +402,7 @@ tar -cf backup.tar /usr/local/pgsql/data
           개별 데이터베이스나, 테이블에 해당하는 파일들만 복사해서 
           사용할 수 있을 것이다는 생각을 할 수도 있으나, 
           그렇게 한다고 해도, 커밋 로그 파일 없이는 정상으로 작동하지 않을 것이다.
-          <filename>pg_clog/*</filename> 파일들이 모든 트랜잭션의 커밋 상태를 
+          <filename>pg_xact/*</filename> 파일들이 모든 트랜잭션의 커밋 상태를 
           보관하고 있다. 이 로그 파일들은 테이블 단위가 아니라, 데이터베이스 크러스터
           단위로 처리되기 때문에, 개별 테이블의 물리적인 파일과, 로그 파일을 
           복사한다고 해도, 다른 테이블과 관계될 가능성이 있어, 
@@ -498,7 +498,7 @@ tar -cf backup.tar /usr/local/pgsql/data
   <para>
    <productname>PostgreSQL</>에서는 미리 쓰기 기록
    (선행 기입 로그, <firstterm>write ahead log</>, WAL)을 
-   데이터베이스 클러스터 디렉토리 안 <filename>pg_xlog/</>
+   데이터베이스 클러스터 디렉토리 안 <filename>pg_wal/</>
    디렉토리에서 관리하고 있다.
    이 로그는 데이터베이스의 데이터 파일에 대한 모든 조작 기록을 
    보관하고 있다. 이 로그를 만드는 가장 첫번째 이유는
@@ -632,7 +632,7 @@ archive_command = 'copy "%p" "C:\\server\\archivedir\\%f"'  # Windows
     변경 되어야한다.
     <literal>%p</> <literal>%f</> 예약 인자들은 다음과 같이 변경되어 실재로 명령이 실행된다:
 <programlisting>
-test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_xlog/00000001000000A900000065 /mnt/server/archivedir/00000001000000A900000065
+test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/00000001000000A900000065 /mnt/server/archivedir/00000001000000A900000065
 </programlisting>
     이렇게 실행 된다면, WAL 로그파일을 항상 특정 위치에 새롭게 만드는 작업을 하게될 것이다.
 
@@ -679,10 +679,10 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_xlog/
         해당 장치가 자동으로 테이프 교환을 하지 않고, 테이프의 여유 공간이 없다면, 
         사용자가 테이프를 바꾸기 전까지 계속해서 파일 기록 작업을 실행했다가, 
         오류를 내고, 다시 실행할 것이다.
-        이렇게 되면, <filename>pg_xlog/</> 디렉토리에서는 테이프 저장장치로
+        이렇게 되면, <filename>pg_wal/</> 디렉토리에서는 테이프 저장장치로
         자료가 안전하게 복사되지 않았기 때문에, 해당 WAL 세그먼트 파일을 삭제하거나
         재사용하지 않을 것이며, 그 이후 만들어지는 새로운 WAL 세그먼트 파일들이 
-        계속 해서 쌓일 것이고, 결국 <filename>pg_xlog/</> 디렉토리의 여유 공간이 
+        계속 해서 쌓일 것이고, 결국 <filename>pg_wal/</> 디렉토리의 여유 공간이 
         없어 서버는 PANIC 오류를 내면서 중지하게된다. 
    </para>
 
@@ -691,7 +691,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_xlog/
         고민해야한다. 정상적으로 작업이 진행된다 하더라도, WAL 파일을 만들어내는 
         속도가, 그 파일을 따로 보관하는 속도보다 빠르다면, 똑같은 문제가 발생할 
         수 있다.  물론 따로 보관하는 속도가 다소 늦더라도, 정상적으로 이루워지고, 
-        <filename>pg_xlog/</> 디렉토리의 여유공간이 충분히 있다면 별문제 되지는 않지만, 
+        <filename>pg_wal/</> 디렉토리의 여유공간이 충분히 있다면 별문제 되지는 않지만, 
         그렇지 않다면, 위에서 언급한 문제가 발생할 여지가 있다.
         이 기능을 사용하기 전에 충분히 이 부분에 대한 문제를 고민해 
         보아야하며, 관리자는 이 기능이 의도된 대로 잘 작동하는지 
@@ -727,7 +727,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_xlog/
    </para>
 
    <para>
-    또한 사용자가 강제로 세그먼트 파일을 <function>pg_switch_xlog</> 
+    또한 사용자가 강제로 세그먼트 파일을 <function>pg_switch_wal</> 
     함수를 이용해서 바꿀 수 있다. 일반적으로 대량 자료 입력, 변경, 삭제 
         작업이 일어나고, 이것에 대한 즉시 백업이 필요한 경우에 
         이 함수를 사용한다. 기타 WAL 세그먼트 파일의 조작 관련 함수들은
@@ -746,7 +746,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_xlog/
 필요에 따라서 운영 중에 이 작업이 중지되어야할 필요도 있기 때문이다.
 이렇게 하려면, <varname>archive_command</> 설정값으로 빈문자열(<literal>''</>)로
 지정하면 된다.이러면 <varname>archive_command</>설정값이 다시 WAL 파일을 
-복사하는 작업을 하기 전까지 <filename>pg_xlog/</> 디렉토리에 계속 남아있게 된다.
+복사하는 작업을 하기 전까지 <filename>pg_wal/</> 디렉토리에 계속 남아있게 된다.
  </para>
   </sect2>
 
@@ -775,7 +775,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_xlog/
    생성된 WAL 파일을 <firstterm>백업 내역 파일</>에 기록해 둔다. 이 파일의 이름은 
    복구에 필요한 WAL 파일의 첫번째 파일 이름을 사용한다. 예를 들어서, 
    필요한 파일이 <literal>0000000100001234000055CD</> 이라면, 백업 내역 파일은 
-   <literal>0000000100001234000055CD.007C9330.backup</> 파일이다. 이 파일 또한 pg_xlog 디렉토리
+   <literal>0000000100001234000055CD.007C9330.backup</> 파일이다. 이 파일 또한 pg_wal 디렉토리
    안에 있으면, 베이스 백업이 끝나 이 파일이 만들어지면, 아카이빙 작업에 의해 WAL 세그먼트 파일과 
    함께 따로 보관하는 장소에 복사된다. (WAL 세그먼트 파일 이름 뒤에 있는 또 하나의 정보는 
    그 파일의 정확한 시작 위치인데 이 부분은 무시해도 좋다.) 베이스 백업이 끝나면, 
@@ -851,7 +851,8 @@ SELECT pg_start_backup('label', false, false);
      <xref linkend="guc-checkpoint-completion-target">).  This is
      usually what you want, because it minimizes the impact on query
      processing.  If you want to start the backup as soon as
-     possible, change the second parameter to <literal>true</>.
+     possible, change the second parameter to <literal>true</>, which will
+     issue an immediate checkpoint using as much I/O as available.
     </para>
 
     <para>
@@ -866,7 +867,7 @@ SELECT pg_start_backup('label', false, false);
      <application>pg_dump</application> or
      <application>pg_dumpall</application>).  It is neither
      necessary nor desirable to stop normal operation of the database
-     while you do this. See section
+     while you do this. See 
      <xref linkend="backup-lowlevel-base-backup-data"> for things to
      consider during this backup.
     </para>
@@ -875,10 +876,13 @@ SELECT pg_start_backup('label', false, false);
     <para>
      In the same connection as before, issue the command:
 <programlisting>
-SELECT * FROM pg_stop_backup(false);
+SELECT * FROM pg_stop_backup(false, true);
 </programlisting>
-     This terminates the backup mode and performs an automatic switch to
-     the next WAL segment.  The reason for the switch is to arrange for
+     This terminates backup mode. On a primary, it also performs an automatic
+     switch to the next WAL segment.  On a standby, it is not possible to
+     automatically switch WAL segments, so you may wish to run
+     <function>pg_switch_wal</function> on the primary to perform a manual
+     switch. The reason for the switch is to arrange for
      the last WAL segment file written during the backup interval to be
      ready to archive.
     </para>
@@ -896,9 +900,12 @@ SELECT * FROM pg_stop_backup(false);
      Once the WAL segment files active during the backup are archived, you are
      done.  The file identified by <function>pg_stop_backup</>'s first return
      value is the last segment that is required to form a complete set of
-     backup files.  If <varname>archive_mode</> is enabled,
+     backup files.  On a primary, if <varname>archive_mode</> is enabled and the
+     <literal>wait_for_archive</> parameter is <literal>true</>,
      <function>pg_stop_backup</> does not return until the last segment has
      been archived.
+     On a standby, <varname>archive_mode</> must be <literal>always</> in order
+     for <function>pg_stop_backup</> to wait.
      Archiving of these files happens automatically since you have
      already configured <varname>archive_command</>. In most cases this
      happens quickly, but you are advised to monitor your archive
@@ -912,6 +919,18 @@ SELECT * FROM pg_stop_backup(false);
      <function>pg_stop_backup</> terminates because of this your backup
      may not be valid.
     </para>
+    <para>
+     If the backup process monitors and ensures that all WAL segment files
+     required for the backup are successfully archived then the
+     <literal>wait_for_archive</> parameter (which defaults to true) can be set
+     to false to have
+     <function>pg_stop_backup</> return as soon as the stop backup record is
+     written to the WAL.  By default, <function>pg_stop_backup</> will wait
+     until all WAL has been archived, which can take some time.  This option
+     must be used with caution: if WAL archiving is not monitored correctly
+     then the backup might not include all of the WAL files and will
+     therefore be incomplete and not able to be restored.
+    </para>
    </listitem>
   </orderedlist>
     </para>
@@ -920,9 +939,9 @@ SELECT * FROM pg_stop_backup(false);
     <title>Making an exclusive low level backup</title>
     <para>
      The process for an exclusive backup is mostly the same as for a
-     non-exclusive one, but it differs in a few key steps. It does not allow
-     more than one concurrent backup to run, and there can be some issues on
-     the server if it crashes during the backup. Prior to PostgreSQL 9.6, this
+     non-exclusive one, but it differs in a few key steps. This type of backup
+     can only be taken on a primary and does not allow concurrent backups.
+     Prior to <productname>PostgreSQL</> 9.6, this
      was the only low-level method available, but it is now recommended that
      all users upgrade their scripts to use non-exclusive backups if possible.
     </para>
@@ -982,9 +1001,14 @@ SELECT pg_start_backup('label', true);
      <application>pg_dumpall</application> 명령어를 사용하는 것이 아니라).
      이때 주의할 사항은 이 백업 작업을 하는 동안, 
      데이터베이스를 중지할 필요도 없으며, 중지 해서도 안된다는 점이다.
-     (*테스트 필요*)
      이 단계에서 할 작업의 자세한 설명은
      <xref linkend="backup-lowlevel-base-backup-data"> 을 참조한다.
+    </para>
+    <para>
+      이 작업 도중 서버가 비정상 중지 되었다면, <envar>PGDATA</envar>
+      디렉터리 안에 있는 <literal>backup_label</> 파일을 직접
+      지우지 않으면 서버가 정상적으로 다시 실행되지 않을 수 있음을
+      기억해야 한다.
     </para>
    </listitem>
    <listitem>
@@ -1027,146 +1051,98 @@ SELECT pg_stop_backup();
    <title>데이터 디렉터리 백업하기</title>
 
    <para>
-    베이스 백업을 할 때, 위와 같은 순서로 직접 하나 하나 작업을 진행할 수도 
-        있지만, <xref linkend="app-pgbasebackup"> 응용 프로그램을 이용할 수도 있다.
-        이 프로그램은 윗 작업을 <productname>PostgreSQL</productname> 서버로 연결해서, 
-        해당 쿼리를 실행하고, 리플리케이션 프로토콜을 이용해서, 데이터 파일들을 복사하고, 
-        뒷 마무리까지 (필요하다면, 백업 중간에 변경 된 xlog 파일의 적용까지) 
-        한 번에 할 수 있다. 또한 이 프로그램은 <function>pg_start_backup()</>/<function>pg_stop_backup()</>
-        함수를 이용하는 파일 시스템 기반 베이스 백업을 하고 있는 중에도 
-        사용할 수 있다.
+    Some file system backup tools emit warnings or errors
+    if the files they are trying to copy change while the copy proceeds.
+    When taking a base backup of an active database, this situation is normal
+    and not an error.  However, you need to ensure that you can distinguish
+    complaints of this sort from real errors.  For example, some versions
+    of <application>rsync</> return a separate exit code for
+    <quote>vanished source files</>, and you can write a driver script to
+    accept this exit code as a non-error case.  Also, some versions of
+    GNU <application>tar</> return an error code indistinguishable from
+    a fatal error if a file was truncated while <application>tar</> was
+    copying it.  Fortunately, GNU <application>tar</> versions 1.16 and
+    later exit with 1 if a file was changed during the backup,
+    and 2 for other errors.  With GNU <application>tar</> version 1.23 and
+    later, you can use the warning options <literal>--warning=no-file-changed
+    --warning=no-file-removed</literal> to hide the related warning messages.
    </para>
 
    <para>
-    몇몇 파일 시스템 백업 툴들은 파일 복사 도중에, 
-        그 파일이 변경되면, 경고나, 오류를 내는 경우도 있다.
-        운영 중인 데이터베이스를 대상으로 베이스 백업을 만들고 
-        있는 상황에서는 이 경고나 오류가 정상적인 것이다.
-        하지만, 이 베이스 백업 작업 자체의 오류와, 윗 파일이 변경 되어서
-        발생하는 오류를 구분할 필요가 있다. 예를 들어서, 
-        <application>rsync</> 프로그램의 어떤 버전은 
-        <quote>사라져 버린 원본 파일</>에 대한 처리를 할 때, 
-        실행 결과 리턴값을 다르게 처리한다. 이것을 이용하며, 
-        리턴값을 조사해서, 정상적인 처리와, 오류 처리를 구분하는 
-        백업 스크립트를 작성할 수도 있을 것이다.
-        또한, 어떤 <application>tar</> 버전에서는 위와 같은 경우와, 
-        물리적인 묶는 작업 실패에 대한 구분을 하지 않고, 같은 리턴 값으로
-        작업이 종료되기도 한다.  다행히, GNU <application>tar</> 1.16 이후
-        버전부터는 백업 도중 원본 파일이 변경된 경우는 1, 그 외 오류인 경우는
-        2를 리턴하면서 종료한다.
+    Be certain that your backup includes all of the files under
+    the database cluster directory (e.g., <filename>/usr/local/pgsql/data</>).
+    If you are using tablespaces that do not reside underneath this directory,
+    be careful to include them as well (and be sure that your backup
+    archives symbolic links as links, otherwise the restore will corrupt
+    your tablespaces).
    </para>
 
    <para>
-    <function>pg_start_backup</> 명령이 실행되고, 
-        <function>pg_stop_backup</> 명령을 실행하기 전까지, 파일 시스템을 
-        복사하는 작업 시간에 대해서는 신경 쓰지 않아도 된다. 
-        데이터 클러스터 전체를 시스템 차원의 백업 시간과 같이, (또는 이 보다 더 늦게)
-        처리 되어도 괜찮다. 단, 서버 환경 설정이 <varname>full_page_writes</> off 
-        상태로 운영되고 있던 서버라면, <function>pg_start_backup</> 명령이 실행되면, 
-        이 값이 on 되기 때문에, <function>pg_stop_backup</> 명령이 
-        실행되기 전까지 그 만큼의 성능 저하가 발생 할 것이다.
-        이 작업에서 신경 써야 할 부분은 베이스 백업 작업이 길어지고 있고, 
-        그 중에 또 새로운 백업을 시도할 경우, 그 명령은 무시 되고, 그 백업 스크립트 
-        오류로 <function>pg_stop_backup</> 명령이 의도되지 않게 실행되어 
-        기존 베이스 백업 작업을 망치는 경우다. 이 베이스 백업을 할 때는 
-        반드시 위에서 언급한 절차가 모두 순차적으로 끝나야 한다. 중간 작업이 실패한다면, 
-        그 백업본은 사용할 수 없다.
+    You should, however, omit from the backup the files within the
+    cluster's <filename>pg_wal/</> subdirectory.  This
+    slight adjustment is worthwhile because it reduces the risk
+    of mistakes when restoring.  This is easy to arrange if
+    <filename>pg_wal/</> is a symbolic link pointing to someplace outside
+    the cluster directory, which is a common setup anyway for performance
+    reasons.  You might also want to exclude <filename>postmaster.pid</>
+    and <filename>postmaster.opts</>, which record information
+    about the running <application>postmaster</>, not about the
+    <application>postmaster</> which will eventually use this backup.
+    (These files can confuse <application>pg_ctl</>.)
    </para>
 
    <para>
-    백업본을 만들 때는 반드시 데이터 클러스터 디렉토리
-        (대게, 이 디렉토리의 이름은 <filename>/usr/local/pgsql/data</> 이다.)
-        안에 있는 
-        모든 파일을 보관해야한다.  또한, 기본 테이블스페이스 외에 다른 사용자 정의
-        테이블스페이스를 사용한다면, 그 파일들로 모두 보관해야한다. 
-        그렇지 않으면, 복원 작업이 정상적으로 이루워지지 않는다.
+    It is often a good idea to also omit from the backup the files
+    within the cluster's <filename>pg_replslot/</> directory, so that
+    replication slots that exist on the master do not become part of the
+    backup.  Otherwise, the subsequent use of the backup to create a standby
+    may result in indefinite retention of WAL files on the standby, and
+    possibly bloat on the master if hot standby feedback is enabled, because
+    the clients that are using those replication slots will still be connecting
+    to and updating the slots on the master, not the standby.  Even if the
+    backup is only intended for use in creating a new master, copying the
+    replication slots isn't expected to be particularly useful, since the
+    contents of those slots will likely be badly out of date by the time
+    the new master comes on line.
    </para>
 
    <para>
-    한편, 데이터 클러스터 디렉토리에 대한 백업본을 만들 때, 
-        <filename>pg_xlog/</> 디렉토리를 빼야한다.
-        이렇게 하려면, 클러스터 디렉토리 안에 <filename>pg_xlog/</>
-        디렉토리를 두지 않고, 그냥 심볼릭 링크로 만들어 사용하면, 
-        손쉽게 처리할 수 있다. 또한 복원 작업을 손쉽게 하기 위해서, 
-        데이터베이스 서버가 실행 중일 때만 생기는 <filename>postmaster.pid</>,
-        <filename>postmaster.opts</> 파일들을 백업본을 만들 때, 
-        제외해두면 좋다.  이 파일들이 있으면, <application>pg_ctl</> 명령으로
-        서버를 실행하려고 할 때, 문제를 일으킨다.  그래서 수동으로 정리작업을 
-        해 주어야한다.
+    The contents of the directories <filename>pg_dynshmem/</>,
+    <filename>pg_notify/</>, <filename>pg_serial/</>,
+    <filename>pg_snapshots/</>, <filename>pg_stat_tmp/</>,
+    and <filename>pg_subtrans/</> (but not the directories themselves) can be
+    omitted from the backup as they will be initialized on postmaster startup.
+    If <xref linkend="guc-stats-temp-directory"> is set and is under the data
+    directory then the contents of that directory can also be omitted.
    </para>
 
    <para>
-    디렉터리 안에 덤프파일을 만들어서, 리플리케이션 슬롯 대신 백업 일부로 사용할 수 있다. 
-    그렇게 하지 않으면 대기 서버를 만들 때마다 마스터 서버에 연결된 리플리케이션 사용자가 
-    계속 마스터 서버의 슬롯을 업데이트하고, hot standby feedback이 활성화된 상태에선 마스터가 폭발할 지도 모른다. 
-    백업이 새 마스터를 만들 때만 사용된다 하더라도, 리플리케이션 슬롯을 복사하는 것은 좋지 않다. 
-    슬롯의 컨텐츠도 새 마스터가 연결된 때에는 이미 오래된 정보일 가능성이 높기 때문이다.
+    Any file or directory beginning with <filename>pgsql_tmp</filename> can be
+    omitted from the backup.  These files are removed on postmaster start and
+    the directories will be recreated as needed.
    </para>
 
    <para>
-    이 백업본을 정상적으로 사용하려면, 파일 시스템 백업을 시작 한 뒤부터
-        생긴 WAL 세그먼트 파일들을 모두 보관하고 있어야한다.
-        이 작업을 쉽게 할 수 있도록, <function>pg_stop_backup</>함수가
-        실행되면, <firstterm>백업 내역 파일</>을 만들어 WAL 아카이브 영역 쪽으로 
-        즉시 보관한다.  이 파일의 이름은 백업을 시작하면서 첫 체크포인트 작업을 한 
-        다음 세그먼트 번호로 결정된다.
-    예를 들어, WAL 세그먼트 파일의 백업이 필요한 파일 이름이 
-    <literal>0000000100001234000055CD</> 라면, 백업 내역 파일의 이름은 
-        <literal>0000000100001234000055CD.007C9330.backup</>으로 된다. 
-        (이 이름의 두번째 부분은 해당 세그먼트 내의 정확한 위치를 나타내는데, 
-        크게 신경쓰지 않아도 된다.)
-        이렇게 해서, 이 파일 이름의 세그먼트 파일과, 파일 시스템 백업 과정에 생긴 
-        WAL 세그먼트 파일들만 보관하면, 정상적인 복구가 가능하다. 즉, 이 백업 시작 전 
-        세그먼트 파일들은 더 이상 필요가 없다. (일반적으로 쓸모 없는 파일들은 
-        16진수로 백업 내역 파일의 이름보다 작다.) 하지만, 
-        만일을 대비해서, 현재 베이스 백업으로 복원이 불가능한 경우를 대비해서, 
-        이전 WAL 세그먼트 파일들도 따로 보관해 둘 필요도 있다.
+    The backup label
+    file includes the label string you gave to <function>pg_start_backup</>,
+    as well as the time at which <function>pg_start_backup</> was run, and
+    the name of the starting WAL file.  In case of confusion it is therefore
+    possible to look inside a backup file and determine exactly which
+    backup session the dump file came from.  The tablespace map file includes
+    the symbolic link names as they exist in the directory
+    <filename>pg_tblspc/</> and the full path of each symbolic link.
+    These files are not merely for your information; their presence and
+    contents are critical to the proper operation of the system's recovery
+    process.
    </para>
 
    <para>
-    백업 내역 파일은 작은 텍스트 파일이다. 이 파일 안에는 
-        <function>pg_start_backup</> 함수를 실행할 때 지정한 
-        라벨 문자열이 있고, 파일 시스템 백업 시작, 종료 시간과 
-        각 WAL 세그먼트 파일 이름이 기록되어 있다.
-        파일 시스템 백업과 관계 된 라벨을 잘 이용하면, 
-        여러개의 베이스 백업본을 독립적으로 보관할 수있으며, 
-        필요에 따라 그 라벨을 보고, 선택적으로 복원 작업을 할 수 있다.
-   </para>
-
-   <para>
-    정상적인 복원 작업이 이루워지려면, 이처럼 마지막 베이스 백업 작업을 
-        끝낸 뒤부터, 다음 베이스 백업 작업을 할 때까지의 간격에 대해서 
-        고민할 필요가 있다. 간격이 길다면, 그 만큼 복원 작업에서 사용될 
-        WAL 세그먼트 파일이 많아지기 때문이다.  또한 백업 저장 장치의 
-        공간도 고려되어야한다. 백업 저장 장치의 입출력 속도와, 
-        여유 공간과, 데이터베이스 서버에서 만들어내는 WAL 세그먼트 파일들의 량과
-        베이스 백업을 하는 동안 데이터베이스 서버의 서비스 영향도를
-        모두 고려해서, 가장 적당한 백업 주기를 선택하는 것이 좋다.
-   </para>
-
-   <para>
-    백업 라벨 파일에는 <function>pg_start_backup</> 함수에서 지정한 라벨 문자열,
-    함수가 실행 된 시간, 복구에 필요한 WAL 시작 파일 이름이 저장된다.
-    복구를 할 때, 이것을 참고해서 필요한 파일을 찾으면 보다 쉽다.  테이블스페이스
-    맵 파일에는 <filename>pg_tblspc/</> 디렉터리 안에 있는 각 심볼릭 링크의 
-    절대 경로 정보들이 포함된다.  이 파일들은 데이터베이스 복구 작업에서 
-    아주 중요한 파일이기 때문에, 임의로 삭제 되어서도 그 내용이 변경 되어서도 안된다.
-    즉, 베이스 백업본에는 
-        반드시 이 <filename>backup_label</> 파일이 있게 된다.  
-        (필요하다면, <filename>tablespace_map</> 파일도 있다)
-        실행 되는 서버 쪽에서는 
-        베이스 백업이 완료되면 없어야하고, 백업본에는 이 파일이 있는 것이 정상이다.
-        만일 그렇지 않다면, 해당 베이스 백업은 비정상적으로 처리된 경우다.
-        이렇기 때문에, 백업 도중 데이터베이스 서버가 중지 되어 버린 경우, 이 점을 감안해서, 
-        베이스 백업본을 사용할 수 있는지를 판단해야한다.
-   </para>
-
-   <para>
-    서버가 중지된 상태라면, 간단하게 데이터베이스 클러스터 디렉토리 전체를 
-        백업하는 것으로도 충분하다.  이 때는 당연히 <function>pg_start_backup</>,
-        <function>pg_stop_backup</> 함수를 사용하지 않는다. 그러므로, 
-        서버가 정상적으로 중지된 것이 아니라면, 이 WAL 파일을 서버가 복원될 때, 
-        사용할 수 있도록 수동으로 따로 보관해야할 필요가 있다.
+    It is also possible to make a backup while the server is
+    stopped.  In this case, you obviously cannot use
+    <function>pg_start_backup</> or <function>pg_stop_backup</>, and
+    you will therefore be left to your own devices to keep track of which
+    backup is which and how far back the associated WAL files go.
+    It is generally better to follow the continuous archiving procedure above.
    </para>
    </sect3>
   </sect2>
@@ -1192,7 +1168,7 @@ SELECT pg_stop_backup();
          필요한 WAL 세그먼트 파일 모두다. 이 작업을 기존 운영 중이던 시스템에서
          하려면, 적어도 두 배 이상의 디스크 공간이 필요하게 된다. 이런 여유 공간이 없다면, 
          적어도 기존 데이터베이스 서버의 클러스터 디렉토리 안에 있는 
-         <filename>pg_xlog</> 파일들과, 서버 환경 설정 파일들 만이라도 복사한다.
+         <filename>pg_wal</> 파일들과, 서버 환경 설정 파일들 만이라도 복사한다.
      백업한 WAL 세그먼트 파일들과 미처 백업 되지 못한 WAL 세그먼트 파일들을 모두 구할 수 있다면, 
          서버가 중지되기 직전의 상태로 복구 될 수 있다.
     </para>
@@ -1215,9 +1191,9 @@ SELECT pg_stop_backup();
    </listitem>
    <listitem>
     <para>
-         <filename>pg_xlog/</> 디렉토리는 비워둔다; 만일 이 디렉토리 안에 파일이 있다면, 
+         <filename>pg_wal/</> 디렉토리는 비워둔다; 만일 이 디렉토리 안에 파일이 있다면, 
          지워야한다. 복구 작업에서 이 디렉토리 안에 필요한 파일들은 자동으로 만들어진다. 
-         만일 <filename>pg_xlog/</> 디렉토리를 백업 대상에서 제외했다면, 
+         만일 <filename>pg_wal/</> 디렉토리를 백업 대상에서 제외했다면, 
          디렉토리를 만들거나, 심볼릭 링크를 만들어 데이터베이스 서버가 해당 디렉토리를 
          사용할 수 있도록 한다. 이 때도, 이 디렉토리의 접근권한과 소유주가 데이터베이스
          서버를 실행하는 시스템 사용자만 사용할 수 있는지 확인해야한다.
@@ -1228,7 +1204,7 @@ SELECT pg_stop_backup();
    <listitem>
     <para>
          만일 WAL 세그먼트 파일에 대한 백업본이 없다면, 
-         2단계에서 복사해둔 <filename>pg_xlog/</> 내의 파일들을 복구하려는 
+         2단계에서 복사해둔 <filename>pg_wal/</> 내의 파일들을 복구하려는 
          곳으로 복사한다. (옮기지 말고 복사하길 권한다. 아직 완벽한 복구가 
          이루워지지 않았기 때문에, 복사가 안전하다.)
     </para>
@@ -1317,11 +1293,11 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
 
    <para>
     아카이브 백업 디렉토리에서 WAL 세그먼트 파일을 못 찾으면, 
-        데이터 클러스터 안에 있는 <filename>pg_xlog/</> 디렉토리 안에서 찾는다.
+        데이터 클러스터 안에 있는 <filename>pg_wal/</> 디렉토리 안에서 찾는다.
         혹시 처리해야할 WAL 세그먼트 파일이 더 있는데, 
         미처 백업 되지 않은 것이 있으면, 그것까지도 처리하기 위한 방법이다. 
         하지만, 똑 같은 파일이름으로 아카이브 백업 디렉토리 안에 이미 
-        그 파일이 있다면, 그 파일이 적용되고, <filename>pg_xlog/</> 안에 있던 
+        그 파일이 있다면, 그 파일이 적용되고, <filename>pg_wal/</> 안에 있던 
         파일은 무시하고, 새로운 WAL 세그먼트 이름으로 그 로그를 반영한다. 이렇기 때문에, 
         복구 작업 전에 반드시 WAL 세그먼트 파일들을 잘 정리해야한다.
    </para>
@@ -1595,17 +1571,6 @@ archive_command = 'local_backup_script.sh "%p" "%f"'
     이 한계들은 미래의 배포판에서 수정될 예정이다:
 
   <itemizedlist>
-   <listitem>
-    <para>
-     해시 인덱스 작업에 대한 기록은 WAL 로그에 포함되지 않는다.
-     그래서, 이런 인덱스들에 대해서는 대기(standby) 서버(복원 서버)에서
-     삽입, 갱신 작업을 하지 않는다. 다시 말하면, 이렇게 제대로 반영되지 않은
-     인덱스 때문에, 원한는 결과가 출력되지 않을 수 있다.
-     만일 해시 인덱스를 사용하고 있다면, 복원 작업이 끝난 뒤에 수동으로 
-     <xref linkend="sql-reindex"> 작업을 해야한다.
-    </para>
-   </listitem>
-
    <listitem>
     <para>
      베이스 백업이 시작 된 다음 <xref linkend="sql-createdatabase"> 명령으로

@@ -45,7 +45,7 @@ SET SESSION CHARACTERISTICS AS TRANSACTION <replaceable class="parameter">transa
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    The <command>SET TRANSACTION</command> command sets the
@@ -180,13 +180,12 @@ SET SESSION CHARACTERISTICS AS TRANSACTION <replaceable class="parameter">transa
  </refsect1>
 
  <refsect1>
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    If <command>SET TRANSACTION</command> is executed without a prior
-   <command>START TRANSACTION</command> or  <command>BEGIN</command>,
-   it will appear to have no effect, since the transaction will immediately
-   end.
+   <command>START TRANSACTION</command> or <command>BEGIN</command>,
+   it emits a warning and otherwise has no effect.
   </para>
 
   <para>
@@ -212,7 +211,7 @@ SET SESSION CHARACTERISTICS AS TRANSACTION <replaceable class="parameter">transa
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    To begin a new transaction with the same snapshot as an already
@@ -223,8 +222,8 @@ SET SESSION CHARACTERISTICS AS TRANSACTION <replaceable class="parameter">transa
 BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 SELECT pg_export_snapshot();
  pg_export_snapshot
---------------------
- 000003A1-1
+---------------------
+ 00000003-0000001B-1
 (1 row)
 </programlisting>
 
@@ -234,12 +233,12 @@ SELECT pg_export_snapshot();
 
 <programlisting>
 BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-SET TRANSACTION SNAPSHOT '000003A1-1';
+SET TRANSACTION SNAPSHOT '00000003-0000001B-1';
 </programlisting></para>
  </refsect1>
 
  <refsect1 id="R1-SQL-SET-TRANSACTION-3">
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    These commands are defined in the <acronym>SQL</acronym> standard,
