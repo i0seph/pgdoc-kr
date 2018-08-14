@@ -688,6 +688,12 @@ SELECT mleast(ARRAY[10, -1, 5, 4.4]);    -- 작동 안함
      가끔 해당 인자가 이미 배열형으로 구성이 된 경우라면, 그것을 다시 
      개별 인자로 분리하지 않고 그냥 앞에 <literal>VARIADIC</> 예약어를
      지정해서 이런 인자수가 가변적인 함수의 인자로 바로 수 있다.
+     Also,
+     this is the only secure way to call a variadic function found in a schema
+     that permits untrusted users to create objects; see
+     <xref linkend="typeconv-func">.  You can do this by
+     specifying <literal>VARIADIC</literal> in the call:
+
 
 <screen>
 SELECT mleast(VARIADIC ARRAY[10, -1, 5, 4.4]);
@@ -750,6 +756,10 @@ SELECT mleast(arr =&gt; ARRAY[10, -1, 5, 4.4]);
      여러 인자 가운데, 맨 마지막이 아닌 다른 위치의 인자를 생략하고, 
      다음 인자는 사용자 그 값을 지정했다면 오류를 낸다.  (물론
      인자 이름 기반 지정이라면 상관 없다.)
+     Whether or not you use it,
+     this capability creates a need for precautions when calling functions in
+     databases where some users mistrust other users; see
+     <xref linkend="typeconv-func">.
     </para>
 
     <para>
@@ -1323,11 +1333,14 @@ $$ LANGUAGE SQL;
    <para>
     More than one function can be defined with the same SQL name, so long
     as the arguments they take are different.  In other words,
-    function names can be <firstterm>overloaded</firstterm>.  When a
-    query is executed, the server will determine which function to
-    call from the data types and the number of the provided arguments.
-    Overloading can also be used to simulate functions with a variable
-    number of arguments, up to a finite maximum number.
+    function names can be <firstterm>overloaded</firstterm>.  Whether or not
+    you use it, this capability entails security precautions when calling
+    functions in databases where some users mistrust other users; see
+    <xref linkend="typeconv-func">.  When a query is executed, the server
+    will determine which function to call from the data types and the number
+    of the provided arguments.  Overloading can also be used to simulate
+    functions with a variable number of arguments, up to a finite maximum
+    number.
    </para>
 
    <para>

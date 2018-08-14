@@ -809,14 +809,9 @@ optionSYSVSEM
 optionSEMMNI=256
 optionSEMMNS=512
 optionSEMMNU=256
-optionSEMMAP=256
 </programlisting>
  </para>
 
- <para>
-사용자는 커널을 환경 설정하여 공유 메모리를 RAM에 잠그고 스왑을 위해 페이지 아웃되지 못하게 하기를 원할 수 있다.이것은 <command>sysctl</command>
-설정 <literal>kern.ipc.shm_use_phys</literal>를 사용하면 가능하다.
- </para>
 </listitem>
  </varlistentry>
 

@@ -66,6 +66,13 @@
 
    <listitem>
     <para>
+     Replicating between PostgreSQL instances on different platforms (for
+     example Linux to Windows)
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
      Giving access to replicated data to different groups of users.
     </para>
    </listitem>

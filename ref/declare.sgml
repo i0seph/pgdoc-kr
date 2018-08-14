@@ -12,6 +12,7 @@ PostgreSQL documentation
   <primary>cursor</primary>
   <secondary>DECLARE</secondary>
  </indexterm>
+
  <refmeta>
   <refentrytitle>DECLARE</refentrytitle>
   <manvolnum>7</manvolnum>
@@ -31,7 +32,7 @@ DECLARE <replaceable class="parameter">name</replaceable> [ BINARY ] [ INSENSITI
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>DECLARE</command> allows a user to create cursors, which
@@ -52,7 +53,7 @@ DECLARE <replaceable class="parameter">name</replaceable> [ BINARY ] [ INSENSITI
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -270,7 +271,8 @@ DECLARE <replaceable class="parameter">name</replaceable> [ BINARY ] [ INSENSITI
      and not use grouping or <literal>ORDER BY</>).  Cursors
      that are not simply updatable might work, or might not, depending on plan
      choice details; so in the worst case, an application might work in testing
-     and then fail in production.
+     and then fail in production.  If <literal>FOR UPDATE</literal> is
+     specified, the cursor is guaranteed to be updatable.
     </para>
 
     <para>
@@ -301,7 +303,7 @@ DECLARE <replaceable class="parameter">name</replaceable> [ BINARY ] [ INSENSITI
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    To declare a cursor:
@@ -314,7 +316,7 @@ DECLARE liahona CURSOR FOR SELECT * FROM films;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    The SQL standard says that it is implementation-dependent whether cursors
@@ -337,7 +339,7 @@ DECLARE liahona CURSOR FOR SELECT * FROM films;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-close"></member>

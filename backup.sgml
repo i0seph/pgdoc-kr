@@ -156,7 +156,7 @@ psql <replaceable class="parameter">데이터베이스이름</replaceable> &lt; 
         리턴 코드 3으로 종료된다.
     다음은 그 사용 방법이다:
 <programlisting>
-psql --set ON_ERROR_STOP=on dbname &lt; 덤프파일
+psql --set ON_ERROR_STOP=on <replaceable>dbname</replaceable> &lt; <replaceable>덤프파일</replaceable>
 </programlisting>
     이 방법은 스크립트에서 정상적으로 실행된 작업들에 대해서는
         해당 데이터베이스에 반영되었다는 것을 의미한다. 
@@ -1283,7 +1283,7 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
    </para>
     
    <para>
-        서버는 <literal>.backup</> 또는 <literal>.history</> 이름으로 끝나는 
+        서버는 <literal>.history</> 이름으로 끝나는 
         파일을 찾을 수도 있는데, 이 때, 그 파일이 없으면, 그 파일이 없다고, (0 아닌 값을 리턴함으로)
         서버 쪽에 알려주어야한다. 
         또한, <literal>%f</> 파일 이름과, 서버 쪽으로 복사되는 <literal>%p</> 파일 이름이 

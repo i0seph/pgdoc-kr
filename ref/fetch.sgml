@@ -4,6 +4,7 @@ PostgreSQL documentation
 -->
 
 <refentry id="SQL-FETCH">
+
  <indexterm zone="sql-fetch">
   <primary>FETCH</primary>
  </indexterm>
@@ -12,7 +13,6 @@ PostgreSQL documentation
   <primary>cursor</primary>
   <secondary>FETCH</secondary>
  </indexterm>
-
  <refmeta>
   <refentrytitle>FETCH</refentrytitle>
   <manvolnum>7</manvolnum>
@@ -49,7 +49,7 @@ FETCH [ <replaceable class="PARAMETER">direction</replaceable> [ FROM | IN ] ] <
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</title>
+  <title>Description</title>
 
   <para>
    <command>FETCH</command> retrieves rows using a previously-created cursor.
@@ -99,13 +99,13 @@ FETCH [ <replaceable class="PARAMETER">direction</replaceable> [ FROM | IN ] ] <
     This page describes usage of cursors at the SQL command level.
     If you are trying to use cursors inside a <application>PL/pgSQL</>
     function, the rules are different &mdash;
-    see <xref linkend="plpgsql-cursors">.
+    see <xref linkend="plpgsql-cursor-using">.
    </para>
   </note>
  </refsect1>
 
  <refsect1>
-  <title>매개 변수</title>
+  <title>Parameters</title>
 
   <variablelist>
    <varlistentry>
@@ -294,7 +294,7 @@ FETCH [ <replaceable class="PARAMETER">direction</replaceable> [ FROM | IN ] ] <
  </refsect1>
 
  <refsect1>
-  <title>출력</title>
+  <title>Outputs</title>
 
   <para>
    On successful completion, a <command>FETCH</> command returns a command
@@ -311,7 +311,7 @@ FETCH <replaceable class="parameter">count</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>참고</title>
+  <title>Notes</title>
 
   <para>
    The cursor should be declared with the <literal>SCROLL</literal>
@@ -343,7 +343,7 @@ FETCH <replaceable class="parameter">count</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>예제</title>
+  <title>Examples</title>
 
   <para>
    The following example traverses a table using a cursor:
@@ -379,7 +379,7 @@ COMMIT WORK;
  </refsect1>
 
  <refsect1>
-  <title>호환성</title>
+  <title>Compatibility</title>
 
   <para>
    The SQL standard defines <command>FETCH</command> for use in
@@ -407,7 +407,7 @@ COMMIT WORK;
  </refsect1>
 
  <refsect1>
-  <title>관련 항목</title>
+  <title>See Also</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-close"></member>
