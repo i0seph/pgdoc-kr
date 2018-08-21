@@ -13,45 +13,46 @@
 
  <refnamediv>
   <refname>DROP COLLATION</refname>
-  <refpurpose>remove a collation</refpurpose>
+  <refpurpose>정렬규칙 삭제</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRICT ]
+DROP COLLATION [ IF EXISTS ] <replaceable>이름</replaceable> [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1 id="sql-dropcollation-description">
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>DROP COLLATION</command> removes a previously defined collation.
-   To be able to drop a collation, you must own the collation.
+   <command>DROP COLLATION</command> 명령은 지정한 
+   정렬 규칙을 삭제한다.
+   해당 정렬 규칙은 소유주만 삭제할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <variablelist>
     <varlistentry>
      <term><literal>IF EXISTS</literal></term>
      <listitem>
       <para>
-       Do not throw an error if the collation does not exist.
-       A notice is issued in this case.
+       해당 정렬 규칙이 없어도 오류로 처리하지 않는다.
+       이 경우 알림 메시지를 보여준다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>name</replaceable></term>
+     <term><replaceable>이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of the collation. The collation name can be
-       schema-qualified.
+       삭제할 정렬 규칙 이름.   이 이름에 스키마 이름도 
+       포함할 수 있다.
       </para>
      </listitem>
     </varlistentry>
@@ -60,9 +61,8 @@ DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRIC
      <term><literal>CASCADE</literal></term>
      <listitem>
       <para>
-       Automatically drop objects that depend on the collation,
-       and in turn all objects that depend on those objects
-       (see <xref linkend="ddl-depend">).
+       이 정렬 규칙을 필요로 하는 모든 개체도 함께 삭제한다
+       (<xref linkend="ddl-depend"> 참조).
       </para>
      </listitem>
     </varlistentry>
@@ -71,8 +71,8 @@ DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRIC
      <term><literal>RESTRICT</literal></term>
      <listitem>
       <para>
-       Refuse to drop the collation if any objects depend on it.  This
-       is the default.
+       이 정렬 규칙을 필요로 하는 개체가 있으면, 
+       정렬 규칙을 삭제하지 않는다.  이 옵션은 기본값이다.
       </para>
      </listitem>
     </varlistentry>
@@ -80,27 +80,28 @@ DROP COLLATION [ IF EXISTS ] <replaceable>name</replaceable> [ CASCADE | RESTRIC
  </refsect1>
 
  <refsect1 id="sql-dropcollation-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To drop the collation named <literal>german</>:
+   <literal>german</> 정렬 규칙을 삭제하려면:
 <programlisting>
 DROP COLLATION german;
 </programlisting></para>
  </refsect1>
 
  <refsect1 id="sql-dropcollation-compat">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The <command>DROP COLLATION</command> command conforms to the
-   <acronym>SQL</acronym> standard, apart from the <literal>IF
-   EXISTS</> option, which is a <productname>PostgreSQL</> extension.
+   <command>DROP COLLATION</command> 명령은 
+   <acronym>SQL</acronym> 표준을 따르지만, 
+   <literal>IF EXISTS</> 옵션은 
+   <productname>PostgreSQL</> 확장형이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altercollation"></member>

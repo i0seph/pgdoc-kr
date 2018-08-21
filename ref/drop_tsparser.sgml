@@ -16,26 +16,27 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>DROP TEXT SEARCH PARSER</refname>
-  <refpurpose>remove a text search parser</refpurpose>
+  <refpurpose>텍스트 검색 구문분석기 삭제</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable> [ CASCADE | RESTRICT ]
+DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>DROP TEXT SEARCH PARSER</command> drops an existing text search
-   parser.  You must be a superuser to use this command.
+   <command>DROP TEXT SEARCH PARSER</command> 명령은 지정한 
+   텍스트 검색 구문분석기를 삭제한다.
+   슈퍼유저만 삭제할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
 
@@ -43,17 +44,17 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
     <term><literal>IF EXISTS</literal></term>
     <listitem>
      <para>
-      Do not throw an error if the text search parser does not exist.
-      A notice is issued in this case.
+      해당 구문분석기가 없어도 오류로 처리하지 않는다.
+      이 경우 알림 메시지만 보여준다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing text search parser.
+      삭제 하려는 텍스트 검색 구문분석기 이름(스키마 이름을 포함할 수 있음).
      </para>
     </listitem>
    </varlistentry>
@@ -62,9 +63,8 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
     <term><literal>CASCADE</literal></term>
     <listitem>
      <para>
-      Automatically drop objects that depend on the text search parser,
-      and in turn all objects that depend on those objects
-      (see <xref linkend="ddl-depend">).
+      해당 구문분석기를 필요로 하는 모든 개체도 함께 삭제한다(<xref
+      linkend="ddl-depend"> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -73,8 +73,8 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
     <term><literal>RESTRICT</literal></term>
     <listitem>
      <para>
-      Refuse to drop the text search parser if any objects depend on it.
-      This is the default.
+      해당 구문분석기를 필요로 하는 개체가 있으면 삭제하지 않는다.
+      이 옵션이 기본값이다.
      </para>
     </listitem>
    </varlistentry>
@@ -82,32 +82,31 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <replaceable class="PARAMETER">name</repla
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Remove the text search parser <literal>my_parser</literal>:
+   <literal>my_parser</literal> 텍스트 검색 구문분석기를 삭제하려면:
 
 <programlisting>
 DROP TEXT SEARCH PARSER my_parser;
 </programlisting>
 
-   This command will not succeed if there are any existing text search
-   configurations that use the parser.  Add <literal>CASCADE</> to
-   drop such configurations along with the parser.
+   이 명령은 이 구문분석기를 사용하는 텍스트 검색 환경설정이 있으면
+   실패한다.  이 경우 그 환경설정까지도 함께 삭제하려면,
+   <literal>CASCADE</> 옵션을 추가해서 사용한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>DROP TEXT SEARCH PARSER</command> statement in the
-   SQL standard.
+   SQL 표준에는 <command>DROP TEXT SEARCH PARSER</command> 명령이 없다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altertsparser"></member>

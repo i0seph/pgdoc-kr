@@ -16,62 +16,62 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>DROP USER MAPPING</refname>
-  <refpurpose>remove a user mapping for a foreign server</refpurpose>
+  <refpurpose>외부 서버용 사용자 맵핑 삭제</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">user_name</replaceable> | USER | CURRENT_USER | PUBLIC } SERVER <replaceable class="parameter">server_name</replaceable>
+DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">사용자이름</replaceable> | USER | CURRENT_USER | PUBLIC } SERVER <replaceable class="parameter">서버이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>DROP USER MAPPING</command> removes an existing user
-   mapping from foreign server.
+   <command>DROP USER MAPPING</command> 명령은 
+   해당 외부 서버에 등록된 사용자 맵핑 정보를 삭제한다.
   </para>
 
   <para>
-   The owner of a foreign server can drop user mappings for that server
-   for any user.  Also, a user can drop a user mapping for their own
-   user name if <literal>USAGE</> privilege on the server has been
-   granted to the user.
+   해당 외부 서버 소유주가 그 서버에 등록에 사용자 맵핑 정보를 
+   삭제할 수 있다.  또한 그 외부 서버에 대한 
+   <literal>USAGE</> 권한이 있는 사용자는 자신의 사용자 맵핑 정보를
+   삭제 할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
     <term><literal>IF EXISTS</literal></term>
     <listitem>
      <para>
-      Do not throw an error if the user mapping does not exist.  A
-      notice is issued in this case.
+      해당 사용자 맵핑 정보가 없어도 오류로 처리하지 않는다.
+      이 경우 알림 메시지를 보여준다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">user_name</replaceable></term>
+    <term><replaceable class="parameter">사용자이름</replaceable></term>
     <listitem>
      <para>
-      User name of the mapping.  <literal>CURRENT_USER</>
-      and <literal>USER</> match the name of the current
-      user.  <literal>PUBLIC</> is used to match all present and
-      future user names in the system.
+      삭제할 사용자 이름.  <literal>CURRENT_USER</>,
+      <literal>USER</>는 현재 이 명령을 실행하는 사용자를 뜻한다.
+      <literal>PUBLIC</>은 이 외부 서버를 사용하는 범용 사용자를
+      뜻한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">server_name</replaceable></term>
+    <term><replaceable class="parameter">서버이름</replaceable></term>
     <listitem>
      <para>
-      Server name of the user mapping.
+      해당 사용자가 등록된 외부 서버 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -79,27 +79,28 @@ DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">user_name</
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Drop a user mapping <literal>bob</>, server <literal>foo</> if it exists:
+   <literal>foo</> 서버에서
+   <literal>bob</> 사용자 맵핑이 있다면 삭제하는 경우:
 <programlisting>
 DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>DROP USER MAPPING</command> conforms to ISO/IEC 9075-9
-   (SQL/MED).  The <literal>IF EXISTS</> clause is
-   a <productname>PostgreSQL</> extension.
+   <command>DROP USER MAPPING</command> 명령은 ISO/IEC 9075-9
+   (SQL/MED) 규약을 준수한다.  <literal>IF EXISTS</> 옵션은
+   <productname>PostgreSQL</> 확장형이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createusermapping"></member>

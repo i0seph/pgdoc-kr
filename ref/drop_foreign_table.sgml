@@ -13,43 +13,43 @@
 
  <refnamediv>
   <refname>DROP FOREIGN TABLE</refname>
-  <refpurpose>remove a foreign table</refpurpose>
+  <refpurpose>외부 테이블 삭제</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>DROP FOREIGN TABLE</command> removes a foreign table.
-   Only the owner of a foreign table can remove it.
+   <command>DROP FOREIGN TABLE</command> 명령은 외부 테이블을 삭제한다.
+   해당 외부 테이블 소유주만 삭제할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
     <term><literal>IF EXISTS</literal></term>
     <listitem>
      <para>
-      Do not throw an error if the foreign table does not exist.
-      A notice is issued in this case.
+      해당 외부 테이블이 없어도 오류로 처리하지 않는다.
+      이 경우 알림 메시지를 보여준다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">name</replaceable></term>
+    <term><replaceable class="PARAMETER">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the foreign table to drop.
+      삭제할 (스키마 이름도 포함할 수 있는) 외부 테이블 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -58,9 +58,8 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceabl
     <term><literal>CASCADE</literal></term>
     <listitem>
      <para>
-      Automatically drop objects that depend on the foreign table (such as
-      views), and in turn all objects that depend on those objects
-      (see <xref linkend="ddl-depend">).
+      해당 외부 테이블을 필요로 하는 모든 개체(예: 뷰)들도 함께 
+      삭제 한다(<xref linkend="ddl-depend"> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -69,8 +68,8 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceabl
     <term><literal>RESTRICT</literal></term>
     <listitem>
      <para>
-      Refuse to drop the foreign table if any objects depend on it.  This is
-      the default.
+      해당 외부 테이블을 필요로 하는 개체가 있으면, 
+      삭제 하지 않는다.  이 옵션이 기본값이다.
      </para>
     </listitem>
    </varlistentry>
@@ -78,11 +77,11 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceabl
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To destroy two foreign tables, <literal>films</literal> and
-   <literal>distributors</literal>:
+   <literal>films</literal>, <literal>distributors</literal>
+   두 외부 테이블을 삭제하려면:
 
 <programlisting>
 DROP FOREIGN TABLE films, distributors;
@@ -90,18 +89,18 @@ DROP FOREIGN TABLE films, distributors;
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   This command conforms to the ISO/IEC 9075-9 (SQL/MED), except that the
-   standard only allows one foreign table to be dropped per command, and apart
-   from the <literal>IF EXISTS</> option, which is a <productname>PostgreSQL</>
-   extension.
+   ISO/IEC 9075-9 (SQL/MED) 규약을 준수한 명령어이며,
+   이 규약에는 하나의 명령은 하나의 외부 테이블만 삭제할 수 있다.
+   <literal>IF EXISTS</> 옵션은 <productname>PostgreSQL</>
+   확장형이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterforeigntable"></member>

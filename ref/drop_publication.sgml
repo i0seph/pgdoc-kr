@@ -16,47 +16,47 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>DROP PUBLICATION</refname>
-  <refpurpose>remove a publication</refpurpose>
+  <refpurpose>발행 삭제</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-DROP PUBLICATION [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP PUBLICATION [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>DROP PUBLICATION</command> removes an existing publication from
-   the database.
+   <command>DROP PUBLICATION</command> 명령은 지정한 발행을
+   서버에서 지운다.
   </para>
 
   <para>
-   A publication can only be dropped by its owner or a superuser.
+   해당 발행의 소유주나 슈퍼유저만 삭제할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
     <term><literal>IF EXISTS</literal></term>
     <listitem>
      <para>
-      Do not throw an error if the publication does not exist. A notice is
-      issued in this case.
+      해당 발행이 없어도 오류로 처리하지 않는다. 단지
+      알림 메시지만 보여준다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing publication.
+      삭제할 발행 이름
      </para>
     </listitem>
    </varlistentry>
@@ -67,8 +67,8 @@ DROP PUBLICATION [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
 
     <listitem>
      <para>
-      These key words do not have any effect, since there are no dependencies
-      on publications.
+      해당 발행이 의존 관계가 없을 때에는, 이 예약어들은 
+      아무런 영향을 주지 않는다.
      </para>
     </listitem>
    </varlistentry>
@@ -76,26 +76,26 @@ DROP PUBLICATION [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Drop a publication:
+   한 발행 지우기:
 <programlisting>
 DROP PUBLICATION mypublication;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>DROP PUBLICATION</command> is a <productname>PostgreSQL</>
-   extension.
+   <command>DROP PUBLICATION</command> 명령은 <productname>PostgreSQL</>
+   확장 명령어이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createpublication"></member>
