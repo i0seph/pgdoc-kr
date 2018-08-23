@@ -13,40 +13,41 @@
 
  <refnamediv>
   <refname>pg_test_fsync</refname>
-  <refpurpose>determine fastest <varname>wal_sync_method</varname> for <productname>PostgreSQL</productname></refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 환경 설정 매개 변수 <varname>wal_sync_method</varname> 속도 검사</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_test_fsync</command>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
  <para>
-  <application>pg_test_fsync</> is intended to give you a reasonable
-  idea of what the fastest <xref linkend="guc-wal-sync-method"> is on your
-  specific system,
-  as well as supplying diagnostic information in the event of an identified I/O
-  problem.  However, differences shown by
-  <application>pg_test_fsync</application> might not make any significant
-  difference in real database throughput, especially since many database servers
-  are not speed-limited by their write-ahead logs.
-  <application>pg_test_fsync</application> reports average file sync operation
-  time in microseconds for each <literal>wal_sync_method</literal>, which can also be used to
-  inform efforts to optimize the value of <xref linkend="guc-commit-delay">.
+  <application>pg_test_fsync</>은 해당 OS에서 
+  사용할 수 있는 가장 빠른 <xref linkend="guc-wal-sync-method"> 설정값이
+  무엇인지 조사하는 명령어다.  또한 I/O 문제가 있을 때, 
+  이 문제를 풀 정보를 제공한다.
+  하지만, 이 <application>pg_test_fsync</application> 명령을 통해 
+  보여주는 차이점이 실 운영 환경 성능에 그대로 반영되는 것은 아니다.  왜냐하면,
+  실 운영 환경에서는 대부분 미리-쓰는 로그의 처리 속도를 제한하지 
+  않기 때문이다.
+  <application>pg_test_fsync</application> 명령은
+  각 <literal>wal_sync_method</literal> 종류별로 파일 sync 작업의 평균 수행
+  시간을 마이크로초 단위로 보여준다.  또한 이 정보는
+  최적의 <xref linkend="guc-commit-delay"> 값을 찾는데도 도움을 준다.
  </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
-    <application>pg_test_fsync</application> accepts the following
-    command-line options:
+    다음은 <application>pg_test_fsync</application> 명령에서
+    사용할 수 있는 명령행 옵션들이다:
 
     <variablelist>
 
@@ -55,12 +56,12 @@
       <term><option>--filename</option></term>
       <listitem>
        <para>
-        Specifies the file name to write test data in.
-        This file should be in the same file system that the
-        <filename>pg_wal</> directory is or will be placed in.
-        (<filename>pg_wal</> contains the <acronym>WAL</> files.)
-        The default is <filename>pg_test_fsync.out</> in the current
-        directory.
+        디스크 쓰기 검사 자료로 쓰일 파일 이름을 지정한다.
+        이 옵션에 지정할 파일은 <filename>pg_wal</> 디렉터리가 있는
+        같은 마운트 위치(같은 파일 시스템)에 있는 파일이어야 한다.
+        (<filename>pg_wal</> 디렉터리에 <acronym>WAL</> 파일을 저장한다.)
+        기본값은 현재 디렉터리 안에 <filename>pg_test_fsync.out</> 이름의
+        파일을 사용한다.
        </para>
       </listitem>
      </varlistentry>
@@ -70,10 +71,9 @@
       <term><option>--secs-per-test</option></term>
       <listitem>
        <para>
-        Specifies the number of seconds for each test.  The more time
-        per test, the greater the test's accuracy, but the longer it takes
-        to run.  The default is 5 seconds, which allows the program to
-        complete in under 2 minutes.
+        각 검사를 몇 초 동안 계속 진행할 것이지 지정한다.  이 값이
+        크면 그 결과값이 보다 정확하겠지만, 그만큼 검사 시간이 오래 걸린다.
+        기본값은 5초이며, 전체 검사 시간은 약 2분 미만이다.
        </para>
       </listitem>
      </varlistentry>
@@ -83,7 +83,7 @@
       <term><option>--version</></term>
       <listitem>
        <para>
-        Print the <application>pg_test_fsync</application> version and exit.
+        <application>pg_test_fsync</application> 버전을 보여주고 마친다.
        </para>
       </listitem>
      </varlistentry>
@@ -93,8 +93,8 @@
       <term><option>--help</></term>
       <listitem>
        <para>
-        Show help about <application>pg_test_fsync</application> command line
-        arguments, and exit.
+        <application>pg_test_fsync</application> 명령행 인자 도움말을
+        보여주고 마친다.
        </para>
       </listitem>
      </varlistentry>
@@ -104,7 +104,7 @@
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-postgres"></member>

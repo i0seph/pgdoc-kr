@@ -225,7 +225,7 @@ initdb --locale=sv_SE
    </para>
 
    <para>
-    소스 배포에서 <filename>src/test/locale</> 디렉토리에는 <productname>PostgreSQL</>의 로케일(locale) 지원에 대한 테스트 세트가 포함되어 있다.
+    소스 배포에서 <filename>src/test/locale</> 디렉터리에는 <productname>PostgreSQL</>의 로케일(locale) 지원에 대한 테스트 세트가 포함되어 있다.
    </para>
 
    <para>

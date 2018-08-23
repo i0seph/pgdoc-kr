@@ -31,7 +31,7 @@ DROP DATABASE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
   <para>
    <command>DROP DATABASE</command> 명령은 지정한 데이터베이스를 삭제한다.  이 
    작업은 전역 카탈로그 정보에서 해당 데이터베이스 정보를 삭제하고, 
-   그 데이터베이스의 물리적 디렉토리도 모두 삭제한다.  이 작업은
+   그 데이터베이스의 물리적 디렉터리도 모두 삭제한다.  이 작업은
    데이터페이스 소유주만 실행할 수 있다.  또한 해당 데이터베이스로 접속한 
    사용자가 한 명이라도 있으면 삭제 할 수 없다.  (<literal>postgres</literal>나
    다른 데이터베이스로 접속한 뒤 이 명령을 사용해야 한다.)

@@ -233,7 +233,7 @@ psql -f <replaceable class="parameter">덤프파일</replaceable> postgres
         슈퍼유저로 접속해야한다. 그래야, role, 테이블스페이스 정보들을 
         덤프할 수 있다. 또한 이 덤프된 자료를 복원 할 때도 마찬가지다.
         주의 할 점은 만일 기본 테이블스페이스 외에 다른 테이블스페이스를 사용한다면, 
-        그 테이블스페이스의 실재 디렉토리도 덤프 하는 서버에서 사용하는 경로와
+        그 테이블스페이스의 실재 디렉터리도 덤프 하는 서버에서 사용하는 경로와
         똑같이 만들어 놓아야한다.
    </para>
 
@@ -347,7 +347,7 @@ pg_restore -d <replaceable class="parameter">dbname</replaceable> <replaceable c
     <para>
      대용량 데이터베이스의 덤프 속도를 높이기 위해서는 
      <application>pg_dump</application>의 병렬 모드를 사용하면 된다.  
-     그러면 테이블들을 동시에 덤프한다.  병렬 처리 수준은 <command>-j</command> 매개변수로 조절할 수 있다.  병렬적 덤프는 “디렉토리” 아카이브 형식만 지원한다.  
+     그러면 테이블들을 동시에 덤프한다.  병렬 처리 수준은 <command>-j</command> 매개변수로 조절할 수 있다.  병렬적 덤프는 “디렉터리” 아카이브 형식만 지원한다.  
 
 <programlisting>
 pg_dump -j <replaceable class="parameter">num</replaceable> -F d -f <replaceable class="parameter">out.dir</replaceable> <replaceable class="parameter">dbname</replaceable>
@@ -498,8 +498,8 @@ tar -cf backup.tar /usr/local/pgsql/data
   <para>
    <productname>PostgreSQL</>에서는 미리 쓰기 기록
    (선행 기입 로그, <firstterm>write ahead log</>, WAL)을 
-   데이터베이스 클러스터 디렉토리 안 <filename>pg_wal/</>
-   디렉토리에서 관리하고 있다.
+   데이터베이스 클러스터 디렉터리 안 <filename>pg_wal/</>
+   디렉터리에서 관리하고 있다.
    이 로그는 데이터베이스의 데이터 파일에 대한 모든 조작 기록을 
    보관하고 있다. 이 로그를 만드는 가장 첫번째 이유는
    서버가 갑자기 중지되었을 경우, 미처 데이터 파일에 
@@ -626,7 +626,7 @@ tar -cf backup.tar /usr/local/pgsql/data
 archive_command = 'test ! -f /mnt/server/archivedir/%f &amp;&amp; cp %p /mnt/server/archivedir/%f'  # Unix
 archive_command = 'copy "%p" "C:\\server\\archivedir\\%f"'  # Windows
 </programlisting>
-    윗 설정은 단순하게, WAL 세그먼트 파일을 <filename>/mnt/server/archivedir</> 디렉토리로 이름을 똑같게 해서
+    윗 설정은 단순하게, WAL 세그먼트 파일을 <filename>/mnt/server/archivedir</> 디렉터리로 이름을 똑같게 해서
     복사하는 설정이다.
     윗 예제는 Unix와, Windows 운영체제에 대한 한 예제일 뿐이다. 실제 설정은 해당하는 운영체제에 맞게
     변경 되어야한다.
@@ -679,10 +679,10 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
         해당 장치가 자동으로 테이프 교환을 하지 않고, 테이프의 여유 공간이 없다면, 
         사용자가 테이프를 바꾸기 전까지 계속해서 파일 기록 작업을 실행했다가, 
         오류를 내고, 다시 실행할 것이다.
-        이렇게 되면, <filename>pg_wal/</> 디렉토리에서는 테이프 저장장치로
+        이렇게 되면, <filename>pg_wal/</> 디렉터리에서는 테이프 저장장치로
         자료가 안전하게 복사되지 않았기 때문에, 해당 WAL 세그먼트 파일을 삭제하거나
         재사용하지 않을 것이며, 그 이후 만들어지는 새로운 WAL 세그먼트 파일들이 
-        계속 해서 쌓일 것이고, 결국 <filename>pg_wal/</> 디렉토리의 여유 공간이 
+        계속 해서 쌓일 것이고, 결국 <filename>pg_wal/</> 디렉터리의 여유 공간이 
         없어 서버는 PANIC 오류를 내면서 중지하게된다. 
    </para>
 
@@ -691,7 +691,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
         고민해야한다. 정상적으로 작업이 진행된다 하더라도, WAL 파일을 만들어내는 
         속도가, 그 파일을 따로 보관하는 속도보다 빠르다면, 똑같은 문제가 발생할 
         수 있다.  물론 따로 보관하는 속도가 다소 늦더라도, 정상적으로 이루워지고, 
-        <filename>pg_wal/</> 디렉토리의 여유공간이 충분히 있다면 별문제 되지는 않지만, 
+        <filename>pg_wal/</> 디렉터리의 여유공간이 충분히 있다면 별문제 되지는 않지만, 
         그렇지 않다면, 위에서 언급한 문제가 발생할 여지가 있다.
         이 기능을 사용하기 전에 충분히 이 부분에 대한 문제를 고민해 
         보아야하며, 관리자는 이 기능이 의도된 대로 잘 작동하는지 
@@ -700,7 +700,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
 
    <para>
     저장 파일의 경로는 최대 64 개의 ASCII 글자면 되고, 파일이름은 <literal>%f</>
-        예약어를 사용해야하며, (즉 디렉토리까지만 바꿀 수 있다) 
+        예약어를 사용해야하며, (즉 디렉터리까지만 바꿀 수 있다) 
         원본 WAL 세그먼트 파일은 <literal>%p</> 예약어를 사용해야한다.
    </para>
 
@@ -746,7 +746,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
 필요에 따라서 운영 중에 이 작업이 중지되어야할 필요도 있기 때문이다.
 이렇게 하려면, <varname>archive_command</> 설정값으로 빈문자열(<literal>''</>)로
 지정하면 된다.이러면 <varname>archive_command</>설정값이 다시 WAL 파일을 
-복사하는 작업을 하기 전까지 <filename>pg_wal/</> 디렉토리에 계속 남아있게 된다.
+복사하는 작업을 하기 전까지 <filename>pg_wal/</> 디렉터리에 계속 남아있게 된다.
  </para>
   </sect2>
 
@@ -775,7 +775,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
    생성된 WAL 파일을 <firstterm>백업 내역 파일</>에 기록해 둔다. 이 파일의 이름은 
    복구에 필요한 WAL 파일의 첫번째 파일 이름을 사용한다. 예를 들어서, 
    필요한 파일이 <literal>0000000100001234000055CD</> 이라면, 백업 내역 파일은 
-   <literal>0000000100001234000055CD.007C9330.backup</> 파일이다. 이 파일 또한 pg_wal 디렉토리
+   <literal>0000000100001234000055CD.007C9330.backup</> 파일이다. 이 파일 또한 pg_wal 디렉터리
    안에 있으면, 베이스 백업이 끝나 이 파일이 만들어지면, 아카이빙 작업에 의해 WAL 세그먼트 파일과 
    함께 따로 보관하는 장소에 복사된다. (WAL 세그먼트 파일 이름 뒤에 있는 또 하나의 정보는 
    그 파일의 정확한 시작 위치인데 이 부분은 무시해도 좋다.) 베이스 백업이 끝나면, 
@@ -962,7 +962,7 @@ SELECT pg_start_backup('라벨');
 </programlisting>
      <literal>라벨</> 자리에는 어떤 문자열이 와도 상관 없다. 
          관리자가 해당 백업 작업에 대한 식별자로 사용되는 문자열이면 된다.
-         <function>pg_start_backup</> 함수는 먼저 데이터 클러스터 디렉토리에, 
+         <function>pg_start_backup</> 함수는 먼저 데이터 클러스터 디렉터리에, 
          <filename>backup_label</> 이라는 파일을 만들고, 그 안에, 지정한 라벨 문자열과, 
          백업을 시작하는 시간을 기록한다.  
      또한 이 함수는 <filename>pg_tblspc/</> 디렉터리 안에 정의된 
@@ -994,7 +994,7 @@ SELECT pg_start_backup('label', true);
    </listitem>
    <listitem>
     <para>
-     데이터 클러스터 디렉토리를 시스템 차원에서 백업한다. 
+     데이터 클러스터 디렉터리를 시스템 차원에서 백업한다. 
      이 때의 백업 방법은 파일 시스템 백업하는 그 어떠한 방법으로도 가능하다.
      예를 들면,  <application>tar</> ,  <application>cpio</>  같은 
      명령어를 사용하는 것을 말한다 (<application>pg_dump</application>, 
@@ -1163,11 +1163,11 @@ SELECT pg_stop_backup();
    <listitem>
     <para>
          만일 시스템의 디스크 공간이 넉넉하다면, 
-         데이터베이스 클러스터 디렉토리 전체와, 
+         데이터베이스 클러스터 디렉터리 전체와, 
          관계된 사용자 정의 테이블스페이스의 파일들과
          필요한 WAL 세그먼트 파일 모두다. 이 작업을 기존 운영 중이던 시스템에서
          하려면, 적어도 두 배 이상의 디스크 공간이 필요하게 된다. 이런 여유 공간이 없다면, 
-         적어도 기존 데이터베이스 서버의 클러스터 디렉토리 안에 있는 
+         적어도 기존 데이터베이스 서버의 클러스터 디렉터리 안에 있는 
          <filename>pg_wal</> 파일들과, 서버 환경 설정 파일들 만이라도 복사한다.
      백업한 WAL 세그먼트 파일들과 미처 백업 되지 못한 WAL 세그먼트 파일들을 모두 구할 수 있다면, 
          서버가 중지되기 직전의 상태로 복구 될 수 있다.
@@ -1175,7 +1175,7 @@ SELECT pg_stop_backup();
    </listitem>
    <listitem>
     <para>
-         기존 서버용 데이터 클러스터 디렉토리와, 기존 테이블스페이스용 디렉토리를 모두 
+         기존 서버용 데이터 클러스터 디렉터리와, 기존 테이블스페이스용 디렉터리를 모두 
          지운다. 
     </para>
    </listitem>
@@ -1185,17 +1185,17 @@ SELECT pg_stop_backup();
          실행하는 시스템 사용자여야한다. (<literal>root</>로 작업하면, 반드시, 
          해당 소유주로 변경해야한다!) 그래서, 파일 접근 권한과, 소유주를 원래의 그것과 
          같게 맞추어야한다. 다음 사용자 정의 테이블스페이스를 사용한다면, 
-         <filename>pg_tblspc/</> 디렉토리 내에 심볼릭 링크로 되어 있는 원본 디렉토리와, 
+         <filename>pg_tblspc/</> 디렉터리 내에 심볼릭 링크로 되어 있는 원본 디렉터리와, 
          그 안에 있는 모든 파일을 복사해 둔다.
     </para>
    </listitem>
    <listitem>
     <para>
-         <filename>pg_wal/</> 디렉토리는 비워둔다; 만일 이 디렉토리 안에 파일이 있다면, 
-         지워야한다. 복구 작업에서 이 디렉토리 안에 필요한 파일들은 자동으로 만들어진다. 
-         만일 <filename>pg_wal/</> 디렉토리를 백업 대상에서 제외했다면, 
-         디렉토리를 만들거나, 심볼릭 링크를 만들어 데이터베이스 서버가 해당 디렉토리를 
-         사용할 수 있도록 한다. 이 때도, 이 디렉토리의 접근권한과 소유주가 데이터베이스
+         <filename>pg_wal/</> 디렉터리는 비워둔다; 만일 이 디렉터리 안에 파일이 있다면, 
+         지워야한다. 복구 작업에서 이 디렉터리 안에 필요한 파일들은 자동으로 만들어진다. 
+         만일 <filename>pg_wal/</> 디렉터리를 백업 대상에서 제외했다면, 
+         디렉터리를 만들거나, 심볼릭 링크를 만들어 데이터베이스 서버가 해당 디렉터리를 
+         사용할 수 있도록 한다. 이 때도, 이 디렉터리의 접근권한과 소유주가 데이터베이스
          서버를 실행하는 시스템 사용자만 사용할 수 있는지 확인해야한다.
          만일 심볼릭 링크라면, 혹 옛 데이터베이스에서 사용하는 원본 경로와 같아서
          옛 자료들을 덮어쓸 수 있는지 꼭 확인해야한다.
@@ -1211,7 +1211,7 @@ SELECT pg_stop_backup();
    </listitem>
    <listitem>
     <para>
-         데이터베이스 클러스터 디렉토리 안에, <filename>recovery.conf</> 파일을
+         데이터베이스 클러스터 디렉터리 안에, <filename>recovery.conf</> 파일을
          만든다. (이 파일의 내용에 대한 자세한 설명은 <xref linkend="recovery-config"> 참조)
          또한 복구 과정 중에 외부에서 접근 할 수 없도록 
          임시로 <filename>pg_hba.conf</> 파일을 수정하는 것도 좋은 방법이다.
@@ -1245,7 +1245,7 @@ SELECT pg_stop_backup();
         적용시키냐는 것과, 그 복구를 어느 시점까지 할 것이냐이다.
         이것을 <filename>recovery.conf</> 파일에서 지정한다.
         이 파일을 만드는 간단한 방법은 먼저 데이터베이스 배포판의
-        <filename>share/</> 디렉토리 안에 <filename>recovery.conf.sample</> 파일을
+        <filename>share/</> 디렉터리 안에 <filename>recovery.conf.sample</> 파일을
         복사해서, 필요한 부분만 수정해서 사용하는 것이다.
         <filename>recovery.conf</> 파일에서 꼭 필요한 부분은
         <varname>restore_command</> 부분이다.
@@ -1254,14 +1254,14 @@ SELECT pg_stop_backup();
         간단하게 설명하면, 서버 환경 설정 가운데, <varname>archive_command</>
         설정과 반대되는 명령을 지정하면 된다. 여기서 사용되는 예약어는 
         <varname>archive_command</> 설정값을 지정할 때와 같다. 
-        <literal>%f</> 값은 백업 아카이브 디렉토리 안에 있는 파일이름이 되고, 
+        <literal>%f</> 값은 백업 아카이브 디렉터리 안에 있는 파일이름이 되고, 
         <literal>%p</> 값은 트랜잭션 로그 파일로 대체된다. (상대 경로를 사용하면, 
-        서버를 실행하는 현재 디렉토리를 기준으로 처리된다.) <literal>%%</> 예약어는
+        서버를 실행하는 현재 디렉터리를 기준으로 처리된다.) <literal>%%</> 예약어는
         <literal>%</> 문자로 처리된다. 다음은 일반적인 이 설정값이다:
 <programlisting>
 restore_command = 'cp /mnt/server/archivedir/%f %p'
 </programlisting>
-    윗 설정은 <filename>/mnt/server/archivedir</> 디렉토리 안에 있는 
+    윗 설정은 <filename>/mnt/server/archivedir</> 디렉터리 안에 있는 
         미리 백업 해둔 WAL 세그먼트 파일들을 복구 작업을 진행할 때 
         사용하겠다는 예제다. 물론 이 명령은 사용하는 백업 장치에 따라서
         훨씬 복잡할 수도 있으며, 테이프 백업 장치처럼, 
@@ -1272,7 +1272,7 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
    <para>
     여기서 중요한 점은 여기서 지정한 작업이 실패 했을 경우,
     그 작업의 리턴값이 0이 아닌(nonzero) 것이여야 한다는 점이다.
-    이 작업에서는 아카이브 백업 디렉토리 안에 없는 파일도 요청할 것이다.
+    이 작업에서는 아카이브 백업 디렉터리 안에 없는 파일도 요청할 것이다.
     이 때 이 작업의 결과는 반드시 0이 아닌 리턴값을 리턴해야한다.
     이 상황은 오류 상황이 아니다.  이 작업의 오류 상황으로는 
     해당 스크립트에서 명령어가 없다거나, 서버가 정상 종료되면서, 
@@ -1292,18 +1292,18 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
    </para>
 
    <para>
-    아카이브 백업 디렉토리에서 WAL 세그먼트 파일을 못 찾으면, 
-        데이터 클러스터 안에 있는 <filename>pg_wal/</> 디렉토리 안에서 찾는다.
+    아카이브 백업 디렉터리에서 WAL 세그먼트 파일을 못 찾으면, 
+        데이터 클러스터 안에 있는 <filename>pg_wal/</> 디렉터리 안에서 찾는다.
         혹시 처리해야할 WAL 세그먼트 파일이 더 있는데, 
         미처 백업 되지 않은 것이 있으면, 그것까지도 처리하기 위한 방법이다. 
-        하지만, 똑 같은 파일이름으로 아카이브 백업 디렉토리 안에 이미 
+        하지만, 똑 같은 파일이름으로 아카이브 백업 디렉터리 안에 이미 
         그 파일이 있다면, 그 파일이 적용되고, <filename>pg_wal/</> 안에 있던 
         파일은 무시하고, 새로운 WAL 세그먼트 이름으로 그 로그를 반영한다. 이렇기 때문에, 
         복구 작업 전에 반드시 WAL 세그먼트 파일들을 잘 정리해야한다.
    </para>
 
    <para>
-    일반적으로 복구 작업은 아카이브 백업 디렉토리 안에 가장 마지막 로그 파일을 반영하고, 
+    일반적으로 복구 작업은 아카이브 백업 디렉터리 안에 가장 마지막 로그 파일을 반영하고, 
         그 다음 파일을 찾아서 없을 때까지 진행되기 때문에, 
         복구 로그의 마지막은 어떤 파일을 찾을 수 없다는 <quote>file not found</> 메시지가 출력된다.
         또한 복구 작업을 시작하면서, <filename>00000001.history</> 형태의 파일을
@@ -1436,7 +1436,7 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
           이 방식으로 구현하면, 특정시점 복구는 불가능해지지만, 
           장애복구시, <application>pg_dump</> 프로그램을 이용해서, 만든 덤프 파일을 
           사용하는 복구보다 훨씬 빠른 시간안에 복구 할 수 있다.
-          (물론 <application>pg_dump</>의 덤프 파일 크기가 데이터 클러스터 디렉토리
+          (물론 <application>pg_dump</>의 덤프 파일 크기가 데이터 클러스터 디렉터리
           사이즈에 비해 아주 적은 경우라면, 오히려 더 늦을 수도 있을 것이다.)
           베이스 백업에서 언급했던 것처럼 독립된 핫백업 서버를 구축하는 
           가장 손쉬운 방법은 <xref linkend="app-pgbasebackup"> 툴을 이용해서 
@@ -1586,13 +1586,13 @@ archive_command = 'local_backup_script.sh "%p" "%f"'
     <para>
      <xref linkend="sql-createtablespace"> 명령은 거기서 사용하는 실재 경로가
      그대로 반영 된다. 이 말은 복원 하는 시점에 미리 그 실재 경로의 
-     디렉토리가 있어야함을 의미한다(물론 처음 테이블스페이스를 만들 때 처럼
-     그 디렉토리는 비어있고, 소유주와 접근권한이 데이터베이스가 사용할 수 있는 
+     디렉터리가 있어야함을 의미한다(물론 처음 테이블스페이스를 만들 때 처럼
+     그 디렉터리는 비어있고, 소유주와 접근권한이 데이터베이스가 사용할 수 있는 
      상태여야한다).
      이점은 복원 작업에서 상당한 주의가 필요하다. 
      만일 같은 호스트에서 복원을 하는데, 임시 복원 작업을 진행하면서, 
      그 테이블스페이스에 있던 원본 파일을 손상 할 수도 있으며, 
-     다른 호스트에서 테이블스페이스의 실재 디렉토리가 없어서, 
+     다른 호스트에서 테이블스페이스의 실재 디렉터리가 없어서, 
      원본 자료를 손실 할 수도 있다.
      이 문제를 피해갈 수 있는 가장 좋은 방법은, 
      일단 테이블스페이스를 만들거나, 삭제할 경우에는 반드시 그 다음에, 

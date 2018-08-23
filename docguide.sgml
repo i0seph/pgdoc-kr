@@ -30,9 +30,9 @@
    </listitem>
   </itemizedlist>
 
-  또한, <productname>PostgreSQL</productname> 소스 디렉토리 내 
+  또한, <productname>PostgreSQL</productname> 소스 디렉터리 내 
   여러 <filename>README</filename> 파일이 있는데, 
-  이것은 해당 디렉토리 내 기능 구현에 관련 된 설명을 다루는 일반 텍스트 파일이다.
+  이것은 해당 디렉터리 내 기능 구현에 관련 된 설명을 다루는 일반 텍스트 파일이다.
  </para>
 
  <para>
@@ -393,7 +393,7 @@ perl -pi -e 's/iso-(.*).gml/ISO\1/g' docbook.cat
   <para>
    문서 파일을 만들기 전에 필요한 패키지들이 모두 있는지 
    확인 하는 방법은 <productname>PostgreSQL</productname>
-   소스 디렉토리에서 <filename>configure</filename> 명령을 
+   소스 디렉터리에서 <filename>configure</filename> 명령을 
    실행해 보면 된다.  이 명령을 실행하면, 다음과 
    비슷한 내용이 출력된다.  이를 확인 해 보고, 적당한 작업(
    해당 프로그램이 없다고 나온다면, 그 프로그램이 있는 
@@ -429,7 +429,7 @@ checking for fop... fop
 
   <para>
    모든 사전 작업이 끝났다면, <filename>doc/src/sgml</filename>
-   디렉토리로 이동해서, 아래에서 설명하고 있는 명령 가운데 원하는 작업을
+   디렉터리로 이동해서, 아래에서 설명하고 있는 명령 가운데 원하는 작업을
    할 명령을 실행한다. (make는 GNU make를 사용해야한다.)
   </para>
 
@@ -442,7 +442,7 @@ checking for fop... fop
 <prompt>doc/src/sgml$ </prompt><userinput>make html</userinput>
 </screen>
     이것이 make 작업의 기본이다.  최종 결과물은 
-         <filename>html</filename> 하위 디렉토리안에 만들어진다.
+         <filename>html</filename> 하위 디렉터리안에 만들어진다.
    </para>
    <para>
     기본 단순한 스타일 대신에 <ulink

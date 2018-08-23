@@ -5,7 +5,7 @@
 
  <para>
   이 부록과 다음 부록에는 <productname>PostgreSQL</> 배포판의 
-  <literal>contrib</literal> 디렉토리에 포함 되어 있는 확장 모듈과 확장 응용 프로그램들에 대한 정보를
+  <literal>contrib</literal> 디렉터리에 포함 되어 있는 확장 모듈과 확장 응용 프로그램들에 대한 정보를
   다룬다.
   여기서는 소개하고 있는 포팅 도구들, 분석 도구들, 
   기본 PostgreSQL 시스템에 포함되어 있지 않은 부가 모듈들은 
@@ -21,13 +21,13 @@
  <para>
   소스 배포판에서 이 확장 모듈들은 자동으로 만들어지지 않는다. 
   만들려면, "world" 타켓을 지정해야한다 (<xref linkend="build"> 참조).
-  <literal>contrib</literal> 디렉토리에서 직접 만들고 설치하려면:
+  <literal>contrib</literal> 디렉터리에서 직접 만들고 설치하려면:
 <screen>
 <userinput>make</userinput>
 <userinput>make install</userinput>
 </screen>
   이 작업은 먼저 configure 명령으로 빌드 환경이 구축되어야 한다.
-  각 개별 모듈을 각각 설치하려면, 그 해당 디렉토리로 이동해서 같은 작업을
+  각 개별 모듈을 각각 설치하려면, 그 해당 디렉터리로 이동해서 같은 작업을
   하면 된다.  또한 많은 모듈들이 단위 테스트를 지원함으로 이 작업을 하려면
   다음 명령어로 진행할 수 있다:
 <screen>
@@ -163,7 +163,7 @@ pages.
  <title>부가 확장 프로그램들</title>
 
  <para>
-  여기서는  <productname>PostgreSQL</>  배포판의 <literal>contrib</literal> 디렉토리 
+  여기서는  <productname>PostgreSQL</>  배포판의 <literal>contrib</literal> 디렉터리 
   안에 있는 확장 기능들 가운데, 유틸리티 프로그램들에 대해서 소개하고 있다.
   <xref linkend="contrib">에서는 데이터베이스 서버에서 사용할 수 있는 
   플러그인 형태의 부가 확장 모듈들에 대해서 소개하고 있다.
@@ -171,8 +171,8 @@ pages.
 
  <para>
   여기서 소개하고 있는 프로그램들은 설치가 끝나면, 
-  <productname>PostgreSQL</productname> 설치 디렉토리 안의
-  <filename>bin</filename> 디렉토리 안에 있게 된다. 
+  <productname>PostgreSQL</productname> 설치 디렉터리 안의
+  <filename>bin</filename> 디렉터리 안에 있게 된다. 
  </para>
 
  <sect1 id="contrib-prog-client">
@@ -180,7 +180,7 @@ pages.
 
   <para>
    여기서는 <productname>PostgreSQL</productname> 배포판의 <literal>contrib</literal>
-   디렉토리 안에 있는 부가 확장 클라이언트 응용프로그램들을 소개한다.
+   디렉터리 안에 있는 부가 확장 클라이언트 응용프로그램들을 소개한다.
    여기서 소개하고 있는 프로그램들은 서버가 어느 곳에 있든 연결만 된다면,
    사용할 수 있는 것들이다.  <productname>PostgreSQL</productname> 기본
    클라이언트 응용 프로그램들에 대한 소개는  <xref linkend="reference-client">에서 하고 있다.
@@ -195,7 +195,7 @@ pages.
 
   <para>
    여기서는 <productname>PostgreSQL</productname> 배포판의 <literal>contrib</literal>
-   디렉토리 안에 있는 부가 확장 서버 응용프로그램들을 소개한다.
+   디렉터리 안에 있는 부가 확장 서버 응용프로그램들을 소개한다.
    여기서 소개하고 있는 프로그램들은 서버가 실행 되고 있는 호스트에서만 사용할
    수 있는 것들이다.  <productname>PostgreSQL</productname> 기본
    서버 응용 프로그램들에 대한 소개는  <xref linkend="reference-server">에서 하고 있다.

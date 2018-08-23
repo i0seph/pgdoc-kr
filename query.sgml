@@ -27,9 +27,9 @@
 
    <para>
     이 자습서에서 사용되는 예제 자료는 <productname>PostgreSQL</productname> 배포 소스의
-    <filename>src/tutorial/</filename> 디렉토리 안에 있습니다.  (바이너리 배포판에는
+    <filename>src/tutorial/</filename> 디렉터리 안에 있습니다.  (바이너리 배포판에는
     이 자습서가 포함되지 않습니다.)  일단
-    시작부터 하려면, 해당 디렉토리로 이동해서 <application>make</> 명령을 실행하십시오:
+    시작부터 하려면, 해당 디렉터리로 이동해서 <application>make</> 명령을 실행하십시오:
 
 <screen>
 <prompt>$</prompt> <userinput>cd <replaceable>....</replaceable>/src/tutorial</userinput>
@@ -88,7 +88,7 @@
     테이블로 저장하는 방식은 오늘날 너무도 당연한 것으로 인식되고
     있습니다.  하지만 이것은 단지, 데이터베이스를 구현하는
     여러가지 방법 가운데 하나일 뿐입니다.  유닉스 계열 운영체제에서
-    사용되는 파일과 디렉토리 개념은 계층형 데이터베이스를 구현하는
+    사용되는 파일과 디렉터리 개념은 계층형 데이터베이스를 구현하는
     한 예입니다.  또한 최근에는 객체지향 개념을 이용해서 테이터베이스를 구현합니다.
    </para>
 

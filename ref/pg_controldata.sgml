@@ -37,10 +37,10 @@ PostgreSQL documentation
   </para>
 
   <para>
-   이 프로그램의 실행 권한은 데이터 클러스터 디렉토리를 읽을 수 있는 
-   그 데이터 클러스터 디렉토리를 만든 사용자만 실행 할 수 있다.  입력행 매개 변수로 
-   그 디렉토리를 지정할 수 있으며, 지정하지 않으면, <envar>PGDATA</> 환경 변수에
-   지정된 값을 데이터 클러스트 디렉토리로 간주한다.  이 프로그램에서 지원하는
+   이 프로그램의 실행 권한은 데이터 클러스터 디렉터리를 읽을 수 있는 
+   그 데이터 클러스터 디렉터리를 만든 사용자만 실행 할 수 있다.  입력행 매개 변수로 
+   그 디렉터리를 지정할 수 있으며, 지정하지 않으면, <envar>PGDATA</> 환경 변수에
+   지정된 값을 데이터 클러스트 디렉터리로 간주한다.  이 프로그램에서 지원하는
    옵션으로는 <option>-V</> 또는 <option>--version</>을 사용할 수 있으며, 
    이것은 <application>pg_controldata</application> 프로그램의 버전 정보를 보여주고, 
    마친다.  또, <option>-?</> 또는 <option>--help</> 옵션을 사용할 수 있는데, 
@@ -57,7 +57,7 @@ PostgreSQL documentation
 
     <listitem>
      <para>
-          기본 데이터 디렉토리 경로
+          기본 데이터 디렉터리 경로
      </para>
     </listitem>
    </varlistentry>

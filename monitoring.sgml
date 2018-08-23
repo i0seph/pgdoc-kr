@@ -223,11 +223,11 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
 
   <para>
    통계 수집기가 만든 정보는 <xref linkend="guc-stats-temp-directory"> 설정값으로
-   지정한 디렉토리 (초기값은 <filename>pg_stat_tmp</filename>) 안에 있는
+   지정한 디렉터리 (초기값은 <filename>pg_stat_tmp</filename>) 안에 있는
    임시파일로 저장되고, 그것을 여러 다른 PostgreSQL 프로세스들이 이용한다.
-   보다 나은 성능을 위해서는 이 파일의 I/O 성능을 높이기 위해 이 디렉토리를
+   보다 나은 성능을 위해서는 이 파일의 I/O 성능을 높이기 위해 이 디렉터리를
    메모리 기반 파일시스템에 두는 것도 좋은 방법이다. 이 통계 정보는 서버가
-   중지 될 때 <filename>pg_stat</filename> 디렉토리 쪽으로 복사하는
+   중지 될 때 <filename>pg_stat</filename> 디렉터리 쪽으로 복사하는
    작업을 하기 때문에, 서버 중지, 재시작에도 자료를 그대로 유지할 수 있다.
   </para>
 

@@ -40,8 +40,8 @@ SQL 환경 내에서 사용 중인 데이터베이스 사용자 이름은 데이
   </indexterm>
 
   <para>
-   클라이언트 인증은 전통적으로 이름이 <filename>pg_hba.conf</filename>이고 데이터베이스 클러스터의 데이터 디렉토리에 저장되는 환경 설정 파일로 제어된다. (<acronym>HBA</>는 호스트 기반 인증(host-based authentication)의 약어이다.) 
-   기본 <filename>pg_hba.conf</filename> 파일은 데이터 디렉토리가 <command>initdb</command>에 의해 초기화될 때 설치된다. 인증 환경 설정 파일을 다른 곳에 배치하는 것도 가능하다. <xref linkend="guc-hba-file"> 환경 설정 파일을 참조 바란다.
+   클라이언트 인증은 전통적으로 이름이 <filename>pg_hba.conf</filename>이고 데이터베이스 클러스터의 데이터 디렉터리에 저장되는 환경 설정 파일로 제어된다. (<acronym>HBA</>는 호스트 기반 인증(host-based authentication)의 약어이다.) 
+   기본 <filename>pg_hba.conf</filename> 파일은 데이터 디렉터리가 <command>initdb</command>에 의해 초기화될 때 설치된다. 인증 환경 설정 파일을 다른 곳에 배치하는 것도 가능하다. <xref linkend="guc-hba-file"> 환경 설정 파일을 참조 바란다.
   </para>
 
   <para>
@@ -435,7 +435,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
 
   <para>
    <literal>@</> 구문이 포함된 파일은, 공백 또는 쉼표로 구분된 이름 목록으로 읽는다. 
-   <filename>pg_hba.conf</filename>처럼 <literal>#</literal>로 표시된 주석 및 중첩된 <literal>@</> 구문이 허용된다. 파일 이름 뒤에 <literal>@</>가 나오는 것이 절대 경로가 아니면 참고 파일이 있는 디렉토리의 상대 경로로 취급된다.
+   <filename>pg_hba.conf</filename>처럼 <literal>#</literal>로 표시된 주석 및 중첩된 <literal>@</> 구문이 허용된다. 파일 이름 뒤에 <literal>@</>가 나오는 것이 절대 경로가 아니면 참고 파일이 있는 디렉터리의 상대 경로로 취급된다.
   </para>
 
   <para>
@@ -587,7 +587,7 @@ local   db1,db2,@demodbs  all                                   md5
   </para>
 
   <para>
-   사용자 이름 맵은 ident 맵 파일에서 정의되며, 기본적으로 이름은 <filename>pg_ident.conf</><indexterm><primary>pg_ident.conf</primary></indexterm>이며 클러스터의 데이터 디렉토리에 저장된다. 
+   사용자 이름 맵은 ident 맵 파일에서 정의되며, 기본적으로 이름은 <filename>pg_ident.conf</><indexterm><primary>pg_ident.conf</primary></indexterm>이며 클러스터의 데이터 디렉터리에 저장된다. 
    (맵 파일을 다른 곳에 배치할 수도 있다. <xref linkend="guc-ident-file"> 환경 설정 매개 변수를 참조 바란다.)
 <synopsis>
 <replaceable>map-name</> <replaceable>system-username</> <replaceable>database-username</>
@@ -665,7 +665,7 @@ omicron         bryanh                  guest1
     <literal>trust</> 인증은 단일 사용자 워크스테이션에 대한 로컬 연결 시 적절하며, 매우 편리하다. 다중 사용자 머신에서는 일반적으로 적절하지 <emphasis>않다</emphasis>. 
     그러나, 파일 시스템 권한을 사용하여 서버의 Unix 도메인 소켓 파일에 대한 액세스를 제한하는 경우 다중 사용자 머신에서도 <literal>trust</>를 사용 가능할 수 있다. 
     이렇게 하려면 <varname>unix_socket_permissions</varname>(및 가능하면 <varname>unix_socket_group</varname>) 환경 설정 매개 변수를 <xref linkend="runtime-config-connection">에서 설명한 대로 설정해야 한다. 
-    또는 <varname>unix_socket_directories</varname> 환경 설정 매개 변수를 설정하여 소켓 파일을 적절히 제한된 디렉토리에 배치할 수 있다.
+    또는 <varname>unix_socket_directories</varname> 환경 설정 매개 변수를 설정하여 소켓 파일을 적절히 제한된 디렉터리에 배치할 수 있다.
    </para>
 
    <para>
@@ -862,7 +862,7 @@ omicron         bryanh                  guest1
     읽기 가능한지(읽기 가능만, 쓰기 불가) 확인해야 한다. (<xref linkend="postgres-user">도
     참조 바란다.) 키 파일의 위치는 <xref
     linkend="guc-krb-server-keyfile"> 환경 설정 매개 변수에 의해 지정된다. 
-    기본값은 <filename>/usr/local/pgsql/etc/krb5.keytab</>(또는 빌드 시 <varname>sysconfdir</>로 지정된 아무 디렉토리). 보안상의 이유로, 시스템 키탭 파일에 대한 권한을 여는 것보다는 <productname>PostgreSQL</productname> 서버에 대해 별개의 키탭을 사용하는 것이 바람직하다.
+    기본값은 <filename>/usr/local/pgsql/etc/krb5.keytab</>(또는 빌드 시 <varname>sysconfdir</>로 지정된 아무 디렉터리). 보안상의 이유로, 시스템 키탭 파일에 대한 권한을 여는 것보다는 <productname>PostgreSQL</productname> 서버에 대해 별개의 키탭을 사용하는 것이 바람직하다.
    </para>
    <para>
     키탭 파일은 Kerberos 소프트웨어에 의해 생성된다. 자세한 내용은 Kerberos 문서를 참조 바란다. 다음 예시는 MIT 호환 Kerberos 5 구현에 대한 것이다.
@@ -1144,15 +1144,15 @@ omicron         bryanh                  guest1
    <para>
     검색+바인딩 모드라고 하는 두 번째 모드에서 서버는 <replaceable>ldapbinddn</> 및
     <replaceable>ldapbindpasswd</>로 지정 및 고정된 사용자 이름과 패스워드를
-    사용하여 LDAP 디렉토리에 먼저 바인딩한 다음, 데이터베이스에 로그인하려는 사용자를 검색한다. 
-    사용자 및 패스워드가 구성되지 않은 경우 익명 바인딩이 디렉토리에 시도된다.
+    사용하여 LDAP 디렉터리에 먼저 바인딩한 다음, 데이터베이스에 로그인하려는 사용자를 검색한다. 
+    사용자 및 패스워드가 구성되지 않은 경우 익명 바인딩이 디렉터리에 시도된다.
     <replaceable>ldapbasedn</>의 서브 트리에서 검색이 수행되고
     <replaceable>ldapsearchattribute</>에서 지정된 속성과 정확히 일치하는 것을 찾는다. 
     이 검색에서 사용자를 찾았으며, 서버는 연결을 끊고, 로그인이 올바른지 검증하기 위해
-    클라이언트에서 지정된 패스워드를 사용하여 이 사용자로 디렉토리에 다시 바인딩한다. 
+    클라이언트에서 지정된 패스워드를 사용하여 이 사용자로 디렉터리에 다시 바인딩한다. 
     이 모드는 Apache <literal>mod_authnz_ldap</literal> 및 <literal>pam_ldap</literal> 같은
     다른 소프트웨어의 LDAP 인증 스키마에서 사용되는 것과 동일하다. 이 방법은 사용자
-    개체가 디렉토리에 있는 곳에서 더 많은 유연성을 허용하지만 LDAP 서버에
+    개체가 디렉터리에 있는 곳에서 더 많은 유연성을 허용하지만 LDAP 서버에
     대한 2개의 연결이 초래된다.
    </para>
 
@@ -1218,7 +1218,7 @@ omicron         bryanh                  guest1
       <term><literal>ldapbinddn</literal></term>
       <listitem>
        <para>
-        검색+바인딩 인증 수행 시 검색 수행하기 위해 디렉토리에 바인딩하는 사용자 DN.
+        검색+바인딩 인증 수행 시 검색 수행하기 위해 디렉터리에 바인딩하는 사용자 DN.
        </para>
       </listitem>
      </varlistentry>
@@ -1226,7 +1226,7 @@ omicron         bryanh                  guest1
       <term><literal>ldapbindpasswd</literal></term>
       <listitem>
        <para>
-        검색+바인딩 인증 수행 시 검색 수행하기 위해 디렉토리에 바인딩하는 사용자의 패스워드.
+        검색+바인딩 인증 수행 시 검색 수행하기 위해 디렉터리에 바인딩하는 사용자의 패스워드.
        </para>
       </listitem>
       </varlistentry>

@@ -399,7 +399,7 @@
 
   <para>
    아카이브 복구 또는 스탠바이 모드에서 서버는 주기적으로 <firstterm>restartpoints</>,<indexterm><primary>restartpoint</></>를 수행하는데, 이것은 정상 실행된 checkpoints와 유사하다. 
-   서버는 모든 상태를 디스크에 강제로 기록하고, <filename>pg_control</> 파일을 업데이트하여 이미 처리된 WAL 데이터를 다시 스캔할 필요가 없음을 표시하여 <filename>pg_wal</> 디렉토리에 있는 예전 로그 세그먼트 파일을 재활용할 수 있게 한다. 
+   서버는 모든 상태를 디스크에 강제로 기록하고, <filename>pg_control</> 파일을 업데이트하여 이미 처리된 WAL 데이터를 다시 스캔할 필요가 없음을 표시하여 <filename>pg_wal</> 디렉터리에 있는 예전 로그 세그먼트 파일을 재활용할 수 있게 한다. 
    restartpoints는 checkpoint 레코드에서만 수행될 수 있으므로 restartpoints는 마스터에서의 수행 빈도가 checkpoints보다 적다. 
    마지막 restartpoint 이후에 최소한 <varname>checkpoint_timeout</> 초를 경과한 경우나, 
    WAL 크기가 <varname>max_wal_size</> 값을 초과하는 경우
@@ -492,7 +492,7 @@
   </para>
 
   <para>
-   <acronym>WAL</acronym> 로그는 각각의 크기가 보통 16 MB인 세그먼트 파일 집합으로, 데이터 디렉토리 하위인 <filename>pg_wal</filename> 디렉토리에 저장된다(서버 빌드 시 <option>--with-wal-segsize</> 환경 설정 옵션을 변경하면 크기를 바꿀 수 있다). 
+   <acronym>WAL</acronym> 로그는 각각의 크기가 보통 16 MB인 세그먼트 파일 집합으로, 데이터 디렉터리 하위인 <filename>pg_wal</filename> 디렉터리에 저장된다(서버 빌드 시 <option>--with-wal-segsize</> 환경 설정 옵션을 변경하면 크기를 바꿀 수 있다). 
    각 세그먼트는 일반적으로 각각 8 kB의 페이지로 분할된다(이 크기는 <option>--with-wal-blocksize</> 환경 설정 옵션을 통해 변경할 수 있다). 
    로그 레코드 헤더는 <filename>access/xlogrecord.h</filename>에 설명되어 있다. 
    레코드 내용은 로깅된 이벤트 유형에 따라 다르다. 세그먼트 파일 이름은 <filename>000000010000000000000000</filename>에서 시작되며 숫자가 계속 증가한다. 
@@ -501,7 +501,7 @@
 
   <para>
    로그가 메인 데이터베이스 파일이 아닌 다른 디스크에 위치한 경우에 이것은 장점이 된다. 
-   서버가 종료된 상태에서 <filename>pg_wal</filename> 디렉토리를 다른 위치로 옮기고, 메인 데이터 디렉토리의 원래 위치로부터 새 위치로 심볼릭 링크를 생성하면 된다.
+   서버가 종료된 상태에서 <filename>pg_wal</filename> 디렉터리를 다른 위치로 옮기고, 메인 데이터 디렉터리의 원래 위치로부터 새 위치로 심볼릭 링크를 생성하면 된다.
   </para>
 
   <para>
