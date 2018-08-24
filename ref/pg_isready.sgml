@@ -16,14 +16,14 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>pg_isready</refname>
-  <refpurpose>check the connection status of a <productname>PostgreSQL</productname> server</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 서버 상태 검사</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_isready</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>연결옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
@@ -31,58 +31,55 @@ PostgreSQL documentation
  <refsect1 id="app-pg-isready-description">
   <title>설명</title>
   <para>
-   <application>pg_isready</application> is a utility for checking the connection
-   status of a <productname>PostgreSQL</productname> database server. The exit
-   status specifies the result of the connection check.
+   <application>pg_isready</application> 명령은 
+   <productname>PostgreSQL</productname> 서버로 접속이 가능한지
+   검사하는 일을 한다.  이 검사 결과는 출력 메시지와 
+   명령 마침 반환값으로 확인할 수 있다.
   </para>
  </refsect1>
 
  <refsect1 id="app-pg-isready-options">
-  <title>Options</title>
+  <title>옵션</title>
 
     <variablelist>
 
     <varlistentry>
-      <term><option>-d <replaceable class="parameter">dbname</replaceable></></term>
-      <term><option>--dbname=<replaceable class="parameter">dbname</replaceable></></term>
+      <term><option>-d <replaceable class="parameter">디비이름</replaceable></></term>
+      <term><option>--dbname=<replaceable class="parameter">디비이름</replaceable></></term>
       <listitem>
       <para>
-       Specifies the name of the database to connect to.
+       접속할 데이터베이스 이름
       </para>
       <para>
-       If this parameter contains an <symbol>=</symbol> sign or starts
-       with a valid <acronym>URI</acronym> prefix
-       (<literal>postgresql://</literal>
-       or <literal>postgres://</literal>), it is treated as a
-       <parameter>conninfo</parameter> string. See <xref
-       linkend="libpq-connstring"> for more information.
+       이 값이 <symbol>=</symbol> 문자로 시작하거나, 
+       <literal>postgresql://</literal> 또는
+       <literal>postgres://</literal> 문자열로 시작하면, 
+       <parameter>conninfo</parameter> 문자열로 간주한다.
+       이것에 대한 설명은  <xref
+       linkend="libpq-connstring">에서 다룬다.
       </para>
       </listitem>
     </varlistentry>
 
      <varlistentry>
-       <term><option>-h <replaceable class="parameter">hostname</replaceable></></term>
-       <term><option>--host=<replaceable class="parameter">hostname</replaceable></></term>
+       <term><option>-h <replaceable class="parameter">호스트이름</replaceable></></term>
+       <term><option>--host=<replaceable class="parameter">호스트이름</replaceable></></term>
        <listitem>
        <para>
-       Specifies the host name of the machine on which the
-       server is running. If the value begins
-       with a slash, it is used as the directory for the Unix-domain
-       socket.
+       접속한 서버의 호스트 이름이나, 호스트 IP 주소 또는
+       슬래시 문자로 시작하는 유닉스 도메인 소켓이 있는 디렉토리 이름.
        </para>
        </listitem>
      </varlistentry>
 
      <varlistentry>
-       <term><option>-p <replaceable class="parameter">port</replaceable></></term>
-       <term><option>--port=<replaceable class="parameter">port</replaceable></></term>
+       <term><option>-p <replaceable class="parameter">포트</replaceable></></term>
+       <term><option>--port=<replaceable class="parameter">포트</replaceable></></term>
        <listitem>
        <para>
-       Specifies the TCP port or the local Unix-domain
-       socket file extension on which the server is listening for
-       connections. Defaults to the value of the <envar>PGPORT</envar>
-       environment variable or, if not set, to the port specified at
-       compile time, usually 5432.
+       접속할 포트 번호를 지정한다.  이 옵션이 없으면, 
+       먼저 <envar>PGPORT</envar> 환경 변수 값을 사용하며, 
+       이 값도 없으면, 기본값인 5432 포트로 접속한다.
        </para>
        </listitem>
      </varlistentry>
@@ -92,16 +89,19 @@ PostgreSQL documentation
       <term><option>--quiet</option></term>
       <listitem>
        <para>
-        Do not display status message. This is useful when scripting.
+        아무른 메시지를 보여주지 않는다.  스크립트를 만들 때 유용하게 쓰인다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-       <term><option>-t <replaceable class="parameter">seconds</replaceable></></term>
-       <term><option>--timeout=<replaceable class="parameter">seconds</replaceable></></term>
+       <term><option>-t <replaceable class="parameter">초</replaceable></></term>
+       <term><option>--timeout=<replaceable class="parameter">초</replaceable></></term>
        <listitem>
        <para>
+        접속 시도 초단위 최대 시간.  지정한 시간안에 접속이 안되면,
+        접속 실패로 간주한다.  이 값이 0이면, 영원히 시도하며, 
+        기본값은 3초다.
         The maximum number of seconds to wait when attempting connection before
         returning that the server is not responding. Setting to 0 disables. The
         default is 3 seconds.
@@ -110,12 +110,12 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-       <term><option>-U <replaceable class="parameter">username</replaceable></></term>
-       <term><option>--username=<replaceable class="parameter">username</replaceable></></term>
+       <term><option>-U <replaceable class="parameter">사용자이름</replaceable></></term>
+       <term><option>--username=<replaceable class="parameter">사용자이름</replaceable></></term>
        <listitem>
        <para>
-       Connect to the database as the user <replaceable
-       class="parameter">username</replaceable> instead of the default.
+       기본값 대신 해당 서버로 접속할 <replaceable
+       class="parameter">사용자이름</replaceable>.
        </para>
        </listitem>
      </varlistentry>
@@ -125,7 +125,7 @@ PostgreSQL documentation
       <term><option>--version</></term>
        <listitem>
         <para>
-         Print the <application>pg_isready</application> version and exit.
+         <application>pg_isready</application> 버전을 보여주고 마침.
         </para>
        </listitem>
      </varlistentry>
@@ -135,8 +135,8 @@ PostgreSQL documentation
       <term><option>--help</></term>
       <listitem>
        <para>
-        Show help about <application>pg_isready</application> command line
-        arguments, and exit.
+        <application>pg_isready</application> 명령에서 사용할 수 있는
+        명령행 옵션 도움말을 보여주고 마침.
        </para>
       </listitem>
      </varlistentry>
@@ -144,34 +144,35 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Exit Status</title>
+  <title>마침 반환값</title>
 
   <para>
-   <application>pg_isready</application> returns <literal>0</literal> to the shell if the server
-   is accepting connections normally, <literal>1</literal> if the server is rejecting
-   connections (for example during startup), <literal>2</literal> if there was no response to the
-   connection attempt, and <literal>3</literal> if no attempt was made (for example due to invalid
-   parameters).
+   <literal>0</literal>: 정상 접속, 
+   <literal>1</literal>: 서버가 접속을 거부함(서버가 시작중인 경우가
+   대표적인 경우),
+   <literal>2</literal>: 서버가 응답이 없음,
+   <literal>3</literal>: 연결 시도 자체를 못한 경우(잘못된 옵션을 사용한
+   경우가 대표적이다).
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <para>
-   <command>pg_isready</command>, like most other <productname>PostgreSQL</>
-   utilities,
-   also uses the environment variables supported by <application>libpq</>
-   (see <xref linkend="libpq-envars">).
+   여러 <application>libpq</> 라이브러리를 사용하는 응용 프로그램과 
+   마찮가지로 <command>pg_isready</command> 명령도
+   그 환경 변수 그대로를 사용한다(<xref linkend="libpq-envars"> 참조).
   </para>
  </refsect1>
 
  <refsect1 id="app-pg-isready-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   The options <option>--dbname</> and <option>--username</> can be used to avoid gratuitous
-   error messages in the logs, but are not necessary for proper functionality.
+   <option>--dbname</>, <option>--username</> 옵션은
+   로그 파일에 불필요한 오류 메시지를 남기지 않기 위해 사용할 수는 있지만,
+   반드시 사용해야할 옵션은 아니다.
   </para>
  </refsect1>
 
@@ -179,7 +180,7 @@ PostgreSQL documentation
   <title>예제</title>
 
   <para>
-   Standard Usage:
+   표준 사용법:
 <screen>
 <prompt>$</prompt> <userinput>pg_isready</userinput>
 <computeroutput>/tmp:5432 - accepting connections</computeroutput>
@@ -189,7 +190,8 @@ PostgreSQL documentation
   </para>
 
   <para>
-   Running with connection parameters to a <productname>PostgreSQL</productname> cluster in startup:
+   <productname>PostgreSQL</productname> 서버 상태 검사를 연결 옵션을
+   사용했는데, 접속이 거절된 경우:
 <screen>
 <prompt>$ </prompt><userinput>pg_isready -h localhost -p 5433</userinput>
 <computeroutput>localhost:5433 - rejecting connections</computeroutput>
@@ -199,7 +201,7 @@ PostgreSQL documentation
   </para>
 
   <para>
-   Running with connection parameters to a non-responsive <productname>PostgreSQL</productname> cluster:
+   <productname>PostgreSQL</productname> 서버가 아예 응답이 없는 경우:
 <screen>
 <prompt>$ </prompt><userinput>pg_isready -h someremotehost</userinput>
 <computeroutput>someremotehost:5432 - no response</computeroutput>
