@@ -498,12 +498,10 @@ checking for fop... fop
    </para>
 
    <para>
-    Because the PostgreSQL documentation is fairly
-    big, <productname>FOP</productname> will require a significant amount of
-    memory.  Because of that, on some systems, the build will fail with a
-    memory-related error message.  This can usually be fixed by configuring
-    Java heap settings in the configuration
-    file <filename>~/.foprc</filename>, for example:
+    PostgreSQL 문서는 정말 방대해서, <productname>FOP</productname> 프로그램을
+    실행할 때 몇몇 OS 작업 환경에서 메모리가 부족하다는 메시지를 
+    볼 수 있다.  이런 경우는 다음과 같이 자바 힙 메모리 설정을
+    <filename>~/.foprc</filename> 파일에 해야한다:
 <programlisting>
 # FOP binary distribution
 FOP_OPTS='-Xmx1500m'
