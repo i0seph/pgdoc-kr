@@ -102,9 +102,6 @@ PostgreSQL documentation
         접속 시도 초단위 최대 시간.  지정한 시간안에 접속이 안되면,
         접속 실패로 간주한다.  이 값이 0이면, 영원히 시도하며, 
         기본값은 3초다.
-        The maximum number of seconds to wait when attempting connection before
-        returning that the server is not responding. Setting to 0 disables. The
-        default is 3 seconds.
        </para>
        </listitem>
      </varlistentry>
