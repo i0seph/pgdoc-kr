@@ -171,8 +171,9 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
 archive_cleanup_command = 'pg_archivecleanup -d /mnt/standby/archive %r 2>>cleanup.log'
 </programlisting>
    아카이브 디렉터리는 대기 서버에서 접근 할 수 있는 물리적 위치다.
-   위 경우는 NFS 디렉터리를 지정했다. 이 <varname>archive_command</> 
-   설정은 다음과 같은 일을 한다:
+   위 경우는 <varname>archive_command</> 명령에서 NFS 디렉터리를 
+   사용하고 있지만 대기 서버 입장에서는 로컬 디스크가 될 것이다.
+   이 설정은 다음과 같은 일을 한다:
   </para>
   <itemizedlist>
    <listitem>
