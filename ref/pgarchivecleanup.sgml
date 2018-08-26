@@ -13,60 +13,57 @@
 
  <refnamediv>
   <refname>pg_archivecleanup</refname>
-  <refpurpose>clean up <productname>PostgreSQL</productname> WAL archive files</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> WAL 아카이브 파일 정리</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_archivecleanup</command>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-   <arg choice="plain"><replaceable>archivelocation</replaceable></arg>
-   <arg choice="plain"><replaceable>oldestkeptwalfile</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
+   <arg choice="plain"><replaceable>아카이브위치</replaceable></arg>
+   <arg choice="plain"><replaceable>남겨둘_제일_오래된파일</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
  <para>
-  <application>pg_archivecleanup</> is designed to be used as an
-  <literal>archive_cleanup_command</literal> to clean up WAL file archives when
-  running as a standby server (see <xref linkend="warm-standby">).
-  <application>pg_archivecleanup</> can also be used as a standalone program to
-  clean WAL file archives.
+  <application>pg_archivecleanup</> 명령은 대기 서버에서 
+  이미 반영 된 WAL 파일을 정리할 때 사용하려고 개발되었다(<xref
+  linkend="warm-standby"> 참조).  물론 <application>pg_archivecleanup</>
+  명령은 아카이브 파일을 정리하기 위해 단독으로 사용할 수도 있다.
  </para>
 
   <para>
-   To configure a standby
-   server to use <application>pg_archivecleanup</>, put this into its
-   <filename>recovery.conf</filename> configuration file:
+   대기 서버에서 <application>pg_archivecleanup</> 명령을 
+   사용하는 방법은 <filename>recovery.conf</filename> 파일에 다음과
+   같이 지정한다:
 <programlisting>
-archive_cleanup_command = 'pg_archivecleanup <replaceable>archivelocation</> %r'
+archive_cleanup_command = 'pg_archivecleanup <replaceable>아카이브위치</> %r'
 </programlisting>
-   where <replaceable>archivelocation</> is the directory from which WAL segment
-   files should be removed.
+   <replaceable>아카이브위치</>는 지우려고 하는 WAL 파일이 있는 디렉터러
+   이름이다.
   </para>
   <para>
-   When used within <xref linkend="archive-cleanup-command">, all WAL files
-   logically preceding the value of the <literal>%r</> argument will be removed
-   from <replaceable>archivelocation</>. This minimizes the number of files
-   that need to be retained, while preserving crash-restart capability.  Use of
-   this parameter is appropriate if the <replaceable>archivelocation</> is a
-   transient staging area for this particular standby server, but
-   <emphasis>not</> when the <replaceable>archivelocation</> is intended as a
-   long-term WAL archive area, or when multiple standby servers are recovering
-   from the same archive location.
+   <xref linkend="archive-cleanup-command"> 설정은
+   <replaceable>아카이브위치</> 디렉터리에 안에 있는 
+   마지막으로 반영한 <literal>%r</> 파일을 빼고 이 파일보다 먼저 
+   반영된 모든 오래된 파일을 지운다.  이렇게 해서 서버 비정상 종료 다음 서버 
+   복구 작업에 필요하지 않은 오래된 파일을 지워 보관할 파일 수를 최소화 한다.
+   <replaceable>아카이브위치</> 디렉터리는 특정 대기 서버에서만
+   사용하는 경우는 괜찮으나, 여러 대기 서버가 함께 사용하는 경우라면
+   이 명령의 사용은 <emphasis>위험하다</>.
   </para>
   <para>
-   When used as a standalone program all WAL files logically preceding the
-   <replaceable>oldestkeptwalfile</> will be removed from <replaceable>archivelocation</>.
-   In this mode, if you specify a <filename>.partial</> or <filename>.backup</>
-   file name, then only the file prefix will be used as the
-   <replaceable>oldestkeptwalfile</>. This treatment of <filename>.backup</>
-   file name allows you to remove
-   all WAL files archived prior to a specific base backup without error.
-   For example, the following example will remove all files older than
-   WAL file name <filename>000000010000003700000010</>:
+   앞에서 설명한 용도와 달리 <replaceable>아카이브위치</> 디렉터리에서
+   <replaceable>남겨둘_제일_오래된파일</>보다 오래된 (해당 WAL로그
+   보다 논리적으로 오래된) 모든 WAL 파일을 지우는 용도로도 사용할 수 있다.
+   이 용도로 사용할 때, <filename>.partial</>, <filename>.backup</>
+   같은 파일을 <replaceable>남겨둘_제일_오래된파일</>로 
+   지정하면, 그 파일의 앞부분 이름을 사용해서 작업한다.  예를 들어 ,
+   <filename>000000010000003700000010</> 파일보다 오래된 파일을 
+   삭제하려면 다음과 같은 형태로 사용한다:
 <programlisting>
 pg_archivecleanup -d archive 000000010000003700000010.00000020.backup
 
@@ -76,17 +73,19 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
 </programlisting>
   </para>
   <para>
-   <application>pg_archivecleanup</application> assumes that
-   <replaceable>archivelocation</> is a directory readable and writable by the
-   server-owning user.
+   <application>pg_archivecleanup</application> 명령은
+   <replaceable>archivelocation</> 디렉터리 안에 있는 파일을 지우는
+   명령이기 때문에, 이 명령을 실행하는 사용자가 지울 수 있는 권한이 
+   있어야한다.  즉 서버를 실행하는 OS 사용자여야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
-    <application>pg_archivecleanup</application> accepts the following command-line arguments:
+    <application>pg_archivecleanup</application> 명령에서는
+    다음과 같은 옵션을 사용할 수 있다:
 
     <variablelist>
 
@@ -94,7 +93,7 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
       <term><option>-d</option></term>
       <listitem>
        <para>
-        Print lots of debug logging output on <filename>stderr</>.
+        <filename>stderr</> 장치로 각종 디버그 용 정보를 출력한다.
        </para>
       </listitem>
      </varlistentry>
@@ -103,7 +102,8 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
       <term><option>-n</option></term>
       <listitem>
        <para>
-        Print the names of the files that would have been removed on <filename>stdout</> (performs a dry run).
+        해당 파일을 지우지 않고, 각 파일에 대한 
+        작업 계획만 <filename>stdout</> 장치로 보여 준다 (테스트용).
        </para>
       </listitem>
      </varlistentry>
@@ -113,21 +113,19 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
       <term><option>--version</></term>
       <listitem>
        <para>
-        Print the <application>pg_archivecleanup</application> version and exit.
+        <application>pg_archivecleanup</application> 버전을 보여주고 마친다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-x</option> <replaceable>extension</></term>
+      <term><option>-x</option> <replaceable>확장자</></term>
       <listitem>
        <para>
-        Provide an extension
-        that will be stripped from all file names before deciding if they
-        should be deleted.  This is typically useful for cleaning up archives
-        that have been compressed during storage, and therefore have had an
-        extension added by the compression program.  For example: <literal>-x
-        .gz</literal>.
+        이 옵션을 지정하면, 지울 대상이 되는 파일이 논리적인 해당 파일 
+        이름에 확장자가 붙은 파일로 간주한다.  전형적으로 
+        아카이브 파일을 압축해서 보관하는 경우 사용한다. 
+        사용예: <literal>-x .gz</literal>.
        </para>
 
       </listitem>
@@ -138,8 +136,8 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
       <term><option>--help</></term>
       <listitem>
        <para>
-        Show help about <application>pg_archivecleanup</application> command line
-        arguments, and exit.
+        <application>pg_archivecleanup</application> 명령에 대한
+        명령행 옵션 도움말을 보여주고 마친다.
        </para>
       </listitem>
      </varlistentry>
@@ -148,50 +146,50 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   <application>pg_archivecleanup</application> is designed to work with
-   <productname>PostgreSQL</> 8.0 and later when used as a standalone utility,
-   or with <productname>PostgreSQL</> 9.0 and later when used as an
-   archive cleanup command.
+   <application>pg_archivecleanup</application> 명령은
+   <productname>PostgreSQL</> 8.0 버전에 처음 등장했고, 
+   뒤에 독립적인 응용프로그램이 되었고, <productname>PostgreSQL</> 9.0
+   버전부터 <xref linkend="archive-cleanup-command"> 설정 값으로
+   사용할 수 있었다.
   </para>
 
   <para>
-   <application>pg_archivecleanup</application> is written in C and has an
-   easy-to-modify source code, with specifically designated sections to modify
-   for your own needs
+   <application>pg_archivecleanup</application> 명령은
+   C 언어로 작성되었으며 변경하기 쉬운 코드로 작성되었다.  그래서 
+   필요하다면, 얼마든지 원하는 기능으로 변경 해서 사용 가능하다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
-  <para>On Linux or Unix systems, you might use:
+  <para>리눅스 환경에서는 일반적으로 다음과 같이 사용된다:
 <programlisting>
 archive_cleanup_command = 'pg_archivecleanup -d /mnt/standby/archive %r 2>>cleanup.log'
 </programlisting>
-   where the archive directory is physically located on the standby server,
-   so that the <varname>archive_command</> is accessing it across NFS,
-   but the files are local to the standby.
-   This will:
+   아카이브 디렉터리는 대기 서버에서 접근 할 수 있는 물리적 위치다.
+   위 경우는 NFS 디렉터리를 지정했다. 이 <varname>archive_command</> 
+   설정은 다음과 같은 일을 한다:
   </para>
   <itemizedlist>
    <listitem>
     <para>
-     produce debugging output in <filename>cleanup.log</>
+     <filename>cleanup.log</> 파일에 자세한 작업 내역을 남기며,
     </para>
    </listitem>
    <listitem>
     <para>
-     remove no-longer-needed files from the archive directory
+     해당 디렉터리 안에 더 이상 필요 없는 WAL 파일을 지운다.
     </para>
    </listitem>
   </itemizedlist>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="pgstandby"></member>
