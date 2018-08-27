@@ -16,7 +16,8 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>pg_resetwal</refname>
-  <refpurpose>reset the write-ahead log and other control information of a <productname>PostgreSQL</productname> database cluster</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 데이터베이스 클러스터의 
+  미리-쓰기 로그와 기타 제어 정보를 재설정함.</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -24,64 +25,68 @@ PostgreSQL documentation
    <command>pg_resetwal</command>
    <arg choice="opt"><option>-f</option></arg>
    <arg choice="opt"><option>-n</option></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-   <arg choice="req"><arg choice="opt"><option>-D</option></arg> <replaceable class="parameter">datadir</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
+   <arg choice="req"><arg choice="opt"><option>-D</option></arg> <replaceable class="parameter">데이터디렉터리</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1 id="R1-APP-PGRESETWAL-1">
-  <title>Description</title>
+  <title>설명</title>
   <para>
-   <command>pg_resetwal</command> clears the write-ahead log (WAL) and
-   optionally resets some other control information stored in the
-   <filename>pg_control</> file.  This function is sometimes needed
-   if these files have become corrupted.  It should be used only as a
-   last resort, when the server will not start due to such corruption.
+   <command>pg_resetwal</command> 명령은 미리-쓰기 로그를 깨끗하게 정리하고,
+   더불어 <filename>pg_control</> 파일에 저장된 여러 제어 정보를 
+   재설정한다.  이 작업은 앞에서 설명한 파일들이 깨졌을 때, 복구하기 
+   위해서 필요하다.  이 명령은 서버를 실행 할 수 없을 때, 
+   마지막 조치로 사용되어야 한다.
   </para>
 
   <para>
-   After running this command, it should be possible to start the server,
-   but bear in mind that the database might contain inconsistent data due to
-   partially-committed transactions.  You should immediately dump your data,
-   run <command>initdb</>, and reload.  After reload, check for
-   inconsistencies and repair as needed.
+   이 명령을 사용하고 난 뒤, 서버가 잘 실행 된다고 해도, 
+   트랜잭션 처리의 불완전한 복구로 자료 정합성이 맞지 않을 가능성이 높다.
+   그래서, 서버가 실행 되면, 모든 자료를 덤프하고, 
+   <command>initdb</> 명령으로 새 클러스터를 만들어, 그곳에 
+   다시 복원해서, 필요하다면, 자료 정합성을 맞추는 작업을 해야 한다.
+   (공식 설명서에서는 이렇게 권고한다. - 옮긴이)
   </para>
 
   <para>
-   This utility can only be run by the user who installed the server, because
-   it requires read/write access to the data directory.
-   For safety reasons, you must specify the data directory on the command line.
-   <command>pg_resetwal</command> does not use the environment variable
-   <envar>PGDATA</>.
+   이 명령은 서버가 다루는 파일을 다루기 때문에, 서버를 실행한 
+   OS 사용자 계정으로 실행해야 한다.  안전상  <command>pg_resetwal</command>
+   명령은 <envar>PGDATA</> 환경 변수를 사용하지 않는다. 반드시 데이터 디렉터리를
+   지정해야 한다.
   </para>
 
   <para>
-   If <command>pg_resetwal</command> complains that it cannot determine
-   valid data for <filename>pg_control</>, you can force it to proceed anyway
-   by specifying the <option>-f</> (force) option.  In this case plausible
-   values will be substituted for the missing data.  Most of the fields can be
-   expected to match, but manual assistance might be needed for the next OID,
-   next transaction ID and epoch, next multitransaction ID and offset, and
-   WAL starting address fields. These fields can be set using the options
-   discussed below. If you are not able to determine correct values for all
-   these fields, <option>-f</> can still be used, but
-   the recovered database must be treated with even more suspicion than
-   usual: an immediate dump and reload is imperative.  <emphasis>Do not</>
-   execute any data-modifying operations in the database before you dump,
-   as any such action is likely to make the corruption worse.
+   <command>pg_resetwal</command> 명령을 실행할 때, 
+   <filename>pg_control</> 파일에 저장된 정보가 바르지 않다고, 
+   오류 메시지를 보게 된다면, 이런 오류를 무시하고, 강제로
+   작업을 진행할 수 있다.  이때는 <option>-f</> (force) 옵션을 
+   사용한다.  이렇게 하면, 그 잘못된 정보를 고치는데, 
+   그럴싸한 값을 사용한다.  이렇게 사용하는 그럴싸한 값은 대부분의 경우
+   정확한 값이겠지만, 다음 OID, 다음 트랜잭션 ID, 다음 시간, 
+   다음 다중 트랜잭션 ID, 위치 값은 사용자가 직접 그 값을 지정해야
+   하는 경우도 있다.  이런 값들은 아래에서 설명하는 옵션으로 지정한다. 
+   이런 값들을 모두 정확하게 알지 못한다면, 결국 
+   <option>-f</> 옵션을 사용할 수 밖에 없다.  이렇게 되면, 
+   복구된 데이터베이스 서버가 완벽하게 정상 상태일 가능성이 적다.  그렇기
+   때문에, 이 상태의 데이터베이스 서버에 자료 조작 명령을 내리는 것은
+   <emphasis>아주 위험하다</>.  서버가 실행되면, 즉시 자료 덤프를 하고, 
+   그 덤프한 것을 복원해서 사용하는 것이 안전하다.  <option>-f</>
+   옵션을 사용해서 복구 하고 그냥 그 서버를 사용하는 것은 자료를 더 
+   손상시키는 결과를 만들 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
   <variablelist>
    <varlistentry>
     <term><option>-f</option></term>
     <listitem>
      <para>
-      Force <command>pg_resetwal</command> to proceed even if it cannot determine
-      valid data for <filename>pg_control</>, as explained above.
+      <filename>pg_control</> 파일에 저장된 정보가 바르지 않은 경우에도
+      강제로 작업을 진행한다.  위에서 자세히 설명했다.
      </para>
     </listitem>
    </varlistentry>
@@ -90,12 +95,10 @@ PostgreSQL documentation
     <term><option>-n</option></term>
     <listitem>
      <para>
-      The <option>-n</> (no operation) option instructs
-      <command>pg_resetwal</command> to print the values reconstructed from
-      <filename>pg_control</> and values about to be changed, and then exit
-      without modifying anything. This is mainly a debugging tool, but can be
-      useful as a sanity check before allowing <command>pg_resetwal</command>
-      to proceed for real.
+      <filename>pg_control</> 파일의 정보를 어떻게 바꿀 것인지, 
+      작업 계획만 보여주고, 실제 작업은 하지 않는다. (no operation)
+      이 옵션은 문제점 추적용으로 사용되지만, <command>pg_resetwal</command>
+      명령을 실행해서 어떤 일이 생길지 확인하는 용도로도 유용하게 사용된다.
      </para>
     </listitem>
    </varlistentry>
@@ -103,22 +106,22 @@ PostgreSQL documentation
    <varlistentry>
     <term><option>-V</option></term>
     <term><option>--version</option></term>
-    <listitem><para>Display version information, then exit.</para></listitem>
+    <listitem><para>버전을 보여주고 마친다.</para></listitem>
    </varlistentry>
 
    <varlistentry>
     <term><option>-?</option></term>
     <term><option>--help</option></term>
-    <listitem><para>Show help, then exit.</para></listitem>
+    <listitem><para>도움말을 보여주고 마친다.</para></listitem>
    </varlistentry>
   </variablelist>
 
   <para>
-   The following options are only needed when
-   <command>pg_resetwal</command> is unable to determine appropriate values
-   by reading <filename>pg_control</>.  Safe values can be determined as
-   described below.  For values that take numeric arguments, hexadecimal
-   values can be specified by using the prefix <literal>0x</literal>.
+   다음 옵션들은 <command>pg_resetwal</command> 명령을 사용할 때
+   <filename>pg_control</> 파일의 정보가 올바르지 않을 때 
+   사용하는 옵션이다.  안전한 값은 아래에서 설명하는 것처럼
+   결정될 수 있다.  옵션 값으로 숫자를 지정하는 경우, 
+   <literal>0x</literal> 문자로 시작하면, 16진수로 간주한다.
   </para>
 
   <variablelist>
@@ -126,19 +129,15 @@ PostgreSQL documentation
     <term><option>-c</option> <replaceable class="parameter">xid</replaceable>,<replaceable class="parameter">xid</replaceable></term>
     <listitem>
      <para>
-      Manually set the oldest and newest transaction IDs for which the commit
-      time can be retrieved.
+      직접 제일 오래된 트랜잭션 ID, 가장 최신의 트랜잭션 ID를 지정한다.
      </para>
 
      <para>
-      A safe value for the oldest transaction ID for which the commit time can
-      be retrieved (first part) can be determined by looking
-      for the numerically smallest file name in the directory
-      <filename>pg_commit_ts</> under the data directory.  Conversely, a safe
-      value for the newest transaction ID for which the commit time can be
-      retrieved (second part) can be determined by looking for the numerically
-      greatest file name in the same directory.  The file names are in
-      hexadecimal.
+      안전한 값은 데이터 디렉터리 안 <filename>pg_commit_ts</> 디렉터리 안에
+      있는 그 파일 이름 기준으로 가장 오래된 파일의 트랜잭션 ID를 
+      제일 오래된 트랜잭션 ID로 사용하며, 가장 최신의 트랜잭션 ID는 
+      반대로 그 디렉터리에 있는 가장 최근의 파일에 있는 트랜잭션 ID를 
+      사용한다. 파일 이름은 16진수로 되어있다.
      </para>
     </listitem>
    </varlistentry>
@@ -147,48 +146,47 @@ PostgreSQL documentation
     <term><option>-e</option> <replaceable class="parameter">xid_epoch</replaceable></term>
     <listitem>
      <para>
-      Manually set the next transaction ID's epoch.
+      다음 트랜잭션ID epoch(유닉스 타임스탬프값)를 지정한다.
      </para>
 
      <para>
-      The transaction ID epoch is not actually stored anywhere in the database
-      except in the field that is set by <command>pg_resetwal</command>,
-      so any value will work so far as the database itself is concerned.
-      You might need to adjust this value to ensure that replication
-      systems such as <application>Slony-I</> and
-      <application>Skytools</> work correctly &mdash;
-      if so, an appropriate value should be obtainable from the state of
-      the downstream replicated database.
+      트랜잭션 ID epoch 값은 데이터베이스 어디에도 저장되지 않는다. 즉
+      사용자가 지정하는 그 값을 그대로 사용한다.  이 옵션은
+      <application>Slony-I</> 또는  <application>Skytools</>  응용 프로그램이
+      바르게 작동하도록 하기 위해 사용하는 옵션이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><option>-l</option> <replaceable class="parameter">walfile</replaceable></term>
+    <term><option>-l</option> <replaceable class="parameter">WAL파일</replaceable></term>
     <listitem>
      <para>
-      Manually set the WAL starting address.
+      WAL 시작 주소를 지정.
      </para>
 
      <para>
-      The WAL starting address should be
-      larger than any WAL segment file name currently existing in
-      the directory <filename>pg_wal</> under the data directory.
-      These names are also in hexadecimal and have three parts.  The first
-      part is the <quote>timeline ID</> and should usually be kept the same.
-      For example, if <filename>00000001000000320000004A</> is the
-      largest entry in <filename>pg_wal</>, use <literal>-l 00000001000000320000004B</> or higher.
+      여기서 지정하는 값은 <filename>pg_wal</> 디렉터리 내 있는 
+      WAL 조각 파일의 이름보다 큰 값이어야 한다.
+      이 조각 파일 이름은 세 부분으로 구성 되는데, 
+      가장 앞부분은 <quote>타임라인ID</>이며, 이 부분은 그대로 
+      사용한다.  예를 들어, <filename>00000001000000320000004A</>
+      파일이 그 디렉터리에 있다면, 이 옵션 사용법은
+      <literal>-l 00000001000000320000004B</> 또는 이 보다 큰
+      값을 지정해야 한다.
      </para>
 
      <note>
       <para>
-       <command>pg_resetwal</command> itself looks at the files in
-       <filename>pg_wal</> and chooses a default <option>-l</> setting
-       beyond the last existing file name.  Therefore, manual adjustment of
-       <option>-l</> should only be needed if you are aware of WAL segment
-       files that are not currently present in <filename>pg_wal</>, such as
-       entries in an offline archive; or if the contents of
-       <filename>pg_wal</> have been lost entirely.
+       <command>pg_resetwal</command> 명령은 
+       특별한 경우가 아니면,  <option>-l</> 옵션을 기본적으로
+       사용하며, 그 값은 해당 디렉터리 안에 있는 파일을 찾아서
+       그 보다 큰 값을 사용한다.  따라서, 이 옵션을
+       의도적으로 쓰는 경우는 <filename>pg_wal</> 디렉터리 
+       안에 있는 파일을 무시하고, 의도적으로 어떤 파일로 
+       지정하려고 할 때 사용한다.  대표적인 경우가, 
+       아카이브 파일을 다시 만들어야 하거나, <filename>pg_wal</>
+       디렉토리 내 특정 파일이 반드시 있어야 하는 경우다.
       </para>
      </note>
     </listitem>
@@ -198,19 +196,17 @@ PostgreSQL documentation
     <term><option>-m</option> <replaceable class="parameter">mxid</replaceable>,<replaceable class="parameter">mxid</replaceable></term>
     <listitem>
      <para>
-      Manually set the next and oldest multitransaction ID.
+      다음 멀티트랜잭션ID와 제일 오래된 멀티트랜잭션ID  지정.
      </para>
 
      <para>
-      A safe value for the next multitransaction ID (first part) can be
-      determined by looking for the numerically largest file name in the
-      directory <filename>pg_multixact/offsets</> under the data directory,
-      adding one, and then multiplying by 65536 (0x10000).  Conversely, a safe
-      value for the oldest multitransaction ID (second part of
-      <option>-m</>) can be determined by looking for the numerically smallest
-      file name in the same directory and multiplying by 65536.  The file
-      names are in hexadecimal, so the easiest way to do this is to specify
-      the option value in hexadecimal and append four zeroes.
+      <option>-m</> 옵션값으로 쉼표로 구분한 두 16진수를 지정하는데,
+      앞부분은 다음 멀티트랜잭션ID, 뒷부분은 제일 오래된 멀티트랜잭션ID다.
+      각 값들은 <filename>pg_multixact/offsets</> 디렉터리 내 있는 
+      파일을 참조해서, 가장 큰 값에 하나를 더해, 65536 (0x10000) 곱해서
+      앞부분에 사용하고, 가장 작은 값에 65536 곱해서 뒷부분에
+      사용한다.  이 값은 16진수를 사용하며, 
+      ffff 이하라면, 네자리로, 0을 앞에 채운다.
      </para>
     </listitem>
    </varlistentry>
@@ -219,13 +215,13 @@ PostgreSQL documentation
     <term><option>-o</option> <replaceable class="parameter">oid</replaceable></term>
     <listitem>
      <para>
-      Manually set the next OID.
+      다음 OID 지정.
      </para>
 
      <para>
-      There is no comparably easy way to determine a next OID that's beyond
-      the largest one in the database, but fortunately it is not critical to
-      get the next-OID setting right.
+      다음 작업에 사용할 OID가 뭔지를 구하는 작업은 쉽지는 않지만, 
+      특별한 경우가 아니고서는 이 값은 특별한 문제 없이 자동으로
+      잘 구하기 때문에, 굳이 이 옵션을 사용할 필요는 없다.
      </para>
     </listitem>
    </varlistentry>
@@ -234,14 +230,14 @@ PostgreSQL documentation
     <term><option>-O</option> <replaceable class="parameter">mxoff</replaceable></term>
     <listitem>
      <para>
-      Manually set the next multitransaction offset.
+      다음 멀티트랜잭션 위치 지정.
      </para>
 
      <para>
-      A safe value can be determined by looking for the numerically largest
-      file name in the directory <filename>pg_multixact/members</> under the
-      data directory, adding one, and then multiplying by 52352 (0xCC80).
-      The file names are in hexadecimal.  There is no simple recipe such as
+      안전한 값은 <filename>pg_multixact/members</> 디렉터리 안에 있는
+      파일들 가운데, 그 이름이 가장 큰 것을 찾고, 그 값에 1을 더하고,
+      52352 (0xCC80)를 곱한 값이다.
+      이 값은 16진수를 사용한다.  There is no simple recipe such as
       the ones for other options of appending zeroes.
      </para>
     </listitem>
@@ -251,18 +247,15 @@ PostgreSQL documentation
     <term><option>-x</option> <replaceable class="parameter">xid</replaceable></term>
     <listitem>
      <para>
-      Manually set the next transaction ID.
+      다음 트랜잭션 ID 지정.
      </para>
 
      <para>
-      A safe value can be determined by looking for the numerically largest
-      file name in the directory <filename>pg_xact</> under the data directory,
-      adding one,
-      and then multiplying by 1048576 (0x100000).  Note that the file names are in
-      hexadecimal.  It is usually easiest to specify the option value in
-      hexadecimal too. For example, if <filename>0011</> is the largest entry
-      in <filename>pg_xact</>, <literal>-x 0x1200000</> will work (five
-      trailing zeroes provide the proper multiplier).
+      안전한 값은 <filename>pg_xact</> 디렉터리 안에 있는 파일들 가운데, 
+      그 이름이 가장 큰것을 찾아 그 값에 1을 더하고, 1048576 (0x100000)을
+      곱해서 사용한다.  파일 이름은 16진수를 사용한다.  
+      예를 들어, 가장 큰 파일이 <filename>0011</> 이면,
+      <literal>-x 0x1200000</> 옵션을 사용한다.
      </para>
     </listitem>
    </varlistentry>
@@ -270,26 +263,26 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   This command must not be used when the server is
-   running.  <command>pg_resetwal</command> will refuse to start up if
-   it finds a server lock file in the data directory.  If the
-   server crashed then a lock file might have been left
-   behind; in that case you can remove the lock file to allow
-   <command>pg_resetwal</command> to run.  But before you do
-   so, make doubly certain that there is no server process still alive.
+   이 명령은 서버가 실행 중에 사용하면 안된다.
+   서버가 실행 중임을 알리는 잠금 파일을 데이터 디렉터리 안에서
+   찾으면, <command>pg_resetwal</command> 명령은 더 이상 작업을
+   진행하지 않는다.  이 잠금 파일을 남겨둔채 서버가 갑자기
+   중지되었다면, 이 잠금 파일을 지워야 계속 작업을 할 수 있다.
+   물론 정말 서버가 중지 되었는지, 서버 프로세스 확인을 하는 것을
+   잊지 말아야 한다.
   </para>
 
   <para>
-   <command>pg_resetwal</command> works only with servers of the same
-   major version.
+   <command>pg_resetwal</command> 명령은 같은 메이져 버전에서만
+   사용할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-pgcontroldata"></member>
