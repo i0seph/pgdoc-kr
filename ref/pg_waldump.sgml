@@ -16,56 +16,57 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>pg_waldump</refname>
-  <refpurpose>display a human-readable rendering of the write-ahead log of a <productname>PostgreSQL</productname> database cluster</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 데이터베이스 클러스터
+  미리-쓰기 로그를 사람이 읽을 수 있도록 덤프</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_waldump</command>
-   <arg rep="repeat" choice="opt"><option>option</option></arg>
-   <arg choice="opt"><option>startseg</option>
-    <arg choice="opt"><option>endseg</option></arg>
+   <arg rep="repeat" choice="opt"><option>옵션</option></arg>
+   <arg choice="opt"><option>시작조각</option>
+    <arg choice="opt"><option>마침조각</option></arg>
    </arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1 id="R1-APP-PGWALDUMP-1">
-  <title>Description</title>
+  <title>설명</title>
   <para>
-   <command>pg_waldump</command> displays the write-ahead log (WAL) and is mainly
-   useful for debugging or educational purposes.
+   <command>pg_waldump</command> 명령은 미리-쓰기 로그를 
+   덤프한다.  이 덤프 내용은 서버 문제점을 추적하는데 이용하거나, 
+   미리-쓰기 로그를 공부하는데 이용된다.
   </para>
 
   <para>
-   This utility can only be run by the user who installed the server, because
-   it requires read-only access to the data directory.
+   이 명령은 데이터베이스 서버를 실행한 OS 사용자만 실행할 수 있다.
+   데이터 디렉터리는 이 사용자만 사용할 수 있기 때문이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
-    The following command-line options control the location and format of the
-    output:
+    다음은 위치와 출력 양식을 지정하는 명령행 옵션들이다:
 
     <variablelist>
 
      <varlistentry>
-      <term><replaceable class="parameter">startseg</replaceable></term>
+      <term><replaceable class="parameter">시작조각</replaceable></term>
       <listitem>
        <para>
-        Start reading at the specified log segment file.  This implicitly determines
-        the path in which files will be searched for, and the timeline to use.
+        덤프를 시작할 첫 로그 조각 파일을 지정한다.  여기서 
+        다음에 읽을 조각 파일의 경로와, 타임라인을 내부적으로 결정한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">endseg</replaceable></term>
+      <term><replaceable class="parameter">마침조각</replaceable></term>
       <listitem>
        <para>
-        Stop after reading the specified log segment file.
+        지정한 로그 조각 파일까지만 덤프하고 멈춘다.
        </para>
       </listitem>
      </varlistentry>
@@ -75,7 +76,7 @@ PostgreSQL documentation
       <term><option>--bkp-details</option></term>
       <listitem>
        <para>
-        Output detailed information about backup blocks.
+        백업 블럭에 대한 자세한 정보를 출력한다.
        </para>
       </listitem>
      </varlistentry>
@@ -85,8 +86,7 @@ PostgreSQL documentation
       <term><option>--end=<replaceable>end</replaceable></option></term>
       <listitem>
        <para>
-        Stop reading at the specified WAL location, instead of reading to the
-        end of the log stream.
+        로그 스트림의 끝까지 읽지 않고, 지저항 WAL 위치까지만 읽고 멈춘다.
        </para>
       </listitem>
      </varlistentry>
@@ -96,68 +96,68 @@ PostgreSQL documentation
       <term><option>--follow</option></term>
       <listitem>
        <para>
-        After reaching the end of valid WAL, keep polling once per second for
-        new WAL to appear.
+        WAL 파일을 끝까지 읽었다면, 새로운 WAL 파일이 생겼는지, 
+        1초 간격으로 확인하다, 생겼으면 그것을 계속해서 덤프 한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-n <replaceable>limit</replaceable></option></term>
-      <term><option>--limit=<replaceable>limit</replaceable></option></term>
+      <term><option>-n <replaceable>최대수</replaceable></option></term>
+      <term><option>--limit=<replaceable>최대수</replaceable></option></term>
       <listitem>
        <para>
-        Display the specified number of records, then stop.
+        지정한 최대 레코드 수만큼 출력하고 멈춘다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-p <replaceable>path</replaceable></option></term>
-      <term><option>--path=<replaceable>path</replaceable></option></term>
+      <term><option>-p <replaceable>경로</replaceable></option></term>
+      <term><option>--path=<replaceable>경로</replaceable></option></term>
       <listitem>
        <para>
-        Specifies a directory to search for log segment files or a
-        directory with a <literal>pg_wal</literal> subdirectory that
-        contains such files.  The default is to search in the current
-        directory, the <literal>pg_wal</literal> subdirectory of the
-        current directory, and the <literal>pg_wal</literal> subdirectory
-        of <envar>PGDATA</envar>.
+        읽을 로그 조각 파일이 있는 디렉터리.
+        일반적으로 <literal>pg_wal</literal>  디렉터리 경로를
+        지정한다.  <literal>pg_wal</literal>  디렉터리는
+        <envar>PGDATA</envar> 디렉터리의 하위 디렉터리다.
+        이 옵션을 사용하지 않으면, 현재 디렉터리나, 
+        현재 디렉터리 안에 있는 <literal>pg_wal</literal> 디렉터리에서
+        덤프할 조각 파일을 찾는다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-r <replaceable>rmgr</replaceable></option></term>
-      <term><option>--rmgr=<replaceable>rmgr</replaceable></option></term>
+      <term><option>-r <replaceable>리소스</replaceable></option></term>
+      <term><option>--rmgr=<replaceable>리소스</replaceable></option></term>
       <listitem>
        <para>
-        Only display records generated by the specified resource manager.
-        If <literal>list</> is passed as name, print a list of valid resource manager
-        names, and exit.
+        지정한 리소스 관리자가 만든 레코드만 출력한다.
+        이 옵션 값으로 <literal>list</>를 사용하면, 
+        사용할 수 있는 모든 리소스 이름을 보여주고 마친다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-s <replaceable>start</replaceable></option></term>
-      <term><option>--start=<replaceable>start</replaceable></option></term>
+      <term><option>-s <replaceable>시작위치</replaceable></option></term>
+      <term><option>--start=<replaceable>시작위치</replaceable></option></term>
       <listitem>
        <para>
-        WAL location at which to start reading. The default is to start reading
-        the first valid log record found in the earliest file found.
+        덤프를 시작할 WAL 위치.  이 옵션을 사용하지 않으며,
+        지정한 조각 파일의 출력할 수 있는 첫 레코드부터 덤프한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-t <replaceable>timeline</replaceable></option></term>
-      <term><option>--timeline=<replaceable>timeline</replaceable></option></term>
+      <term><option>-t <replaceable>타임라인</replaceable></option></term>
+      <term><option>--timeline=<replaceable>타임라인</replaceable></option></term>
       <listitem>
        <para>
-        Timeline from which to read log records. The default is to use the
-        value in <replaceable>startseg</>, if that is specified; otherwise, the
-        default is 1.
+        타임라인 지정.  기본값은 <replaceable>시작조각</> 파일의 타임라인을
+        사용할 수 있으면 그것을 쓰고, 사용할 수 없으면, 1이다.
        </para>
       </listitem>
      </varlistentry>
@@ -167,7 +167,7 @@ PostgreSQL documentation
        <term><option>--version</></term>
        <listitem>
        <para>
-       Print the <application>pg_waldump</application> version and exit.
+       <application>pg_waldump</application> 버전을 보여주고 마친다.
        </para>
        </listitem>
      </varlistentry>
@@ -177,7 +177,7 @@ PostgreSQL documentation
       <term><option>--xid=<replaceable>xid</replaceable></option></term>
       <listitem>
        <para>
-        Only display records marked with the given transaction ID.
+        지정한 트랜잭션 ID 관련 레코드만 출력한다.
        </para>
       </listitem>
      </varlistentry>
@@ -187,9 +187,10 @@ PostgreSQL documentation
       <term><option>--stats[=record]</option></term>
       <listitem>
        <para>
-        Display summary statistics (number and size of records and
-        full-page images) instead of individual records. Optionally
-        generate statistics per-record instead of per-rmgr.
+        개별 레코드 정보 대신에, 요약한 통계 정보를 보여준다.
+        (레코드와 full-page 이미지의 크기, 개수)
+        선택적으로 리소스 관리자별이 아닌, 레코드 단위의
+        통계 정보를 보여준다.
        </para>
       </listitem>
      </varlistentry>
@@ -199,8 +200,8 @@ PostgreSQL documentation
       <term><option>--help</></term>
        <listitem>
         <para>
-         Show help about <application>pg_waldump</application> command line
-         arguments, and exit.
+         <application>pg_waldump</application> 명령에서 사용할 수 있는
+         명령행 옵션 도움말을 보여주고 마친다.
         </para>
        </listitem>
       </varlistentry>
@@ -209,25 +210,26 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
   <para>
-    Can give wrong results when the server is running.
+    서버가 실행 중일 때는 잘못된 출력 결과를 보여줄 수 있다.
   </para>
 
   <para>
-    Only the specified timeline is displayed (or the default, if none is
-    specified). Records in other timelines are ignored.
+    기본적으로 단일 타임라인 레코드만 출력한다.  다른 타임라인
+    레코드는 무시된다.
   </para>
 
   <para>
-    <application>pg_waldump</> cannot read WAL files with suffix
-    <literal>.partial</>. If those files need to be read, <literal>.partial</>
-    suffix needs to be removed from the file name.
+    <application>pg_waldump</> 명령은
+    <literal>.partial</> 확장자 WAL 파일은 읽을 수 없다.
+    <literal>.partial</> 파일을 읽어야 한다면, 그 확장자가 없는
+    이름으로 바꾸어 사용해야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="wal-internals"></member>
