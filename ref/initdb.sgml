@@ -16,174 +16,189 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>initdb</refname>
-  <refpurpose>create a new <productname>PostgreSQL</productname> database cluster</refpurpose>
+  <refpurpose>새 <productname>PostgreSQL</productname> 데이터베이스 클러스터 만들기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>initdb</command>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
    <group choice="plain">
     <group choice="opt">
      <arg choice="plain"><option>--pgdata</option></arg>
      <arg choice="plain"><option>-D</option></arg>
     </group>
-    <replaceable> directory</replaceable>
+    <replaceable> 디렉터리</replaceable>
    </group>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1 id="R1-APP-INITDB-1">
   <title>
-   Description
+   설명
   </title>
   <para>
-   <command>initdb</command> creates a new
-   <productname>PostgreSQL</productname> database cluster.  A database
-   cluster is a collection of databases that are managed by a single
-   server instance.
+   <command>initdb</command> 명령은
+   <productname>PostgreSQL</productname> 데이터베이스 클러스터를 새로
+   만드는데 사용한다.  데이터베이스 클러스터란 하나의 
+   서버 인스턴스가 관리하는 일련의 데이터베이스 덩어리다.
   </para>
 
   <para>
-   Creating a database cluster consists of creating the directories in
-   which the database data will live, generating the shared catalog
-   tables (tables that belong to the whole cluster rather than to any
-   particular database), and creating the <literal>template1</literal>
-   and <literal>postgres</literal> databases. When you later create a
-   new database, everything in the <literal>template1</literal> database is
-   copied.  (Therefore, anything installed in <literal>template1</literal>
-   is automatically copied into each database created later.)
-   The <literal>postgres</literal> database is a default database meant
-   for use by users, utilities and third party applications.
+   하나의 데이터베이스 클러스터 만드는 작업은 지정한 디렉터리를 만들고,
+   특정 데이터에스에서 공용으로 사용하는 카탈로그 테이블들을 만들고, 
+   <literal>template1</literal>, <literal>postgres</literal> 데이터베이스를
+   만든다.  클러스터가 만들어진 다음 서버가 운영 중인 상태에서
+   새 데이터베이스를 만들면, <literal>template1</literal> 데이터베이스를
+   복사해서 만든다. (이렇게 해서, <literal>template1</literal>
+   데이터베이스의 내용과 똑 같은 새로운 데이터베이스가 만들어진다.)
+   <literal>postgres</literal> 데이터베이스는 사용자들이나, 
+   응용 프로그램, 기타 제3제공자 응용 프로램에서 사용하는 
+   기본 데이터베이스다.
   </para>
 
   <para>
-   Although <command>initdb</command> will attempt to create the
-   specified data directory, it might not have permission if the parent
-   directory of the desired data directory is root-owned. To initialize
-   in such a setup, create an empty data directory as root, then use
-   <command>chown</command> to assign ownership of that directory to the
-   database user account, then <command>su</command> to become the
-   database user to run <command>initdb</command>.
+   <command>initdb</command> 명령은 지정한 디렉터리를 만드는 
+   작업부터 진행하기 때문에, 만일 그 디렉터리가 없다면, 
+   만들 디렉터리의 상위 디렉터리가 <command>initdb</command>
+   명령을 실행하는 사용자에게 쓰기 권한이 부여되어 있어야 한다.
+   이런 환경이 안된다면, root 권한으로 데이터베이스 클러스터
+   디렉터리를 만들고, 그 디렉터리를 <command>chown</command> 
+   명령으로 <command>initdb</command> 명령을 실행할 사용자로
+   그 소유주를 바꾸어 사용할 수 있다.  <command>initdb</command>
+   작업할 데이터베이스 클러스터 디렉터리는 비어 있어야 한다.
   </para>
 
   <para>
-   <command>initdb</command> must be run as the user that will own the
-   server process, because the server needs to have access to the
-   files and directories that <command>initdb</command> creates.
-   Since the server cannot be run as root, you must not run
-   <command>initdb</command> as root either.  (It will in fact refuse
-   to do so.)
+   <command>initdb</command> 명령을 실행하는 OS 사용자와, 
+   서버를 실행하는 OS 사용자는 반드시 같아야한다.  <command>initdb</command>
+   명령에 의해서 만들어지는 디렉터리와 파일들을 서버가 
+   사용하기 때문이다.  또한 서버 실행도, <command>initdb</command>
+   명령을 실행하는 것도 OS root 사용자는 할 수 없다.  (보안상
+   실행 할 수 없다고 오류 메시지를 볼 것이다.)
   </para>
 
   <para>
-   <command>initdb</command> initializes the database cluster's default
-   locale and character set encoding. The character set encoding,
-   collation order (<literal>LC_COLLATE</>) and character set classes
-   (<literal>LC_CTYPE</>, e.g. upper, lower, digit) can be set separately
-   for a database when it is created. <command>initdb</command> determines
-   those settings for the <literal>template1</literal> database, which will
-   serve as the default for all other databases.
+   <command>initdb</command> 명령은 데이터베이스 클러스터의 기본
+   인코딩도 지정한다.  이 작업에서는 문제 세트 인코딩, 
+   문자 정렬 규칙(<literal>LC_COLLATE</>), 문자 세트 종류(<literal>LC_CTYPE</>
+   , 예를 들어, 대문자, 소문자, 숫자)를 지정한다.  이 설정은 
+   <literal>template1</literal> 데이터베이스에 지정하며, 
+   이 데이터베이스를 복사해서 사용함으로 이 설정이 결국 앞으로 만들어질
+   모든 데이터베이스의 기본값이 된다.
   </para>
 
   <para>
-   To alter the default collation order or character set classes, use the
-   <option>--lc-collate</option> and <option>--lc-ctype</option> options.
-   Collation orders other than <literal>C</> or <literal>POSIX</> also have
-   a performance penalty.  For these reasons it is important to choose the
-   right locale when running <command>initdb</command>.
+   물론 사용자는 이 설정을 <option>--lc-collate</option>,
+   <option>--lc-ctype</option> 옵션으로 바꿀 수 있다.  문자 정렬 규칙이
+   <literal>C</> 또는 <literal>POSIX</>가 아닌 경우, 
+   데이터베이스 성능이 떨어질 수 있다(한국어에서는 LIKE 연산에서
+   인덱스를 사용하지 못하는 문제가 있다. - 옮긴이).   이런 이유로
+   <command>initdb</command> 명령을 사용할 때, 이 설정은 바르게 
+   해야할 필요가 있다.  
+  </para>
+
+  <note>
+    <para>
+      한국어 범용 옵션값은 <literal>--encoding=utf8 --lc-collate=C
+      --lc-ctype=ko_KR.UTF-8</literal> 이다. (ko_KR.UTF-8은 각
+      OS에서 사용할 수 있는 적당한 한국어 설정 값)
+      - 옮긴이
+    </para>
+  </note>
+
+  <para>
+   로케일 관련 설정은 서버가 실행되고 난 뒤에도 바꿀 수 있다.
+   <option>--locale</option> 옵션을 사용해서 
+   문자 세트 관련 모든 설정을 한 번에 설정할 수도 있다.  이 경우는
+   <literal>lc_*</> 모든 설정을 해당 로케일로 지정한다. 
+   (<command>SHOW ALL</> 명령으로 확인 함.)  자세한 내용은
+   <xref linkend="locale">에서 다룬다.
   </para>
 
   <para>
-   The remaining locale categories can be changed later when the server
-   is started.  You can also use <option>--locale</option> to set the
-   default for all locale categories, including collation order and
-   character set classes. All server locale values (<literal>lc_*</>) can
-   be displayed via <command>SHOW ALL</>.
-   More details can be found in <xref linkend="locale">.
-  </para>
-
-  <para>
-   To alter the default encoding, use the <option>--encoding</option>.
-   More details can be found in <xref linkend="multibyte">.
+   인코딩 설정은 <option>--encoding</option> 옵션을 사용한다.
+   이 부분은 <xref linkend="multibyte">에서 자세히 다룬다.
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
     <variablelist>
      <varlistentry>
-      <term><option>-A <replaceable class="parameter">authmethod</replaceable></option></term>
-      <term><option>--auth=<replaceable class="parameter">authmethod</replaceable></option></term>
+      <term><option>-A <replaceable class="parameter">인증방법</replaceable></option></term>
+      <term><option>--auth=<replaceable class="parameter">인증방법</replaceable></option></term>
       <listitem>
        <para>
-        This option specifies the default authentication method for local
-        users used in <filename>pg_hba.conf</> (<literal>host</literal>
-        and <literal>local</literal> lines).  <command>initdb</command> will
-        prepopulate <filename>pg_hba.conf</filename> entries using the
-        specified authentication method for non-replication as well as
-        replication connections.
+        이 옵션은 로컬 사용자(유닉스 도메인 소켓 접속이나, 
+        127.0.0.1 접속)에 대한 기본 인증 방법을 지정한다. 
+        이 작업은 <filename>pg_hba.conf</filename> 파일에서
+        <literal>host</literal> 나 <literal>local</literal>로 시작하는
+        줄에 대한 인증 방법이다.)
+        이 설정은 일반 접속과 복제용 접속 모두 해당된다.
        </para>
 
        <para>
-        Do not use <literal>trust</> unless you trust all local users on your
-        system.  <literal>trust</> is the default for ease of installation.
-       </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry>
-      <term><option>--auth-host=<replaceable class="parameter">authmethod</replaceable></option></term>
-      <listitem>
-       <para>
-        This option specifies the authentication method for local users via
-        TCP/IP connections used in <filename>pg_hba.conf</>
-        (<literal>host</literal> lines).
+        서버가 운영 되고 있는 호스트에 데이터베이스 서버 관리자 외에
+        다른 OS 사용자도 해당 호스트를 접속한다면, <literal>trust</>
+        옵션은 보안상 위험하다.  <literal>trust</> 옵션은
+        해당 서버가 운영 되고 있는 호스트로 OS 쉘 접속이 가능하다면,
+        그 모든 사용자들이 데이터베이스 서버에 접속할 수 있기 때문이다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>--auth-local=<replaceable class="parameter">authmethod</replaceable></option></term>
+      <term><option>--auth-host=<replaceable class="parameter">인증방법</replaceable></option></term>
       <listitem>
        <para>
-        This option specifies the authentication method for local users via
-        Unix-domain socket connections used in <filename>pg_hba.conf</>
-        (<literal>local</literal> lines).
+        이 옵션은 로컬 사용자가 TCP/IP 연결로 로컬 서버에 
+        접속하는 인증 방법을 지정한다.  (<filename>pg_hba.conf</> 파일에서
+        <literal>host</literal> 줄의 127.0.0.1 IP에 대한 설정이다.)
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-D <replaceable class="parameter">directory</replaceable></option></term>
-      <term><option>--pgdata=<replaceable class="parameter">directory</replaceable></option></term>
+      <term><option>--auth-local=<replaceable class="parameter">인증방법</replaceable></option></term>
       <listitem>
        <para>
-        This option specifies the directory where the database cluster
-        should be stored. This is the only information required by
-        <command>initdb</command>, but you can avoid writing it by
-        setting the <envar>PGDATA</envar> environment variable, which
-        can be convenient since the database server
-        (<command>postgres</command>) can find the database
-        directory later by the same variable.
+        이 옵션은 로컬 사용자가 유닉스 도메인 소켓 연결로 로컬 서버에
+        접속하는 인증 방법을 지정한다.  (<filename>pg_hba.conf</> 파일에서
+        <literal>local</literal> 줄에 대한 설정이다.)
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-E <replaceable class="parameter">encoding</replaceable></option></term>
-      <term><option>--encoding=<replaceable class="parameter">encoding</replaceable></option></term>
+      <term><option>-D <replaceable class="parameter">디렉터리</replaceable></option></term>
+      <term><option>--pgdata=<replaceable class="parameter">디렉터리</replaceable></option></term>
       <listitem>
        <para>
-        Selects the encoding of the template database. This will also
-        be the default encoding of any database you create later,
-        unless you override it there.  The default is derived from the locale, or
-        <literal>SQL_ASCII</literal> if that does not work. The character sets supported by
-        the <productname>PostgreSQL</productname> server are described
-        in <xref linkend="multibyte-charset-supported">.
+        이 옵션은 데이터베이스 클러스터 디렉터리를 지정한다.
+        이 옵션이 빠지면, <envar>PGDATA</envar>  환경 변수 값을 
+        사용한다.  데이터베이스 서버(<command>postgres</command>)에서도
+        이 옵션을 그대로 사용하며, 생략되면 이 환경 변수를 그대로
+        사용한다.)
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>-E <replaceable class="parameter">인코딩</replaceable></option></term>
+      <term><option>--encoding=<replaceable class="parameter">인코딩</replaceable></option></term>
+      <listitem>
+       <para>
+        템플릿 데이터베이스 인코딩을 지정한다.  이 설정은
+        향후 운영 중에 만들어지는 데이터베이스의 기본 인코딩으로 사용된다.
+        이 옵션이 빠지면, 쉘의 OS 로케일 설정을 기반으로 자동 선택하며, 
+        로케일 설정이 없으면, <literal>SQL_ASCII</literal> 인코딩을
+        사용한다.  <productname>PostgreSQL</productname> 서버에서
+        사용할 수 있는 문자 세트에 대한 설명은
+        <xref linkend="multibyte-charset-supported">에서 자세히 다루고 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -193,39 +208,42 @@ PostgreSQL documentation
       <term><option>--data-checksums</option></term>
       <listitem>
        <para>
-        Use checksums on data pages to help detect corruption by the
-        I/O system that would otherwise be silent. Enabling checksums
-        may incur a noticeable performance penalty. This option can only
-        be set during initialization, and cannot be changed later. If
-        set, checksums are calculated for all objects, in all databases.
+        데이터 페이지가 깨졌는지를 검사하는 체크섬 값을 사용한다.
+        이 옵션을 지정하면,  검사 기능이 추가 되기 때문에 
+        서버 성능은 떨어지나,  실시간 데이터 페이지 손상에 대한 
+        오류를 바로 확인할 수 있다.  이 설정은 이 <command>initdb</command>
+        명령에서 딱 한 번 지정할 수 있으며, 이미 만들어진 
+        데이터베이스 클러스터에 대해서는 이 설정을 바꿀 수 없다.  이
+        설정이 활성화되면, 모든 데이터베이스의 모든 개체에 대해서
+        체크섬 검사를 한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>--locale=<replaceable>locale</replaceable></option></term>
+      <term><option>--locale=<replaceable>로케일</replaceable></option></term>
       <listitem>
        <para>
-        Sets the default locale for the database cluster.  If this
-        option is not specified, the locale is inherited from the
-        environment that <command>initdb</command> runs in. Locale
-        support is described in <xref linkend="locale">.
+        데이터베이스 클러스터의 기본 로케일 설정.  이 옵션이 없으면, 
+        <command>initdb</command> 명령을 실행할 당시의
+        OS 로케일 설정에 따라 결정된다.  로케일에 대한 자세한 설명은
+        <xref linkend="locale">에서 다루고 있다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>--lc-collate=<replaceable>locale</replaceable></option></term>
-      <term><option>--lc-ctype=<replaceable>locale</replaceable></option></term>
-      <term><option>--lc-messages=<replaceable>locale</replaceable></option></term>
-      <term><option>--lc-monetary=<replaceable>locale</replaceable></option></term>
-      <term><option>--lc-numeric=<replaceable>locale</replaceable></option></term>
-      <term><option>--lc-time=<replaceable>locale</replaceable></option></term>
+      <term><option>--lc-collate=<replaceable>로케일</replaceable></option></term>
+      <term><option>--lc-ctype=<replaceable>로케일</replaceable></option></term>
+      <term><option>--lc-messages=<replaceable>로케일</replaceable></option></term>
+      <term><option>--lc-monetary=<replaceable>로케일</replaceable></option></term>
+      <term><option>--lc-numeric=<replaceable>로케일</replaceable></option></term>
+      <term><option>--lc-time=<replaceable>로케일</replaceable></option></term>
 
       <listitem>
        <para>
-        Like <option>--locale</option>, but only sets the locale in
-        the specified category.
+        <option>--locale</option> 옵션과 같은 일을 하는데,
+        이 옵션들은 로케일 가운데 각각 세부 설정 한다.
        </para>
       </listitem>
      </varlistentry>
@@ -234,7 +252,7 @@ PostgreSQL documentation
       <term><option>--no-locale</option></term>
       <listitem>
        <para>
-        Equivalent to <option>--locale=C</option>.
+        <option>--locale=C</option> 옵션과 같다.
        </para>
       </listitem>
      </varlistentry>
@@ -244,22 +262,23 @@ PostgreSQL documentation
       <term><option>--no-sync</option></term>
       <listitem>
        <para>
-        By default, <command>initdb</command> will wait for all files to be
-        written safely to disk.  This option causes <command>initdb</command>
-        to return without waiting, which is faster, but means that a
-        subsequent operating system crash can leave the data directory
-        corrupt.  Generally, this option is useful for testing, but should not
-        be used when creating a production installation.
+        <command>initdb</command> 명령은 기본적으로 모든 파일 쓰기 작업을
+        하면, 그 파일에 대한 디스크 동기화(sync) 작업을 한다.  
+        이 옵션은 이 sync 작업을 생략해서 명령 실행 시간을 단축한다.
+        물론 이 옵션을 사용하면, 갑작스런 서버 중지 사태가 발생하면, 
+        자료 손실이 발생할 수 있다.  충분히 검토 한 뒤 사용해야 하며,
+        가급적 운영 환경에서는 사용하지 않는다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>--pwfile=<replaceable>filename</></option></term>
+      <term><option>--pwfile=<replaceable>파일이름</></option></term>
       <listitem>
        <para>
-        Makes <command>initdb</command> read the database superuser's password
-        from a file.  The first line of the file is taken as the password.
+        <command>initdb</command> 명령에서 사용할 데이터베이스 슈퍼유저
+        비밀번호를 지정한 파일에서 읽어 사용한다.
+        그 파일 첫 줄에 비밀번호가 있으면 된다.
        </para>
       </listitem>
      </varlistentry>
@@ -269,8 +288,9 @@ PostgreSQL documentation
       <term><option>--sync-only</option></term>
       <listitem>
        <para>
-        Safely write all database files to disk and exit.  This does not
-        perform any of the normal <application>initdb</> operations.
+        모든 데이터베이스의 모든 파일에 대해서 디스크 sync 작업만
+        수행한다.  이 옵션은 <application>initdb</> 일반 작업은
+        진행하지 않는다.
        </para>
       </listitem>
      </varlistentry>
@@ -280,23 +300,26 @@ PostgreSQL documentation
       <term><option>--text-search-config=<replaceable>config</></option></term>
       <listitem>
        <para>
-        Sets the default text search configuration.
-        See <xref linkend="guc-default-text-search-config"> for further information.
+        텍스트 검색 환경 설정 기본값 지정.
+        <xref linkend="guc-default-text-search-config"> 참조.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-U <replaceable class="parameter">username</replaceable></option></term>
-      <term><option>--username=<replaceable class="parameter">username</replaceable></option></term>
+      <term><option>-U <replaceable class="parameter">사용자이름</replaceable></option></term>
+      <term><option>--username=<replaceable class="parameter">사용자이름</replaceable></option></term>
       <listitem>
        <para>
-        Selects the user name of the database superuser. This defaults
-        to the name of the effective user running
-        <command>initdb</command>. It is really not important what the
-        superuser's name is, but one might choose to keep the
-        customary name <systemitem>postgres</systemitem>, even if the operating
-        system user's name is different.
+        데이터베이스 슈퍼유저 이름을 지정한다.  이 옵션을 사용하지 않으며,
+        <command>initdb</command> 명령을 실행하는 OS 사용자 이름과 같은
+        이름을 데이터베이스 슈퍼유저 이름으로 사용한다.
+        이 슈퍼유저 이름이 무엇이든간에 크게 상관은 없지만, 
+        전통적으로 <systemitem>postgres</systemitem>를 사용하기 때문에, 
+        OS 사용자가 이와 다를 경우 이 옵션을 사용하기도 한다.
+        (이렇게 initdb 명령을 실행하는 OS 사용자 이름과, 데이터베이스
+        슈퍼유저 이름이 다르면, 서버 관리를 꽤 귀찮아진다.  initdb 명령을
+        실행할 OS 사용자를 postgres로 하는 것이 제일 편하다. - 옮긴이)
        </para>
       </listitem>
      </varlistentry>
@@ -306,22 +329,24 @@ PostgreSQL documentation
       <term><option>--pwprompt</option></term>
       <listitem>
        <para>
-        Makes <command>initdb</command> prompt for a password
-        to give the database superuser. If you don't plan on using password
-        authentication, this is not important.  Otherwise you won't be
-        able to use password authentication until you have a password
-        set up.
+        데이터베이스 슈퍼유저의 비밀번호를 <command>initdb</command>
+        명령을 실행하면 사용자가 직접 입력할 수 있도록한다.
+        인증 방법이 비밀번호 인증이 아닌 경우는 별 의미 없다.  
+        이 옵션을 지정하고 입력한 비밀번호는 서버 사용자 인증을
+        비밀번호로 했을 때부터 바르게 작동한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-X <replaceable class="parameter">directory</replaceable></option></term>
-      <term><option>--waldir=<replaceable class="parameter">directory</replaceable></option></term>
+      <term><option>-X <replaceable class="parameter">디렉터리</replaceable></option></term>
+      <term><option>--waldir=<replaceable class="parameter">디렉터리</replaceable></option></term>
       <listitem>
        <para>
-        This option specifies the directory where the write-ahead log
-        should be stored.
+        미리-쓰기 로그를 저장한 디렉터리를 지정한다.
+        (일반적으로 미리-쓰기 로그는 데이터 파일이 저장되는 파일 시스템과 
+        다른 파일 시스템에 저장하는 것이 안정적인 서버 운영에 도움이 된다.
+        - 옮긴이)
        </para>
       </listitem>
      </varlistentry>
@@ -330,7 +355,7 @@ PostgreSQL documentation
    </para>
 
    <para>
-    Other, less commonly used, options are also available:
+    기타 잘 사용되지는 않지만, 다음 옵션도 사용할 수 있다:
 
     <variablelist>
      <varlistentry>
@@ -338,6 +363,8 @@ PostgreSQL documentation
       <term><option>--debug</option></term>
       <listitem>
        <para>
+        <command>initdb</command> 작업 과정을 보다 자세하게 보여준다.
+        개발자가 문제점 추적할 때 사용하는 옵션.
         Print debugging output from the bootstrap backend and a few other
         messages of lesser interest for the general public.
         The bootstrap backend is the program <command>initdb</command>
@@ -348,9 +375,11 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-L <replaceable class="parameter">directory</replaceable></option></term>
+      <term><option>-L <replaceable class="parameter">디렉터리</replaceable></option></term>
       <listitem>
        <para>
+        <command>initdb</command> 작업에 필요한 입력 파일들이 있는
+        위치를 지정한다.  일반적으로 사용하지 않는 옵션이다.
         Specifies where <command>initdb</command> should find
         its input files to initialize the database cluster.  This is
         normally not necessary.  You will be told if you need to
@@ -364,11 +393,10 @@ PostgreSQL documentation
       <term><option>--no-clean</option></term>
       <listitem>
        <para>
-        By default, when <command>initdb</command>
-        determines that an error prevented it from completely creating the database
-        cluster, it removes any files it might have created before discovering
-        that it cannot finish the job. This option inhibits tidying-up and is
-        thus useful for debugging.
+        <command>initdb</command> 명령은 작업을 실패하면, 
+        모든 데이터베이스 클러스터 파일을 지운다.  이 옵션을 사용하면, 
+        그 지우는 작업을 생략한다.  이렇게 해서 문제점 추적할 때
+        사용한다.
        </para>
       </listitem>
      </varlistentry>
@@ -376,7 +404,7 @@ PostgreSQL documentation
    </para>
 
    <para>
-    Other options:
+    기타 옵션:
 
     <variablelist>
      <varlistentry>
@@ -384,7 +412,7 @@ PostgreSQL documentation
        <term><option>--version</></term>
        <listitem>
        <para>
-       Print the <application>initdb</application> version and exit.
+       <application>initdb</application> 버전을 보여주고 마친다.
        </para>
        </listitem>
      </varlistentry>
@@ -394,8 +422,8 @@ PostgreSQL documentation
        <term><option>--help</></term>
        <listitem>
        <para>
-       Show help about <application>initdb</application> command line
-       arguments, and exit.
+       <application>initdb</application> 명령에서 사용할 수 있는
+       명령행 옵션에 대한 도움말을 보여주고 마친다.
        </para>
        </listitem>
      </varlistentry>
@@ -406,7 +434,7 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <variablelist>
    <varlistentry>
@@ -414,8 +442,8 @@ PostgreSQL documentation
 
     <listitem>
      <para>
-      Specifies the directory where the database cluster is to be
-      stored; can be overridden using the <option>-D</option> option.
+      <option>-D</option> 옵션을 지정하지 않았을 경우에
+      사용하는 데이터베이스 클러스터 디렉터리 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -425,33 +453,33 @@ PostgreSQL documentation
 
     <listitem>
      <para>
-      Specifies the default time zone of the created database cluster.  The
-      value should be a full time zone name
-      (see <xref linkend="datatype-timezones">).
+      지역 시간대 기본값.  이 값은 지역 시간대 이름이어야
+      한다(<xref linkend="datatype-timezones"> 참조).
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
 
   <para>
-   This utility, like most other <productname>PostgreSQL</> utilities,
-   also uses the environment variables supported by <application>libpq</>
-   (see <xref linkend="libpq-envars">).
+   이 프로그램은 <application>libpq</> 라이브러리를 사용하는 
+   여러 <productname>PostgreSQL</> 프로그램들과 마찬가지로, 
+   이 라이브러리에서 사용하는 환경 변수를 그대로 사용할 수
+   있다(<xref linkend="libpq-envars"> 참조).
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   <command>initdb</command> can also be invoked via
-   <command>pg_ctl initdb</command>.
+   <command>initdb</command> 명령은
+   <command>pg_ctl initdb</command> 명령으로도 호출 할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-pg-ctl"></member>
