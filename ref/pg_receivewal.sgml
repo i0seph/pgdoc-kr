@@ -16,19 +16,20 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>pg_receivewal</refname>
-  <refpurpose>stream write-ahead logs from a <productname>PostgreSQL</productname> server</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 서버에서 흘려보내는 
+  미리-쓰기 로그를 받음</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_receivewal</command>
-   <arg rep="repeat"><replaceable>option</></arg>
+   <arg rep="repeat"><replaceable>옵션</></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1>
   <title>
-   Description
+   설명
   </title>
   <para>
    <application>pg_receivewal</application> is used to stream the write-ahead log
@@ -76,7 +77,7 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
     <variablelist>
      <varlistentry>
@@ -176,7 +177,7 @@ PostgreSQL documentation
       <term><option>--verbose</option></term>
       <listitem>
        <para>
-        Enables verbose mode.
+        작업 내역을 자세히 출력한다.
        </para>
       </listitem>
      </varlistentry>
@@ -319,7 +320,7 @@ PostgreSQL documentation
    </para>
 
    <para>
-    Other options are also available:
+    기타 사용할 수 있는 옵션:
 
     <variablelist>
      <varlistentry>
@@ -327,7 +328,7 @@ PostgreSQL documentation
        <term><option>--version</></term>
        <listitem>
        <para>
-       Print the <application>pg_receivewal</application> version and exit.
+       <application>pg_receivewal</application> 버전을 보여주고 마친다.
        </para>
        </listitem>
      </varlistentry>
@@ -337,8 +338,8 @@ PostgreSQL documentation
        <term><option>--help</></term>
        <listitem>
        <para>
-       Show help about <application>pg_receivewal</application> command line
-       arguments, and exit.
+       <application>pg_receivewal</application> 명령의 명령해 옵션에 대한
+       도움말을 보여주고 마친다.
        </para>
        </listitem>
      </varlistentry>
@@ -349,47 +350,50 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <para>
-   This utility, like most other <productname>PostgreSQL</> utilities,
-   uses the environment variables supported by <application>libpq</>
-   (see <xref linkend="libpq-envars">).
+   이 프로그램은 여느 <application>libpq</> 라이브러리를 사용하는
+   <productname>PostgreSQL</> 응용 프로그램들과 마찬가지로, 
+   같은 환경 변수를 사용할 수 있다(<xref linkend="libpq-envars"> 참조).
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   When using <application>pg_receivewal</application> instead of
-   <xref linkend="guc-archive-command"> as the main WAL backup method, it is
-   strongly recommended to use replication slots.  Otherwise, the server is
-   free to recycle or remove write-ahead log files before they are backed up,
-   because it does not have any information, either
-   from <xref linkend="guc-archive-command"> or the replication slots, about
-   how far the WAL stream has been archived.  Note, however, that a
-   replication slot will fill up the server's disk space if the receiver does
-   not keep up with fetching the WAL data.
+   <xref linkend="guc-archive-command"> 환경 설정을 이용하지 않고, 
+   <application>pg_receivewal</application> 명령을 이용해서, 
+   WAL 백업을 하고자 한다면, 이 때는 그 서버에서 복제 슬롯을 
+   사용하는 것이 좋다.  복제 슬롯을 사용하지 않으면, 상황에 따라
+   전달 받지 못하는 WAL 조각 파일을 생길 수도 있기 때문이다.
+   즉, WAL 로그를 완벽하게 특정 위치에 따로 보관하려면(아카이빙 하려면)
+   <xref linkend="guc-archive-command"> 환경 설정을 지정하거나, 
+   복제 슬롯을 이용해서 이 명령을 사용해야한다.  또한 
+   복제 슬롯을 사용하는 경우, 그 슬롯을 통해 WAL 내용을 가지 가지 않으면
+   서버의 WAL 조각 파일이 지워지지 않아 결국 WAL 조각 파일을 저장하는
+   디렉터리의 여유공간이 없는 상황까지 생길 수 있음을 반드시 알고 
+   있어야 한다.  이렇게 되면 서버는 멈춘다.
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To stream the write-ahead log from the server at
-   <literal>mydbserver</literal> and store it in the local directory
-   <filename>/usr/local/pgsql/archive</filename>:
+   <literal>mydbserver</literal> 서버에서 만드는 미리-쓰기 로그를
+   받아서 <filename>/usr/local/pgsql/archive</filename> 로컬 디렉터리에
+   저장하는 명령:
 <screen>
 <prompt>$</prompt> <userinput>pg_receivewal -h mydbserver -D /usr/local/pgsql/archive</userinput>
 </screen></para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="APP-PGBASEBACKUP"></member>

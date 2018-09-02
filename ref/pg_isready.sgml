@@ -89,7 +89,7 @@ PostgreSQL documentation
       <term><option>--quiet</option></term>
       <listitem>
        <para>
-        아무른 메시지를 보여주지 않는다.  스크립트를 만들 때 유용하게 쓰인다.
+        아무런 메시지를 보여주지 않는다.  스크립트를 만들 때 유용하게 쓰인다.
        </para>
       </listitem>
      </varlistentry>
@@ -148,8 +148,8 @@ PostgreSQL documentation
    <literal>1</literal>: 서버가 접속을 거부함(서버가 시작중인 경우가
    대표적인 경우),
    <literal>2</literal>: 서버가 응답이 없음,
-   <literal>3</literal>: 연결 시도 자체를 못한 경우(잘못된 옵션을 사용한
-   경우가 대표적이다).
+   <literal>3</literal>: 연결 시도 자체를 못한 경우(잘못된 옵션이나
+   옵션값을 사용한 경우가 대표적이다).
   </para>
  </refsect1>
 
@@ -198,7 +198,7 @@ PostgreSQL documentation
   </para>
 
   <para>
-   <productname>PostgreSQL</productname> 서버가 아예 응답이 없는 경우:
+   <productname>PostgreSQL</productname> 서버가 응답이 없는 경우:
 <screen>
 <prompt>$ </prompt><userinput>pg_isready -h someremotehost</userinput>
 <computeroutput>someremotehost:5432 - no response</computeroutput>
