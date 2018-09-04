@@ -16,15 +16,15 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>dropuser</refname>
-  <refpurpose>remove a <productname>PostgreSQL</productname> user account</refpurpose>
+  <refpurpose>지정한 <productname>PostgreSQL</productname> 사용자 계정을 없앤다</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>dropuser</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-   <arg choice="opt"><replaceable>username</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
+   <arg choice="opt"><replaceable>사용자이름</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
@@ -41,10 +41,15 @@ PostgreSQL documentation
   </para>
 
   <para>
-   <application>dropuser</application> is a wrapper around the
-   <acronym>SQL</acronym> command <xref linkend="SQL-DROPROLE">.
+   <application>dropuser</application> 명령은 내부적으로
+   해당 서버에 접속해서 <xref linkend="SQL-DROPROLE">
+   <acronym>SQL</acronym> 명령어를 실행하는 응용 프로그램이다.
    There is no effective difference between dropping users via
    this utility and via other methods for accessing the server.
+  </para>
+
+  <para>
+   그래서, 이 명령 사용 설명서를 우리말로 옮기는 작업은 더 이상 진행하지 않는다. - 옮긴이
   </para>
 
  </refsect1>

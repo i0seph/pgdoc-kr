@@ -16,13 +16,13 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname id="clusterdb">clusterdb</refname>
-  <refpurpose>cluster a <productname>PostgreSQL</productname> database</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 데이터베이스를 대상으로 클러스터 작업을 한다</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>clusterdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
    <group choice="opt"><arg choice="plain"><option>--verbose</option></arg><arg choice="plain"><option>-v</option></arg></group>
 
    <arg choice="plain" rep="repeat">
@@ -31,16 +31,16 @@ PostgreSQL documentation
          <arg choice="plain"><option>--table</option></arg>
          <arg choice="plain"><option>-t</option></arg>
        </group>
-       <replaceable>table</replaceable>
+       <replaceable>테이블</replaceable>
      </arg>
    </arg>
 
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
+   <arg choice="opt"><replaceable>디비이름</replaceable></arg>
   </cmdsynopsis>
 
   <cmdsynopsis>
    <command>clusterdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
    <group choice="opt"><arg choice="plain"><option>--verbose</option></arg><arg choice="plain"><option>-v</option></arg></group>
    <group choice="plain"><arg choice="plain"><option>--all</option></arg><arg choice="plain"><option>-a</option></arg></group>
   </cmdsynopsis>
@@ -51,25 +51,32 @@ PostgreSQL documentation
   <title>설명</title>
 
   <para>
-   <application>clusterdb</application> is a utility for reclustering tables
-   in a <productname>PostgreSQL</productname> database.  It finds tables
-   that have previously been clustered, and clusters them again on the same
-   index that was last used.  Tables that have never been clustered are not
-   affected.
+   <application>clusterdb</application> 명령은 지정한
+   <productname>PostgreSQL</productname> 데이터베이스 안에 있는
+   테이블들을 대상으로 클러스터 작업을 다시 하려고 할 때 사용된다.
+   이 명령은 먼저 해당 데이터베이스 안에 있는 이미 클러스터 된 
+   테이블들을 찾고, 마지막 클러스터 작업에 사용했던 인덱스를 
+   사용해서 다시 클러스터 작업을 한다.
+   클러스터 작업을 한 번도 하지 않은 테이블에 대해서는 관여하지 않는다.
   </para>
 
   <para>
-   <application>clusterdb</application> is a wrapper around the SQL
-   command <xref linkend="SQL-CLUSTER">.
-   There is no effective difference between clustering databases via
-   this utility and via other methods for accessing the server.
+   <application>clusterdb</application> 명령은
+   <xref linkend="SQL-CLUSTER"> SQL 명령어를 내부적으로 실행하는
+   응용 프로그램이다.
+   데이터베이스 서버에 접속해서 이 SQL 명령어를 이용해서 작업하나, 
+   이 응용 프로그램을 이용하나 작업 결과는 같다.
+  </para>
+
+  <para>
+   그래서, 이 명령 사용 설명서를 우리말로 옮기는 작업은 더 이상 진행하지 않는다. - 옮긴이
   </para>
 
  </refsect1>
 
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
     <application>clusterdb</application> accepts the following command-line arguments:
@@ -259,7 +266,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <variablelist>
    <varlistentry>
@@ -270,7 +277,7 @@ PostgreSQL documentation
 
     <listitem>
      <para>
-      Default connection parameters
+      접속 관련 기본 환경 변수들
      </para>
     </listitem>
    </varlistentry>
@@ -286,7 +293,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Diagnostics</title>
+  <title>진단</title>
 
   <para>
    In case of difficulty, see <xref linkend="SQL-CLUSTER">

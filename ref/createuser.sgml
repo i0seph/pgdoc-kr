@@ -16,24 +16,25 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>createuser</refname>
-  <refpurpose>define a new <productname>PostgreSQL</productname> user account</refpurpose>
+  <refpurpose>새 <productname>PostgreSQL</productname> 사용자 계정을 만든다</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>createuser</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-   <arg choice="opt"><replaceable>username</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
+   <arg choice="opt"><replaceable>사용자이름</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
   <para>
-   <application>createuser</application> creates a
-   new <productname>PostgreSQL</productname> user (or more precisely, a role).
+   <application>createuser</application> 명령은 
+   새 <productname>PostgreSQL</productname> 사용자 (정확한 표현으로는 롤)를
+   만들 때 사용한다.
    Only superusers and users with <literal>CREATEROLE</> privilege can create
    new users, so <application>createuser</application> must be
    invoked by someone who can connect as a superuser or a user with
@@ -48,17 +49,22 @@ PostgreSQL documentation
   </para>
 
   <para>
-   <application>createuser</application> is a wrapper around the
-   <acronym>SQL</acronym> command <xref linkend="SQL-CREATEROLE">.
+   <application>createuser</application> 명령은 내부적으로
+   <xref linkend="SQL-CREATEROLE"> <acronym>SQL</acronym> 명령어를 
+   실행하는 응용 프로그램이다.
    There is no effective difference between creating users via
    this utility and via other methods for accessing the server.
+  </para>
+
+  <para>
+   그래서, 이 명령 사용 설명서를 우리말로 옮기는 작업은 더 이상 진행하지 않는다. - 옮긴이
   </para>
 
  </refsect1>
 
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
   <para>
    <application>createuser</> accepts the following command-line arguments:
@@ -386,7 +392,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <variablelist>
    <varlistentry>
@@ -412,7 +418,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Diagnostics</title>
+  <title>진단</title>
 
   <para>
    In case of difficulty, see <xref linkend="SQL-CREATEROLE">
@@ -428,7 +434,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
    <para>
     To create a user <literal>joe</literal> on the default database
@@ -476,7 +482,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-dropuser"></member>
