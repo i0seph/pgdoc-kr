@@ -75,7 +75,7 @@ ALTER USER MAPPING FOR { <replaceable class="parameter">사용자이름</replace
       덮어쓴다.  <literal>ADD</>, <literal>SET</>, <literal>DROP</>
       으로 해당 옵션 값 처리 방법을 지정한다. 이 처리 방법을 지정하지
       않으면, <literal>ADD</>로 간주한다.  옵션 이름은 유일해야하며, 
-      옵션 유효성 검사는 외부 서버 자료 싸개에서 맞는다.
+      옵션 유효성 검사는 외부 서버 자료 싸개에서 맡는다.
      </para>
     </listitem>
    </varlistentry>
