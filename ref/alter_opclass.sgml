@@ -16,87 +16,85 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER OPERATOR CLASS</refname>
-  <refpurpose>change the definition of an operator class</refpurpose>
+  <refpurpose>연산자 클래스 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER OPERATOR CLASS <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable>
-    RENAME TO <replaceable>new_name</replaceable>
+ALTER OPERATOR CLASS <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable>
+    RENAME TO <replaceable>새이름</replaceable>
 
-ALTER OPERATOR CLASS <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable>
-    OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER OPERATOR CLASS <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable>
+    OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 
-ALTER OPERATOR CLASS <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable>
-    SET SCHEMA <replaceable>new_schema</replaceable>
+ALTER OPERATOR CLASS <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable>
+    SET SCHEMA <replaceable>새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER OPERATOR CLASS</command> changes the definition of
-   an operator class.
+   <command>ALTER OPERATOR CLASS</command> 명령은 해당 연산자 클래스 속성을 
+   바꾸는 일을 한다.
   </para>
 
   <para>
-   You must own the operator class to use <command>ALTER OPERATOR CLASS</>.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the operator class's schema.  (These restrictions enforce that altering the
-   owner doesn't do anything you couldn't do by dropping and recreating the
-   operator class.  However, a superuser can alter ownership of any operator
-   class anyway.)
+   <command>ALTER OPERATOR CLASS</> 명령은 해당 연산자 클래스 소유주가
+   사용할 수 있다.  소유주를 바꿀 때는 명령을 실행하는 사용자가 
+   새 소유주 소속이어야 하며, 새 소유주는 해당 스키마에 대해서
+   <literal>CREATE</literal> 권한이 있어야 한다.  (새 소유주가 
+   해당 연산자 클래스를 지우거나, 새로 만들 수 있어야 하기 때문이다.
+   반면, 슈퍼유저는 이런 제약 사항이 없다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing operator
-      class.
+      작업 대상 연산자 클래스 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">index_method</replaceable></term>
+    <term><replaceable class="parameter">색인방법</replaceable></term>
     <listitem>
      <para>
-      The name of the index method this operator class is for.
+      해당 연산자 클래스용 색인 방법.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the operator class.
+      바뀔 새 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the operator class.
+      바뀔 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the operator class.
+      바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -104,16 +102,15 @@ ALTER OPERATOR CLASS <replaceable>name</replaceable> USING <replaceable class="p
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER OPERATOR CLASS</command> statement in
-   the SQL standard.
+   <command>ALTER OPERATOR CLASS</command> 구문은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createopclass"></member>
