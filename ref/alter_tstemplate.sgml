@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER TEXT SEARCH TEMPLATE</refname>
-  <refpurpose>글 찾을 때 쓰는 틀 속성 바꾸기</refpurpose>
+  <refpurpose>글 찾기 틀 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

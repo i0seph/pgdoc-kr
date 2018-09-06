@@ -16,109 +16,107 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER TEXT SEARCH DICTIONARY</refname>
-  <refpurpose>change the definition of a text search dictionary</refpurpose>
+  <refpurpose>글 찾기 사전 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER TEXT SEARCH DICTIONARY <replaceable>name</replaceable> (
-    <replaceable class="parameter">option</replaceable> [ = <replaceable class="parameter">value</replaceable> ] [, ... ]
+ALTER TEXT SEARCH DICTIONARY <replaceable>이름</replaceable> (
+    <replaceable class="parameter">옵션</replaceable> [ = <replaceable class="parameter">값</replaceable> ] [, ... ]
 )
-ALTER TEXT SEARCH DICTIONARY <replaceable>name</replaceable> RENAME TO <replaceable>new_name</replaceable>
-ALTER TEXT SEARCH DICTIONARY <replaceable>name</replaceable> OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER TEXT SEARCH DICTIONARY <replaceable>name</replaceable> SET SCHEMA <replaceable>new_schema</replaceable>
+ALTER TEXT SEARCH DICTIONARY <replaceable>이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER TEXT SEARCH DICTIONARY <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER TEXT SEARCH DICTIONARY <replaceable>이름</replaceable> SET SCHEMA <replaceable>새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER TEXT SEARCH DICTIONARY</command> changes the definition of
-   a text search dictionary.  You can change the dictionary's
-   template-specific options, or change the dictionary's name or owner.
+   <command>ALTER TEXT SEARCH DICTIONARY</command> 명령은 
+   글 찾기 사전의 정의를 바꾼다.
+   사전 속성이나, 사전 이름이나, 그 소유주를 바꾼다.
   </para>
 
   <para>
-   You must be the owner of the dictionary to use
-   <command>ALTER TEXT SEARCH DICTIONARY</>.
+   <command>ALTER TEXT SEARCH DICTIONARY</> 명령은 해당 사전의 소유주만
+   사용할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing text search
-      dictionary.
+      해당 글 찾기 사전 이름(스키마 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">option</replaceable></term>
+    <term><replaceable class="parameter">옵션</replaceable></term>
     <listitem>
      <para>
-      The name of a template-specific option to be set for this dictionary.
+      해당 사전의 속성 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">value</replaceable></term>
+    <term><replaceable class="parameter">값</replaceable></term>
     <listitem>
      <para>
-      The new value to use for a template-specific option.
-      If the equal sign and value are omitted, then any previous
-      setting for the option is removed from the dictionary,
-      allowing the default to be used.
+      해당 사전의 속성 값. = 문자와 이 값을 지정하지 않고, 
+      옵션(사전 속성 이름)만 사용하면, 그 속성에 대한 
+      기존 설정 값을 없애고, 초기값으로 지정한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the text search dictionary.
+      바뀔 새 사전 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the text search dictionary.
+      바뀔 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the text search dictionary.
+      바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
  </variablelist>
 
   <para>
-   Template-specific options can appear in any order.
+   옵션 값 바꾸는 작업은 그 옵션의 순서는 상관 없다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   The following example command changes the stopword list
-   for a Snowball-based dictionary.  Other parameters remain unchanged.
+   다음은 스노우볼 기반 사전용 멈춤단어(stopword) 목록을 바꾸는 예제다.
+   그 나머지 설정들은 바뀌지 않는다.
   </para>
 
 <programlisting>
@@ -126,8 +124,8 @@ ALTER TEXT SEARCH DICTIONARY my_dict ( StopWords = newrussian );
 </programlisting>
 
   <para>
-   The following example command changes the language option to <literal>dutch</>,
-   and removes the stopword option entirely.
+   다음은 언어는 독일어 <literal>dutch</>로, 멈춤단어 목록은 사용하지 
+   않도록 바꾸는 명령:
   </para>
 
 <programlisting>
@@ -135,13 +133,15 @@ ALTER TEXT SEARCH DICTIONARY my_dict ( language = dutch, StopWords );
 </programlisting>
 
   <para>
-   The following example command <quote>updates</> the dictionary's
-   definition without actually changing anything.
+   다음은 아무런 속성 변경 없이 단지 해당 사전의 정의를
+   <quote>새로고치는</> 예제:
 
 <programlisting>
 ALTER TEXT SEARCH DICTIONARY my_dict ( dummy );
 </programlisting>
 
+   이 경우는 사전 환경 설정 파일이 변경 되어 그 바뀐 점을 다시 
+   반영할 때 사용하는 기법이다.
    (The reason this works is that the option removal code doesn't complain
    if there is no such option.)  This trick is useful when changing
    configuration files for the dictionary: the <command>ALTER</> will
@@ -151,16 +151,16 @@ ALTER TEXT SEARCH DICTIONARY my_dict ( dummy );
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER TEXT SEARCH DICTIONARY</command> statement in
-   the SQL standard.
+   <command>ALTER TEXT SEARCH DICTIONARY</command> 구문은 표준 SQL 구문이
+   아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createtsdictionary"></member>

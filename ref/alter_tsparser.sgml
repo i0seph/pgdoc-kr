@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER TEXT SEARCH PARSER</refname>
-  <refpurpose>글 찾기 구문분석기 등록 정보 바꾸기</refpurpose>
+  <refpurpose>글 찾기 구문분석기 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
