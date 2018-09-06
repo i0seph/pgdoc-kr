@@ -41,7 +41,7 @@ ALTER GROUP <replaceable class="PARAMETER">그룹이름</replaceable> RENAME TO 
    <command>ALTER GROUP</command> 명령은 사용자 그룹 속성을 바꾼다.
    이 명령은 더 이상 사용하지 않지만, 하위 호환성 때문에, 아직 지원한다.
    그룹(과 사용자) 개념은 롤 개념으로 확장 되었기 때문에 이젠 
-   롤 속성 바꾸기(ALTER ROLE)로 작업하기를 권한다.
+   적당한 다른 명령을 사용하길 권한다.(예: GRANT/REVOKE, ALTER ROLE)
   </para>
 
   <para>
