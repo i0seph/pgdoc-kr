@@ -16,119 +16,116 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER AGGREGATE</refname>
-  <refpurpose>change the definition of an aggregate function</refpurpose>
+  <refpurpose>집계 함수 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER AGGREGATE <replaceable>name</replaceable> ( <replaceable>aggregate_signature</replaceable> ) RENAME TO <replaceable>new_name</replaceable>
-ALTER AGGREGATE <replaceable>name</replaceable> ( <replaceable>aggregate_signature</replaceable> )
-                OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER AGGREGATE <replaceable>name</replaceable> ( <replaceable>aggregate_signature</replaceable> ) SET SCHEMA <replaceable>new_schema</replaceable>
+ALTER AGGREGATE <replaceable>이름</replaceable> ( <replaceable>집계함수_식별구문</replaceable> ) RENAME TO <replaceable>새이름</replaceable>
+ALTER AGGREGATE <replaceable>이름</replaceable> ( <replaceable>집계함수_식별구문</replaceable> )
+                OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER AGGREGATE <replaceable>이름</replaceable> ( <replaceable>집계함수_식별구문</replaceable> ) SET SCHEMA <replaceable>새스키마</replaceable>
 
-<phrase>where <replaceable>aggregate_signature</replaceable> is:</phrase>
+<phrase><replaceable>집계함수_식별구문</replaceable> 자리에는:</phrase>
 
 * |
-[ <replaceable>argmode</replaceable> ] [ <replaceable>argname</replaceable> ] <replaceable>argtype</replaceable> [ , ... ] |
-[ [ <replaceable>argmode</replaceable> ] [ <replaceable>argname</replaceable> ] <replaceable>argtype</replaceable> [ , ... ] ] ORDER BY [ <replaceable>argmode</replaceable> ] [ <replaceable>argname</replaceable> ] <replaceable>argtype</replaceable> [ , ... ]
+[ <replaceable>인자모드</replaceable> ] [ <replaceable>인자이름</replaceable> ] <replaceable>인자자료형</replaceable> [ , ... ] |
+[ [ <replaceable>인자모드</replaceable> ] [ <replaceable>인자이름</replaceable> ] <replaceable>인자자료형</replaceable> [ , ... ] ] ORDER BY [ <replaceable>인자모드</replaceable> ] [ <replaceable>인자이름</replaceable> ] <replaceable>인자자료형</replaceable> [ , ... ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER AGGREGATE</command> changes the definition of an
-   aggregate function.
+   <command>ALTER AGGREGATE</command> 명령은 집계 함수 정의를 바꾼다.
   </para>
 
   <para>
-   You must own the aggregate function to use <command>ALTER AGGREGATE</>.
-   To change the schema of an aggregate function, you must also have
-   <literal>CREATE</literal> privilege on the new schema.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the aggregate function's schema.  (These restrictions enforce that altering
-   the owner doesn't do anything you couldn't do by dropping and recreating
-   the aggregate function.  However, a superuser can alter ownership of any
-   aggregate function anyway.)
+   <command>ALTER AGGREGATE</> 명령은 해당 집계 함수 소유주만 실행할 수 있다.
+   해당 스키마를 바꾼다면, 명령을 실행하는 사용자가 새 스키마에 대해
+   <literal>CREATE</literal> 권한이 있어야 한다.
+   소유주를 바꾼다면, 명령을 실행하는 사용자는 새 소유주 소속 구성원이어야
+   하며, 새 소유주는 이 함수의 스키마에 대해서 <literal>CREATE</literal>
+   권한이 있어야한다.  (새 소유주가 해당 함수를 지우거나, 새로 만들 수 
+   있어야 하기 때문이다.  슈퍼유저는 이런 제약 조건 없이 소유주를 바꿀 수
+   있다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing aggregate function.
+      작업 대상 집계 함수 이름(스키마 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argmode</replaceable></term>
+    <term><replaceable class="parameter">인자모드</replaceable></term>
 
     <listitem>
      <para>
-      The mode of an argument: <literal>IN</> or <literal>VARIADIC</>.
-      If omitted, the default is <literal>IN</>.
+      함수 인자의 종류를 지정한다: <literal>IN</> 또는 <literal>VARIADIC</>.
+      안 쓰면 기본값인 <literal>IN</>이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argname</replaceable></term>
+    <term><replaceable class="parameter">인자이름</replaceable></term>
 
     <listitem>
      <para>
-      The name of an argument.
-      Note that <command>ALTER AGGREGATE</command> does not actually pay
-      any attention to argument names, since only the argument data
-      types are needed to determine the aggregate function's identity.
+      인자 이름.
+      <command>ALTER AGGREGATE</command> 명령에서는
+      이 인자 이름에 상관 없이 그 인자 자료형만 사용해서, 
+      해당 집계 함수를 찾는다는 것을 알고 있으면 된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argtype</replaceable></term>
+    <term><replaceable class="parameter">인자자료형</replaceable></term>
     <listitem>
      <para>
-      An input data type on which the aggregate function operates.
-      To reference a zero-argument aggregate function, write <literal>*</>
-      in place of the list of argument specifications.
-      To reference an ordered-set aggregate function, write
-      <literal>ORDER BY</> between the direct and aggregated argument
-      specifications.
+      해당 집계 함수의 입력 인자 자료형 이름.
+      아무런 입력 자료형을 사용하지 않는 집계 함수인 경우는
+      이 자리에, <literal>*</> 문자를 지정한다.
+      정렬된 집합 집계 함수인 경우는 <literal>ORDER BY</> 구문을 
+      포함 해서 해당 함수를 지정한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the aggregate function.
+      해당 집계 함수의 새 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the aggregate function.
+      해당 집계 함수의 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the aggregate function.
+      해당 집계 함수의 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -136,63 +133,62 @@ ALTER AGGREGATE <replaceable>name</replaceable> ( <replaceable>aggregate_signatu
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
    <para>
-    The recommended syntax for referencing an ordered-set aggregate
-    is to write <literal>ORDER BY</> between the direct and aggregated
-    argument specifications, in the same style as in
-    <xref linkend="sql-createaggregate">.  However, it will also work to
-    omit <literal>ORDER BY</> and just run the direct and aggregated
-    argument specifications into a single list.  In this abbreviated form,
-    if <literal>VARIADIC "any"</> was used in both the direct and
-    aggregated argument lists, write <literal>VARIADIC "any"</> only once.
+    정렬된 집합 집계 함수를 지정할 때는, 
+    그 함수를 만들 때 정의한 (<xref linkend="sql-createaggregate"> 참조)
+    <literal>ORDER BY</> 구문 그대로 사용하기를 권한다.
+    한편, <literal>ORDER BY</> 구문을 생략하고, 
+    입력 자료형과 집계용 인자 정의를 같은 인자 목록으로 해서 실행할 수도 있다.
+    간단한 양식으로, <literal>VARIADIC "any"</> 구문이, 
+    입력 자료형과 집계용 인자 목록에서 둘다 쓰인다면, 
+    <literal>VARIADIC "any"</> 내용은 한 번 쓰면 된다.
    </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To rename the aggregate function <literal>myavg</literal> for type
-   <type>integer</type> to <literal>my_average</literal>:
+   <type>integer</type> 자료형 대상  <literal>myavg</literal>
+   집계 함수 이름을 <literal>my_average</literal>로 바꾸는 명령:
 <programlisting>
 ALTER AGGREGATE myavg(integer) RENAME TO my_average;
 </programlisting>
   </para>
 
   <para>
-   To change the owner of the aggregate function <literal>myavg</literal> for type
-   <type>integer</type> to <literal>joe</literal>:
+   <type>integer</type> 자료형 대상  <literal>myavg</literal>
+   집계 함수의 소유주를 <literal>joe</literal>로 바꾸는 명령:
 <programlisting>
 ALTER AGGREGATE myavg(integer) OWNER TO joe;
 </programlisting>
   </para>
 
   <para>
-   To move the ordered-set aggregate <literal>mypercentile</literal> with
-   direct argument of type <type>float8</type> and aggregated argument
-   of type <type>integer</type> into schema <literal>myschema</literal>:
+   <type>float8</type> 자료형 대상, <type>integer</type> 자료형을
+   집계용 인자로 하는 <literal>mypercentile</literal> 정렬된 집합 
+   집계 함수의 스키마를  <literal>myschema</literal>로 바꾸는 명령:
 <programlisting>
 ALTER AGGREGATE mypercentile(float8 ORDER BY integer) SET SCHEMA myschema;
 </programlisting>
-   This will work too:
+   위 구문과 아래 구문은 같은 일을 한다:
 <programlisting>
 ALTER AGGREGATE mypercentile(float8, integer) SET SCHEMA myschema;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER AGGREGATE</command> statement in the SQL
-   standard.
+   <command>ALTER AGGREGATE</command> 구문은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createaggregate"></member>
