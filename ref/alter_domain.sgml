@@ -17,7 +17,7 @@ PostgreSQL documentation
  <refnamediv>
   <refname>ALTER DOMAIN</refname>
   <refpurpose>
-   change the definition of a domain
+   도메인 정의 바꾸기
   </refpurpose>
  </refnamediv>
 
