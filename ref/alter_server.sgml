@@ -16,88 +16,85 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER SERVER</refname>
-  <refpurpose>change the definition of a foreign server</refpurpose>
+  <refpurpose>외부 서버 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER SERVER <replaceable class="parameter">name</replaceable> [ VERSION '<replaceable class="parameter">new_version</replaceable>' ]
-    [ OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">option</replaceable> ['<replaceable class="PARAMETER">value</replaceable>'] [, ... ] ) ]
-ALTER SERVER <replaceable class="PARAMETER">name</replaceable> OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER SERVER <replaceable class="PARAMETER">name</replaceable> RENAME TO <replaceable>new_name</replaceable>
+ALTER SERVER <replaceable class="parameter">이름</replaceable> [ VERSION '<replaceable class="parameter">새버전</replaceable>' ]
+    [ OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">옵션</replaceable> ['<replaceable class="PARAMETER">값</replaceable>'] [, ... ] ) ]
+ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER SERVER</command> changes the definition of a foreign
-   server.  The first form changes the server version string or the
-   generic options of the server (at least one clause is required).
-   The second form changes the owner of the server.
+   <command>ALTER SERVER</command> 명령은 외부 서버 정의를 바꾼다.
+   첫번째 구문은 서버 버전을 바꾸거나, 해당 버전을 지정하고, 
+   적어도 하나 이상의 서버 옵션 값을 바꾼다.
+   두번째 구문은 해당 서버 소유주를 바꾼다.
   </para>
 
   <para>
-   To alter the server you must be the owner of the server.
-   Additionally to alter the owner, you must own the server and also
-   be a direct or indirect member of the new owning role, and you must
-   have <literal>USAGE</> privilege on the server's foreign-data
-   wrapper.  (Note that superusers satisfy all these criteria
-   automatically.)
+   이 작업은 해당 서버의 소유주가 할 수 있다.  덧붙여, 소유주를 바꿀 때에는
+   현재 소유주가 새 소유주 소속이어야 하고, 새 소유주는
+   해당 외부 서버 자료 싸개를 쓰기 위해 <literal>USAGE</> 권한이
+   있어야 한다.  (슈퍼유저가 작업할 경우는 자동으로 이런 권한 
+   처리는 한다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing server.
+      작업 대상 외부 서버 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_version</replaceable></term>
+    <term><replaceable class="parameter">새버전</replaceable></term>
     <listitem>
      <para>
-      New server version.
+      서버 새 버전.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">option</replaceable> ['<replaceable class="PARAMETER">value</replaceable>'] [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">옵션</replaceable> ['<replaceable class="PARAMETER">값</replaceable>'] [, ... ] )</literal></term>
     <listitem>
      <para>
-      Change options for the
-      server.  <literal>ADD</>, <literal>SET</>, and <literal>DROP</>
-      specify the action to be performed.  <literal>ADD</> is assumed
-      if no operation is explicitly specified.  Option names must be
-      unique; names and values are also validated using the server's
-      foreign-data wrapper library.
+      서버 옵션 바꾸기.  <literal>ADD</>, <literal>SET</>, <literal>DROP</>
+      은 해당 작업 형태이며, 생략하면, <literal>ADD</>로 간주한다.  
+      옵션 이름은 고유해야하며, 이 옵션 이름과 값에 대한 
+      유효성 검사는 외부 서버 자료 싸개에서 맡는다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">new_owner</replaceable></term>
+    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
     <listitem>
      <para>
-      The user name of the new owner of the foreign server.
+      해당 외부 서버의 소유주가 새 사용자 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name for the foreign server.
+      해당 외부 서버 새 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -105,35 +102,34 @@ ALTER SERVER <replaceable class="PARAMETER">name</replaceable> RENAME TO <replac
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Alter server <literal>foo</>, add connection options:
+   <literal>foo</> 외부 서버의 접속 정보 바꾸기:
 <programlisting>
 ALTER SERVER foo OPTIONS (host 'foo', dbname 'foodb');
 </programlisting>
   </para>
 
   <para>
-   Alter server <literal>foo</>, change version,
-   change <literal>host</> option:
+   <literal>foo</> 외부 서버의 버전과 <literal>host</> 옵션 값 바꾸기:
 <programlisting>
 ALTER SERVER foo VERSION '8.4' OPTIONS (SET host 'baz');
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>ALTER SERVER</command> conforms to ISO/IEC 9075-9 (SQL/MED).
-   The <literal>OWNER TO</literal> and <literal>RENAME</literal> forms are
-   PostgreSQL extensions.
+   <command>ALTER SERVER</command> 구문은 ISO/IEC 9075-9 (SQL/MED) 규약을
+   따른다.  <literal>OWNER TO</literal>, <literal>RENAME</literal> 구문은
+   PostgreSQL 확장 구문이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createserver"></member>

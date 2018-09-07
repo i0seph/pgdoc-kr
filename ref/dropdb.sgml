@@ -16,15 +16,15 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>dropdb</refname>
-  <refpurpose>remove a <productname>PostgreSQL</productname> database</refpurpose>
+  <refpurpose>지정한 <productname>PostgreSQL</productname> 데이터베이스를 지운다</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>dropdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-   <arg choice="plain"><replaceable>dbname</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
+   <arg choice="plain"><replaceable>디비이름</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
@@ -33,17 +33,23 @@ PostgreSQL documentation
   <title>설명</title>
 
   <para>
-   <application>dropdb</application> destroys an existing
-   <productname>PostgreSQL</productname> database.
+   <application>dropdb</application> 명령은 
+   해당 <productname>PostgreSQL</productname> 서버로 접속해서
+   지정한 데이터베이스를 없애는 일을 한다.
    The user who executes this command must be a database
    superuser or the owner of the database.
   </para>
 
   <para>
-   <application>dropdb</application> is a wrapper around the
-   <acronym>SQL</acronym> command <xref linkend="SQL-DROPDATABASE">.
+   <application>dropdb</application> 명령은 내부적으로
+   <xref linkend="SQL-DROPDATABASE"> <acronym>SQL</acronym> 명령을
+   수행하는 응용 프로그램이다.
    There is no effective difference between dropping databases via
    this utility and via other methods for accessing the server.
+  </para>
+
+  <para>
+   그래서, 이 명령 사용 설명서를 우리말로 옮기는 작업은 더 이상 진행하지 않는다. - 옮긴이
   </para>
 
  </refsect1>
@@ -240,7 +246,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Diagnostics</title>
+  <title>진단</title>
 
   <para>
    In case of difficulty, see <xref linkend="SQL-DROPDATABASE">

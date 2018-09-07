@@ -17,78 +17,78 @@ PostgreSQL documentation
  <refnamediv>
   <refname>ALTER STATISTICS</refname>
   <refpurpose>
-   change the definition of an extended statistics object
+   확장 통계 정보 개체 정의 바꾸기
   </refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER STATISTICS <replaceable class="parameter">name</replaceable> OWNER TO { <replaceable class="PARAMETER">new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER STATISTICS <replaceable class="parameter">name</replaceable> RENAME TO <replaceable class="parameter">new_name</replaceable>
-ALTER STATISTICS <replaceable class="parameter">name</replaceable> SET SCHEMA <replaceable class="parameter">new_schema</replaceable>
+ALTER STATISTICS <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER STATISTICS <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
+ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER STATISTICS</command> changes the parameters of an existing
-   extended statistics object.  Any parameters not specifically set in the
-   <command>ALTER STATISTICS</command> command retain their prior settings.
+   <command>ALTER STATISTICS</command> 명령은 사용자 정의 확장 통계 정보 
+   개체의 등록 정보를 바꾸는 일을 한다.
+   <command>ALTER STATISTICS</command> 명령으로 바꿀 수 없는 속성들은
+   그대로 유지된다.
   </para>
 
   <para>
-   You must own the statistics object to use <command>ALTER STATISTICS</>.
-   To change a statistics object's schema, you must also
-   have <literal>CREATE</> privilege on the new schema.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the statistics object's schema.  (These restrictions enforce that altering
-   the owner doesn't do anything you couldn't do by dropping and recreating
-   the statistics object.  However, a superuser can alter ownership of any
-   statistics object anyway.)
+   <command>ALTER STATISTICS</> 명령은 해당 통계정보 개체의 소유주가
+   사용할 수 있다.  스키마가 바뀔 경우는 새 스키마에 대해서
+   <literal>CREATE</> 권한이 있어야 한다.
+   새 소유주를 지정하는 경우, 기존 소유주가 새 소유주의 소속이어야 하며,
+   새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이 
+   있어야한다.  (새 소유주가
+   해당 통계정보 개체를 지우거나, 새로 만들 수 있어야 하기 때문이다.
+   반면, 슈퍼유저는 이런 제약 사항이 없다.)
+
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <para>
     <variablelist>
      <varlistentry>
-      <term><replaceable class="parameter">name</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
-        The name (optionally schema-qualified) of the statistics object to be
-        altered.
+        작업 대상 통계정보 개체 이름(스키마 이름 포함).
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_owner</replaceable></term>
+      <term><replaceable class="PARAMETER">새소유주</replaceable></term>
       <listitem>
        <para>
-        The user name of the new owner of the statistics object.
+        해당 통계정보 개체의 새 소유주 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">new_name</replaceable></term>
+      <term><replaceable class="parameter">새이름</replaceable></term>
       <listitem>
        <para>
-        The new name for the statistics object.
+        해당 통계정보 개체의 바뀔 새 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">new_schema</replaceable></term>
+      <term><replaceable class="parameter">새스키마</replaceable></term>
       <listitem>
        <para>
-        The new schema for the statistics object.
+        통계정보 개체의 새 스키마 이름.
        </para>
       </listitem>
      </varlistentry>
@@ -98,15 +98,15 @@ ALTER STATISTICS <replaceable class="parameter">name</replaceable> SET SCHEMA <r
   </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER STATISTICS</command> command in the SQL standard.
+   <command>ALTER STATISTICS</command> 구문은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createstatistics"></member>

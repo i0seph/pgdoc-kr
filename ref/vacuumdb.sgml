@@ -16,14 +16,14 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname id="vacuumdb">vacuumdb</refname>
-  <refpurpose>garbage-collect and analyze a <productname>PostgreSQL</productname> database</refpurpose>
+  <refpurpose>지정한 <productname>PostgreSQL</productname> 데이터베이스를 청소하고 통계 정보를 갱신한다.</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>vacuumdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
 
    <arg choice="plain" rep="repeat">
     <arg choice="opt">
@@ -31,18 +31,18 @@ PostgreSQL documentation
       <arg choice="plain"><option>--table</option></arg>
       <arg choice="plain"><option>-t</option></arg>
      </group>
-     <replaceable>table</replaceable>
-     <arg choice="opt">( <replaceable class="parameter">column</replaceable> [,...] )</arg>
+     <replaceable>테이블</replaceable>
+     <arg choice="opt">( <replaceable class="parameter">칼럼</replaceable> [,...] )</arg>
     </arg>
    </arg>
 
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
+   <arg choice="opt"><replaceable>디비이름</replaceable></arg>
   </cmdsynopsis>
 
   <cmdsynopsis>
    <command>vacuumdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
    <group choice="plain">
     <arg choice="plain"><option>--all</option></arg>
     <arg choice="plain"><option>-a</option></arg>
@@ -51,28 +51,32 @@ PostgreSQL documentation
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <application>vacuumdb</application> is a utility for cleaning a
-   <productname>PostgreSQL</productname> database.
-   <application>vacuumdb</application> will also generate internal statistics
-   used by the <productname>PostgreSQL</productname> query optimizer.
+   <application>vacuumdb</application> 명령은 지정한
+   <productname>PostgreSQL</productname> 데이터베이스를 청소하고, 
+   아울러 쿼리 최적화에서 쓰일 내부 통계 정보를 만든다.
   </para>
 
   <para>
-   <application>vacuumdb</application> is a wrapper around the SQL
-   command <xref linkend="SQL-VACUUM">.
+   <application>vacuumdb</application> 명령은 내부적으로
+   서버에 접속해서 <xref linkend="SQL-VACUUM"> SQL 명령을 
+   실행하는 응용 프로그램이다.
    There is no effective difference between vacuuming and analyzing
    databases via this utility and via other methods for accessing the
    server.
+  </para>
+
+  <para>
+   그래서, 이 명령 사용 설명서를 우리말로 옮기는 작업은 더 이상 진행하지 않는다. - 옮긴이
   </para>
 
  </refsect1>
 
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
     <application>vacuumdb</application> accepts the following command-line arguments:
@@ -352,7 +356,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <variablelist>
    <varlistentry>
@@ -379,7 +383,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Diagnostics</title>
+  <title>진단</title>
 
   <para>
    In case of difficulty, see <xref linkend="SQL-VACUUM">
@@ -395,7 +399,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
    <application>vacuumdb</application> might need to connect several
@@ -407,7 +411,7 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
    <para>
     To clean the database <literal>test</literal>:
@@ -436,7 +440,7 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-vacuum"></member>

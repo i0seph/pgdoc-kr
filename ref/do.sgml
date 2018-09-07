@@ -9,7 +9,7 @@ PostgreSQL documentation
  </indexterm>
 
  <indexterm zone="sql-do">
-  <primary>anonymous code blocks</primary>
+  <primary>임의 코드 블럭</primary>
  </indexterm>
 
  <refmeta>
@@ -20,12 +20,12 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>DO</refname>
-  <refpurpose>execute an anonymous code block</refpurpose>
+  <refpurpose>임의 코드 블럭을 실행</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-DO [ LANGUAGE <replaceable class="PARAMETER">lang_name</replaceable> ] <replaceable class="PARAMETER">code</replaceable>
+DO [ LANGUAGE <replaceable class="PARAMETER">언어이름</replaceable> ] <replaceable class="PARAMETER">코드</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -33,19 +33,19 @@ DO [ LANGUAGE <replaceable class="PARAMETER">lang_name</replaceable> ] <replacea
   <title>설명</title>
 
   <para>
-   <command>DO</command> executes an anonymous code block, or in other
-   words a transient anonymous function in a procedural language.
+   <command>DO</command> 명령은 임의 코드 블럭을 실행하는 명령이며, 여기서 
+   사용하는 코드란 내장 프로시져 언어로 구성된 함수들을 사용하는 
+   프로그램을 코드다.
   </para>
 
   <para>
-   The code block is treated as though it were the body of a function
-   with no parameters, returning <type>void</>.  It is parsed and
-   executed a single time.
+   여기서는 사용자 정의 함수를 만드는 방법과 비슷하지만, 입력 매개 변수도, 
+   출력 자료형도 없는 형태이다.  여기서 쓰이는 코드는 한 번만 쓰인다.
   </para>
 
   <para>
-   The optional <literal>LANGUAGE</> clause can be written either
-   before or after the code block.
+   선택적으로 코드 블럭에 쓰이는 코드들이 어떤 프로시져 언어인지를 지정하는
+   <literal>LANGUAGE</> 옵션을 사용할 수 있다.
   </para>
  </refsect1>
 
@@ -54,22 +54,23 @@ DO [ LANGUAGE <replaceable class="PARAMETER">lang_name</replaceable> ] <replacea
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="PARAMETER">code</replaceable></term>
+    <term><replaceable class="PARAMETER">코드</replaceable></term>
     <listitem>
      <para>
-      The procedural language code to be executed.  This must be specified
-      as a string literal, just as in <command>CREATE FUNCTION</>.
-      Use of a dollar-quoted literal is recommended.
+      실행할 절차 언어 코드들.  이 값은 문자열이다.  <command>CREATE FUNCTION</>
+      명령에서 코드를 정의할 때와 같이 달러 두 개를 사용하는 인용 기법을 
+      사용할 수 있다.  코드 내 인용 부호 처리를 쉽게 하기 위해서,
+      이 인용 부호 사용을 권장한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">lang_name</replaceable></term>
+    <term><replaceable class="PARAMETER">언어이름</replaceable></term>
     <listitem>
      <para>
-      The name of the procedural language the code is written in.
-      If omitted, the default is <literal>plpgsql</>.
+      코드 블럭에서 사용하는 코드가 어떤 프로시져 언어로 해석할지를 
+      지정한다.  기본값은 <literal>plpgsql</>이다.
      </para>
     </listitem>
    </varlistentry>
@@ -80,24 +81,25 @@ DO [ LANGUAGE <replaceable class="PARAMETER">lang_name</replaceable> ] <replacea
   <title>참고</title>
 
   <para>
-   The procedural language to be used must already have been installed
-   into the current database by means of <command>CREATE LANGUAGE</>.
-   <literal>plpgsql</> is installed by default, but other languages are not.
+   여기서 사용하는 프로시져 언어는 먼저 <command>CREATE LANGUAGE</>
+   명령을 이용해서 현재 사용하는 데이터베이스에 등록되어 있어야 한다.
+   <literal>plpgsql</> 언어는 기본 설치되어 있다.  그 외 언어는
+   사용자가 직접 설치 해야 한다.
   </para>
 
   <para>
-   The user must have <literal>USAGE</> privilege for the procedural
-   language, or must be a superuser if the language is untrusted.
-   This is the same privilege requirement as for creating a function
-   in the language.
+   이 명령을 실행하려면 먼저 그 언어에 대한 <literal>USAGE</> 
+   권한이 이 명령을 사용하는 사용자에게 부여되어야한다.  또한
+   신뢰할 수 없는 언어에 대해서는 슈퍼유저만 사용할 수 있다.
+   간단히 말하면, 이 명령의 실행 권한은 함수 만드는 권한과 같다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-do-examples">
-  <title id="sql-do-examples-title">Examples</title>
+  <title id="sql-do-examples-title">예제</title>
   <para>
-   Grant all privileges on all views in schema <literal>public</> to
-   role <literal>webuser</>:
+   <literal>public</> 스키마 내에 있는 모든 뷰에 대해서
+   <literal>webuser</> 롤에게 모든 권한을 부여야하는 예제:
 <programlisting>
 DO $$DECLARE r record;
 BEGIN
@@ -114,7 +116,7 @@ END$$;
   <title>호환성</title>
 
   <para>
-   There is no <command>DO</command> statement in the SQL standard.
+   <command>DO</command> 명령은 SQL 표준이 아니다.
   </para>
  </refsect1>
 

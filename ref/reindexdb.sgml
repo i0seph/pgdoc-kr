@@ -16,14 +16,14 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname id="reindexdb">reindexdb</refname>
-  <refpurpose>reindex a <productname>PostgreSQL</productname> database</refpurpose>
+  <refpurpose>지정한 <productname>PostgreSQL</productname> 데이터베이스에서 인덱스를 다시 만든다</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>reindexdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
 
    <arg choice="plain" rep="repeat">
     <arg choice="opt">
@@ -31,7 +31,7 @@ PostgreSQL documentation
       <arg choice="plain"><option>--schema</option></arg>
       <arg choice="plain"><option>-S</option></arg>
      </group>
-     <replaceable>schema</replaceable>
+     <replaceable>스키마</replaceable>
     </arg>
    </arg>
 
@@ -41,7 +41,7 @@ PostgreSQL documentation
       <arg choice="plain"><option>--table</option></arg>
       <arg choice="plain"><option>-t</option></arg>
      </group>
-     <replaceable>table</replaceable>
+     <replaceable>테이블</replaceable>
     </arg>
    </arg>
 
@@ -51,17 +51,17 @@ PostgreSQL documentation
       <arg choice="plain"><option>--index</option></arg>
       <arg choice="plain"><option>-i</option></arg>
      </group>
-     <replaceable>index</replaceable>
+     <replaceable>인덱스</replaceable>
     </arg>
    </arg>
 
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
+   <arg choice="opt"><replaceable>디비이름</replaceable></arg>
   </cmdsynopsis>
 
   <cmdsynopsis>
    <command>reindexdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
 
    <group choice="plain">
     <arg choice="plain"><option>--all</option></arg>
@@ -71,38 +71,45 @@ PostgreSQL documentation
 
   <cmdsynopsis>
    <command>reindexdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
 
    <group choice="plain">
     <arg choice="plain"><option>--system</option></arg>
     <arg choice="plain"><option>-s</option></arg>
    </group>
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
+   <arg choice="opt"><replaceable>디비이름</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <application>reindexdb</application> is a utility for rebuilding indexes
-   in a <productname>PostgreSQL</productname> database.
+   <application>reindexdb</application> 명령은
+   지정한 <productname>PostgreSQL</productname> 데이터베이스에
+   속한 인덱스를 다시 만드는 일을 한다.
   </para>
 
   <para>
-   <application>reindexdb</application> is a wrapper around the SQL
-   command <xref linkend="SQL-REINDEX">.
+   <application>reindexdb</application> 명령은 내부적으로
+   서버에 접속해서
+   <xref linkend="SQL-REINDEX"> SQL 명령을 실행하는
+   응용 프로그램이다.
    There is no effective difference between reindexing databases via
    this utility and via other methods for accessing the server.
+  </para>
+
+  <para>
+   그래서, 이 명령 사용 설명서를 우리말로 옮기는 작업은 더 이상 진행하지 않는다. - 옮긴이
   </para>
 
  </refsect1>
 
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
     <application>reindexdb</application> accepts the following command-line arguments:
@@ -327,7 +334,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <variablelist>
    <varlistentry>
@@ -354,7 +361,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Diagnostics</title>
+  <title>진단</title>
 
   <para>
    In case of difficulty, see <xref linkend="SQL-REINDEX">
@@ -370,7 +377,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
    <application>reindexdb</application> might need to connect several
@@ -383,7 +390,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
    <para>
     To reindex the database <literal>test</literal>:
@@ -402,7 +409,7 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-reindex"></member>

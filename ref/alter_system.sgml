@@ -16,74 +16,78 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER SYSTEM</refname>
-  <refpurpose>change a server configuration parameter</refpurpose>
+  <refpurpose>서버 환경 설정 매개 변수 값 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER SYSTEM SET <replaceable class="PARAMETER">configuration_parameter</replaceable> { TO | = } { <replaceable class="PARAMETER">value</replaceable> | '<replaceable class="PARAMETER">value</replaceable>' | DEFAULT }
+ALTER SYSTEM SET <replaceable class="PARAMETER">환경설정_매개변수</replaceable> { TO | = } { <replaceable class="PARAMETER">값</replaceable> | '<replaceable class="PARAMETER">값</replaceable>' | DEFAULT }
 
-ALTER SYSTEM RESET <replaceable class="PARAMETER">configuration_parameter</replaceable>
+ALTER SYSTEM RESET <replaceable class="PARAMETER">환경설정_매개변수</replaceable>
 ALTER SYSTEM RESET ALL
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER SYSTEM</command> is used for changing server configuration
-   parameters across the entire database cluster.  It can be more convenient
-   than the traditional method of manually editing
-   the <filename>postgresql.conf</filename> file.
-   <command>ALTER SYSTEM</command> writes the given parameter setting to
-   the <filename>postgresql.auto.conf</filename> file, which is read in
-   addition to <filename>postgresql.conf</filename>.
-   Setting a parameter to <literal>DEFAULT</literal>, or using the
-   <command>RESET</command> variant, removes that configuration entry from the
-   <filename>postgresql.auto.conf</filename> file. Use <literal>RESET
-   ALL</literal> to remove all such configuration entries.
+   <command>ALTER SYSTEM</command> 명령은 서버 환경 설정 매개 변수 값을 
+   바꾸는 일을 한다(쉬운 표현으로 서버 실행 환경 설정 값 바꾸기).
+   이 명령은 전통적으로 <filename>postgresql.conf</filename> 파일을 
+   변경해서 서버 설정을 바꾸는 것을 SQL 구문으로 처리 할 수 있게 한다.
+   <command>ALTER SYSTEM</command> 명령 결과는
+   <filename>postgresql.auto.conf</filename> 파일에 저장되며, 
+   서버를 시작 하거나, 환경 설정 값을 다시 불러 올 때,
+   <filename>postgresql.conf</filename>을 반영 한 다음, 
+   이 파일을 최종 반영하는 방식으로 처리된다.
+   매개 변수 값으로  <literal>DEFAULT</literal>를 지정하거나,
+   <command>RESET</command> 구문을 이용하면, 
+   <filename>postgresql.auto.conf</filename> 파일에 있는 
+   해당 설정을 지운다.  이 파일 안에 있는 모든 내용을 지우려면,
+   <literal>RESET ALL</literal> 구문을 사용한다.
   </para>
 
   <para>
-   Values set with <command>ALTER SYSTEM</command> will be effective after
-   the next server configuration reload, or after the next server restart
-   in the case of parameters that can only be changed at server start.
-   A server configuration reload can be commanded by calling the SQL
-   function <function>pg_reload_conf()</>, running <literal>pg_ctl reload</>,
-   or sending a <systemitem>SIGHUP</> signal to the main server process.
+   <command>ALTER SYSTEM</command> 명령으로 지정한 설정은 
+   서버 환경 설정 다시 불러 오기(reload)나, 서버 다시 시작으로 적용된다.
+   (개별 환경 설정 변수의 적용 시점은 제각각이다.  적용 시점을 
+   데이터베이스 관리자는 알고 있어야 한다. - 옮긴이)
+   서버 환경 설정 다시 불러 오는 작업은 <function>pg_reload_conf()</>
+   SQL 함수를 호출하거나, <literal>pg_ctl reload</> 쉘 명령을 실행하거나,
+   메인 서버 프로세스에 <systemitem>SIGHUP</> 시그널을 보내면 된다.
   </para>
 
   <para>
-   Only superusers can use <command>ALTER SYSTEM</command>.  Also, since
-   this command acts directly on the file system and cannot be rolled back,
-   it is not allowed inside a transaction block or function.
+   <command>ALTER SYSTEM</command> 명령은 슈퍼유저만 사용할 수 있다.
+   이 작업은 직접 파일 시스템을 조작하는 것으로 취소 할 수 없다.
+   따라서 함수나 트랜잭션 영역 안에서는 사용할 수 없다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">configuration_parameter</replaceable></term>
+    <term><replaceable class="parameter">환경설정_매개변수</replaceable></term>
     <listitem>
      <para>
-      Name of a settable configuration parameter.  Available parameters are
-      documented in <xref linkend="runtime-config">.
+      설정하려는 환경 설정 매개 변수 이름.
+      사용할 수 있는 이름은 <xref linkend="runtime-config">에서 다룬다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">value</replaceable></term>
+    <term><replaceable class="parameter">값</replaceable></term>
     <listitem>
      <para>
-      New value of the parameter.  Values can be specified as string
-      constants, identifiers, numbers, or comma-separated lists of
-      these, as appropriate for the particular parameter.
-      <literal>DEFAULT</literal> can be written to specify removing the
-      parameter and its value from <filename>postgresql.auto.conf</filename>.
+      해당 매개 변수의 설정 값.  이 값은 문자열, 미리 정의된 식별 단어, 숫자,
+      쉼표로 구분한 이 모든 것들의 목록일 수 있다.
+      값으로 <literal>DEFAULT</literal>를 지정하면,
+      <filename>postgresql.auto.conf</filename> 파일에서 해당 환경 설정
+      변수에 대한 설정을 지운다.
      </para>
     </listitem>
    </varlistentry>
@@ -91,48 +95,49 @@ ALTER SYSTEM RESET ALL
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   This command can't be used to set <xref linkend="guc-data-directory">,
-   nor parameters that are not allowed in <filename>postgresql.conf</>
-   (e.g., <link linkend="runtime-config-preset">preset options</>).
+   이 명령은 <xref linkend="guc-data-directory"> 설정 값을 바꿀 수 없고,
+   <filename>postgresql.conf</> 파일에서 다루지 않는 환경 설정
+   매개 변수 값은 바꿀 수 없다(예, 
+   <link linkend="runtime-config-preset">프리셋 옵션</>).
   </para>
 
   <para>
-   See <xref linkend="config-setting"> for other ways to set the parameters.
+   <xref linkend="config-setting">에서는 매개 변수 값을 바꾸는 다른 방법들도
+   소개한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Set the <literal>wal_level</>:
+   <literal>wal_level</> 설정:
 <programlisting>
 ALTER SYSTEM SET wal_level = replica;
 </programlisting>
   </para>
 
   <para>
-   Undo that, restoring whatever setting was effective
-   in <filename>postgresql.conf</>:
+   <filename>postgresql.conf</> 파일에 지정한 값으로 되돌리는 명령:
 <programlisting>
 ALTER SYSTEM RESET wal_level;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The <command>ALTER SYSTEM</command> statement is a
-   <productname>PostgreSQL</productname> extension.
+   <command>ALTER SYSTEM</command> 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="SQL-SET"></member>

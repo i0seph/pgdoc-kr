@@ -16,58 +16,58 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER EVENT TRIGGER</refname>
-  <refpurpose>change the definition of an event trigger</refpurpose>
+  <refpurpose>이벤트 트리거 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable> DISABLE
-ALTER EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable> ENABLE [ REPLICA | ALWAYS ]
-ALTER EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable> OWNER TO { <replaceable class="PARAMETER">new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable> RENAME TO <replaceable class="PARAMETER">new_name</replaceable>
+ALTER EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable> DISABLE
+ALTER EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable> ENABLE [ REPLICA | ALWAYS ]
+ALTER EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER EVENT TRIGGER</command> changes properties of an
-   existing event trigger.
+   <command>ALTER EVENT TRIGGER</command> 명령은 지정한
+   이벤트 트리거의 속성을 바꾸는 일을 한다.
   </para>
 
   <para>
-   You must be superuser to alter an event trigger.
+   이 명령은 슈퍼유저만 사용할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="PARAMETER">name</replaceable></term>
+    <term><replaceable class="PARAMETER">이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing trigger to alter.
+      대상 이벤트 트리거 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">new_owner</replaceable></term>
+    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
     <listitem>
      <para>
-      The user name of the new owner of the event trigger.
+      해당 이벤트 트리거의 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">new_name</replaceable></term>
+    <term><replaceable class="PARAMETER">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the event trigger.
+      해당 이벤트 트리거의 바뀔 새 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -76,9 +76,9 @@ ALTER EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable> RENAME TO 
     <term><literal>DISABLE</literal>/<literal>ENABLE [ REPLICA | ALWAYS ] TRIGGER</literal></term>
     <listitem>
      <para>
-      These forms configure the firing of event triggers.  A disabled trigger
-      is still known to the system, but is not executed when its triggering
-      event occurs.  See also <xref linkend="guc-session-replication-role">.
+      해당 이벤트 트리거의 실행 여부 지정.  실행하지 않도록 지정하면, 
+      해당 이벤트 트리거를 지우지 않고, 그 실행만 안한다.
+      <xref linkend="guc-session-replication-role"> 참고.
      </para>
     </listitem>
    </varlistentry>
@@ -86,16 +86,15 @@ ALTER EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable> RENAME TO 
  </refsect1>
 
  <refsect1 id="sql-alterventtrigger-compatibility">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER EVENT TRIGGER</command> statement in the
-   SQL standard.
+   <command>ALTER EVENT TRIGGER</command> 명령은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createeventtrigger"></member>

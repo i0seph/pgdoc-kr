@@ -16,48 +16,53 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>createdb</refname>
-  <refpurpose>create a new <productname>PostgreSQL</productname> database</refpurpose>
+  <refpurpose>새 <productname>PostgreSQL</productname> 데이터베이스를 만든다</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>createdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-   <arg choice="opt"><replaceable>dbname</replaceable>
-   <arg choice="opt"><replaceable>description</replaceable></arg></arg>
+   <arg rep="repeat"><replaceable>접속옵션</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
+   <arg choice="opt"><replaceable>디비이름</replaceable>
+   <arg choice="opt"><replaceable>디비설명</replaceable></arg></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
 
  <refsect1 id="R1-APP-CREATEDB-1">
   <title>
-   Description
+   설명
   </title>
   <para>
-   <application>createdb</application> creates a new <productname>PostgreSQL</productname>
-   database.
+   <application>createdb</application> 명령은 새 <productname>PostgreSQL</productname>
+   데이터베이스를 만드는 명령이다.
   </para>
 
   <para>
-   Normally, the database user who executes this command becomes the owner of
-   the new database.
-   However, a different owner can be specified via the <option>-O</option>
-   option, if the executing user has appropriate privileges.
+   일반적으로 새로 만들어진 데이터베이스의 소유주는 이 명령을 통해 서버로
+   접속하는 데이터베이스 사용자가 된다.  소유주를 다르게 지정하려면,
+   <option>-O</option> 옵션을 사용하고, 정상적으로 수행하려면 그에 맞는
+   권한이 이 명령을 통해 서버에 접속하는 데이터베이스 사용자에게 있어야한다.
   </para>
 
   <para>
-   <application>createdb</application> is a wrapper around the
-   <acronym>SQL</acronym> command <xref linkend="SQL-CREATEDATABASE">.
-   There is no effective difference between creating databases via
-   this utility and via other methods for accessing the server.
+   <application>createdb</application> 명령은 내부적으로
+   <xref linkend="SQL-CREATEDATABASE"> <acronym>SQL</acronym> 명령어를
+   실행하는 응용 프로그램이다.
+   서버에 접속해서 SQL 명령어로 새 데이터베이스를 만드는 것과
+   이 응용 프로그램을 이용해서 작업하는 것이 같다.
+  </para>
+
+  <para>
+   그래서, 이 명령 사용 설명서를 우리말로 옮기는 작업은 더 이상 진행하지 않는다. - 옮긴이
   </para>
 
  </refsect1>
 
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
   <para>
    <application>createdb</application> accepts the following command-line arguments:
@@ -296,7 +301,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경 변수</title>
 
   <variablelist>
    <varlistentry>
@@ -334,7 +339,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Diagnostics</title>
+  <title>진단</title>
 
   <para>
    In case of difficulty, see <xref linkend="SQL-CREATEDATABASE">
@@ -350,7 +355,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
    <para>
     To create the database <literal>demo</literal> using the default
@@ -373,7 +378,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-dropdb"></member>
