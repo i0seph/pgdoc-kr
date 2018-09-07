@@ -16,107 +16,108 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER OPERATOR</refname>
-  <refpurpose>change the definition of an operator</refpurpose>
+  <refpurpose>연산자 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</replaceable> | NONE } , { <replaceable>right_type</replaceable> | NONE } )
-    OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER OPERATOR <replaceable>이름</replaceable> ( { <replaceable>왼쪽자료형</replaceable> | NONE } , { <replaceable>오른쪽자료형</replaceable> | NONE } )
+    OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 
-ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</replaceable> | NONE } , { <replaceable>right_type</replaceable> | NONE } )
-    SET SCHEMA <replaceable>new_schema</replaceable>
+ALTER OPERATOR <replaceable>이름</replaceable> ( { <replaceable>왼쪽자료형</replaceable> | NONE } , { <replaceable>오른쪽자료형</replaceable> | NONE } )
+    SET SCHEMA <replaceable>새스키마</replaceable>
 
-ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</replaceable> | NONE } , { <replaceable>right_type</replaceable> | NONE } )
-    SET ( {  RESTRICT = { <replaceable class="parameter">res_proc</replaceable> | NONE }
-           | JOIN = { <replaceable class="parameter">join_proc</replaceable> | NONE }
+ALTER OPERATOR <replaceable>이름</replaceable> ( { <replaceable>왼쪽자료형</replaceable> | NONE } , { <replaceable>오른쪽자료형</replaceable> | NONE } )
+    SET ( {  RESTRICT = { <replaceable class="parameter">제한함수</replaceable> | NONE }
+           | JOIN = { <replaceable class="parameter">조인함수</replaceable> | NONE }
          } [, ... ] )
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER OPERATOR</command> changes the definition of
-   an operator.
+   <command>ALTER OPERATOR</command> 명령은 지정한 연산자 정의를 바꾼다.
   </para>
 
   <para>
-   You must own the operator to use <command>ALTER OPERATOR</>.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the operator's schema.  (These restrictions enforce that altering the owner
-   doesn't do anything you couldn't do by dropping and recreating the operator.
-   However, a superuser can alter ownership of any operator anyway.)
+   <command>ALTER OPERATOR</> 명령은 해당 연산자 소유주만 사용할 수 있다.
+   소유주를 바꿀 때는 기존 소유주가 새 소유주의 직간접적으로 구성원이어야
+   하며, 새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이
+   있어야 한다.  (새로 바뀐 소유주가 해당 연산자를 지우거나 다시
+   만들 수 있도록 하기 위함이다.  반면 슈퍼유저는 이런 제약 없이 소유주를
+   바꿀 수 있다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing operator.
+      작업 대상 연산자 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">left_type</replaceable></term>
+    <term><replaceable class="parameter">왼쪽자료형</replaceable></term>
     <listitem>
      <para>
-      The data type of the operator's left operand; write
-      <literal>NONE</literal> if the operator has no left operand.
+      연산에 사용되는 왼쪽 자료형; 이 자료형을 쓰지 않을 경우는
+      <literal>NONE</literal>.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">right_type</replaceable></term>
+    <term><replaceable class="parameter">오른쪽자료형</replaceable></term>
     <listitem>
      <para>
-      The data type of the operator's right operand; write
-      <literal>NONE</literal> if the operator has no right operand.
+      연산에 사용되는 오른쪽 자료형; 이 자료형을 쓰지 않을 경우는
+      <literal>NONE</literal>.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the operator.
+      해당 연산자의 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the operator.
+      해당 연산자의 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-     <term><replaceable class="parameter">res_proc</replaceable></term>
+     <term><replaceable class="parameter">제한함수</replaceable></term>
      <listitem>
        <para>
-         The restriction selectivity estimator function for this operator; write NONE to remove existing selectivity estimator.
+         해당 연산자용 제한 선택 추정자 함수; <literal>NONE</literal>으로
+         지정하면, 기존 제한함수를 지운다.
        </para>
       </listitem>
    </varlistentry>
 
    <varlistentry>
-     <term><replaceable class="parameter">join_proc</replaceable></term>
+     <term><replaceable class="parameter">조인함수</replaceable></term>
      <listitem>
        <para>
-         The join selectivity estimator function for this operator; write NONE to remove existing selectivity estimator.
+         해당 연산자용 조인 선택 추정자 함수; <literal>NONE</literal>으로
+         지정하면, 기존 조인함수를 지운다.
        </para>
      </listitem>
    </varlistentry>
@@ -125,16 +126,18 @@ ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</repla
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Change the owner of a custom operator <literal>a @@ b</literal> for type <type>text</type>:
+   <type>text</type> 자료형용 <literal>a @@ b</literal> 연산자
+   소유주를 변경하는 예제:
 <programlisting>
 ALTER OPERATOR @@ (text, text) OWNER TO joe;
 </programlisting></para>
 
   <para>
-    Change the restriction and join selectivity estimator functions of a custom operator <literal>a && b</literal> for type <type>int[]</type>:
+    <type>int[]</type> 자료형용 <literal>a && b</literal> 연산자의
+    제한 함수와 조인 함수를 바꾸는 예제:
 <programlisting>
 ALTER OPERATOR && (_int4, _int4) SET (RESTRICT = _int_contsel, JOIN = _int_contjoinsel);
 </programlisting></para>
@@ -142,16 +145,15 @@ ALTER OPERATOR && (_int4, _int4) SET (RESTRICT = _int_contsel, JOIN = _int_contj
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER OPERATOR</command> statement in
-   the SQL standard.
+   <command>ALTER OPERATOR</command> 구문은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createoperator"></member>
