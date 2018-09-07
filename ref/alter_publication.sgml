@@ -16,110 +16,110 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER PUBLICATION</refname>
-  <refpurpose>change the definition of a publication</refpurpose>
+  <refpurpose>발행 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER PUBLICATION <replaceable class="PARAMETER">name</replaceable> ADD TABLE [ ONLY ] <replaceable class="PARAMETER">table_name</replaceable> [ * ] [, ...]
-ALTER PUBLICATION <replaceable class="PARAMETER">name</replaceable> SET TABLE [ ONLY ] <replaceable class="PARAMETER">table_name</replaceable> [ * ] [, ...]
-ALTER PUBLICATION <replaceable class="PARAMETER">name</replaceable> DROP TABLE [ ONLY ] <replaceable class="PARAMETER">table_name</replaceable> [ * ] [, ...]
-ALTER PUBLICATION <replaceable class="PARAMETER">name</replaceable> SET ( <replaceable class="parameter">publication_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )
-ALTER PUBLICATION <replaceable class="PARAMETER">name</replaceable> OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER PUBLICATION <replaceable class="PARAMETER">name</replaceable> RENAME TO <replaceable>new_name</replaceable>
+ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> ADD TABLE [ ONLY ] <replaceable class="PARAMETER">테이블이름</replaceable> [ * ] [, ...]
+ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> SET TABLE [ ONLY ] <replaceable class="PARAMETER">테이블이름</replaceable> [ * ] [, ...]
+ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> DROP TABLE [ ONLY ] <replaceable class="PARAMETER">테이블이름</replaceable> [ * ] [, ...]
+ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> SET ( <replaceable class="parameter">발행_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
+ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   The command <command>ALTER PUBLICATION</command> can change the attributes
-   of a publication.
+   <command>ALTER PUBLICATION</command> 명령은 논리 복제에서 사용하는
+   발행의 정의를 바꾼다.
   </para>
 
   <para>
-   The first three variants change which tables are part of the publication.
-   The <literal>SET TABLE</literal> clause will replace the list of tables in
-   the publication with the specified one.  The <literal>ADD TABLE</literal>
-   and <literal>DROP TABLE</literal> clauses will add and remove one or more
-   tables from the publication.  Note that adding tables to a publication that
-   is already subscribed to will require a <literal>ALTER SUBSCRIPTION
-   ... REFRESH PUBLICATION</literal> action on the subscribing side in order
-   to become effective.
+   처음 세가지 구문은 해당 발행에 포함되는 테이블 목록을 조작할 때
+   사용한다. <literal>SET TABLE</literal> 구문은 그 목록을 지정한 
+   테이블들로 지정하는 것이고, <literal>ADD TABLE</literal>,
+   <literal>DROP TABLE</literal> 구문은 기존 목록에서 지정한 
+   테이블들을 보태거나, 뺄 때 사용한다.
+   이렇게 대상 테이블의 목록이 변경 된 경우에는 구독 쪽에서
+   <literal>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</literal>
+   명령을 실행해서 구독 정보를 갱신해야 함을 잊지 말아야 한다.
   </para>
 
   <para>
-   The fourth variant of this command listed in the synopsis can change
-   all of the publication properties specified in
-   <xref linkend="sql-createpublication">.  Properties not mentioned in the
-   command retain their previous settings.
+   네번째 구문은 발행 속성을 바꾸는 명령이다.  발행 관련 속성은
+   <xref linkend="sql-createpublication"> 설명서에서 자세히 다룬다. 
+   이 명령에서 지정하지 않은 속성들은 기존 설정을 유지한다.
   </para>
 
   <para>
-   The remaining variants change the owner and the name of the publication.
+   나머지 구문은 소유주를 바꾸거나, 발행 이름을 바꾸는 명령이다.
   </para>
 
   <para>
-   You must own the publication to use <command>ALTER PUBLICATION</command>.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role. The new owner must have <literal>CREATE</literal> privilege on
-   the database.  Also, the new owner of a <literal>FOR ALL TABLES</literal>
-   publication must be a superuser.  However, a superuser can change the
-   ownership of a publication while circumventing these restrictions.
+   <command>ALTER PUBLICATION</command> 명령은 해당 발행의 소유주만 
+   실행할 수 있다.  소유주를 바꾸는 경우에는
+   기존 소유주는 새 소유주 소속이어야 하며, 새 소유주는 
+   해당 데이터베이스에 대해 <literal>CREATE</literal> 권한이 있어야 한다.
+   또한 새 소유주가 <literal>FOR ALL TABLES</literal> 구문을 
+   사용해서 새로운 발행을 만든다면, 그 소유주는 슈퍼유저여야 한다.
+   반면, 슈퍼유저는 이런 제한 사항들을 무시하고, 소유주를 바꿀 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing publication whose definition is to be altered.
+      작업할 논리 복제용 발행 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">table_name</replaceable></term>
+    <term><replaceable class="parameter">테이블이름</replaceable></term>
     <listitem>
      <para>
-      Name of an existing table.  If <literal>ONLY</> is specified before the
-      table name, only that table is affected.  If <literal>ONLY</> is not
-      specified, the table and all its descendant tables (if any) are
-      affected.  Optionally, <literal>*</> can be specified after the table
-      name to explicitly indicate that descendant tables are included.
+      테이블 이름.  이 이름 앞에 <literal>ONLY</> 예약어를 사용하면, 
+      해당 테이블만 적용하고, 없으면, 그 테이블과 그 하위 테이블 모두에
+      대해서 적용한다.  선택적으로 <literal>*</> 문자를 사용해서
+      하위 테이블을 포함한다고 명시적으로 표시할 수도 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>SET ( <replaceable class="parameter">publication_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
+    <term><literal>SET ( <replaceable class="parameter">발행_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
-      This clause alters publication parameters originally set by
-      <xref linkend="SQL-CREATEPUBLICATION">.  See there for more information.
+      <xref linkend="SQL-CREATEPUBLICATION"> 명령에서 지정했던
+      발행 매개 변수 설정을 바꾼다.
+      이 변수들의 설명은 해당 명령어 설명서에서 다룬다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The user name of the new owner of the publication.
+      해당 발행의 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name for the publication.
+      해당 발행의 새 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -127,33 +127,33 @@ ALTER PUBLICATION <replaceable class="PARAMETER">name</replaceable> RENAME TO <r
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Change the publication to publish only deletes and updates:
+   해당 발행은 update, delete 인 경우만 발행 하도록 바꾼다:
 <programlisting>
 ALTER PUBLICATION noinsert SET (publish = 'update, delete');
 </programlisting>
   </para>
 
   <para>
-   Add some tables to the publication:
+   테이블 추가:
 <programlisting>
 ALTER PUBLICATION mypublication ADD TABLE users, departments;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>ALTER PUBLICATION</command> is a <productname>PostgreSQL</>
-   extension.
+   <command>ALTER PUBLICATION</command> 명령은 <productname>PostgreSQL</>
+   확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createpublication"></member>
