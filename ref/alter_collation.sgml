@@ -16,74 +16,73 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER COLLATION</refname>
-  <refpurpose>change the definition of a collation</refpurpose>
+  <refpurpose>문자정렬규칙 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER COLLATION <replaceable>name</replaceable> REFRESH VERSION
+ALTER COLLATION <replaceable>이름</replaceable> REFRESH VERSION
 
-ALTER COLLATION <replaceable>name</replaceable> RENAME TO <replaceable>new_name</replaceable>
-ALTER COLLATION <replaceable>name</replaceable> OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER COLLATION <replaceable>name</replaceable> SET SCHEMA <replaceable>new_schema</replaceable>
+ALTER COLLATION <replaceable>이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER COLLATION <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER COLLATION <replaceable>이름</replaceable> SET SCHEMA <replaceable>새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER COLLATION</command> changes the definition of a
-   collation.
+   <command>ALTER COLLATION</command> 명령은 문자 정렬 규칙의 정의를 바꾼다.
   </para>
 
   <para>
-   You must own the collation to use <command>ALTER COLLATION</>.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the collation's schema.  (These restrictions enforce that altering the
-   owner doesn't do anything you couldn't do by dropping and recreating the
-   collation. However, a superuser can alter ownership of any collation
-   anyway.)
+   작업 대상 정렬 규칙의 소유주여야 <command>ALTER COLLATION</> 명령을 
+   사용할 수 있다.  소유주를 바꾸는 경우에는 
+   기존 소유주는 새 소유주의 직간접적으로 구성원이어야 하며, 
+   새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이 
+   있어야 한다.  (새 소유주가 해당 정렬 규칙을 삭제 하거나, 
+   새로 만들 수 있도록 하기 위함이다.  슈퍼유저는 이런 제약 없이 
+   소유주를 변경 할 수 있다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing collation.
+      작업 대상 문자 정렬 규칙 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the collation.
+      바뀔 새 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the collation.
+      바뀔 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the collation.
+      바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -92,9 +91,9 @@ ALTER COLLATION <replaceable>name</replaceable> SET SCHEMA <replaceable>new_sche
     <term><literal>REFRESH VERSION</literal></term>
     <listitem>
      <para>
-      Update the collation's version.
-      See <xref linkend="sql-altercollation-notes"
-      endterm="sql-altercollation-notes-title"> below.
+      버전 갱신.
+      <xref linkend="sql-altercollation-notes"
+      endterm="sql-altercollation-notes-title">에서 자세히 설명함.
      </para>
     </listitem>
    </varlistentry>
@@ -102,37 +101,40 @@ ALTER COLLATION <replaceable>name</replaceable> SET SCHEMA <replaceable>new_sche
  </refsect1>
 
  <refsect1 id="sql-altercollation-notes">
-  <title id="sql-altercollation-notes-title">Notes</title>
+  <title id="sql-altercollation-notes-title">참고</title>
 
   <para>
-   When using collations provided by the ICU library, the ICU-specific version
-   of the collator is recorded in the system catalog when the collation object
-   is created.  When the collation is used, the current version is
-   checked against the recorded version, and a warning is issued when there is
-   a mismatch, for example:
+   ICU 라이브러리에서 제공하는 문자 정렬 규칙을 사용하는 경우, 
+   그 규칙이 처음 만들어질 때,
+   ICU 고유 버전을 각 규칙 별로  시스템 카탈로그에 기록해 둔다.
+   그리고, 그 규칙을 사용할 때 그 규칙의 ICU 현재 버전과, 
+   시스템 카탈로그에 기록된 버전을 비교하고, 
+   다르면 다음과 같은 경고를 출력한다:
 <screen>
 WARNING:  collation "xx-x-icu" has version mismatch
 DETAIL:  The collation in the database was created using version 1.2.3.4, but the operating system provides version 2.3.4.5.
 HINT:  Rebuild all objects affected by this collation and run ALTER COLLATION pg_catalog."xx-x-icu" REFRESH VERSION, or build PostgreSQL with the right library version.
 </screen>
-   A change in collation definitions can lead to corrupt indexes and other
-   problems because the database system relies on stored objects having a
-   certain sort order.  Generally, this should be avoided, but it can happen
-   in legitimate circumstances, such as when
-   using <command>pg_upgrade</command> to upgrade to server binaries linked
-   with a newer version of ICU.  When this happens, all objects depending on
-   the collation should be rebuilt, for example,
-   using <command>REINDEX</command>.  When that is done, the collation version
-   can be refreshed using the command <literal>ALTER COLLATION ... REFRESH
-   VERSION</literal>.  This will update the system catalog to record the
-   current collator version and will make the warning go away.  Note that this
-   does not actually check whether all affected objects have been rebuilt
-   correctly.
+   문자 정렬 규칙의 정의를 바꾸게 되면, 인덱스 손상이나, 기타 다른 문제들이
+   생길 수 있다.  왜냐하면, 데이터베이스 내 모든 정렬 되는 문자 자료들은
+   이 정렬 규칙을 사용해서 저장되기 때문이다.  일반적으로 한 번 만든 정렬 규칙을
+   실무에서 사용하는 경우는 이런 변경 작업을 하지는 않겠지만,
+   새 ICU 라이브러리를 이용해서 새롭게 만든 서버로
+   <command>pg_upgrade</command> 명령을 이용해서 업그레이드 하는 경우, 
+   정상적인 상황에서도 일어날 수 있다.  이렇게 된다면, 
+   <command>REINDEX</command> 같은 명령을 이용해서
+   관련 정렬 규칙을 사용하고 있는 모든 개체들을 다시 만들어야 한다.
+   이 작업이 끝나면, 
+   해당 정렬 규칙 버전을 <literal>ALTER COLLATION ... REFRESH
+   VERSION</literal> 명령으로 갱신한다.  이렇게 해서 위와 같은 경고를 
+   없앨 수 있다.  윗 경고는 문자 정렬 규칙의 버전이 다르다고 알려주는 것 뿐이지
+   관련 모든 개체들이 정상적으로 다시 만들어졌는지를 확인하지는 않음을 
+   기억해야 한다.
   </para>
 
   <para>
-   The following query can be used to identify all collations in the current
-   database that need to be refreshed and the objects that depend on them:
+   아래 쿼리는 현재 데이터베이스에서 버전 재 갱신이 필요한 
+   문자 정렬 규칙과 그것을 사용하는 개체들을 찾는데 사용할 수 있다:
 <programlisting><![CDATA[
 SELECT pg_describe_object(refclassid, refobjid, refobjsubid) AS "Collation",
        pg_describe_object(classid, objid, objsubid) AS "Object"
@@ -145,35 +147,33 @@ SELECT pg_describe_object(refclassid, refobjid, refobjsubid) AS "Collation",
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To rename the collation <literal>de_DE</literal> to
-   <literal>german</literal>:
+   <literal>de_DE</literal> 정렬 규칙을 <literal>german</literal>으로 이름 바꿈:
 <programlisting>
 ALTER COLLATION "de_DE" RENAME TO german;
 </programlisting>
   </para>
 
   <para>
-   To change the owner of the collation <literal>en_US</literal> to
-   <literal>joe</literal>:
+   <literal>en_US</literal> 정렬 규칙의 소유주를
+   <literal>joe</literal> 사용자로 바꿈:
 <programlisting>
 ALTER COLLATION "en_US" OWNER TO joe;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER COLLATION</command> statement in the SQL
-   standard.
+   <command>ALTER COLLATION</command> 구문은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createcollation"></member>
