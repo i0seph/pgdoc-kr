@@ -16,151 +16,149 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER TEXT SEARCH CONFIGURATION</refname>
-  <refpurpose>change the definition of a text search configuration</refpurpose>
+  <refpurpose>글 찾기 환경 설정 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable>
-    ADD MAPPING FOR <replaceable class="parameter">token_type</replaceable> [, ... ] WITH <replaceable class="parameter">dictionary_name</replaceable> [, ... ]
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable>
-    ALTER MAPPING FOR <replaceable class="parameter">token_type</replaceable> [, ... ] WITH <replaceable class="parameter">dictionary_name</replaceable> [, ... ]
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable>
-    ALTER MAPPING REPLACE <replaceable class="parameter">old_dictionary</replaceable> WITH <replaceable class="parameter">new_dictionary</replaceable>
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable>
-    ALTER MAPPING FOR <replaceable class="parameter">token_type</replaceable> [, ... ] REPLACE <replaceable class="parameter">old_dictionary</replaceable> WITH <replaceable class="parameter">new_dictionary</replaceable>
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable>
-    DROP MAPPING [ IF EXISTS ] FOR <replaceable class="parameter">token_type</replaceable> [, ... ]
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable> RENAME TO <replaceable>new_name</replaceable>
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable> OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER TEXT SEARCH CONFIGURATION <replaceable>name</replaceable> SET SCHEMA <replaceable>new_schema</replaceable>
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable>
+    ADD MAPPING FOR <replaceable class="parameter">토큰종류</replaceable> [, ... ] WITH <replaceable class="parameter">사전이름</replaceable> [, ... ]
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable>
+    ALTER MAPPING FOR <replaceable class="parameter">토큰종류</replaceable> [, ... ] WITH <replaceable class="parameter">사전이름</replaceable> [, ... ]
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable>
+    ALTER MAPPING REPLACE <replaceable class="parameter">옛사전</replaceable> WITH <replaceable class="parameter">새사전</replaceable>
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable>
+    ALTER MAPPING FOR <replaceable class="parameter">토큰종류</replaceable> [, ... ] REPLACE <replaceable class="parameter">옛사전</replaceable> WITH <replaceable class="parameter">새사전</replaceable>
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable>
+    DROP MAPPING [ IF EXISTS ] FOR <replaceable class="parameter">토큰종류</replaceable> [, ... ]
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable> SET SCHEMA <replaceable>새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER TEXT SEARCH CONFIGURATION</command> changes the definition of
-   a text search configuration.  You can modify
-   its mappings from token types to dictionaries,
-   or change the configuration's name or owner.
+   <command>ALTER TEXT SEARCH CONFIGURATION</command> 명령은 
+   지정한 글 찾기 환경 설정을 바꾼다.
+   지정한 토큰 종류에 연결된 사전을 바꾸거나, 
+   해당 환경 설정 이름을 바꾸거나 소유주를 바꾼다.
   </para>
 
   <para>
-   You must be the owner of the configuration to use
-   <command>ALTER TEXT SEARCH CONFIGURATION</>.
+   <command>ALTER TEXT SEARCH CONFIGURATION</> 명령은 해당 환경 설정 소유주만
+   사용할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing text search
-      configuration.
+      작업 대상이 되는 글 찾기 환경 설정 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">token_type</replaceable></term>
+    <term><replaceable class="parameter">토큰종류</replaceable></term>
     <listitem>
      <para>
-      The name of a token type that is emitted by the configuration's
-      parser.
+      글 찾기 환경 설정 가운데, 특정 토큰 종류를 지정한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">dictionary_name</replaceable></term>
+    <term><replaceable class="parameter">사전이름</replaceable></term>
     <listitem>
      <para>
-      The name of a text search dictionary to be consulted for the
-      specified token type(s).  If multiple dictionaries are listed,
-      they are consulted in the specified order.
+      해당 토큰이 사용하는 사전 이름.
+      사전을 여러 개 지정하면, 그 순서 대로 사용한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">old_dictionary</replaceable></term>
+    <term><replaceable class="parameter">옛사전</replaceable></term>
     <listitem>
      <para>
-      The name of a text search dictionary to be replaced in the mapping.
+      해당 사전을 바꿀 때 사용하는 기존 사전 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_dictionary</replaceable></term>
+    <term><replaceable class="parameter">새사전</replaceable></term>
     <listitem>
      <para>
-      The name of a text search dictionary to be substituted for
-      <replaceable class="parameter">old_dictionary</replaceable>.
+      해당 사전을 바꿀 때 사용하는 새 사전 이름.
+      <replaceable class="parameter">옛사전</replaceable>과 
+      함께 지정한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the text search configuration.
+      지정한 글 찾기 환경 설정의 바뀔 새 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the text search configuration.
+      지정한 글 찾기 환경 설정의 바뀔 새 소유주.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the text search configuration.
+      지정한 글 찾기 환경 설정의 바뀔 새 스키마.
      </para>
     </listitem>
    </varlistentry>
  </variablelist>
 
   <para>
-   The <literal>ADD MAPPING FOR</> form installs a list of dictionaries to be
-   consulted for the specified token type(s); it is an error if there is
-   already a mapping for any of the token types.
-   The <literal>ALTER MAPPING FOR</> form does the same, but first removing
-   any existing mapping for those token types.
-   The <literal>ALTER MAPPING REPLACE</> forms substitute <replaceable
-   class="parameter">new_dictionary</replaceable> for <replaceable
-   class="parameter">old_dictionary</replaceable> anywhere the latter appears.
-   This is done for only the specified token types when <literal>FOR</>
-   appears, or for all mappings of the configuration when it doesn't.
-   The <literal>DROP MAPPING</> form removes all dictionaries for the
-   specified token type(s), causing tokens of those types to be ignored
-   by the text search configuration.  It is an error if there is no mapping
-   for the token types, unless <literal>IF EXISTS</> appears.
+   <literal>ADD MAPPING FOR</> 구문은 해당 환경 설정에서 
+   지정한 토큰 처리용 사전을 사용하도록 추가한다.  이 때 이미 
+   그 토큰에 대한 사전이 지정되어 있다면, 오류를 낸다.
+   <literal>ALTER MAPPING FOR</> 구문은 앞에서 설명한 것과 
+   같은 일을 하는데, 해당 토큰에 대한 설정이 이미 있으면
+   지우고 설정한다.
+   <literal>ALTER MAPPING REPLACE</> 구문은 해당 환경 설정에서 <replaceable
+   class="parameter">옛사전</replaceable>으로 지정한 모든 설정을
+   <replaceable class="parameter">새사전</replaceable>으로 바꾸며, 
+   특정 토큰 종류의 사전만 바꿀 때는 <literal>FOR</> 구문과 함께 
+   그 토큰 종류를 지정한다.
+   <literal>DROP MAPPING</> 구문은 해당 토큰 종류에 정의된 설정을 
+   지운다.  이 때 <literal>IF EXISTS</> 구문을 추가하면 해당 토큰 종류가 
+   없어도 오류가 생기지 않는다.
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   The following example replaces the <literal>english</> dictionary
-   with the <literal>swedish</> dictionary anywhere that <literal>english</>
-   is used within <literal>my_config</>.
+   <literal>my_config</> 글 찾기 환경 설정에서
+   <literal>english</> 사전으로 지정한 모든 설정을
+   <literal>swedish</> 사전을 사용하도록 바꾼다:
   </para>
 
 <programlisting>
@@ -170,16 +168,16 @@ ALTER TEXT SEARCH CONFIGURATION my_config
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER TEXT SEARCH CONFIGURATION</command> statement in
-   the SQL standard.
+   <command>ALTER TEXT SEARCH CONFIGURATION</command> 구문은
+   표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createtsconfig"></member>
