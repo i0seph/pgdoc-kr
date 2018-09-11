@@ -16,137 +16,136 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER MATERIALIZED VIEW</refname>
-  <refpurpose>change the definition of a materialized view</refpurpose>
+  <refpurpose>구체화된 뷰 materialized view 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
-    <replaceable class="PARAMETER">action</replaceable> [, ... ]
-ALTER MATERIALIZED VIEW <replaceable class="PARAMETER">name</replaceable>
-    DEPENDS ON EXTENSION <replaceable class="PARAMETER">extension_name</replaceable>
-ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
-    RENAME [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> TO <replaceable class="PARAMETER">new_column_name</replaceable>
-ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">name</replaceable>
-    RENAME TO <replaceable class="parameter">new_name</replaceable>
-ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">name</replaceable>
-    SET SCHEMA <replaceable class="parameter">new_schema</replaceable>
-ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">name</replaceable> [ OWNED BY <replaceable class="PARAMETER">role_name</replaceable> [, ... ] ]
-    SET TABLESPACE <replaceable class="PARAMETER">new_tablespace</replaceable> [ NOWAIT ]
+ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+    <replaceable class="PARAMETER">작업</replaceable> [, ... ]
+ALTER MATERIALIZED VIEW <replaceable class="PARAMETER">이름</replaceable>
+    DEPENDS ON EXTENSION <replaceable class="PARAMETER">확장모듈</replaceable>
+ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+    RENAME [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> TO <replaceable class="PARAMETER">새칼럼이름</replaceable>
+ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
+    RENAME TO <replaceable class="parameter">새이름</replaceable>
+ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
+    SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
+ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름</replaceable> [ OWNED BY <replaceable class="PARAMETER">롤이름</replaceable> [, ... ] ]
+    SET TABLESPACE <replaceable class="PARAMETER">새테이블스페이스</replaceable> [ NOWAIT ]
 
-<phrase>where <replaceable class="PARAMETER">action</replaceable> is one of:</phrase>
+<phrase><replaceable class="PARAMETER">작업</replaceable> 자리에는:</phrase>
 
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> SET STATISTICS <replaceable class="PARAMETER">integer</replaceable>
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> SET ( <replaceable class="PARAMETER">attribute_option</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] )
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> RESET ( <replaceable class="PARAMETER">attribute_option</replaceable> [, ... ] )
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }
-    CLUSTER ON <replaceable class="PARAMETER">index_name</replaceable>
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET STATISTICS <replaceable class="PARAMETER">정수</replaceable>
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET ( <replaceable class="PARAMETER">속성옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> RESET ( <replaceable class="PARAMETER">속성옵션</replaceable> [, ... ] )
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }
+    CLUSTER ON <replaceable class="PARAMETER">인덱스이름</replaceable>
     SET WITHOUT CLUSTER
-    SET ( <replaceable class="PARAMETER">storage_parameter</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] )
-    RESET ( <replaceable class="PARAMETER">storage_parameter</replaceable> [, ... ] )
-    OWNER TO { <replaceable class="PARAMETER">new_owner</replaceable> | CURRENT_USER | SESSION_USER }
+    SET ( <replaceable class="PARAMETER">스토리지옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )
+    RESET ( <replaceable class="PARAMETER">스토리지옵션</replaceable> [, ... ] )
+    OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER MATERIALIZED VIEW</command> changes various auxiliary
-   properties of an existing materialized view.
+   <command>ALTER MATERIALIZED VIEW</command> 명령은
+   구체화된 뷰 정의를 바꾼다.
   </para>
 
   <para>
-   You must own the materialized view to use <command>ALTER MATERIALIZED
-   VIEW</>.  To change a materialized view's schema, you must also have
-   <literal>CREATE</> privilege on the new schema.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the materialized view's schema.  (These restrictions enforce that altering
-   the owner doesn't do anything you couldn't do by dropping and recreating the
-   materialized view.  However, a superuser can alter ownership of any view
-   anyway.)
+   <command>ALTER MATERIALIZED VIEW</> 명령은 해당 개체의 소유주가 
+   사용할 수 있다.  스키마를 바꾸는 경우, 새 스키마에 대해서
+   <literal>CREATE</> 권한이 있어야 한다.
+   소유주를 바꾸는 경우, 기존 소유주는 새 소유주의 소속원이어야하며,
+   새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이
+   있어야 한다.  (새 소유주가 해당 개체를 삭제하거나 다시 만들 수 
+   있어야 하기 때문이다.  반면, 슈퍼유주는 이런 제약 사항 없이 작업
+   할 수 있다.)
   </para>
 
   <para>
-   The <literal>DEPENDS ON EXTENSION</literal> form marks the materialized view
-   as dependent on an extension, such that the materialized view will
-   automatically be dropped if the extension is dropped.
+   <literal>DEPENDS ON EXTENSION</literal> 구문은 
+   해당 구체화된 뷰를 지정한 확장 모듈의 구성 요소로 지정한다. 
+   이렇게 하면, 그 확장 모듈이 삭제 될 경우, 자동으로 이 뷰도 함께 
+   삭제할 있다.
   </para>
 
   <para>
-   The statement subforms and actions available for
-   <command>ALTER MATERIALIZED VIEW</command> are a subset of those available
-   for <command>ALTER TABLE</command>, and have the same meaning when used for
-   materialized views.  See the descriptions for <xref linkend="sql-altertable">
-   for details.
+   <command>ALTER MATERIALIZED VIEW</command> 명령의 여러 구문과
+   구체적인 작업들은 <command>ALTER TABLE</command> 명령에서 
+   사용하는 것과 같다.
+   자세한 설명은 <xref linkend="sql-altertable"> 명령 설명서에서 다룬다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <variablelist>
 
     <varlistentry>
-     <term><replaceable class="parameter">name</replaceable></term>
+     <term><replaceable class="parameter">이름</replaceable></term>
      <listitem>
       <para>
-       The name (optionally schema-qualified) of an existing materialized view.
+       작업 대상 구체화된 뷰 이름(스키마 포함).
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">column_name</replaceable></term>
+     <term><replaceable class="PARAMETER">칼럼이름</replaceable></term>
      <listitem>
       <para>
-       Name of a new or existing column.
+       작업 대상 칼럼 이름.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">extension_name</replaceable></term>
+     <term><replaceable class="PARAMETER">확장모듈</replaceable></term>
      <listitem>
       <para>
-       The name of the extension that the materialized view is to depend on.
+       해당 구체화된 뷰를 구성 요소로 하는 확장 모듈 이름.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">new_column_name</replaceable></term>
+     <term><replaceable class="PARAMETER">새칼럼이름</replaceable></term>
      <listitem>
       <para>
-       New name for an existing column.
+       바뀔 새 칼럼 이름.
       </para>
      </listitem>
     </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">new_owner</replaceable></term>
+    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
     <listitem>
      <para>
-      The user name of the new owner of the materialized view.
+      해당 구체화된 뷰의 바뀔 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name for the materialized view.
+      해당 구체화된 뷰의 바뀔 새 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the materialized view.
+      해당 구체화된 뷰의 바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -154,27 +153,27 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">name</r
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To rename the materialized view <literal>foo</literal> to
-   <literal>bar</literal>:
+   구체화된 뷰 이름이 <literal>foo</literal>인 개체의 이름을
+   <literal>bar</literal>로 바꾸는 경우:
 <programlisting>
 ALTER MATERIALIZED VIEW foo RENAME TO bar;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>ALTER MATERIALIZED VIEW</command> is a
-   <productname>PostgreSQL</productname> extension.
+   <command>ALTER MATERIALIZED VIEW</command> 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-creatematerializedview"></member>
