@@ -242,34 +242,35 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
   <title>참고</title>
 
   <para>
-   Notice that the <literal>DROP</> syntax only specifies the <quote>slot</>
-   in the operator family, by strategy or support number and input data
-   type(s).  The name of the operator or function occupying the slot is not
-   mentioned.  Also, for <literal>DROP FUNCTION</> the type(s) to specify
-   are the input data type(s) the function is intended to support; for
-   GiST, SP-GiST and GIN indexes this might have nothing to do with the actual
-   input argument types of the function.
+   연산자 가족에서
+   <literal>DROP</> 작업은 해당 연산자의 전략 번호나 함수의 지원 번호와
+   그 연산자 자료형을 지정해서 진행됨을 기억해야 한다.
+   연산자나 함수의 이름을 지정해서 지우지 않는다.  또한 
+   <literal>DROP FUNCTION</> 작업인 경우는 그 함수의 연산자 자료형을
+   지정한다.  GiST, SP-GiST, GIN 인덱스 용 연산자 가족인 경우는
+   함수의 입력 인자 자료형은 아무런 영향을 주지 않는다.
   </para>
 
   <para>
-   Because the index machinery does not check access permissions on functions
-   before using them, including a function or operator in an operator family
-   is tantamount to granting public execute permission on it.  This is usually
-   not an issue for the sorts of functions that are useful in an operator
-   family.
+   연산자 가족 구성원인 함수나 연산자는 일반적으로 누구나 사용할 수 
+   있는 권한을 부여한다.  왜냐하면, 이들은 실재 인덱스 작업을 하기 전까지는
+   권한 검사를 하지 않기 때문이다.  이런 권한 정책은 일반적인 환경에서는
+   크게 문제가 되지 않는다.
   </para>
 
   <para>
-   The operators should not be defined by SQL functions.  A SQL function
-   is likely to be inlined into the calling query, which will prevent
-   the optimizer from recognizing that the query matches an index.
+   연산자는 SQL 함수로 정의하지 말아야한다.  SQL 함수는 쿼리가 
+   실행 될 때 다시 처리해서 하나의 새로운 쿼리로 실행되기 때문이다. (SQL
+   함수의 인라인 처리에 대한 이야기다 - 옮긴이) 이렇게 되면, 
+   쿼리 최적화기가 그 쿼리에서 어떻게 인덱스를 사용해야 할지 모르는
+   경우가 발생한다.
   </para>
 
   <para>
-   Before <productname>PostgreSQL</productname> 8.4, the <literal>OPERATOR</>
-   clause could include a <literal>RECHECK</> option.  This is no longer
-   supported because whether an index operator is <quote>lossy</> is now
-   determined on-the-fly at run time.  This allows efficient handling of
+   <productname>PostgreSQL</productname> 8.4 버전까지는 <literal>OPERATOR</>
+   구문에  <literal>RECHECK</> 옵션이 있었다.  이제는
+   이 검사 기능을 쿼리가 실행 될 때마다 항상 사용하기에 이제는 지원하지 않는다.
+   This allows efficient handling of
    cases where an operator might or might not be lossy.
   </para>
  </refsect1>
