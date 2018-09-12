@@ -16,151 +16,145 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER OPERATOR FAMILY</refname>
-  <refpurpose>change the definition of an operator family</refpurpose>
+  <refpurpose>연산자 가족 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER OPERATOR FAMILY <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable> ADD
-  {  OPERATOR <replaceable class="parameter">strategy_number</replaceable> <replaceable class="parameter">operator_name</replaceable> ( <replaceable class="parameter">op_type</replaceable>, <replaceable class="parameter">op_type</replaceable> )
+ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable> ADD
+  {  OPERATOR <replaceable class="parameter">전략번호</replaceable> <replaceable class="parameter">연산자</replaceable> ( <replaceable class="parameter">연산자자료형</replaceable>, <replaceable class="parameter">연산자자료형</replaceable> )
               [ FOR SEARCH | FOR ORDER BY <replaceable class="parameter">sort_family_name</replaceable> ]
-   | FUNCTION <replaceable class="parameter">support_number</replaceable> [ ( <replaceable class="parameter">op_type</replaceable> [ , <replaceable class="parameter">op_type</replaceable> ] ) ]
-              <replaceable class="parameter">function_name</replaceable> [ ( <replaceable class="parameter">argument_type</replaceable> [, ...] ) ]
+   | FUNCTION <replaceable class="parameter">지원번호</replaceable> [ ( <replaceable class="parameter">연산자자료형</replaceable> [ , <replaceable class="parameter">연산자자료형</replaceable> ] ) ]
+              <replaceable class="parameter">함수이름</replaceable> [ ( <replaceable class="parameter">인자자료형</replaceable> [, ...] ) ]
   } [, ... ]
 
-ALTER OPERATOR FAMILY <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable> DROP
-  {  OPERATOR <replaceable class="parameter">strategy_number</replaceable> ( <replaceable class="parameter">op_type</replaceable> [ , <replaceable class="parameter">op_type</replaceable> ] )
-   | FUNCTION <replaceable class="parameter">support_number</replaceable> ( <replaceable class="parameter">op_type</replaceable> [ , <replaceable class="parameter">op_type</replaceable> ] )
+ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable> DROP
+  {  OPERATOR <replaceable class="parameter">전략번호</replaceable> ( <replaceable class="parameter">연산자자료형</replaceable> [ , <replaceable class="parameter">연산자자료형</replaceable> ] )
+   | FUNCTION <replaceable class="parameter">지원번호</replaceable> ( <replaceable class="parameter">연산자자료형</replaceable> [ , <replaceable class="parameter">연산자자료형</replaceable> ] )
   } [, ... ]
 
-ALTER OPERATOR FAMILY <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable>
-    RENAME TO <replaceable>new_name</replaceable>
+ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable>
+    RENAME TO <replaceable>새이름</replaceable>
 
-ALTER OPERATOR FAMILY <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable>
-    OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable>
+    OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 
-ALTER OPERATOR FAMILY <replaceable>name</replaceable> USING <replaceable class="parameter">index_method</replaceable>
-    SET SCHEMA <replaceable>new_schema</replaceable>
+ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable>
+    SET SCHEMA <replaceable>새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER OPERATOR FAMILY</command> changes the definition of
-   an operator family.  You can add operators and support functions
-   to the family, remove them from the family,
-   or change the family's name or owner.
+   <command>ALTER OPERATOR FAMILY</command> 명령은
+   연산자 가족 정의를 바꾼다.
+   해당 연산자 가족에 연산자나 지원 함수를 추가하거나 뺄 수 있으며,
+   그 이름이나, 소유주를 바꾼다.
   </para>
 
   <para>
-   When operators and support functions are added to a family with
-   <command>ALTER OPERATOR FAMILY</command>, they are not part of any
-   specific operator class within the family, but are just <quote>loose</>
-   within the family.  This indicates that these operators and functions
-   are compatible with the family's semantics, but are not required for
-   correct functioning of any specific index.  (Operators and functions
-   that are so required should be declared as part of an operator class,
-   instead; see <xref linkend="sql-createopclass">.)
-   <productname>PostgreSQL</productname> will allow loose members of a
-   family to be dropped from the family at any time, but members of an
-   operator class cannot be dropped without dropping the whole class and
-   any indexes that depend on it.
-   Typically, single-data-type operators
-   and functions are part of operator classes because they are needed to
-   support an index on that specific data type, while cross-data-type
-   operators and functions are made loose members of the family.
+   <command>ALTER OPERATOR FAMILY</command> 명령을 이용해서
+   연산자 가족에 연산자나 지원 함수를 추가하면, 그 가족에 속한
+   특정 연산자 클래스에 속하지는 않는다.  이를 <quote>느슨한</>
+   구성이라 한다.  즉, 이 연산자와 함수들이 해당 가족이라는 
+   의미는 있지만, 특정 인덱스에서 이 연산자들과 함수들을 
+   바르게 사용한다는 보장은 없다.  (이것을 원한다면,
+   그 연산자와 함수를 연산자 클래스로 정의해야 한다.
+   <xref linkend="sql-createopclass"> 참조)
+   <productname>PostgreSQL</productname>에서는
+   이런 느슨하게 구성된 구성원들(연산자, 함수)은 그 가족에서
+   언제든지 삭제할 수 있지만, 연산자 클래스의 구성원이 되면, 
+   그 연산자 클래스를 사용하는 인덱스가 있는 한 구성원에서
+   빠질 수 없다.
+   보통 단일 자료형에 대한 연산자와 함수 처리를 위해서는
+   연산자 클래스로 정의해서 사용하고, 
+   서로 다른 자료형에 대한 연산자와 함수 처리를 위해서는
+   연산자 가족으로 정의한다.
   </para>
 
   <para>
-   You must be a superuser to use <command>ALTER OPERATOR FAMILY</>.
-   (This restriction is made because an erroneous operator family definition
-   could confuse or even crash the server.)
+   <command>ALTER OPERATOR FAMILY</> 명령은 슈퍼유저 전용이다.
+   (이 작업은 잘못 작업하면 서버가 중지될 수도 있기 때문에, 엄격하게
+   제한 한다.)
   </para>
 
   <para>
-   <command>ALTER OPERATOR FAMILY</command> does not presently check
-   whether the operator family definition includes all the operators and
-   functions required by the index method, nor whether the operators and
-   functions form a self-consistent set.  It is the user's
-   responsibility to define a valid operator family.
+   <command>ALTER OPERATOR FAMILY</command> 명령은 
+   색인 방법에서 필요한 모든 연산자와 함수가 연산자 가족에 포함되었는지
+   확인하지 않는다.  또한 연산자와 함수가 일관성 있는 집합인지도 
+   확인하지 않는다.  올바른 연산자 가족을 만드는 책임은 사용자에게 있다.
   </para>
 
   <para>
-   Refer to <xref linkend="xindex"> for further information.
+   더 자세한 정보는 <xref linkend="xindex">에서 다룬다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing operator
-      family.
+      작업 대상 연산자 가족 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">index_method</replaceable></term>
+    <term><replaceable class="parameter">색인방법</replaceable></term>
     <listitem>
      <para>
-      The name of the index method this operator family is for.
+      해당 연산자 가족이 사용하는 색인 방법(접근 방법). 
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">strategy_number</replaceable></term>
+    <term><replaceable class="parameter">전략번호</replaceable></term>
     <listitem>
      <para>
-      The index method's strategy number for an operator
-      associated with the operator family.
+      작업 대상 연산자의 연산자 가족 내 전략 번호.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">operator_name</replaceable></term>
+    <term><replaceable class="parameter">연산자</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an operator associated
-      with the operator family.
+      연산자 가족 구성 연산자 이름(스키마 이름을 포함)
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">op_type</replaceable></term>
+    <term><replaceable class="parameter">연산자자료형</replaceable></term>
     <listitem>
      <para>
-      In an <literal>OPERATOR</> clause,
-      the operand data type(s) of the operator, or <literal>NONE</> to
-      signify a left-unary or right-unary operator.  Unlike the comparable
-      syntax in <command>CREATE OPERATOR CLASS</>, the operand data types
-      must always be specified.
+      <literal>OPERATOR</> 옵션에서 사용하는 해당 연산자의 
+      왼쪽 오른쪽 자료형. 단항 연산자면, 없는 쪽은 <literal>NONE</>.
+      <command>CREATE OPERATOR CLASS</> 명령과 달리 여기서는 반드시
+      자료형을 지정해야 한다.
      </para>
 
      <para>
-      In an <literal>ADD FUNCTION</> clause, the operand data type(s) the
-      function is intended to support, if different from
-      the input data type(s) of the function.  For B-tree comparison functions
-      and hash functions it is not necessary to specify <replaceable
-      class="parameter">op_type</replaceable> since the function's input
-      data type(s) are always the correct ones to use.  For B-tree sort
-      support functions and all functions in GiST, SP-GiST and GIN operator
-      classes, it is necessary to specify the operand data type(s) the function
-      is to be used with.
+      <literal>ADD FUNCTION</> 옵션에서 
+      그 함수의 입력 인자 자료형과 다른 반환 자료형을 사용한다면, 
+      그 자료형을 연산자 자료형으로 지정한다.
+      B-tree 비교 함수와 해시 함수는 항상 일정한 값을 사용하기 때문에, 
+      <replaceable class="parameter">연산자자료형</replaceable>을
+      지정할 필요는 없다.  반면, B-tree 정렬 함수,
+      GiST, SP-SiST, GIN 연산자인 경우는 이 연산자 자료형을 지정한다.
      </para>
 
      <para>
-      In a <literal>DROP FUNCTION</> clause, the operand data type(s) the
-      function is intended to support must be specified.
+      <literal>DROP FUNCTION</> 옵션에서는 그 함수를 식별할 필요가 
+      있는 경우 적당한 연산자 자료형을 지정해서 사용한다.
      </para>
     </listitem>
    </varlistentry>
@@ -169,85 +163,83 @@ ALTER OPERATOR FAMILY <replaceable>name</replaceable> USING <replaceable class="
     <term><replaceable class="parameter">sort_family_name</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing <literal>btree</literal> operator
-      family that describes the sort ordering associated with an ordering
-      operator.
+      정렬 연산과 관련된 작업을 지정한 
+      이미 있는 <literal>btree</literal> 연산자 가족 이름(스키마 이름 포함).
      </para>
 
      <para>
-      If neither <literal>FOR SEARCH</> nor <literal>FOR ORDER BY</> is
-      specified, <literal>FOR SEARCH</> is the default.
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term><replaceable class="parameter">support_number</replaceable></term>
-    <listitem>
-     <para>
-      The index method's support procedure number for a
-      function associated with the operator family.
+      <literal>FOR SEARCH</>, <literal>FOR ORDER BY</> 두 예약어 모두
+      사용하지 않았다면, <literal>FOR SEARCH</> 로 간주한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">function_name</replaceable></term>
+    <term><replaceable class="parameter">지원번호</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of a function that is an index
-      method support procedure for the operator family.  If no argument list
-      is specified, the name must be unique in its schema.
+      해당 연산자 가족의 구성원으로써 사용하는 함수의
+      색인 방법의 지원 번호.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argument_type</replaceable></term>
+    <term><replaceable class="parameter">함수이름</replaceable></term>
     <listitem>
      <para>
-      The parameter data type(s) of the function.
+      해당 연산자 가족 구성원 함수 이름(스키마 이름 포함).
+      인자 목록이 빠지면 그 함수는 해당 스키마 안에 하나만 있어야 한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">인자자료형</replaceable></term>
     <listitem>
      <para>
-      The new name of the operator family.
+      해당 함수 입력 매개 변수 자료형.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new owner of the operator family.
+      바뀔 새 연산자 가족 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new schema for the operator family.
+      바뀔 새 소유주.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
+    <listitem>
+     <para>
+      바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
  </variablelist>
 
   <para>
-   The <literal>OPERATOR</> and <literal>FUNCTION</>
-   clauses can appear in any order.
+   <literal>OPERATOR</> ,  <literal>FUNCTION</>
+   순서는 상관 없다.
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
    Notice that the <literal>DROP</> syntax only specifies the <quote>slot</>
@@ -283,12 +275,13 @@ ALTER OPERATOR FAMILY <replaceable>name</replaceable> USING <replaceable class="
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   The following example command adds cross-data-type operators and
-   support functions to an operator family that already contains B-tree
-   operator classes for data types <type>int4</> and <type>int2</>.
+   아래 예제는 <type>int4</>, <type>int2</> 간 서로 다른 자료형을 
+   사용해도 이 연산자 가족을 이용해서 만들어진 인덱스를 
+   사용해서 자료 검색을 하려고 할 때 다음과 같이 연산자 가족을 
+   바꾼 것이다.
   </para>
 
 <programlisting>
@@ -312,7 +305,7 @@ ALTER OPERATOR FAMILY integer_ops USING btree ADD
 </programlisting>
 
   <para>
-   To remove these entries again:
+   다시 원래 대로:
   </para>
 
 <programlisting>
@@ -337,16 +330,15 @@ ALTER OPERATOR FAMILY integer_ops USING btree DROP
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>ALTER OPERATOR FAMILY</command> statement in
-   the SQL standard.
+   <command>ALTER OPERATOR FAMILY</command> 구문은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createopfamily"></member>
