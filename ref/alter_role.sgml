@@ -16,14 +16,14 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER ROLE</refname>
-  <refpurpose>change a database role</refpurpose>
+  <refpurpose>데이터베이스 롤 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER ROLE <replaceable class="PARAMETER">role_specification</replaceable> [ WITH ] <replaceable class="PARAMETER">option</replaceable> [ ... ]
+ALTER ROLE <replaceable class="PARAMETER">롤명세</replaceable> [ WITH ] <replaceable class="PARAMETER">옵션</replaceable> [ ... ]
 
-<phrase>where <replaceable class="PARAMETER">option</replaceable> can be:</phrase>
+<phrase><replaceable class="PARAMETER">옵션</replaceable> 자리에는:</phrase>
 
       SUPERUSER | NOSUPERUSER
     | CREATEDB | NOCREATEDB
@@ -32,103 +32,100 @@ ALTER ROLE <replaceable class="PARAMETER">role_specification</replaceable> [ WIT
     | LOGIN | NOLOGIN
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
-    | CONNECTION LIMIT <replaceable class="PARAMETER">connlimit</replaceable>
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">password</replaceable>'
-    | VALID UNTIL '<replaceable class="PARAMETER">timestamp</replaceable>'
+    | CONNECTION LIMIT <replaceable class="PARAMETER">접속제한</replaceable>
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
+    | VALID UNTIL '<replaceable class="PARAMETER">타임스탬프</replaceable>'
 
-ALTER ROLE <replaceable class="PARAMETER">name</replaceable> RENAME TO <replaceable>new_name</replaceable>
+ALTER ROLE <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 
-ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">database_name</replaceable> ] SET <replaceable>configuration_parameter</replaceable> { TO | = } { <replaceable>value</replaceable> | DEFAULT }
-ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">database_name</replaceable> ] SET <replaceable>configuration_parameter</replaceable> FROM CURRENT
-ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">database_name</replaceable> ] RESET <replaceable>configuration_parameter</replaceable>
-ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">database_name</replaceable> ] RESET ALL
+ALTER ROLE { <replaceable class="PARAMETER">롤명세</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스이름</replaceable> ] SET <replaceable>환경설정_매개변수</replaceable> { TO | = } { <replaceable>값</replaceable> | DEFAULT }
+ALTER ROLE { <replaceable class="PARAMETER">롤명세</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스이름</replaceable> ] SET <replaceable>환경설정_매개변수</replaceable> FROM CURRENT
+ALTER ROLE { <replaceable class="PARAMETER">롤명세</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스이름</replaceable> ] RESET <replaceable>환경설정_매개변수</replaceable>
+ALTER ROLE { <replaceable class="PARAMETER">롤명세</replaceable> | ALL } [ IN DATABASE <replaceable class="PARAMETER">데이터베이스이름</replaceable> ] RESET ALL
 
-<phrase>where <replaceable class="PARAMETER">role_specification</replaceable> can be:</phrase>
+<phrase><replaceable class="PARAMETER">롤명세</replaceable> 자리에는:</phrase>
 
-    <replaceable class="PARAMETER">role_name</replaceable>
+    <replaceable class="PARAMETER">롤이름</replaceable>
   | CURRENT_USER
   | SESSION_USER
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER ROLE</command> changes the attributes of a
-   <productname>PostgreSQL</productname> role.
+   <command>ALTER ROLE</command> 명령은
+   <productname>PostgreSQL</productname> 롤 속성을 바꾼다.
   </para>
 
   <para>
-   The first variant of this command listed in the synopsis can change
-   many of the role attributes that can be specified in
-   <xref linkend="sql-createrole">.
-   (All the possible attributes are covered,
-   except that there are no options for adding or removing memberships; use
-   <xref linkend="SQL-GRANT"> and
-   <xref linkend="SQL-REVOKE"> for that.)
-   Attributes not mentioned in the command retain their previous settings.
-   Database superusers can change any of these settings for any role.
-   Roles having <literal>CREATEROLE</> privilege can change any of these
-   settings, but only for non-superuser and non-replication roles.
-   Ordinary roles can only change their own password.
+   첫번째 구문은 <xref linkend="sql-createrole"> 명령으로 만든 
+   롤의 여러 롤 속성들을 바꾸는 명령이다.
+   (이 구문으로 모든 롤 속성을 바꿀 수 있다.  단 구성원 관리 작업은
+   <xref linkend="SQL-GRANT">, <xref linkend="SQL-REVOKE"> 명령으로 한다.)
+   이 명령에서 따로 지정하지 않는 속성들은 기존 설정을 유지한다.
+   데이터베이스 슈퍼유저는 모든 롤의 모든 속성을 바꿀 수 있다.
+   <literal>CREATEROLE</> 권한이 있는 롤은
+   슈퍼유저도 아니고, 복제작업용 롤도 아닌 롤에 대해서 변경 작업을 할 수 있다.
+   일반 롤은 자신의 비밀번호만 바꿀 수 있다.
   </para>
 
   <para>
-   The second variant changes the name of the role.
-   Database superusers can rename any role.
-   Roles having <literal>CREATEROLE</> privilege can rename non-superuser
-   roles.
-   The current session user cannot be renamed.
-   (Connect as a different user if you need to do that.)
-   Because <literal>MD5</>-encrypted passwords use the role name as
-   cryptographic salt, renaming a role clears its password if the
-   password is <literal>MD5</>-encrypted.
+   두번째 구문은 롤 이름을 바꾼다.  데이터베이스 슈퍼유저는
+   모든 롤 이름을 바꿀 수 있고,
+   <literal>CREATEROLE</> 권한이 있는 롤은 슈퍼유저가 아닌 롤의 이름을 
+   바꿀 수 있고, 현재 접속한 롤은 자신의 이름을 바꿀 수 없다.
+   (이 이름을 바꾸려면, 다른 롤로 다시 접속해 작업한다.)
+   롤 이름은 <literal>MD5</> 암호화된 비밀번호의 소금으로 
+   사용되기 때문에, 롤 이름을 바꾸면, 그 롤에 지정되었던 
+   <literal>MD5</> 암호화된 비밀번호를 지운다.
   </para>
 
   <para>
-   The remaining variants change a role's session default for a configuration
-   variable, either for all databases or, when the <literal>IN
-   DATABASE</literal> clause is specified, only for sessions in the named
-   database.  If <literal>ALL</literal> is specified instead of a role name,
-   this changes the setting for all roles.  Using <literal>ALL</literal>
-   with <literal>IN DATABASE</literal> is effectively the same as using the
-   command <literal>ALTER DATABASE ... SET ...</literal>.
+   나머지 구문은 지정한 롤이 접속할 때 사용할 서버 환경 설정 매개 변수 값을 
+   지정하는 명령이다. 여기서 <literal>IN DATABASE</literal> 옵션을 지정하면
+   해당 데이터베이스로 접속할 때만 반영한다.
+   특정 롤 이름 대신에, <literal>ALL</literal>을 지정하면, 
+   모든 사용자를 대상으로 한다.  <literal>ALL</literal>을 쓰면서
+   <literal>IN DATABASE</literal> 옵션을 쓰면, 
+   <literal>ALTER DATABASE ... SET ...</literal> 명령과 같은 효과가
+   있다.
   </para>
 
   <para>
-   Whenever the role subsequently
-   starts a new session, the specified value becomes the session
-   default, overriding whatever setting is present in
-   <filename>postgresql.conf</> or has been received from the <command>postgres</command>
-   command line. This only happens at login time; executing
-   <xref linkend="sql-set-role"> or
-   <xref linkend="sql-set-session-authorization"> does not cause new
-   configuration values to be set.
-   Settings set for all databases are overridden by database-specific settings
-   attached to a role.  Settings for specific databases or specific roles override
-   settings for all roles.
+   이렇게 지정한 설정값들은 로그인 할 때 세션 기본 값으로 처리되며, 
+   <filename>postgresql.conf</> 파일에서 지정한 설정값이나, 
+   <command>postgres</command> 명령의 명령행 옵션으로 지정한 설정값은
+   이 때 무시되고 여기서 지정한 값을 사용한다.  이 작업은
+   로그인 할 때만 일어난다.  <xref linkend="sql-set-role"> 명령이나,
+   <xref linkend="sql-set-session-authorization"> 명령에서는 
+   이 설정값 반영을 하지 않는다.
+   데이터베이스 차원으로 지정한 설정도 같은 설정을 롤 차원으로 했다면, 
+   롤 차원의 설정값을 사용한다. 데이터베이스 차원의 설정이나, 
+   롤 차원의 설정은 모든 롤을 대상으로 지정한 설정 값보다 우선 적용된다.
   </para>
 
   <para>
-   Superusers can change anyone's session defaults. Roles having
-   <literal>CREATEROLE</> privilege can change defaults for non-superuser
-   roles. Ordinary roles can only set defaults for themselves.
-   Certain configuration variables cannot be set this way, or can only be
-   set if a superuser issues the command.  Only superusers can change a setting
-   for all roles in all databases.
+   슈퍼유저는 모든 롤의 세션 기본 값을 바꿀 수 있다.
+   <literal>CREATEROLE</> 권한이 있는 롤은 
+   슈퍼유저가 아닌 롤의 설정값을 바꿀 있다.
+   일반 사용자는 자신의 설정값만 바꿀 수 있다.
+   몇몇 환경 설정 매개 변수는 이 명령으로 바꿀 수 없으며,
+   슈퍼유저가 그런 변수값을 바꾸는 작업을 해야 바뀐다.
+   슈퍼유저만 모든 데이터베이스 안 모든 롤의 설정을 바꿀 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
     <variablelist>
      <varlistentry>
-      <term><replaceable class="PARAMETER">name</replaceable></term>
+      <term><replaceable class="PARAMETER">이름</replaceable></term>
       <listitem>
        <para>
-        The name of the role whose attributes are to be altered.
+        작업 대상 롤 이름.
        </para>
       </listitem>
      </varlistentry>
@@ -137,7 +134,7 @@ ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | A
       <term><literal>CURRENT_USER</literal></term>
       <listitem>
        <para>
-        Alter the current user instead of an explicitly identified role.
+        현재 접속한 롤을 작업 대상으로 함.
        </para>
       </listitem>
      </varlistentry>
@@ -146,8 +143,7 @@ ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | A
       <term><literal>SESSION_USER</literal></term>
       <listitem>
        <para>
-        Alter the current session user instead of an explicitly identified
-        role.
+        현재 세션 롤을 작업 대상으로 함.
        </para>
       </listitem>
      </varlistentry>
@@ -168,64 +164,65 @@ ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | A
       <term><literal>BYPASSRLS</literal></term>
       <term><literal>NOBYPASSRLS</literal></term>
       <term><literal>CONNECTION LIMIT</literal> <replaceable class="parameter">connlimit</replaceable></term>
-      <term>[ <literal>ENCRYPTED</> ] <literal>PASSWORD</> <replaceable class="parameter">password</replaceable></term>
-      <term><literal>VALID UNTIL</literal> '<replaceable class="parameter">timestamp</replaceable>'</term>
+      <term>[ <literal>ENCRYPTED</> ] <literal>PASSWORD</> <replaceable class="parameter">비밀번호</replaceable></term>
+      <term><literal>VALID UNTIL</literal> '<replaceable class="parameter">타임스탬프</replaceable>'</term>
       <listitem>
        <para>
-        These clauses alter attributes originally set by
-        <xref linkend="SQL-CREATEROLE">. For more information, see the
-        <command>CREATE ROLE</command> reference page.
+        <xref linkend="SQL-CREATEROLE"> 에서 지정한 각 속성을 
+        바꾼다.
+        자세한 것은
+        <command>CREATE ROLE</command> 명령 설명서를 참조하면 된다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable>new_name</replaceable></term>
+      <term><replaceable>새이름</replaceable></term>
       <listitem>
        <para>
-        The new name of the role.
+        바뀔 새 롤 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-       <term><replaceable>database_name</replaceable></term>
+       <term><replaceable>데이터베이스이름</replaceable></term>
        <listitem>
          <para>
-           The name of the database the configuration variable should be set in.
+           서버 환경 설정 값을 해당 데이터베이스를 사용할 때만 적용한다.
          </para>
        </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable>configuration_parameter</replaceable></term>
-      <term><replaceable>value</replaceable></term>
+      <term><replaceable>환경설정_매개변수</replaceable></term>
+      <term><replaceable>값</replaceable></term>
       <listitem>
        <para>
-        Set this role's session default for the specified configuration
-        parameter to the given value.  If
-        <replaceable>value</replaceable> is <literal>DEFAULT</literal>
-        or, equivalently, <literal>RESET</literal> is used, the
-        role-specific variable setting is removed, so the role will
-        inherit the system-wide default setting in new sessions.  Use
-        <literal>RESET ALL</literal> to clear all role-specific settings.
-        <literal>SET FROM CURRENT</> saves the session's current value of
-        the parameter as the role-specific value.
-        If <literal>IN DATABASE</literal> is specified, the configuration
-        parameter is set or removed for the given role and database only.
+        해당 롤이 서버에 접속해서 세션이 만들어지면 적용할 
+        환경 설정 매개 변수 값을 지정한다.  <replaceable>값</replaceable>으로
+        <literal>DEFAULT</literal>를 지정하거나, 
+        <literal>RESET</literal> 명령을 사용하면, 
+        롤 차원에 지정한 설정을 지운다.  즉 서버 차원에서 
+        지정한 설정 값을 다음 세션부터 사용한다.
+        <literal>RESET ALL</literal> 명령은 모든 롤 차원으로 사용하는
+        설정 값들을 지운다.  <literal>SET FROM CURRENT</> 명령은
+        현재 세션에서 쓰고 있는 설정 값을 롤 차원의 설정값으로 지정한다.
+        <literal>IN DATABASE</literal> 옵션이 추가 되면,
+        이 설정이 해당 데이터베이스로 접속할 경우 한정한다.
        </para>
 
        <para>
-        Role-specific variable settings take effect only at login;
-        <xref linkend="sql-set-role"> and
-        <xref linkend="sql-set-session-authorization">
-        do not process role-specific variable settings.
+        여기서 지정하는 롤 차원의 설정 값들은 로그인 할 때만 
+        반영한다; <xref linkend="sql-set-role">,
+        <xref linkend="sql-set-session-authorization"> 명령을
+        실행할 때는 롤 차원의 설정 값 처리는 하지 않는다.
        </para>
 
        <para>
-        See <xref linkend="sql-set"> and <xref
-        linkend="runtime-config"> for more information about allowed
-        parameter names and values.
+        사용할 수 있는 매개 변수 이름과 그 값에 대한 
+        자세한 설명은 <xref linkend="sql-set"> 명령 설명서와 <xref
+        linkend="runtime-config">에서 다루고 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -233,44 +230,44 @@ ALTER ROLE { <replaceable class="PARAMETER">role_specification</replaceable> | A
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Use <xref linkend="SQL-CREATEROLE">
-   to add new roles, and <xref linkend="SQL-DROPROLE"> to remove a role.
+   새 롤을 만들 때는 <xref linkend="SQL-CREATEROLE"> 명령을 사용하고, 
+   특정 롤을 지울 때는 <xref linkend="SQL-DROPROLE"> 명령을 사용한다.
   </para>
 
   <para>
-   <command>ALTER ROLE</command> cannot change a role's memberships.
-   Use <xref linkend="SQL-GRANT"> and
-   <xref linkend="SQL-REVOKE">
-   to do that.
+   <command>ALTER ROLE</command> 명령은 그 롤의 구성원 관리를 할 수 없다.
+   이 작업은 <xref linkend="SQL-GRANT">, <xref linkend="SQL-REVOKE">
+   명령으로 한다.
   </para>
 
   <para>
-   Caution must be exercised when specifying an unencrypted password
-   with this command.  The password will be transmitted to the server
-   in cleartext, and it might also be logged in the client's command
-   history or the server log.  <xref linkend="app-psql">
-   contains a command
-   <command>\password</command> that can be used to change a
-   role's password without exposing the cleartext password.
+   이 명령을 이용해서 롤 비밀번호를 바꿀 때는 주의해야 한다.
+   이 비밀번호는 일반 문자열로 입력받기 때문에, 
+   클라이언트에서 명령 내역이나, 서버 로그에 
+   이 비밀번호가 그대로 남아 있을 수 있다.
+   사용자가 입력하는 일반 문자열로 된 비밀번호를 어디에도 
+   남기지 않으려면, <xref linkend="app-psql"> 프로그램을 
+   실행해서 거기서 사용하는 <command>\password</command>
+   내장 명령을 이용하면 된다.
   </para>
 
   <para>
-   It is also possible to tie a
-   session default to a specific database rather than to a role; see
-   <xref linkend="sql-alterdatabase">.
-   If there is a conflict, database-role-specific settings override role-specific
-   ones, which in turn override database-specific ones.
+   또 다른 방식으로 이 개별 환경 설정 매개 변수 값은 
+   롤 차원이 아니라, 데이터베이스 차원에서 지정할 수도 있다.
+   <xref linkend="sql-alterdatabase"> 명령 설명서 참고.
+   같은 환경 설정 매개 변수에 대해서 각각 그 값이 다르다면, 
+   롤 차원에서 지정한 설정 값이 반영 된다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Change a role's password:
+   롤 비밀번호 바꾸기:
 
 <programlisting>
 ALTER ROLE davide WITH PASSWORD 'hu8jmn3';
@@ -278,7 +275,7 @@ ALTER ROLE davide WITH PASSWORD 'hu8jmn3';
   </para>
 
   <para>
-   Remove a role's password:
+   롤 비밀번호 없애기:
 
 <programlisting>
 ALTER ROLE davide WITH PASSWORD NULL;
@@ -286,23 +283,21 @@ ALTER ROLE davide WITH PASSWORD NULL;
   </para>
 
   <para>
-   Change a password expiration date, specifying that the password
-   should expire at midday on 4th May 2015 using
-   the time zone which is one hour ahead of <acronym>UTC</>:
+   비밀번호 유효 기한 지정:
 <programlisting>
 ALTER ROLE chris VALID UNTIL 'May 4 12:00:00 2015 +1';
 </programlisting>
   </para>
 
   <para>
-   Make a password valid forever:
+   비밀번호 유효 기한 없애기:
 <programlisting>
 ALTER ROLE fred VALID UNTIL 'infinity';
 </programlisting>
   </para>
 
   <para>
-   Give a role the ability to create other roles and new databases:
+   다른 롤을 만들거나 새 데이터베이스를 만들 수 있는 역할 부여:
 
 <programlisting>
 ALTER ROLE miriam CREATEROLE CREATEDB;
@@ -310,8 +305,7 @@ ALTER ROLE miriam CREATEROLE CREATEDB;
   </para>
 
   <para>
-   Give a role a non-default setting of the
-   <xref linkend="guc-maintenance-work-mem"> parameter:
+   <xref linkend="guc-maintenance-work-mem"> 환경 설정 매개 변수값 개별 지정:
 
 <programlisting>
 ALTER ROLE worker_bee SET maintenance_work_mem = 100000;
@@ -319,8 +313,9 @@ ALTER ROLE worker_bee SET maintenance_work_mem = 100000;
   </para>
 
   <para>
-   Give a role a non-default, database-specific setting of the
-   <xref linkend="guc-client-min-messages"> parameter:
+   특정 롤과 특정 데이터베이스 접속에 대해서
+   <xref linkend="guc-client-min-messages">
+   환경 설정 매개 변수값 개별 지정:
 
 <programlisting>
 ALTER ROLE fred IN DATABASE devel SET client_min_messages = DEBUG;
@@ -328,16 +323,16 @@ ALTER ROLE fred IN DATABASE devel SET client_min_messages = DEBUG;
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The <command>ALTER ROLE</command> statement is a
-   <productname>PostgreSQL</productname> extension.
+   <command>ALTER ROLE</command> 구문은 
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createrole"></member>
