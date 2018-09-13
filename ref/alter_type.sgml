@@ -17,42 +17,42 @@ PostgreSQL documentation
  <refnamediv>
   <refname>ALTER TYPE</refname>
   <refpurpose>
-   change the definition of a type
+   자료형 정의 바꾸기
   </refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER TYPE <replaceable class="PARAMETER">name</replaceable> <replaceable class="PARAMETER">action</replaceable> [, ... ]
-ALTER TYPE <replaceable class="PARAMETER">name</replaceable> OWNER TO { <replaceable class="PARAMETER">new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME ATTRIBUTE <replaceable class="PARAMETER">attribute_name</replaceable> TO <replaceable class="PARAMETER">new_attribute_name</replaceable> [ CASCADE | RESTRICT ]
-ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME TO <replaceable class="PARAMETER">new_name</replaceable>
-ALTER TYPE <replaceable class="PARAMETER">name</replaceable> SET SCHEMA <replaceable class="PARAMETER">new_schema</replaceable>
-ALTER TYPE <replaceable class="PARAMETER">name</replaceable> ADD VALUE [ IF NOT EXISTS ] <replaceable class="PARAMETER">new_enum_value</replaceable> [ { BEFORE | AFTER } <replaceable class="PARAMETER">neighbor_enum_value</replaceable> ]
-ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <replaceable class="PARAMETER">existing_enum_value</replaceable> TO <replaceable class="PARAMETER">new_enum_value</replaceable>
+ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> <replaceable class="PARAMETER">작업</replaceable> [, ... ]
+ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME ATTRIBUTE <replaceable class="PARAMETER">속성이름</replaceable> TO <replaceable class="PARAMETER">새속성이름</replaceable> [ CASCADE | RESTRICT ]
+ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
+ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> SET SCHEMA <replaceable class="PARAMETER">새스키마</replaceable>
+ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> ADD VALUE [ IF NOT EXISTS ] <replaceable class="PARAMETER">새나열값</replaceable> [ { BEFORE | AFTER } <replaceable class="PARAMETER">인근나열값</replaceable> ]
+ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <replaceable class="PARAMETER">기존나열값</replaceable> TO <replaceable class="PARAMETER">새나열값</replaceable>
 
-<phrase>where <replaceable class="PARAMETER">action</replaceable> is one of:</phrase>
+<phrase><replaceable class="PARAMETER">작업</replaceable> 자리에는:</phrase>
 
-    ADD ATTRIBUTE <replaceable class="PARAMETER">attribute_name</replaceable> <replaceable class="PARAMETER">data_type</replaceable> [ COLLATE <replaceable class="PARAMETER">collation</replaceable> ] [ CASCADE | RESTRICT ]
-    DROP ATTRIBUTE [ IF EXISTS ] <replaceable class="PARAMETER">attribute_name</replaceable> [ CASCADE | RESTRICT ]
-    ALTER ATTRIBUTE <replaceable class="PARAMETER">attribute_name</replaceable> [ SET DATA ] TYPE <replaceable class="PARAMETER">data_type</replaceable> [ COLLATE <replaceable class="PARAMETER">collation</replaceable> ] [ CASCADE | RESTRICT ]
+    ADD ATTRIBUTE <replaceable class="PARAMETER">속성이름</replaceable> <replaceable class="PARAMETER">자료형</replaceable> [ COLLATE <replaceable class="PARAMETER">문자정렬규칙</replaceable> ] [ CASCADE | RESTRICT ]
+    DROP ATTRIBUTE [ IF EXISTS ] <replaceable class="PARAMETER">속성이름</replaceable> [ CASCADE | RESTRICT ]
+    ALTER ATTRIBUTE <replaceable class="PARAMETER">속성이름</replaceable> [ SET DATA ] TYPE <replaceable class="PARAMETER">자료형</replaceable> [ COLLATE <replaceable class="PARAMETER">문자정렬규칙</replaceable> ] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER TYPE</command> changes the definition of an existing type.
-   There are several subforms:
+   <command>ALTER TYPE</command> 명령은 사용자 정의 자료형의 속성을 바꾼다.
+   아래와 같이 여러 형태의 구문을 사용할 수 있다:
 
   <variablelist>
    <varlistentry>
     <term><literal>ADD ATTRIBUTE</literal></term>
     <listitem>
      <para>
-      This form adds a new attribute to a composite type, using the same syntax as
-      <xref linkend="SQL-CREATETYPE">.
+      복합 자료형에서 새 속성을 추가한다. 문법은 
+      <xref linkend="SQL-CREATETYPE"> 명령 설명서에 있는 것과 같다.
      </para>
     </listitem>
    </varlistentry>
@@ -61,10 +61,9 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
     <term><literal>DROP ATTRIBUTE [ IF EXISTS ]</literal></term>
     <listitem>
      <para>
-      This form drops an attribute from a composite type.
-      If <literal>IF EXISTS</literal> is specified and the attribute
-      does not exist, no error is thrown. In this case a notice
-      is issued instead.
+      해당 복합 자료형에서 한 속성을 뺀다.
+      <literal>IF EXISTS</literal> 옵션을 사용하면 해당 속성이 
+      없더라도 오류로 처리하지 않고, 알림 메시지만 보여주고 마친다.
      </para>
     </listitem>
    </varlistentry>
@@ -73,7 +72,7 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
     <term><literal>SET DATA TYPE</literal></term>
     <listitem>
      <para>
-      This form changes the type of an attribute of a composite type.
+      해당 복합 자료형에 있는 한 속성의 자료형을 바꾼다.
      </para>
     </listitem>
    </varlistentry>
@@ -82,7 +81,7 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
     <term><literal>OWNER</literal></term>
     <listitem>
      <para>
-      This form changes the owner of the type.
+      해당 자료형의 소유주를 바꾼다.
      </para>
     </listitem>
    </varlistentry>
@@ -91,8 +90,8 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
     <term><literal>RENAME</literal></term>
     <listitem>
      <para>
-      This form changes the name of the type or the name of an
-      individual attribute of a composite type.
+      해당 자료형의 이름을 바꾸거나, 그 자료형이 복합 자료형인 경우
+      개별 속성 이름을 바꾼다.
      </para>
     </listitem>
    </varlistentry>
@@ -101,7 +100,7 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
     <term><literal>SET SCHEMA</literal></term>
     <listitem>
      <para>
-      This form moves the type into another schema.
+      해당 자료형의 스키마를 바꾼다.
      </para>
     </listitem>
    </varlistentry>
@@ -110,16 +109,13 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
     <term><literal>ADD VALUE [ IF NOT EXISTS ] [ BEFORE | AFTER ]</literal></term>
     <listitem>
      <para>
-      This form adds a new value to an enum type.  The new value's place in
-      the enum's ordering can be specified as being <literal>BEFORE</literal>
-      or <literal>AFTER</literal> one of the existing values.  Otherwise,
-      the new item is added at the end of the list of values.
+      나열형 자료에 새 나열값을 추가한다.  추가될 위치는
+      기준값과, 그 값의 <literal>BEFORE</literal>, <literal>AFTER</literal>
+      옵션으로 지정한다.  끼워넣을 위치를 지정하지 않으면 맨 뒤에 추가한다.
      </para>
      <para>
-      If <literal>IF NOT EXISTS</literal> is specified, it is not an error if
-      the type already contains the new value: a notice is issued but no other
-      action is taken. Otherwise, an error will occur if the new value is
-      already present.
+      <literal>IF NOT EXISTS</literal> 옵션을 사용하면, 이미 추가할 나열값이
+      있는 경우 오류로 처리하지 않고 알림 메시지만 보여준다.
      </para>
     </listitem>
    </varlistentry>
@@ -128,10 +124,9 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
     <term><literal>RENAME VALUE</literal></term>
     <listitem>
      <para>
-      This form renames a value of an enum type.
-      The value's place in the enum's ordering is not affected.
-      An error will occur if the specified value is not present or the new
-      name is already present.
+      나열형 자료의 한 나열값을 바꾼다.
+      그 값의 위치는 상관 없다.  기존 나열값이 없거나, 이미 
+      새 나열값이 있는 경우는 오류로 처리한다.
      </para>
     </listitem>
    </varlistentry>
@@ -139,125 +134,120 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
   </para>
 
   <para>
-   The <literal>ADD ATTRIBUTE</literal>, <literal>DROP
-   ATTRIBUTE</literal>, and <literal>ALTER ATTRIBUTE</literal> actions
-   can be combined into a list of multiple alterations to apply in
-   parallel.  For example, it is possible to add several attributes
-   and/or alter the type of several attributes in a single command.
+   <literal>ADD ATTRIBUTE</literal>, <literal>DROP
+   ATTRIBUTE</literal>, <literal>ALTER ATTRIBUTE</literal> 작업은
+   하나의 명령에서 여러 번 사용할 수 있다.  
   </para>
 
   <para>
-   You must own the type to use <command>ALTER TYPE</>.
-   To change the schema of a type, you must also have
-   <literal>CREATE</literal> privilege on the new schema.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the type's schema.  (These restrictions enforce that altering the owner
-   doesn't do anything you couldn't do by dropping and recreating the type.
-   However, a superuser can alter ownership of any type anyway.)
-   To add an attribute or alter an attribute type, you must also
-   have <literal>USAGE</literal> privilege on the data type.
+   <command>ALTER TYPE</> 명령은 해당 자료형 소유주가 실행할 수 있다.
+   스키마를 바꾸는 경우, 해당 소유주는 새 스키마에 대해서
+   <literal>CREATE</literal> 권한이 있어야 한다.
+   소유주는 바꾸는 경우, 기존 소유주는 직간접적으로
+   새 소유주의 소속원이어야하며, 새 소유주는 해당 스키마에 대해서
+   <literal>CREATE</literal> 권한이 있어야 한다.
+   (새 소유주가 해당 자료형을 지우거나, 다시 만들 수 있어야 하기 때문이다.
+   슈퍼유저로 작업할 때는 이런 제약이 없다.)
+   복합 자료형에 한 속성을 추가하거나, 그 속성을 변경할 때는, 
+   그 속성용 자료형에 대해서 <literal>USAGE</literal> 권한이 있어야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <para>
     <variablelist>
      <varlistentry>
-      <term><replaceable class="PARAMETER">name</replaceable></term>
+      <term><replaceable class="PARAMETER">이름</replaceable></term>
       <listitem>
        <para>
-        The name (possibly schema-qualified) of an existing type to
-        alter.
+        작업 대상 자료형 이름(스키마 이름 포함).
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_name</replaceable></term>
+      <term><replaceable class="PARAMETER">새이름</replaceable></term>
       <listitem>
        <para>
-        The new name for the type.
+        바뀔 새 자료형 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_owner</replaceable></term>
+      <term><replaceable class="PARAMETER">새소유주</replaceable></term>
       <listitem>
        <para>
-        The user name of the new owner of the type.
+        해당 자료형의 바뀔 새 소유주 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_schema</replaceable></term>
+      <term><replaceable class="PARAMETER">새스키마</replaceable></term>
       <listitem>
        <para>
-        The new schema for the type.
+        해당 자료형의 바뀔 새 스키마 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">attribute_name</replaceable></term>
+      <term><replaceable class="PARAMETER">속성이름</replaceable></term>
       <listitem>
        <para>
-        The name of the attribute to add, alter, or drop.
+        해당 자료형에 추가, 삭제, 변경할 속성 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_attribute_name</replaceable></term>
+      <term><replaceable class="PARAMETER">새속성이름</replaceable></term>
       <listitem>
        <para>
-        The new name of the attribute to be renamed.
+        바뀔 새 속성 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">data_type</replaceable></term>
+      <term><replaceable class="PARAMETER">자료형</replaceable></term>
       <listitem>
        <para>
-        The data type of the attribute to add, or the new type of the
-        attribute to alter.
+        추가, 변경할 속성 자료형 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_enum_value</replaceable></term>
+      <term><replaceable class="PARAMETER">새나열값</replaceable></term>
       <listitem>
        <para>
-        The new value to be added to an enum type's list of values,
-        or the new name to be given to an existing value.
-        Like all enum literals, it needs to be quoted.
+        나열형 자료에서 새로 추가할 나열값.
+        나열형에서 값은 작은 따옴표를 사용해서 지정한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">neighbor_enum_value</replaceable></term>
+      <term><replaceable class="PARAMETER">인근나열값</replaceable></term>
       <listitem>
        <para>
-        The existing enum value that the new value should be added immediately
-        before or after in the enum type's sort ordering.
-        Like all enum literals, it needs to be quoted.
+        추가할 나열값을 기존 목록에서 끼워 넣고자 할 때, 기준이 되는
+        나열값. 이 값을 기준으로 앞에, 또는 뒤에 새 나열값을 끼워 넣는다.
+        나열형에서 값은 작은 따옴표를 사용해서 지정한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">existing_enum_value</replaceable></term>
+      <term><replaceable class="PARAMETER">기존나열값</replaceable></term>
       <listitem>
        <para>
-        The existing enum value that should be renamed.
-        Like all enum literals, it needs to be quoted.
+        나열형에서 값을 바꿀 기존 나열값.
+        나열형에서 값은 작은 따옴표를 사용해서 지정한다.
        </para>
       </listitem>
      </varlistentry>
@@ -266,8 +256,8 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
       <term><literal>CASCADE</literal></term>
       <listitem>
        <para>
-        Automatically propagate the operation to typed tables of the
-        type being altered, and their descendants.
+        바꿀 자료형이 자료형처럼 사용하는 테이블인 경우, 
+        의존 관계가 있는 모든 자료형도 모두 바꾼다.
        </para>
       </listitem>
      </varlistentry>
@@ -276,8 +266,8 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
       <term><literal>RESTRICT</literal></term>
       <listitem>
        <para>
-        Refuse the operation if the type being altered is the type of a
-        typed table.  This is the default.
+        바꿀 자료형이 자료형처럼 사용하는 테이블이면, 
+        작업을 하지 않는다.  이것이 기본값이다.
        </para>
       </listitem>
      </varlistentry>
@@ -287,85 +277,83 @@ ALTER TYPE <replaceable class="PARAMETER">name</replaceable> RENAME VALUE <repla
   </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   <command>ALTER TYPE ... ADD VALUE</> (the form that adds a new value to an
-   enum type) cannot be executed inside a transaction block.
+   <command>ALTER TYPE ... ADD VALUE</> (새 나열값 추가 작업)
+   구문은 트랜잭션 작업 중에는 사용할 수 없다.
   </para>
 
   <para>
-   Comparisons involving an added enum value will sometimes be slower than
-   comparisons involving only original members of the enum type.  This will
-   usually only occur if <literal>BEFORE</literal> or <literal>AFTER</literal>
-   is used to set the new value's sort position somewhere other than at the
-   end of the list.  However, sometimes it will happen even though the new
-   value is added at the end (this occurs if the OID counter <quote>wrapped
-   around</> since the original creation of the enum type).  The slowdown is
-   usually insignificant; but if it matters, optimal performance can be
-   regained by dropping and recreating the enum type, or by dumping and
-   reloading the database.
+   이 명령으로 추가된 나열값을 사용하는 작업이, 
+   해당 나열형 자료형을 처음 만들 때부터 있었던 나열값을 사용하는 
+   작업보다 몇몇 상황에서는 더 느릴 수 있다.
+   <literal>BEFORE</literal> 또는 <literal>AFTER</literal> 옵션을
+   사용해서 중간에 끼워진 나열값인 경우 그렇다. 또한,
+   나열값을 목록의 맨 뒤에 추가했음에도 불구하고, 느린 경우도 
+   있다(OID 순환으로 새로 추가된 나열값의 OID가 기존 나열값보다 
+   작은 경우).  일반적으로 이 느림을 무시해도 될 정도이나, 
+   최적의 속도를 보장해야하는 상황이라면, 해당 자료형을 다시 만들거나, 
+   데이터베이스 전체를 덤프하고 다시 복원해서 속도 문제를 개선할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To rename a data type:
+   자료형 이름 바꾸기:
 <programlisting>
 ALTER TYPE electronic_mail RENAME TO email;
 </programlisting>
   </para>
 
   <para>
-   To change the owner of the type <literal>email</literal>
-   to <literal>joe</literal>:
+   <literal>email</literal> 자료형의 소유주를 <literal>joe</literal>로 바꾸기:
 <programlisting>
 ALTER TYPE email OWNER TO joe;
 </programlisting>
   </para>
 
   <para>
-   To change the schema of the type <literal>email</literal>
-   to <literal>customers</literal>:
+   <literal>email</literal> 자료형의 스키마를 <literal>customers</literal>로:
 <programlisting>
 ALTER TYPE email SET SCHEMA customers;
 </programlisting>
   </para>
 
   <para>
-   To add a new attribute to a type:
+   속성 추가하기:
 <programlisting>
 ALTER TYPE compfoo ADD ATTRIBUTE f3 int;
 </programlisting>
   </para>
 
   <para>
-   To add a new value to an enum type in a particular sort position:
+   나열형 자료에서 red 뒤에 orange 끼워넣기:
 <programlisting>
 ALTER TYPE colors ADD VALUE 'orange' AFTER 'red';
 </programlisting>
   </para>
 
   <para>
-   To rename an enum value:
+   나열값 바꾸기:
 <programlisting>
 ALTER TYPE colors RENAME VALUE 'purple' TO 'mauve';
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The variants to add and drop attributes are part of the SQL
-   standard; the other variants are PostgreSQL extensions.
+   속성 추가 삭제 구문은 표준 SQL 구문이며, 나머지는
+   PostgreSQL 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1 id="SQL-ALTERTYPE-see-also">
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createtype"></member>
