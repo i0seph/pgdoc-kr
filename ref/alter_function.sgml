@@ -16,146 +16,141 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER FUNCTION</refname>
-  <refpurpose>change the definition of a function</refpurpose>
+  <refpurpose>함수 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="parameter">argmode</replaceable> ] [ <replaceable class="parameter">argname</replaceable> ] <replaceable class="parameter">argtype</replaceable> [, ...] ] ) ]
-    <replaceable class="PARAMETER">action</replaceable> [ ... ] [ RESTRICT ]
-ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="parameter">argmode</replaceable> ] [ <replaceable class="parameter">argname</replaceable> ] <replaceable class="parameter">argtype</replaceable> [, ...] ] ) ]
-    RENAME TO <replaceable>new_name</replaceable>
-ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="parameter">argmode</replaceable> ] [ <replaceable class="parameter">argname</replaceable> ] <replaceable class="parameter">argtype</replaceable> [, ...] ] ) ]
-    OWNER TO { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="parameter">argmode</replaceable> ] [ <replaceable class="parameter">argname</replaceable> ] <replaceable class="parameter">argtype</replaceable> [, ...] ] ) ]
-    SET SCHEMA <replaceable>new_schema</replaceable>
-ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="parameter">argmode</replaceable> ] [ <replaceable class="parameter">argname</replaceable> ] <replaceable class="parameter">argtype</replaceable> [, ...] ] ) ]
-    DEPENDS ON EXTENSION <replaceable>extension_name</replaceable>
+ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
+    <replaceable class="PARAMETER">작업</replaceable> [ ... ] [ RESTRICT ]
+ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
+    RENAME TO <replaceable>새이름</replaceable>
+ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
+    OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
+    SET SCHEMA <replaceable>새스키마</replaceable>
+ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
+    DEPENDS ON EXTENSION <replaceable>확장모듈이름</replaceable>
 
-<phrase>where <replaceable class="PARAMETER">action</replaceable> is one of:</phrase>
+<phrase><replaceable class="PARAMETER">작업</replaceable> 자리에는:</phrase>
 
     CALLED ON NULL INPUT | RETURNS NULL ON NULL INPUT | STRICT
     IMMUTABLE | STABLE | VOLATILE | [ NOT ] LEAKPROOF
     [ EXTERNAL ] SECURITY INVOKER | [ EXTERNAL ] SECURITY DEFINER
     PARALLEL { UNSAFE | RESTRICTED | SAFE }
-    COST <replaceable class="parameter">execution_cost</replaceable>
-    ROWS <replaceable class="parameter">result_rows</replaceable>
-    SET <replaceable class="parameter">configuration_parameter</replaceable> { TO | = } { <replaceable class="parameter">value</replaceable> | DEFAULT }
-    SET <replaceable class="parameter">configuration_parameter</replaceable> FROM CURRENT
-    RESET <replaceable class="parameter">configuration_parameter</replaceable>
+    COST <replaceable class="parameter">실행비용</replaceable>
+    ROWS <replaceable class="parameter">반환자료수</replaceable>
+    SET <replaceable class="parameter">환경설정_매개변수</replaceable> { TO | = } { <replaceable class="parameter">값</replaceable> | DEFAULT }
+    SET <replaceable class="parameter">환경설정_매개변수</replaceable> FROM CURRENT
+    RESET <replaceable class="parameter">환경설정_매개변수</replaceable>
     RESET ALL
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER FUNCTION</command> changes the definition of a
-   function.
+   <command>ALTER FUNCTION</command> 명령은 함수 정의를 바꾼다.
   </para>
 
   <para>
-   You must own the function to use <command>ALTER FUNCTION</>.
-   To change a function's schema, you must also have <literal>CREATE</>
-   privilege on the new schema.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the function's schema.  (These restrictions enforce that altering the owner
-   doesn't do anything you couldn't do by dropping and recreating the function.
-   However, a superuser can alter ownership of any function anyway.)
+   <command>ALTER FUNCTION</> 명령은 해당 함수 소유주가 실행할 수 있다.
+   스키마를 바꾸는 경우, 새 스키마에 대한 <literal>CREATE</> 권한이 있어야 한다.
+   소유주를 바꾸는 경우, 현재 소유주는 직간접적으로 새 소유주의
+   구성원이어야 하며, 새 소유주는 해당 스키마에 대해서
+   <literal>CREATE</> 권한이 있어야 한다. (새 사용자가
+   그 함수를 지우거나, 새로 만들 수 있어야 하기 때문이다.
+   슈퍼유저는 이런 제한 없이 작업할 수 있다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing function.  If no
-      argument list is specified, the name must be unique in its schema.
+      작업 대상 함수 이름(스키마 이름 포함).
+      인자 목록을 지정하지 않는다면, 그 함수 이름과 같은 함수는
+      해당 스키마 안에 딱 하나만 있어야한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argmode</replaceable></term>
+    <term><replaceable class="parameter">인자모드</replaceable></term>
 
     <listitem>
      <para>
-      The mode of an argument: <literal>IN</>, <literal>OUT</>,
-      <literal>INOUT</>, or <literal>VARIADIC</>.
-      If omitted, the default is <literal>IN</>.
-      Note that <command>ALTER FUNCTION</command> does not actually pay
-      any attention to <literal>OUT</> arguments, since only the input
-      arguments are needed to determine the function's identity.
-      So it is sufficient to list the <literal>IN</>, <literal>INOUT</>,
-      and <literal>VARIADIC</> arguments.
+      사용할 수 모드값은 <literal>IN</>, <literal>OUT</>,
+      <literal>INOUT</>, <literal>VARIADIC</>.
+      생략하면 <literal>IN</>으로 간주한다.
+      <command>ALTER FUNCTION</command> 명령에서 해당 함수를 식별할 
+      때 <literal>OUT</> 인자를 고려하지 않고, 단지 입력 인자만
+      고려한다.  그래서, <literal>IN</>, <literal>INOUT</>,
+      <literal>VARIADIC</> 인자만 지정해도 된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argname</replaceable></term>
+    <term><replaceable class="parameter">인자이름</replaceable></term>
 
     <listitem>
      <para>
-      The name of an argument.
-      Note that <command>ALTER FUNCTION</command> does not actually pay
-      any attention to argument names, since only the argument data
-      types are needed to determine the function's identity.
+      인자 이름.  <command>ALTER FUNCTION</command> 명령에서는
+      해당 함수를 식별할 때 이 이름은 전혀 고려하지 않는다. 
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argtype</replaceable></term>
+    <term><replaceable class="parameter">인자자료형</replaceable></term>
 
     <listitem>
      <para>
-      The data type(s) of the function's arguments (optionally
-      schema-qualified), if any.
+      해당 인자의 자료형(필요하다면 스키마 이름도 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name of the function.
+      바뀔 새 함수 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_owner</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
-      The new owner of the function.  Note that if the function is
-      marked <literal>SECURITY DEFINER</literal>, it will subsequently
-      execute as the new owner.
+      해당 함수의 바뀔 새 소유주 이름.
+      해당 함수에 <literal>SECURITY DEFINER</literal> 속성이 
+      있다면, 새 소유주 자격으로 실행 될 것이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the function.
+      바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">extension_name</replaceable></term>
+    <term><replaceable class="parameter">확장모듈이름</replaceable></term>
     <listitem>
      <para>
-      The name of the extension that the function is to depend on.
+      해당 함수가 이 확장 모듈의 구성 요소가 되도록 의존 관계를 맺음.
      </para>
     </listitem>
    </varlistentry>
@@ -166,13 +161,13 @@ ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="param
      <term><literal>STRICT</literal></term>
 
      <listitem>
-      <para><literal>CALLED ON NULL INPUT</literal> changes the function so
-       that it will be invoked when some or all of its arguments are
-       null. <literal>RETURNS NULL ON NULL INPUT</literal> or
-       <literal>STRICT</literal> changes the function so that it is not
-       invoked if any of its arguments are null; instead, a null result
-       is assumed automatically.  See <xref linkend="sql-createfunction">
-       for more information.
+      <para><literal>CALLED ON NULL INPUT</literal>: 
+       몇몇 또는 모든 입력 인자가 null 값인 경우에도 함수 본문을
+       실행함.
+       <literal>RETURNS NULL ON NULL INPUT</literal>
+       또는 <literal>STRICT</literal>: 입력 인자값이 null 이면 함수
+       본문을 실행하지 않고 무조건 null 값을 반환함.
+       <xref linkend="sql-createfunction"> 참조.
       </para>
      </listitem>
    </varlistentry>
@@ -184,8 +179,8 @@ ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="param
 
      <listitem>
       <para>
-       Change the volatility of the function to the specified setting.
-       See <xref linkend="sql-createfunction"> for details.
+       함수 휘발성 속성 지정.
+       <xref linkend="sql-createfunction"> 참조.
       </para>
     </listitem>
    </varlistentry>
@@ -196,10 +191,11 @@ ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="param
 
     <listitem>
      <para>
-      Change whether the function is a security definer or not. The
-      key word <literal>EXTERNAL</literal> is ignored for SQL
-      conformance. See <xref linkend="sql-createfunction"> for more information about
-      this capability.
+      함수 본문 실행을 호출자(현재 사용자, INVOKER)로 할지,
+      정의자(만든이, DEFINER)로 할지
+      지정함.  <literal>EXTERNAL</literal> 키워드는 
+      SQL 호환성 때문에 있음. 무시됨.  
+      <xref linkend="sql-createfunction"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -209,8 +205,8 @@ ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="param
 
     <listitem>
      <para>
-      Change whether the function is deemed safe for parallelism.
-      See <xref linkend="sql-createfunction"> for details.
+      병렬 처리 속성 지정.
+      <xref linkend="sql-createfunction"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -219,56 +215,53 @@ ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="param
     <term><literal>LEAKPROOF</literal></term>
     <listitem>
      <para>
-      Change whether the function is considered leakproof or not.
-      See <xref linkend="sql-createfunction"> for more information about
-      this capability.
+      leakproof 지정.
+      <xref linkend="sql-createfunction"> 참조.
      </para>
     </listitem>
    </varlistentry>
 
     <varlistentry>
-     <term><literal>COST</literal> <replaceable class="parameter">execution_cost</replaceable></term>
+     <term><literal>COST</literal> <replaceable class="parameter">실행비용</replaceable></term>
 
      <listitem>
       <para>
-       Change the estimated execution cost of the function.
-       See <xref linkend="sql-createfunction"> for more information.
+       쿼리 최적화기가 사용할 실행 비용 추정값.
+       <xref linkend="sql-createfunction"> 참조.
       </para>
      </listitem>
    </varlistentry>
 
     <varlistentry>
-     <term><literal>ROWS</literal> <replaceable class="parameter">result_rows</replaceable></term>
+     <term><literal>ROWS</literal> <replaceable class="parameter">반환자료수</replaceable></term>
 
      <listitem>
       <para>
-       Change the estimated number of rows returned by a set-returning
-       function.  See <xref linkend="sql-createfunction"> for more information.
+       집합 반환 함수에서 반환될 자료수 추정값. 쿼리 최적화기가 이 값을 참조함.
+       <xref linkend="sql-createfunction"> 참조.
       </para>
      </listitem>
    </varlistentry>
 
      <varlistentry>
-      <term><replaceable>configuration_parameter</replaceable></term>
-      <term><replaceable>value</replaceable></term>
+      <term><replaceable>환경설정_매개변수</replaceable></term>
+      <term><replaceable>값</replaceable></term>
       <listitem>
        <para>
-        Add or change the assignment to be made to a configuration parameter
-        when the function is called.  If
-        <replaceable>value</replaceable> is <literal>DEFAULT</literal>
-        or, equivalently, <literal>RESET</literal> is used, the function-local
-        setting is removed, so that the function executes with the value
-        present in its environment.  Use <literal>RESET
-        ALL</literal> to clear all function-local settings.
-        <literal>SET FROM CURRENT</> saves the value of the parameter that
-        is current when <command>ALTER FUNCTION</> is executed as the value
-        to be applied when the function is entered.
+        해당 함수가 호출 될 때 사용할 서버 환경 설정 매개 변수 값 지정.
+        <replaceable>값</replaceable>으로 <literal>DEFAULT</literal>를
+        지정하거나, <literal>RESET</literal> 구문을 쓰면, 해당 설정 값을
+        지우고, <literal>RESET ALL</literal> 구문을 쓰면, 해당 함수에
+        따로 지정된 모든 설정값을 지운다.
+        <literal>SET FROM CURRENT</> 구문은 
+        <command>ALTER FUNCTION</> 명령을 실행하는 그 세션의 현재 
+        설정값을 지정한다.
        </para>
 
        <para>
-        See <xref linkend="sql-set"> and
-        <xref linkend="runtime-config">
-        for more information about allowed parameter names and values.
+        사용할 수 있는 매개 변수 이름과 그 값에 대한 자세한 설명은
+        <xref linkend="sql-set"> 명령 설명서와
+        <xref linkend="runtime-config">에서 다룬다.
        </para>
       </listitem>
      </varlistentry>
@@ -278,7 +271,7 @@ ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="param
 
     <listitem>
      <para>
-      Ignored for conformance with the SQL standard.
+      표준 SQL 호환성 때문에 있는 키워드. 아무 작업 안함.
      </para>
     </listitem>
    </varlistentry>
@@ -286,75 +279,67 @@ ALTER FUNCTION <replaceable>name</replaceable> [ ( [ [ <replaceable class="param
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To rename the function <literal>sqrt</literal> for type
-   <type>integer</type> to <literal>square_root</literal>:
+   함수 이름 바꾸기:
 <programlisting>
 ALTER FUNCTION sqrt(integer) RENAME TO square_root;
 </programlisting>
   </para>
 
   <para>
-   To change the owner of the function <literal>sqrt</literal> for type
-   <type>integer</type> to <literal>joe</literal>:
+   함수 소유주 바꾸기:
 <programlisting>
 ALTER FUNCTION sqrt(integer) OWNER TO joe;
 </programlisting>
   </para>
 
   <para>
-   To change the schema of the function <literal>sqrt</literal> for type
-   <type>integer</type> to <literal>maths</literal>:
+   함수 스키마 바꾸기:
 <programlisting>
 ALTER FUNCTION sqrt(integer) SET SCHEMA maths;
 </programlisting>
   </para>
 
   <para>
-   To mark the function <literal>sqrt</literal> for type
-   <type>integer</type> as being dependent on the extension
-   <literal>mathlib</literal>:
+   해당 함수를 확장 모듈 구성 요소로 지정하기:
 <programlisting>
 ALTER FUNCTION sqrt(integer) DEPENDS ON EXTENSION mathlib;
 </programlisting>
   </para>
 
   <para>
-   To adjust the search path that is automatically set for a function:
+   함수 본문을 실행 할 때 사용할 search_path 값 지정:
 <programlisting>
 ALTER FUNCTION check_password(text) SET search_path = admin, pg_temp;
 </programlisting>
   </para>
 
   <para>
-   To disable automatic setting of <varname>search_path</> for a function:
+   이미 지정된 <varname>search_path</> 값 지우기:
 <programlisting>
 ALTER FUNCTION check_password(text) RESET search_path;
 </programlisting>
-   The function will now execute with whatever search path is used by its
-   caller.
+   이 경우 search_path 값은 호출하는 세션의 값을 사용하게 된다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   This statement is partially compatible with the <command>ALTER
-   FUNCTION</> statement in the SQL standard. The standard allows more
-   properties of a function to be modified, but does not provide the
-   ability to rename a function, make a function a security definer,
-   attach configuration parameter values to a function,
-   or change the owner, schema, or volatility of a function. The standard also
-   requires the <literal>RESTRICT</> key word, which is optional in
-   <productname>PostgreSQL</>.
+   <command>ALTER FUNCTION</> 구문은 부분적으로 표준 SQL 구문을 
+   준수한다.  표준 구문에서도 많은 속성 변경이 가능하지만,
+   함수 이름 바꾸기, 정의자 보안, 환경 설정 매개 변수 값 지정,
+   소유주, 스키마 바꾸기, 함수 휘발성 지정 같은 기능은 없다.
+   표준 SQL에서는 <literal>RESTRICT</> 키워드가 필수지만,
+   <productname>PostgreSQL</>에서는 선택 사항이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createfunction"></member>
