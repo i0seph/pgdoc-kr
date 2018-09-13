@@ -16,58 +16,55 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER SEQUENCE</refname>
-  <refpurpose>
-   change the definition of a sequence generator
-  </refpurpose>
+  <refpurpose>시퀀스 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable>
-    [ AS <replaceable class="parameter">data_type</replaceable> ]
-    [ INCREMENT [ BY ] <replaceable class="parameter">increment</replaceable> ]
-    [ MINVALUE <replaceable class="parameter">minvalue</replaceable> | NO MINVALUE ] [ MAXVALUE <replaceable class="parameter">maxvalue</replaceable> | NO MAXVALUE ]
-    [ START [ WITH ] <replaceable class="parameter">start</replaceable> ]
-    [ RESTART [ [ WITH ] <replaceable class="parameter">restart</replaceable> ] ]
-    [ CACHE <replaceable class="parameter">cache</replaceable> ] [ [ NO ] CYCLE ]
-    [ OWNED BY { <replaceable class="parameter">table_name</replaceable>.<replaceable class="parameter">column_name</replaceable> | NONE } ]
-ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable> OWNER TO { <replaceable class="PARAMETER">new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable> RENAME TO <replaceable class="parameter">new_name</replaceable>
-ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable> SET SCHEMA <replaceable class="parameter">new_schema</replaceable>
+ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
+    [ AS <replaceable class="parameter">자료형</replaceable> ]
+    [ INCREMENT [ BY ] <replaceable class="parameter">증가값</replaceable> ]
+    [ MINVALUE <replaceable class="parameter">최소값</replaceable> | NO MINVALUE ] [ MAXVALUE <replaceable class="parameter">최대값</replaceable> | NO MAXVALUE ]
+    [ START [ WITH ] <replaceable class="parameter">시작값</replaceable> ]
+    [ RESTART [ [ WITH ] <replaceable class="parameter">재시작값</replaceable> ] ]
+    [ CACHE <replaceable class="parameter">캐시</replaceable> ] [ [ NO ] CYCLE ]
+    [ OWNED BY { <replaceable class="parameter">테이블이름</replaceable>.<replaceable class="parameter">칼럼이름</replaceable> | NONE } ]
+ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
+ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER SEQUENCE</command> changes the parameters of an existing
-   sequence generator.  Any parameters not specifically set in the
-   <command>ALTER SEQUENCE</command> command retain their prior settings.
+   <command>ALTER SEQUENCE</command> 명령은 시퀀스 정의를 바꾼다.
+   <command>ALTER SEQUENCE</command> 명령에서 지정하지 않은 설정들은
+   기존 설정을 그대로 따른다.
   </para>
 
   <para>
-   You must own the sequence to use <command>ALTER SEQUENCE</>.
-   To change a sequence's schema, you must also have <literal>CREATE</>
-   privilege on the new schema.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the sequence's schema.  (These restrictions enforce that altering the owner
-   doesn't do anything you couldn't do by dropping and recreating the sequence.
-   However, a superuser can alter ownership of any sequence anyway.)
+   <command>ALTER SEQUENCE</> 명령은 그 시퀀스의 소유주가 실행할 수 있다.
+   스키마를 바꾸는 경우, 새 스키마에 대한 <literal>CREATE</> 권한이 있어야 한다.
+   소유주를 바꾸는 경우, 현재 소유주는 직간접적으로 새 소유주의 
+   구성원이어야 하며, 새 소유주는 해당 스키마에 대해서
+   <literal>CREATE</> 권한이 있어야 한다. (새 사용자가 
+   그 시퀀스를 지우거나, 새로 만들 수 있어야 하기 때문이다. 
+   슈퍼유저는 이런 제한 없이 작업할 수 있다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <para>
     <variablelist>
      <varlistentry>
-      <term><replaceable class="parameter">name</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
-        The name (optionally schema-qualified) of a sequence to be altered.
+        작업 대상 시퀀스 이름(스키마 이름 포함).
        </para>
       </listitem>
      </varlistentry>
@@ -76,131 +73,136 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable> S
       <term><literal>IF EXISTS</literal></term>
       <listitem>
        <para>
-        Do not throw an error if the sequence does not exist. A notice is issued
-        in this case.
+        이 옵션을 사용하면 해당 시퀀스가 없어도 오류로 처리하지 않고, 
+        알림 메시지만 보여주고 마친다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">data_type</replaceable></term>
+      <term><replaceable class="parameter">자료형</replaceable></term>
       <listitem>
        <para>
-        The optional
-        clause <literal>AS <replaceable class="parameter">data_type</replaceable></literal>
-        changes the data type of the sequence.  Valid types are
-        <literal>smallint</literal>, <literal>integer</literal>,
-        and <literal>bigint</literal>.
+        <literal>AS <replaceable class="parameter">자료형</replaceable></literal>
+        구문을 이용해서 그 시퀀스의 자료형을 바꿀 수 있다. 
+        사용할 수 있는 값은 <literal>smallint</literal>,
+        <literal>integer</literal>, <literal>bigint</literal> 셋 중 하나.
        </para>
 
        <para>
-        Changing the data type automatically changes the minimum and maximum
-        values of the sequence if and only if the previous minimum and maximum
-        values were the minimum or maximum value of the old data type (in
-        other words, if the sequence had been created using <literal>NO
-        MINVALUE</literal> or <literal>NO MAXVALUE</literal>, implicitly or
-        explicitly).  Otherwise, the minimum and maximum values are preserved,
-        unless new values are given as part of the same command.  If the
-        minimum and maximum values do not fit into the new data type, an error
-        will be generated.
+        또한 이 작업을 통해, 기존 최소, 최대값이 새 자료형 범위와
+        맞지 않다면, 해당 시퀀스의 최소, 최대값도 자동으로 바꾼다.
+        (다른 말로, 묵시적이든, 명시적이든 그 시퀀스를 만들 때,
+        <literal>NO MINVALUE</literal> 또는
+        <literal>NO MAXVALUE</literal> 옵션을 사용해서 만든 시퀀스는
+        이렇게 작동한다.)
+        반면, 한 명령 안에 이 새 값을 함께 지정하지 않았다면,
+        최소, 최대값은 그대로 유지된다.
+        최소, 최대값이 새 자료형 범위에 속하지 않으면 오류로 처리한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">increment</replaceable></term>
+      <term><replaceable class="parameter">증가값</replaceable></term>
       <listitem>
        <para>
-        The clause <literal>INCREMENT BY <replaceable
-        class="parameter">increment</replaceable></literal> is
-        optional. A positive value will make an ascending sequence, a
-        negative one a descending sequence.  If unspecified, the old
-        increment value will be maintained.
+        <literal>INCREMENT BY <replaceable
+        class="parameter">증가값</replaceable></literal> 구문은
+        선택적으로 사용할 수 있다.  증가값이 양수면, 증가하고, 
+        음수면 감소한다.  이 구문을 사용하지 않으면, 기존 증가값을
+        그대로 사용한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">minvalue</replaceable></term>
+      <term><replaceable class="parameter">최소값</replaceable></term>
       <term><literal>NO MINVALUE</literal></term>
       <listitem>
        <para>
-        The optional clause <literal>MINVALUE <replaceable
-        class="parameter">minvalue</replaceable></literal> determines
-        the minimum value a sequence can generate. If <literal>NO
-        MINVALUE</literal> is specified, the defaults of 1 and
-        the minimum value of the data type for ascending and descending sequences,
-        respectively, will be used.  If neither option is specified,
-        the current minimum value will be maintained.
+        <literal>MINVALUE <replaceable
+        class="parameter">minvalue</replaceable></literal> 구문은
+        시퀀스의 최소값을 지정하는 것이다.
+        <literal>NO MINVALUE</literal>로 지정하면,
+        증가 시퀀스인 경우는 1,
+        감소 시퀀스인 경우는 해당 자료형의 최소값을 사용한다.
+        이 두 옵션 모두 사용하지 않으면, 시퀀스를 만들 때 
+        지정한(지정된) 최소값을 그대로 사용한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">maxvalue</replaceable></term>
+      <term><replaceable class="parameter">최대값</replaceable></term>
       <term><literal>NO MAXVALUE</literal></term>
       <listitem>
        <para>
-        The optional clause <literal>MAXVALUE <replaceable
-        class="parameter">maxvalue</replaceable></literal> determines
-        the maximum value for the sequence. If <literal>NO
-        MAXVALUE</literal> is specified, the defaults of
-        the maximum value of the data type and -1 for ascending and descending
-        sequences, respectively, will be used.  If neither option is
-        specified, the current maximum value will be maintained.
+        <literal>MAXVALUE <replaceable 
+        class="parameter">최대값</replaceable></literal> 구문은
+        시퀀스의 최대값을 지정하는 것이다.
+        <literal>NO MAXVALUE</literal>로 지정하면,
+        증가 시퀀스인 경우는 자료형의 최대값,
+        감소 시퀀스인 경우는 이 값이 -1 이다.
+        이 두 옵션을 모두 사용하지 않으면, 시퀀스를 만들 때
+        지정한(지정된) 최대값을 그대로 사용한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">start</replaceable></term>
+      <term><replaceable class="parameter">시작값</replaceable></term>
       <listitem>
        <para>
-        The optional clause <literal>START WITH <replaceable
-        class="parameter">start</replaceable></literal> changes the
-        recorded start value of the sequence.  This has no effect on the
-        <emphasis>current</> sequence value; it simply sets the value
-        that future <command>ALTER SEQUENCE RESTART</> commands will use.
+        <literal>START WITH <replaceable
+        class="parameter">시작값</replaceable></literal> 구문은
+        시퀀스 시작값을 지정한다.
+        이 설정은 시퀀스의 <emphasis>현재값</>을 바꾸지는 않는다.
+        단지 <command>ALTER SEQUENCE RESTART</> 명령으로 
+        기본 시작값으로 시퀀스를 재 설정할 때만 사용된다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">restart</replaceable></term>
+      <term><replaceable class="parameter">재시작값</replaceable></term>
       <listitem>
        <para>
-        The optional clause <literal>RESTART [ WITH <replaceable
-        class="parameter">restart</replaceable> ]</literal> changes the
-        current value of the sequence.  This is similar to calling the
-        <function>setval</> function with <literal>is_called</literal> =
-        <literal>false</>: the specified value will be returned by the
-        <emphasis>next</> call of <function>nextval</>.
-        Writing <literal>RESTART</> with no <replaceable
-        class="parameter">restart</> value is equivalent to supplying
-        the start value that was recorded by <command>CREATE SEQUENCE</>
-        or last set by <command>ALTER SEQUENCE START WITH</>.
+        <literal>RESTART [ WITH <replaceable
+        class="parameter">재시작값</replaceable> ]</literal> 구문은
+        시퀀스 현재 값을 바꾼다.
+        이 작업은 <function>setval</> 함수를 <literal>is_called</literal> =
+        <literal>false</> 인자값으로 실행한 결과와 비슷하다.
+        여기서 지정한 재시작값은 다음 <function>nextval</> 함수의
+        결과값으로 사용된다.
+        <literal>RESTART</> 에서 <replaceable
+        class="parameter">재시작값</>을 지정하지 않고 사용하면, 
+        <command>CREATE SEQUENCE</> 명령으로 시퀀스를 만들 때 사용한
+        시작값이나, <command>ALTER SEQUENCE START WITH</> 명령으로
+        그 시작값을 바꾼 시작값으로 재시작한다.
        </para>
 
        <para>
-        In contrast to a <function>setval</function> call,
-        a <literal>RESTART</literal> operation on a sequence is transactional
-        and blocks concurrent transactions from obtaining numbers from the
-        same sequence. If that's not the desired mode of
-        operation, <function>setval</> should be used.
+        <function>setval</function> 함수를 사용하는 것과 달리
+        <literal>RESTART</literal> 작업은 트랜잭션 내 시퀀스 잠금을 
+        한다.  이런 잠금에 따른 다른 세션의 대기를 피하려면,
+        <function>setval</> 함수를 사용해야 한다. (물론
+        이 경우 트랜잭션 작업으로 얻을 수 있는 장점들은 포기한다. - 옮긴이)
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">cache</replaceable></term>
+      <term><replaceable class="parameter">캐시</replaceable></term>
       <listitem>
        <para>
-        The clause <literal>CACHE <replaceable
-        class="parameter">cache</replaceable></literal> enables
-        sequence numbers to be preallocated and stored in memory for
-        faster access. The minimum value is 1 (only one value can be
-        generated at a time, i.e., no cache).  If unspecified, the old
-        cache value will be maintained.
+        <literal>CACHE <replaceable
+        class="parameter">캐시</replaceable></literal> 구문은 
+        시퀀스 캐시값을 지정한다. 이 값의 변화량 만큼은 
+        메모리 안에서만 처리한다.  기본값은 1이다 (캐시 사용 안함)
+        이 옵션을 사용하지 않은 기존 캐시값을 사용한다.
+        (PostgreSQL 시퀀스 캐시는 세션 단위로 처리한다는 점을 
+        기억해야 한다. - 옮긴이)
        </para>
       </listitem>
      </varlistentry>
@@ -209,16 +211,9 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable> S
       <term><literal>CYCLE</literal></term>
       <listitem>
        <para>
-        The optional <literal>CYCLE</literal> key word can be used to enable
-        the sequence to wrap around when the
-        <replaceable class="parameter">maxvalue</replaceable> or
-        <replaceable class="parameter">minvalue</replaceable> has been
-        reached by
-        an ascending or descending sequence respectively. If the limit is
-        reached, the next number generated will be the
-        <replaceable class="parameter">minvalue</replaceable> or
-        <replaceable class="parameter">maxvalue</replaceable>,
-        respectively.
+        <literal>CYCLE</literal> 키워드는 시퀀스 다음 번호 구하기 작업에서
+        최대값이나, 최소값으로 도달 했을 때, 다시 시작한다. 
+        (증감 시퀀스는 최소값부터 다시, 감소 시퀀스는 최대값부터 다시)
        </para>
       </listitem>
      </varlistentry>
@@ -227,57 +222,55 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable> S
       <term><literal>NO CYCLE</literal></term>
       <listitem>
        <para>
-        If the optional <literal>NO CYCLE</literal> key word is
-        specified, any calls to <function>nextval</function> after the
-        sequence has reached its maximum value will return an error.
-        If neither <literal>CYCLE</literal> or <literal>NO
-        CYCLE</literal> are specified, the old cycle behavior will be
-        maintained.
+        <literal>NO CYCLE</literal> 키워드를 사용하면, 
+        <function>nextval</function> 작업에서 최대값에 도달하면,
+        오류로 처리한다.
+        <literal>CYCLE</literal>, <literal>NO
+        CYCLE</literal> 둘 다 사용하지 않는다면, 기존 설정을 따른다.
        </para>
       </listitem>
      </varlistentry>
 
    <varlistentry>
-    <term><literal>OWNED BY</literal> <replaceable class="parameter">table_name</replaceable>.<replaceable class="parameter">column_name</replaceable></term>
+    <term><literal>OWNED BY</literal> <replaceable class="parameter">테이블이름</replaceable>.<replaceable class="parameter">칼럼이름</replaceable></term>
     <term><literal>OWNED BY NONE</literal></term>
     <listitem>
      <para>
-      The <literal>OWNED BY</literal> option causes the sequence to be
-      associated with a specific table column, such that if that column
-      (or its whole table) is dropped, the sequence will be automatically
-      dropped as well.  If specified, this association replaces any
-      previously specified association for the sequence.  The specified
-      table must have the same owner and be in the same schema as the
-      sequence.
-      Specifying <literal>OWNED BY NONE</literal> removes any existing
-      association, making the sequence <quote>free-standing</>.
+      <literal>OWNED BY</literal> 옵션은 지정한 칼럼과 시퀀스가 
+      의존 관계를 맺는다.  이렇게 하면, 
+      그 테이블이나, 테이블의 칼럼이 지워지면 이 시퀀스도 자동으로
+      함께 지워진다.  이 지정은 기존에 다른 의존관계가 있다하더라도
+      오류 없이 새 의존관계로 처리한다.  테이블의 소유주와,
+      시퀀스의 소유주가 같아야 한다.
+      <literal>OWNED BY NONE</literal> 옵션은 기존 의존 관계를 
+      끊는다. 그래서 독립적인 시퀀스가 되도록 한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">new_owner</replaceable></term>
+    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
     <listitem>
      <para>
-      The user name of the new owner of the sequence.
+      해당 시퀀스의 바뀔 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_name</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      The new name for the sequence.
+      바뀔 새 시퀀스 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">new_schema</replaceable></term>
+    <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      The new schema for the sequence.
+      해당 시퀀스의 바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -287,60 +280,61 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">name</replaceable> S
   </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   <command>ALTER SEQUENCE</command> will not immediately affect
-   <function>nextval</> results in backends,
-   other than the current one, that have preallocated (cached) sequence
-   values. They will use up all cached values prior to noticing the changed
-   sequence generation parameters.  The current backend will be affected
-   immediately.
+   <command>ALTER SEQUENCE</command> 명령의 결과가 
+   모든 세션의 <function>nextval</> 작업에 바로 영향을 미칠 것이라고
+   생각하면 안된다.  시퀀스는 캐시가 있기 때문에, 이 작업을 한 
+   세션이 아니라면, 각자 자신의 캐시에 있는 시퀀스 정보를 사용한다.
+   물론 명령을 수행하는 그 세션은 바로 반영된다.
   </para>
 
   <para>
-   <command>ALTER SEQUENCE</command> does not affect the <function>currval</>
-   status for the sequence.  (Before <productname>PostgreSQL</productname>
-   8.3, it sometimes did.)
+   <command>ALTER SEQUENCE</command> 명령은 시퀀스의 <function>currval</>
+   상태에 아무런 영향을 주지 않는다 (<productname>PostgreSQL</productname>
+   8.3 이전에는 영향을 줬다.)
   </para>
 
   <para>
-   <command>ALTER SEQUENCE</command> blocks
-   concurrent <function>nextval</function>, <function>currval</function>,
-   <function>lastval</function>, and <command>setval</command> calls.
+   <command>ALTER SEQUENCE</command> 작업은 동시에 일어나는
+   <function>nextval</function>, <function>currval</function>,
+   <function>lastval</function>, <command>setval</command> 작업을 자기 
+   작업이 끝나기 전까지 대기 상태로 만든다.
   </para>
 
   <para>
-   For historical reasons, <command>ALTER TABLE</command> can be used with
-   sequences too; but the only variants of <command>ALTER TABLE</command>
-   that are allowed with sequences are equivalent to the forms shown above.
+   역사적인 이유로, 몇몇 작업은 <command>ALTER TABLE</command> 명령으로
+   시퀀스 정보를 바꿀 수 있다.  이때 사용하는 구문은 위에 소개한 
+   구문을 사용한다. 
+   (예, ALTER TABLE sequence_name RENAME TO new_sequence_name - 옮긴이)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Restart a sequence called <literal>serial</literal>, at 105:
+   <literal>serial</literal> 시퀀스를 105에서 다시 시작하는 경우:
 <programlisting>
 ALTER SEQUENCE serial RESTART WITH 105;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>ALTER SEQUENCE</command> conforms to the <acronym>SQL</acronym>
-   standard, except for the <literal>AS</literal>, <literal>START WITH</>,
-   <literal>OWNED BY</>, <literal>OWNER TO</>, <literal>RENAME TO</>, and
-   <literal>SET SCHEMA</literal> clauses, which are
-   <productname>PostgreSQL</productname> extensions.
+   <command>ALTER SEQUENCE</command> 구문은 표준 <acronym>SQL</acronym>
+   구문이다.  <literal>AS</literal>, <literal>START WITH</>,
+   <literal>OWNED BY</>, <literal>OWNER TO</>, <literal>RENAME TO</>,
+   <literal>SET SCHEMA</literal> 옵션은 <productname>PostgreSQL</productname>
+   확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createsequence"></member>
