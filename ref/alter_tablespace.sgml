@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER TABLESPACE</refname>
-  <refpurpose>테이블스페이스 속성 변경</refpurpose>
+  <refpurpose>테이블스페이스 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

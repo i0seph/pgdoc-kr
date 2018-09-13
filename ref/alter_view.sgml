@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER VIEW</refname>
-  <refpurpose>뷰 속성 변경</refpurpose>
+  <refpurpose>뷰 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

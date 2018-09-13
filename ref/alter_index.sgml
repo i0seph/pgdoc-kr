@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER INDEX</refname>
-  <refpurpose>인덱스 속성 변경</refpurpose>
+  <refpurpose>인덱스 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

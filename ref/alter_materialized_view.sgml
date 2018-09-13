@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER MATERIALIZED VIEW</refname>
-  <refpurpose>구체화된 뷰 materialized view 정의 바꾸기</refpurpose>
+  <refpurpose>구체화된 뷰 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

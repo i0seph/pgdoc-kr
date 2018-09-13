@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER LARGE OBJECT</refname>
-  <refpurpose>large object 변경</refpurpose>
+  <refpurpose>large object 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

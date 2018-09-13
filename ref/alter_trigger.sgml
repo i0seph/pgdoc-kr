@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER TRIGGER</refname>
-  <refpurpose>트리거 속성 변경</refpurpose>
+  <refpurpose>트리거 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

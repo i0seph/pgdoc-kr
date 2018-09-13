@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER LANGUAGE</refname>
-  <refpurpose>프로시져 언어 등록 정보 변경</refpurpose>
+  <refpurpose>프로시져 언어 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
