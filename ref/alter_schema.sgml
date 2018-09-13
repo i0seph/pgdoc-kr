@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER SCHEMA</refname>
-  <refpurpose>change the definition of a schema</refpurpose>
+  <refpurpose>스키마 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -30,7 +30,7 @@ ALTER SCHEMA <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유
   <title>설명</title>
 
   <para>
-   <command>ALTER SCHEMA</command> 스키마 속성을 바꾼다.
+   <command>ALTER SCHEMA</command> 스키마 정의를 바꾼다.
   </para>
 
   <para>
@@ -40,8 +40,7 @@ ALTER SCHEMA <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유
    스키마의 소유주를 바꾸려면, 직,간접적으로 새 소유주의 
    구성원이어야하며, 해당 데이터베이스에 대해서 
    <literal>CREATE</literal> 권한이 있어야한다.
-   <literal>CREATE</literal> privilege for the database.
-   (슈퍼 유저는 이런 제약 조건이 모두 무시되고 실행할 수 있다.)
+   (슈퍼유저는 이런 제약에 상관 없이 실행할 수 있다.)
   </para>
  </refsect1>
 
@@ -84,7 +83,7 @@ ALTER SCHEMA <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유
   <title>호환성</title>
 
   <para>
-   <command>ALTER SCHEMA</command> 구문은 표준 SQL에는 없다.
+   <command>ALTER SCHEMA</command> 구문은 표준 SQL 구문이 아니다.
   </para>
  </refsect1>
 
