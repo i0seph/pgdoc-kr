@@ -16,102 +16,105 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER TABLE</refname>
-  <refpurpose>change the definition of a table</refpurpose>
+  <refpurpose>테이블 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-ALTER TABLE [ IF EXISTS ] [ ONLY ] <replaceable class="PARAMETER">name</replaceable> [ * ]
-    <replaceable class="PARAMETER">action</replaceable> [, ... ]
-ALTER TABLE [ IF EXISTS ] [ ONLY ] <replaceable class="PARAMETER">name</replaceable> [ * ]
-    RENAME [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> TO <replaceable class="PARAMETER">new_column_name</replaceable>
-ALTER TABLE [ IF EXISTS ] [ ONLY ] <replaceable class="PARAMETER">name</replaceable> [ * ]
-    RENAME CONSTRAINT <replaceable class="PARAMETER">constraint_name</replaceable> TO <replaceable class="PARAMETER">new_constraint_name</replaceable>
-ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
-    RENAME TO <replaceable class="PARAMETER">new_name</replaceable>
-ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
-    SET SCHEMA <replaceable class="PARAMETER">new_schema</replaceable>
-ALTER TABLE ALL IN TABLESPACE <replaceable class="PARAMETER">name</replaceable> [ OWNED BY <replaceable class="PARAMETER">role_name</replaceable> [, ... ] ]
-    SET TABLESPACE <replaceable class="PARAMETER">new_tablespace</replaceable> [ NOWAIT ]
-ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
-    ATTACH PARTITION <replaceable class="PARAMETER">partition_name</replaceable> FOR VALUES <replaceable class="PARAMETER">partition_bound_spec</replaceable>
-ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
-    DETACH PARTITION <replaceable class="PARAMETER">partition_name</replaceable>
+ALTER TABLE [ IF EXISTS ] [ ONLY ] <replaceable class="PARAMETER">이름</replaceable> [ * ]
+    <replaceable class="PARAMETER">작업</replaceable> [, ... ]
+ALTER TABLE [ IF EXISTS ] [ ONLY ] <replaceable class="PARAMETER">이름</replaceable> [ * ]
+    RENAME [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> TO <replaceable class="PARAMETER">새칼럼이름</replaceable>
+ALTER TABLE [ IF EXISTS ] [ ONLY ] <replaceable class="PARAMETER">이름</replaceable> [ * ]
+    RENAME CONSTRAINT <replaceable class="PARAMETER">제약조건이름</replaceable> TO <replaceable class="PARAMETER">새제약조건이름</replaceable>
+ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+    RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
+ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+    SET SCHEMA <replaceable class="PARAMETER">새스키마</replaceable>
+ALTER TABLE ALL IN TABLESPACE <replaceable class="PARAMETER">이름</replaceable> [ OWNED BY <replaceable class="PARAMETER">롤이름</replaceable> [, ... ] ]
+    SET TABLESPACE <replaceable class="PARAMETER">새테이블스페이스</replaceable> [ NOWAIT ]
+ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+    ATTACH PARTITION <replaceable class="PARAMETER">파티션이름</replaceable> FOR VALUES <replaceable class="PARAMETER">파티션범위명세</replaceable>
+ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+    DETACH PARTITION <replaceable class="PARAMETER">파티션이름</replaceable>
 
-<phrase>where <replaceable class="PARAMETER">action</replaceable> is one of:</phrase>
+<phrase><replaceable class="PARAMETER">작업</replaceable> 자리에는:</phrase>
 
-    ADD [ COLUMN ] [ IF NOT EXISTS ] <replaceable class="PARAMETER">column_name</replaceable> <replaceable class="PARAMETER">data_type</replaceable> [ COLLATE <replaceable class="PARAMETER">collation</replaceable> ] [ <replaceable class="PARAMETER">column_constraint</replaceable> [ ... ] ]
-    DROP [ COLUMN ] [ IF EXISTS ] <replaceable class="PARAMETER">column_name</replaceable> [ RESTRICT | CASCADE ]
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> [ SET DATA ] TYPE <replaceable class="PARAMETER">data_type</replaceable> [ COLLATE <replaceable class="PARAMETER">collation</replaceable> ] [ USING <replaceable class="PARAMETER">expression</replaceable> ]
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> SET DEFAULT <replaceable class="PARAMETER">expression</replaceable>
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> DROP DEFAULT
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> { SET | DROP } NOT NULL
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> ADD GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY [ ( <replaceable>sequence_options</replaceable> ) ]
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> { SET GENERATED { ALWAYS | BY DEFAULT } | SET <replaceable>sequence_option</replaceable> | RESTART [ [ WITH ] <replaceable class="parameter">restart</replaceable> ] } [...]
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> DROP IDENTITY [ IF EXISTS ]
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> SET STATISTICS <replaceable class="PARAMETER">integer</replaceable>
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> SET ( <replaceable class="PARAMETER">attribute_option</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] )
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> RESET ( <replaceable class="PARAMETER">attribute_option</replaceable> [, ... ] )
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">column_name</replaceable> SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }
-    ADD <replaceable class="PARAMETER">table_constraint</replaceable> [ NOT VALID ]
-    ADD <replaceable class="PARAMETER">table_constraint_using_index</replaceable>
-    ALTER CONSTRAINT <replaceable class="PARAMETER">constraint_name</replaceable> [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
-    VALIDATE CONSTRAINT <replaceable class="PARAMETER">constraint_name</replaceable>
-    DROP CONSTRAINT [ IF EXISTS ]  <replaceable class="PARAMETER">constraint_name</replaceable> [ RESTRICT | CASCADE ]
-    DISABLE TRIGGER [ <replaceable class="PARAMETER">trigger_name</replaceable> | ALL | USER ]
-    ENABLE TRIGGER [ <replaceable class="PARAMETER">trigger_name</replaceable> | ALL | USER ]
-    ENABLE REPLICA TRIGGER <replaceable class="PARAMETER">trigger_name</replaceable>
-    ENABLE ALWAYS TRIGGER <replaceable class="PARAMETER">trigger_name</replaceable>
-    DISABLE RULE <replaceable class="PARAMETER">rewrite_rule_name</replaceable>
-    ENABLE RULE <replaceable class="PARAMETER">rewrite_rule_name</replaceable>
-    ENABLE REPLICA RULE <replaceable class="PARAMETER">rewrite_rule_name</replaceable>
-    ENABLE ALWAYS RULE <replaceable class="PARAMETER">rewrite_rule_name</replaceable>
+    ADD [ COLUMN ] [ IF NOT EXISTS ] <replaceable class="PARAMETER">칼럼이름</replaceable> <replaceable class="PARAMETER">자료형</replaceable> [ COLLATE <replaceable class="PARAMETER">문자정렬규칙</replaceable> ] [ <replaceable class="PARAMETER">칼럼제약조건</replaceable> [ ... ] ]
+    DROP [ COLUMN ] [ IF EXISTS ] <replaceable class="PARAMETER">칼럼이름</replaceable> [ RESTRICT | CASCADE ]
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> [ SET DATA ] TYPE <replaceable class="PARAMETER">자료형</replaceable> [ COLLATE <replaceable class="PARAMETER">문자정렬규칙</replaceable> ] [ USING <replaceable class="PARAMETER">표현식</replaceable> ]
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET DEFAULT <replaceable class="PARAMETER">표현식</replaceable>
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> DROP DEFAULT
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> { SET | DROP } NOT NULL
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> ADD GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY [ ( <replaceable>시퀀스옵션</replaceable> ) ]
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> { SET GENERATED { ALWAYS | BY DEFAULT } | SET <replaceable>시퀀스옵션</replaceable> | RESTART [ [ WITH ] <replaceable class="parameter">재시작값</replaceable> ] } [...]
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> DROP IDENTITY [ IF EXISTS ]
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET STATISTICS <replaceable class="PARAMETER">정수</replaceable>
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET ( <replaceable class="PARAMETER">속성옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> RESET ( <replaceable class="PARAMETER">속성옵션</replaceable> [, ... ] )
+    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }
+    ADD <replaceable class="PARAMETER">테이블제약조건</replaceable> [ NOT VALID ]
+    ADD <replaceable class="PARAMETER">인덱스를_사용하는_제약조건</replaceable>
+    ALTER CONSTRAINT <replaceable class="PARAMETER">제약조건이름</replaceable> [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
+    VALIDATE CONSTRAINT <replaceable class="PARAMETER">제약조건이름</replaceable>
+    DROP CONSTRAINT [ IF EXISTS ]  <replaceable class="PARAMETER">제약조건이름</replaceable> [ RESTRICT | CASCADE ]
+    DISABLE TRIGGER [ <replaceable class="PARAMETER">트리거이름</replaceable> | ALL | USER ]
+    ENABLE TRIGGER [ <replaceable class="PARAMETER">트리거이름</replaceable> | ALL | USER ]
+    ENABLE REPLICA TRIGGER <replaceable class="PARAMETER">트리거이름</replaceable>
+    ENABLE ALWAYS TRIGGER <replaceable class="PARAMETER">트리거이름</replaceable>
+    DISABLE RULE <replaceable class="PARAMETER">룰이름</replaceable>
+    ENABLE RULE <replaceable class="PARAMETER">룰이름</replaceable>
+    ENABLE REPLICA RULE <replaceable class="PARAMETER">룰이름</replaceable>
+    ENABLE ALWAYS RULE <replaceable class="PARAMETER">룰이름</replaceable>
     DISABLE ROW LEVEL SECURITY
     ENABLE ROW LEVEL SECURITY
     FORCE ROW LEVEL SECURITY
     NO FORCE ROW LEVEL SECURITY
-    CLUSTER ON <replaceable class="PARAMETER">index_name</replaceable>
+    CLUSTER ON <replaceable class="PARAMETER">인덱스이름</replaceable>
     SET WITHOUT CLUSTER
     SET WITH OIDS
     SET WITHOUT OIDS
-    SET TABLESPACE <replaceable class="PARAMETER">new_tablespace</replaceable>
+    SET TABLESPACE <replaceable class="PARAMETER">새테이블스페이스</replaceable>
     SET { LOGGED | UNLOGGED }
-    SET ( <replaceable class="PARAMETER">storage_parameter</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] )
-    RESET ( <replaceable class="PARAMETER">storage_parameter</replaceable> [, ... ] )
-    INHERIT <replaceable class="PARAMETER">parent_table</replaceable>
-    NO INHERIT <replaceable class="PARAMETER">parent_table</replaceable>
-    OF <replaceable class="PARAMETER">type_name</replaceable>
+    SET ( <replaceable class="PARAMETER">저장_매개변수</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )
+    RESET ( <replaceable class="PARAMETER">저장_매개변수</replaceable> [, ... ] )
+    INHERIT <replaceable class="PARAMETER">상위테이블</replaceable>
+    NO INHERIT <replaceable class="PARAMETER">상위테이블</replaceable>
+    OF <replaceable class="PARAMETER">자료형이름</replaceable>
     NOT OF
-    OWNER TO { <replaceable class="PARAMETER">new_owner</replaceable> | CURRENT_USER | SESSION_USER }
-    REPLICA IDENTITY { DEFAULT | USING INDEX <replaceable class="PARAMETER">index_name</replaceable> | FULL | NOTHING }
+    OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+    REPLICA IDENTITY { DEFAULT | USING INDEX <replaceable class="PARAMETER">인덱스이름</replaceable> | FULL | NOTHING }
 
-<phrase>and <replaceable class="PARAMETER">table_constraint_using_index</replaceable> is:</phrase>
+<phrase><replaceable class="PARAMETER">인덱스를_사용하는_제약조건</replaceable> 자리에는:</phrase>
 
-    [ CONSTRAINT <replaceable class="PARAMETER">constraint_name</replaceable> ]
-    { UNIQUE | PRIMARY KEY } USING INDEX <replaceable class="PARAMETER">index_name</replaceable>
+    [ CONSTRAINT <replaceable class="PARAMETER">제약조건이름</replaceable> ]
+    { UNIQUE | PRIMARY KEY } USING INDEX <replaceable class="PARAMETER">인덱스이름</replaceable>
     [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>ALTER TABLE</command> changes the definition of an existing table.
-   There are several subforms described below. Note that the lock level required
-   may differ for each subform. An <literal>ACCESS EXCLUSIVE</literal> lock is held
-   unless explicitly noted. When multiple subcommands are listed, the lock
-   held will be the strictest one required from any subcommand.
+   <command>ALTER TABLE</command> 명령은 테이블 정의를 바꾼다.
+   여러 구문이 있으며, 아래에서 설명한다.  이 명령을 실행하면,
+   그 작업 성격에 맞는 수준의 잠금이 일어난다는 것을 꼭 기억해야 한다.
+   이 잠금에 대해서 특별히 언급하지 않으면, 대부분 작업은 
+   <literal>ACCESS EXCLUSIVE</literal> 수준으로 테이블을 잠근다.
+   (다른 세션에서는 해당 테이블을 접근 조차 못한다 - 옮긴이)
+   여러 작업들을 함께 작업하도록 명령을 구성하면,
+   그 하위 작업들 가운데, 가장 엄격한 수준의 잠금을 사용한다.
 
   <variablelist>
    <varlistentry>
     <term><literal>ADD COLUMN [ IF NOT EXISTS ]</literal></term>
     <listitem>
      <para>
-      This form adds a new column to the table, using the same syntax as
-      <xref linkend="SQL-CREATETABLE">. If <literal>IF NOT EXISTS</literal>
-      is specified and a column already exists with this name,
-      no error is thrown.
+      해당 테이블에 새 칼럼을 추가하는 구문이다.  문법은
+      <xref linkend="SQL-CREATETABLE"> 명령에서 사용하는 것과 같다.
+      <literal>IF NOT EXISTS</literal> 옵션을 사용하면, 
+      이미 같은 이름의 칼럼이 있어도 오류로 처리하지 않고, 무시한다.
      </para>
     </listitem>
    </varlistentry>
@@ -120,17 +123,13 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>DROP COLUMN [ IF EXISTS ]</literal></term>
     <listitem>
      <para>
-      This form drops a column from a table.  Indexes and
-      table constraints involving the column will be automatically
-      dropped as well.
-      Multivariate statistics referencing the dropped column will also be
-      removed if the removal of the column would cause the statistics to
-      contain data for only a single column.
-      You will need to say <literal>CASCADE</> if anything outside the table
-      depends on the column, for example, foreign key references or views.
-      If <literal>IF EXISTS</literal> is specified and the column
-      does not exist, no error is thrown. In this case a notice
-      is issued instead.
+      해당 테이블에서 지정한 칼럼을 지우는 구문이다.  그 칼럼과
+      관련된 인덱스와 테이블 제약 조건은 자동으로 함께 지워진다.
+      해당 칼럼만 대상으로 수집된 각종 통계 정보들도 함께 지워진다.
+      <literal>CASCADE</> 옵션을 사용하면, 뷰나 그 칼럼을 참조 하는
+      참조키 같이 해당 칼럼을 사용하는 모든 개체들을 함께 지운다.
+      <literal>IF EXISTS</literal> 옵션을 사용하면, 해당 칼럼이
+      없어도 오류로 처리하지 않고 알림 메시지만 보여주고, 무시한다.
      </para>
     </listitem>
    </varlistentry>
@@ -139,19 +138,16 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET DATA TYPE</literal></term>
     <listitem>
      <para>
-      This form changes the type of a column of a table. Indexes and
-      simple table constraints involving the column will be automatically
-      converted to use the new column type by reparsing the originally
-      supplied expression.
-      The optional <literal>COLLATE</literal> clause specifies a collation
-      for the new column; if omitted, the collation is the default for the
-      new column type.
-      The optional <literal>USING</literal>
-      clause specifies how to compute the new column value from the old;
-      if omitted, the default conversion is the same as an assignment
-      cast from old data type to new.  A  <literal>USING</literal>
-      clause must be provided if there is no implicit or assignment
-      cast from old to new type.
+      지정한 칼럼의 자료형을 바꾸는 구문이다. 이 작업은 해당 칼럼과 관계된
+      인덱스나 단순 테이블 제약 조건들을 새 자료형에 맞게
+      기존 속성을 다시 분석해서 자동으로 변환한다.
+      <literal>COLLATE</literal> 옵션은 새 자료형에서 사용할
+      문자 정렬 규칙을 지정한다. 생략하면, 그 해당 자료형의 기본 
+      문자 정렬 규칙을 사용한다.
+      <literal>USING</literal> 옵션으로 옛 자료형에 맞게 저장된
+      자료를 새 자료형에 맞게 어떻게 변환할 것인지를 지정하는
+      표현식을 사용할 수 있다.  생락하면, 기본 형 변환 작업을 한다.
+      기본 형 변환을 못하는 경우는 반드시 이 옵션을 사용해야 한다.
      </para>
     </listitem>
    </varlistentry>
@@ -160,10 +156,10 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET</literal>/<literal>DROP DEFAULT</literal></term>
     <listitem>
      <para>
-      These forms set or remove the default value for a column.
-      Default values only apply in subsequent <command>INSERT</command>
-      or <command>UPDATE</> commands; they do not cause rows already in the
-      table to change.
+      해당 칼럼에 기본값을 지정하거나 지우거나 한다.
+      이렇게 지정된 기본값은 이 작업 완료 후 사용되는
+      <command>INSERT</command>나 <command>UPDATE</> 명령에서 
+      사용된다. 기존에 이미 있는 자료에 대해서는 아무런 작업도 하지 않는다.
      </para>
     </listitem>
    </varlistentry>
@@ -172,20 +168,21 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET</literal>/<literal>DROP NOT NULL</literal></term>
     <listitem>
      <para>
-      These forms change whether a column is marked to allow null
-      values or to reject null values.  You can only use <literal>SET
-      NOT NULL</> when the column contains no null values.
+      해당 칼럼의 null 값 처리 방식을 바꾼다.
+      이 작업은 실재 자료 유효성 검사를 한다.  즉, 
+      <literal>SET NOT NULL</> 작업이라면, 해당 칼럼의 모든 자료에
+      null 값이 없을 때 정상 적용 된다.
      </para>
 
      <para>
-      If this table is a partition, one cannot perform <literal>DROP NOT NULL</literal>
-      on a column if it is marked <literal>NOT NULL</literal> in the parent
-      table.  To drop the <literal>NOT NULL</literal> constraint from all the
-      partitions, perform <literal>DROP NOT NULL</literal> on the parent
-      table.  Even if there is no <literal>NOT NULL</> constraint on the
-      parent, such a constraint can still be added to individual partitions,
-      if desired; that is, the children can disallow nulls even if the parent
-      allows them, but not the other way around.
+      테이블이 파티션 된 경우라면, 특정 하위 테이블 하나에 대해서만
+      <literal>DROP NOT NULL</literal>  작업을 할 수 없다.
+      null 값을 허용하려면, 상위 테이블 대상으로 이 작업을 해야 한다.
+      상위 테이블에는 <literal>NOT NULL</> 제약 조건이 없어도,
+      하위 테이블에서는 개별적으로 이 제약 조건을 추가 할 수 있다.
+      그래서, 상위 테이블에서는 null 값을 허용하지만, 
+      실 자료가 저장되는 하위 테이블에서 null 값을 금지할 수 있다.
+      그 반대는 안된다.
      </para>
     </listitem>
    </varlistentry>
@@ -196,28 +193,29 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>DROP IDENTITY [ IF EXISTS ]</literal></term>
     <listitem>
      <para>
-      These forms change whether a column is an identity column or change the
-      generation attribute of an existing identity column.
-      See <xref linkend="sql-createtable"> for details.
+      이 구문들은 해당 칼럼을 식별 칼럼으로 사용하거나, 식별 칼럼 속성을
+      지울 때 사용한다.  식별 칼럼에 대한 자세한 설명은
+      <xref linkend="sql-createtable"> 명령 설명서에서 다룬다.
      </para>
 
      <para>
-      If <literal>DROP IDENTITY IF EXISTS</literal> is specified and the
-      column is not an identity column, no error is thrown.  In this case a
-      notice is issued instead.
+      <literal>DROP IDENTITY IF EXISTS</literal> 구문은
+      해당 칼럼이 식별 칼럼이 아니더라도 오류로 처리하지 않고, 
+      알림 메시지만 보여주고, 무시한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>SET <replaceable>sequence_option</replaceable></literal></term>
+    <term><literal>SET <replaceable>시퀀스옵션</replaceable></literal></term>
     <term><literal>RESTART</literal></term>
     <listitem>
      <para>
-      These forms alter the sequence that underlies an existing identity
-      column.  <replaceable>sequence_option</replaceable> is an option
-      supported by <xref linkend="sql-altersequence"> such
-      as <literal>INCREMENT BY</literal>.
+      이 구문은 해당 식별 칼럼과 관계된 시퀀스 설정을 바꾼다.
+      <replaceable>시퀀스옵션</replaceable>은
+      <literal>INCREMENT BY</literal>와 같은
+      <xref linkend="sql-altersequence"> 명령 설명서에서 소개하고 있는
+      옵션들이다.
      </para>
     </listitem>
    </varlistentry>
@@ -226,28 +224,27 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET STATISTICS</literal></term>
     <listitem>
      <para>
-      This form
-      sets the per-column statistics-gathering target for subsequent
-      <xref linkend="sql-analyze"> operations.
-      The target can be set in the range 0 to 10000; alternatively, set it
-      to -1 to revert to using the system default statistics
-      target (<xref linkend="guc-default-statistics-target">).
-      For more information on the use of statistics by the
-      <productname>PostgreSQL</productname> query planner, refer to
-      <xref linkend="planner-stats">.
+      이 구문은 해당 칼럼에 대해서
+      <xref linkend="sql-analyze"> 작업에서 사용하는 
+      통계 수집량을 지정한다. 여기서 지정하는 값은 0부터 10000까지다.
+      -1로 지정하면, 시스템 기본 값(<xref
+      linkend="guc-default-statistics-target">)을 사용한다.
+      쿼리 실행 계획기가 사용하는 이 통계 정보에 대한
+      자세한 이야기는 <xref linkend="planner-stats">에서 다룬다.
      </para>
      <para>
-      <literal>SET STATISTICS</literal> acquires a
-      <literal>SHARE UPDATE EXCLUSIVE</literal> lock.
+      <literal>SET STATISTICS</literal> 작업은
+      <literal>SHARE UPDATE EXCLUSIVE</literal> 수준의 잠금을 사용한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>SET ( <replaceable class="PARAMETER">attribute_option</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] )</literal></term>
-    <term><literal>RESET ( <replaceable class="PARAMETER">attribute_option</replaceable> [, ... ] )</literal></term>
+    <term><literal>SET ( <replaceable class="PARAMETER">속성옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )</literal></term>
+    <term><literal>RESET ( <replaceable class="PARAMETER">속성옵션</replaceable> [, ... ] )</literal></term>
     <listitem>
      <para>
+      (이 부분은 저보다 더 잘 아는 분이 도와주시길...)
       This form sets or resets per-attribute options.  Currently, the only
       defined per-attribute options are <literal>n_distinct</> and
       <literal>n_distinct_inherited</>, which override the
@@ -284,99 +281,96 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
      <literal>SET STORAGE</literal>
      <indexterm>
       <primary>TOAST</primary>
-      <secondary>per-column storage settings</secondary>
+      <secondary>칼럼별 자료 저장 방식 설정</secondary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      This form sets the storage mode for a column. This controls whether this
-      column is held inline or in a secondary <acronym>TOAST</> table, and
-      whether the data
-      should be compressed or not. <literal>PLAIN</literal> must be used
-      for fixed-length values such as <type>integer</type> and is
-      inline, uncompressed. <literal>MAIN</literal> is for inline,
-      compressible data. <literal>EXTERNAL</literal> is for external,
-      uncompressed data, and <literal>EXTENDED</literal> is for external,
-      compressed data.  <literal>EXTENDED</literal> is the default for most
-      data types that support non-<literal>PLAIN</literal> storage.
-      Use of <literal>EXTERNAL</literal> will make substring operations on
-      very large <type>text</type> and <type>bytea</type> values run faster,
-      at the penalty of increased storage space.  Note that
-      <literal>SET STORAGE</> doesn't itself change anything in the table,
-      it just sets the strategy to be pursued during future table updates.
-      See <xref linkend="storage-toast"> for more information.
+      이 구문은 해당 칼럼 자료를 어떻게 저장할지를 정한다.
+      해당 자료를 테이블에 저장할지, <acronym>TOAST</> 테이블에 저장할지,
+      그 자료를 압축할지 말지를 지정한다.
+      <literal>PLAIN</literal>: 정수형과 같은 크기 고정, 압축 안하고,
+      해당 테이블에 저장한다.  <literal>MAIN</literal>: 테이블에, 압축 함.
+      <literal>EXTERNAL</literal>: 토스트에, 압축 안함.
+      <literal>EXTENDED</literal>: 토스트에, 압축 함.
+      <literal>PLAIN</literal>으로 처리하지 않는 대부분의 자료형 자료는
+      <literal>EXTENDED</literal> 방식으로 저장된다.
+      <type>text</type> 형이나, <type>bytea</type> 형으로
+      아주 큰 자료인 경우, <literal>EXTERNAL</literal> 방식을 사용하면
+      문자열 조작 함수를 사용할 때 좀 더 빠르게 처리하며, 그 저장 공간은
+      커진다.   <literal>SET STORAGE</> 작업은 이미 저장된 자료들에
+      대해서는 변경 작업을 하지 않는다.  이 설정 후 발생하는 자료 조작
+      작업에 영향을 미친다.  자세한 내용은 <xref linkend="storage-toast">에서
+      다룬다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>ADD <replaceable class="PARAMETER">table_constraint</replaceable> [ NOT VALID ]</literal></term>
+    <term><literal>ADD <replaceable class="PARAMETER">테이블_제약조건</replaceable> [ NOT VALID ]</literal></term>
     <listitem>
      <para>
-      This form adds a new constraint to a table using the same syntax as
-      <xref linkend="SQL-CREATETABLE">, plus the option <literal>NOT
-      VALID</literal>, which is currently only allowed for foreign key
-      and CHECK constraints.
-      If the constraint is marked <literal>NOT VALID</literal>, the
-      potentially-lengthy initial check to verify that all rows in the table
-      satisfy the constraint is skipped.  The constraint will still be
-      enforced against subsequent inserts or updates (that is, they'll fail
-      unless there is a matching row in the referenced table, in the case
-      of foreign keys; and they'll fail unless the new row matches the
-      specified check constraints).  But the
-      database will not assume that the constraint holds for all rows in
-      the table, until it is validated by using the <literal>VALIDATE
-      CONSTRAINT</literal> option.
+      이 구문은 해당 테이블에 새로운 제약 조건을 추가한다. 
+      문법은 <xref linkend="SQL-CREATETABLE"> 명령에서 사용하는 것과
+      같다.  추가로  <literal>NOT VALID</literal> 옵션을 사용할 수 있는데,
+      이 옵션은 참조 키나, 체크 제약 조건인 경우 사용할 수 있다.
+      <literal>NOT VALID</literal> 옵션을 추가하면, 
+      기존 자료에 대한 유효성 검사를 하지 않고, 이 제약 조건이 추가된
+      다음부터 다루는 자료에 대해서만 유효성 검사를 한다. 이렇게 하면,
+      참조키나, 체크 제약 조건에 대한 기존 모든 자료에 대한 유효성 검사
+      시간 때문에 테이블이 잠기는 것을 최소화 할 수 있다.  모든 자료에
+      대한 유효성 검사는 따로 <literal>VALIDATE CONSTRAINT</literal>
+      명령으로 할 수 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>ADD <replaceable class="PARAMETER">table_constraint_using_index</replaceable></literal></term>
+    <term><literal>ADD <replaceable class="PARAMETER">인덱스를_사용하는_제약조건</replaceable></literal></term>
     <listitem>
      <para>
-      This form adds a new <literal>PRIMARY KEY</> or <literal>UNIQUE</>
-      constraint to a table based on an existing unique index.  All the
-      columns of the index will be included in the constraint.
+      이 구문은 새 <literal>PRIMARY KEY</>, <literal>UNIQUE</>
+      제약 조건을 추가하는데, 이미 그 용도로 쓸 인덱스가 있는 경우에
+      사용한다.
+      제약 조건 정의에 쓰일 칼럼은 그 인덱스에 쓰인 칼럼과 동일해야 한다.
      </para>
 
      <para>
-      The index cannot have expression columns nor be a partial index.
-      Also, it must be a b-tree index with default sort ordering.  These
-      restrictions ensure that the index is equivalent to one that would be
-      built by a regular <literal>ADD PRIMARY KEY</> or <literal>ADD UNIQUE</>
-      command.
+      여기서 사용할 인덱스는 표현식 기반도 아니며, 부분 인덱스도 
+      아니여야 한다.
+      이 인덱스는 정렬이 가능한 b-tree 인덱스여야 한다.  이렇게 제한 하는
+      이유는 <literal>ADD PRIMARY KEY</>, <literal>ADD UNIQUE</>
+      작업과 내부적으로 그 처리가 같게 하기 위해서다.
      </para>
 
      <para>
-      If <literal>PRIMARY KEY</> is specified, and the index's columns are not
-      already marked <literal>NOT NULL</>, then this command will attempt to
-      do <literal>ALTER COLUMN SET NOT NULL</> against each such column.
-      That requires a full table scan to verify the column(s) contain no
-      nulls.  In all other cases, this is a fast operation.
+      <literal>PRIMARY KEY</> 작업은 그 해당 칼럼들 속성이 <literal>NOT NULL</>
+      이어야 하기 때문에, 그 칼럼들이 null 값을 허용하고 있다면,
+      각 칼럼들에 대해서 <literal>ALTER COLUMN SET NOT NULL</> 작업도 
+      함께 한다.  이런 상황이면 해당 모든 자료에 null 값이 있는지
+      확인하는 작업을 한다.  그 외 상황에서는 이 제약 조건에 쓸 
+      인덱스를 만드는 작업 시간만 필요하다.
      </para>
 
      <para>
-      If a constraint name is provided then the index will be renamed to match
-      the constraint name.  Otherwise the constraint will be named the same as
-      the index.
+      제약 조건 이름을 지정하는데, 인덱스 이름이 다르면, 인덱스 이름을 제약
+      조건 이름으로 자동 바꾸며, 제약 조건 이름이 없으면, 인덱스 이름을
+      제약 조건 이름으로 한다.
      </para>
 
      <para>
-      After this command is executed, the index is <quote>owned</> by the
-      constraint, in the same way as if the index had been built by
-      a regular <literal>ADD PRIMARY KEY</> or <literal>ADD UNIQUE</>
-      command.  In particular, dropping the constraint will make the index
-      disappear too.
+      이 작업이 완료되면, 그 인덱스는 해당 제약 조건에 종속된다. 
+      즉, 그 제약 조건이 지워지면, 그에 딸린 인덱스도 함께 지워진다.
      </para>
 
      <note>
       <para>
-       Adding a constraint using an existing index can be helpful in
-       situations where a new constraint needs to be added without blocking
-       table updates for a long time.  To do that, create the index using
-       <command>CREATE INDEX CONCURRENTLY</>, and then install it as an
-       official constraint using this syntax.  See the example below.
+       이미 있는 인덱스를 사용해서 제약 조건을 추가하는 방법은 
+       테이블 잠금을 최소화 하려고 할 때 유용하게 사용된다.
+       해당 인덱스를 <command>CREATE INDEX CONCURRENTLY</> 명령으로
+       테이블 잠금 없이 인덱스를 미리 만들어 두고, 
+       그것을 이용해서 작업하기 때문에, 테이블 정의 바꾸기 작업 시간은
+       최소화 되어 그 만큼 잠금 시간이 짧아진다.  사용 예제는 아래에 있다.
       </para>
      </note>
     </listitem>
@@ -386,8 +380,8 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>ALTER CONSTRAINT</literal></term>
     <listitem>
      <para>
-      This form alters the attributes of a constraint that was previously
-      created. Currently only foreign key constraints may be altered.
+      이 구문은 기존 제약 조건의 속성을 바꾼다.
+      현재 참조키 제약 조건에 대해서만 사용할 수 있다.
      </para>
     </listitem>
    </varlistentry>
@@ -396,23 +390,22 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>VALIDATE CONSTRAINT</literal></term>
     <listitem>
      <para>
-      This form validates a foreign key or check constraint that was previously created
-      as <literal>NOT VALID</literal>, by scanning the table to ensure there
-      are no rows for which the constraint is not satisfied.
-      Nothing happens if the constraint is already marked valid.
+      이 구문은 <literal>NOT VALID</literal> 옵션을 사용해서 만든
+      참조키나 체크 제약 조건의 기존 자료에 대한 유효성 검사를 한다.
+      해당 제약 조건에 <literal>NOT VALID</literal> 옵션이 없다면 무시한다.
      </para>
      <para>
-      Validation can be a long process on larger tables. The value of separating
-      validation from initial creation is that you can defer validation to less
-      busy times, or can be used to give additional time to correct pre-existing
-      errors while preventing new errors. Note also that validation on its own
-      does not prevent normal write commands against the table while it runs.
+      유효성 검사는 큰 테이블에서 많은 시간이 걸린다. 이렇게 유효성 검사를 
+      해당 제약 조건을 만들 때 진행하지 않고, 따로 작업하는 이유는
+      일단 새로 처리되는 자료에 대해서는 제약 조건을 따져 더 이상 잘못된
+      자료 생성이나, 변경을 막으면서, 서버가 바쁘지 않을 때 천천히 
+      기존 자료를 고처 나갈 수 있다는 것이다.  또한 이 작업이 진행 중일 때
+      자료 조작이 가능하다는 점이다. 
      </para>
      <para>
-      Validation acquires only a <literal>SHARE UPDATE EXCLUSIVE</literal> lock
-      on the table being altered. If the constraint is a foreign key then
-      a <literal>ROW SHARE</literal> lock is also required on
-      the table referenced by the constraint.
+      이 작업은 해당 테이블을  <literal>SHARE UPDATE EXCLUSIVE</literal>
+      수준으로 잠근다.  해당 제약 조건이 참조키라면,
+      그 참조 되는 테이블은 <literal>ROW SHARE</literal> 수준으로 잠긴다.
      </para>
     </listitem>
    </varlistentry>
@@ -421,9 +414,9 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>DROP CONSTRAINT [ IF EXISTS ]</literal></term>
     <listitem>
      <para>
-      This form drops the specified constraint on a table.
-      If <literal>IF EXISTS</literal> is specified and the constraint
-      does not exist, no error is thrown. In this case a notice is issued instead.
+      이 구문은 지정한 제약 조건을 해당 테이블에서 지운다.
+      <literal>IF EXISTS</literal> 옵션을 사용하면, 해당 제약 조건이 없어도
+      오류로 처리하지 않고, 알림 메시지만 보이고, 아무 작업도 안한다.
      </para>
     </listitem>
    </varlistentry>
@@ -432,29 +425,31 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>DISABLE</literal>/<literal>ENABLE [ REPLICA | ALWAYS ] TRIGGER</literal></term>
     <listitem>
      <para>
-      These forms configure the firing of trigger(s) belonging to the table.
-      A disabled trigger is still known to the system, but is not executed
-      when its triggering event occurs.  For a deferred trigger, the enable
-      status is checked when the event occurs, not when the trigger function
-      is actually executed.  One can disable or enable a single
-      trigger specified by name, or all triggers on the table, or only
-      user triggers (this option excludes internally generated constraint
-      triggers such as those that are used to implement foreign key
-      constraints or deferrable uniqueness and exclusion constraints).
-      Disabling or enabling internally generated constraint triggers
-      requires superuser privileges; it should be done with caution since
-      of course the integrity of the constraint cannot be guaranteed if the
-      triggers are not executed.
-      The trigger firing mechanism is also affected by the configuration
-      variable <xref linkend="guc-session-replication-role">. Simply enabled
-      triggers will fire when the replication role is <quote>origin</>
-      (the default) or <quote>local</>. Triggers configured as <literal>ENABLE
-      REPLICA</literal> will only fire if the session is in <quote>replica</>
-      mode, and triggers configured as <literal>ENABLE ALWAYS</literal> will
-      fire regardless of the current replication mode.
+      이 구문은 해당 테이블에 속한 트리거 사용 여부를 지정한다.
+      비활성화(disable)란 해당 트리거를 지우지는 않고, 
+      그냥 그 트리거 실행을 안하게 하는 것을 말한다.
+      지연 트리거(DEFERRABLE 옵션이 있는 트리거)는 
+      그 트리거 함수가 실재 실행 될 때가 아니라,
+      해당 이벤트가 생길 때 활성 상태를 확인한다.
+      이 작업은 각각 개별 트리거에 대해서 설정을 할 수도 있고, 
+      해당 테이블에 속한 모든 트리거에 대해서도 설정 할 수 있고, 
+      사용자가 지정한 트리거에 대해서만 설정할 수도 있다.
+      (참조키 검사 같은 내부용 자동으로 만들어지는 트리거도 있는데, 
+      이런 트리거는 제외한다는 이야기).
+      이런 내부 트리거의 사용 여부 설정은 슈퍼유저만 가능하다.
+      이런 조작은 자료 정합성을 지킬 수 없는 상태를 만들기 때문이다.
+      트리거 실행 조건은 <xref linkend="guc-session-replication-role">
+      환경 설정 매개 변수값에도 영향을 받는다.
+      단순하게, 이 환경 설정 값이 <quote>origin</> 또는
+      <quote>local</> 일따, 활성화 된 트리거는 작동한다.
+      해당 세션의 이 환경 설정 값이 <quote>replica</> 라면,
+      <literal>ENABLE REPLICA</literal> 옵션이 있는 트리거만 작동한다.
+      <literal>ENABLE ALWAYS</literal> 옵션이 있는 트리거는
+      해당 세션의 이 환경 설정 값에 상관 없이 작동한다.
      </para>
      <para>
-      This command acquires a <literal>SHARE ROW EXCLUSIVE</literal> lock.
+      이 작업은 해당 테이블을 <literal>SHARE ROW EXCLUSIVE</literal> 수준으로
+      잠근다.
      </para>
     </listitem>
    </varlistentry>
@@ -463,12 +458,13 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>DISABLE</literal>/<literal>ENABLE [ REPLICA | ALWAYS ] RULE</literal></term>
     <listitem>
      <para>
-      These forms configure the firing of rewrite rules belonging to the table.
-      A disabled rule is still known to the system, but is not applied
-      during query rewriting. The semantics are as for disabled/enabled
-      triggers. This configuration is ignored for <literal>ON SELECT</literal> rules, which
-      are always applied in order to keep views working even if the current
-      session is in a non-default replication role.
+      이 구문은 해당 테이블에 속한 룰의 실행 여부를 지정한다.
+      이 구문을 사용하면, 해당 룰을 지우지 않고, 단지 실행이 되지 않게 
+      설정할 수 있다.  사용법은 트리거 사용 여부 지정하는 것과 같다.
+      이 작업으로도 <literal>ON SELECT</literal> 룰의 실행은 막을 수 없다.
+      이 룰은 현재 세션이 기본 복제 역할이 아닐지라도 뷰 작업은 
+      항상 동작해야 하기 때문이다. (PostgreSQL의 뷰는 on select 룰이다 - 
+      옮긴이)
      </para>
     </listitem>
    </varlistentry>
@@ -477,13 +473,13 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>DISABLE</literal>/<literal>ENABLE ROW LEVEL SECURITY</literal></term>
     <listitem>
      <para>
-      These forms control the application of row security policies belonging
-      to the table.  If enabled and no policies exist for the table, then a
-      default-deny policy is applied.  Note that policies can exist for a table
-      even if row level security is disabled - in this case, the policies will
-      NOT be applied and the policies will be ignored.
-      See also
-      <xref linkend="SQL-CREATEPOLICY">.
+      이 구문은 해당 테이블에 속한 로우 단위 보안 정책을 활성화 하거나
+      비활성화 하는 일을 한다.
+      테이블에 해당 정책이 없는데, 활성화로 지정하면, 
+      기본 거부 정책이 적용된다.  
+      해당 테이블이 로우 단위 보안 정책을 사용하지 않게 설정 되어 있어도
+      그 테이블 용 보안 정책은 있을 수 있다. 이 경우, 그 정책은 무시된다.
+      <xref linkend="SQL-CREATEPOLICY"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -492,13 +488,10 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>NO FORCE</literal>/<literal>FORCE ROW LEVEL SECURITY</literal></term>
     <listitem>
      <para>
-      These forms control the application of row security policies belonging
-      to the table when the user is the table owner.  If enabled, row level
-      security policies will be applied when the user is the table owner.  If
-      disabled (the default) then row level security will not be applied when
-      the user is the table owner.
-      See also
-      <xref linkend="SQL-CREATEPOLICY">.
+      현재 사용자가 해당 테이블의 소유주일 때 로우 단위 보안 정책을 
+      어떻게 반영할 것인지를 지정하는 구문이다.
+      force : 작동, no force: 비작동 (기본값)
+      <xref linkend="SQL-CREATEPOLICY"> 참고.
      </para>
     </listitem>
    </varlistentry>
@@ -507,12 +500,11 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>CLUSTER ON</literal></term>
     <listitem>
      <para>
-      This form selects the default index for future
-      <xref linkend="SQL-CLUSTER">
-      operations.  It does not actually re-cluster the table.
+      <xref linkend="SQL-CLUSTER"> 명령에서 사용할 인덱스를 지정한다.
+      이 작업은 실재 클러스터 작업은 하지 않는다.
      </para>
      <para>
-      Changing cluster options acquires a <literal>SHARE UPDATE EXCLUSIVE</literal> lock.
+      이 작업은 <literal>SHARE UPDATE EXCLUSIVE</literal> 수준으로 테이블을 잠근다.
      </para>
     </listitem>
    </varlistentry>
@@ -521,13 +513,13 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET WITHOUT CLUSTER</literal></term>
     <listitem>
      <para>
-      This form removes the most recently used
-      <xref linkend="SQL-CLUSTER">
-      index specification from the table.  This affects
-      future cluster operations that don't specify an index.
+      이 구문은 <xref linkend="SQL-CLUSTER"> 작업을 할 때
+      사용하는 인덱스 지정을 지운다.
+      이 작업은 나중에 클러스터 작업을 할 때, 
+      지정된 인덱스가 없기 때문에, 영향을 준다.
      </para>
      <para>
-      Changing cluster options acquires a <literal>SHARE UPDATE EXCLUSIVE</literal> lock.
+      이 작업은 <literal>SHARE UPDATE EXCLUSIVE</literal> 수준으로 테이블을 잠근다.
      </para>
     </listitem>
    </varlistentry>
@@ -536,15 +528,15 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET WITH OIDS</literal></term>
     <listitem>
      <para>
-      This form adds an <literal>oid</literal> system column to the
-      table (see <xref linkend="ddl-system-columns">).
-      It does nothing if the table already has OIDs.
+      이 구문은 해당 테이블에 시스템 숨은 칼럼인 <literal>oid</literal>
+      칼럼을 추가한다(<xref linkend="ddl-system-columns"> 참조).
+      이미 oid 칼럼이 있다면 무시한다.
      </para>
 
      <para>
-      Note that this is not equivalent to <literal>ADD COLUMN oid oid</>;
-      that would add a normal column that happened to be named
-      <literal>oid</>, not a system column.
+      이 작업은  <literal>ADD COLUMN oid oid</> 작업과 다르다.
+      ADD COLUMN 작업은 사용자가 정의하는
+      <literal>oid</>라는 칼럼을 추가하는 것이다.
      </para>
     </listitem>
    </varlistentry>
@@ -553,11 +545,10 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET WITHOUT OIDS</literal></term>
     <listitem>
      <para>
-      This form removes the <literal>oid</literal> system column from the
-      table.  This is exactly equivalent to
-      <literal>DROP COLUMN oid RESTRICT</literal>,
-      except that it will not complain if there is already no
-      <literal>oid</literal> column.
+      시스템 숨은 칼럼인 <literal>oid</literal> 칼럼을 지운다.
+      이 작업은  <literal>DROP COLUMN oid RESTRICT</literal> 구문으로
+      하는 작업과 같으나, 이미 해당 칼럼이 없어도
+      오류로 처리하지 않는 점이 다르다.
      </para>
     </listitem>
    </varlistentry>
@@ -566,23 +557,25 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET TABLESPACE</literal></term>
     <listitem>
      <para>
-      This form changes the table's tablespace to the specified tablespace and
-      moves the data file(s) associated with the table to the new tablespace.
-      Indexes on the table, if any, are not moved; but they can be moved
-      separately with additional <literal>SET TABLESPACE</literal> commands.
-      All tables in the current database in a tablespace can be moved by using
-      the <literal>ALL IN TABLESPACE</literal> form, which will lock all tables
-      to be moved first and then move each one.  This form also supports
-      <literal>OWNED BY</literal>, which will only move tables owned by the
-      roles specified.  If the <literal>NOWAIT</literal> option is specified
-      then the command will fail if it is unable to acquire all of the locks
-      required immediately.  Note that system catalogs are not moved by this
-      command, use <command>ALTER DATABASE</command> or explicit
-      <command>ALTER TABLE</command> invocations instead if desired.  The
-      <literal>information_schema</literal> relations are not considered part
-      of the system catalogs and will be moved.
-      See also
-      <xref linkend="SQL-CREATETABLESPACE">.
+      이 구문은 해당 테이블의 테이블스페이스를 바꾼다.
+      이 작업은 해당 테이블의 물리적인 파일을 새 테이블스페이스 영역으로
+      옮김을 의미한다.  이 때 해당 테이블에 딸린 인덱스는 옮기지 않는다.
+      인덱스는 따로 해당 <literal>SET TABLESPACE</literal> 명령으로
+      옮길 수 있다.
+      한 데이터베이스 내, 한 테이블스페이스 안에 있는 모든 테이블은
+      <literal>ALL IN TABLESPACE</literal> 구문으로 한 번에 옮긴 수있다.
+      이 때는 그 모든 테이블이 잠긴다.  이 구문은 
+      <literal>OWNED BY</literal> 옵션을 이용해 특정 소유주의 모든 
+      테이블도 한 번에 옮긴 수 있다.
+      <literal>NOWAIT</literal> 옵션을 사용하면, 
+      작업 시점에 원하는 테이블 잠금을 할 수 없으면, 기다리지 않고, 
+      오류로 처리하고 마친다.
+      시스템 카탈로그는 이 작업으로 모두 한꺼번에 옮길 수는 
+      없다. 원한다면, <command>ALTER DATABASE</command> 명령을
+      이용하거나, 각 개별 테이블에 대해서  <command>ALTER TABLE</command>
+      명령을 이용해야 한다.
+      <literal>information_schema</literal> 안 개체들은 제외다.
+      <xref linkend="SQL-CREATETABLESPACE"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -591,114 +584,108 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET { LOGGED | UNLOGGED }</literal></term>
     <listitem>
      <para>
-      This form changes the table from unlogged to logged or vice-versa
-      (see <xref linkend="SQL-CREATETABLE-UNLOGGED">).  It cannot be applied
-      to a temporary table.
+      해당 테이블의 LOGGED, UNLOGGED 설정.
+      (<xref linkend="SQL-CREATETABLE-UNLOGGED"> 참조).  
+      임시 테이블을 대상으로 이 작업은 할 수 없다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>SET ( <replaceable class="PARAMETER">storage_parameter</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] )</literal></term>
+    <term><literal>SET ( <replaceable class="PARAMETER">저장_매개변수</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )</literal></term>
     <listitem>
      <para>
-      This form changes one or more storage parameters for the table.  See
+      이 구문은 해당 테이블의 저장 매개 변수값을 바꾼다.  사용할 수 변수들은
       <xref linkend="SQL-CREATETABLE-storage-parameters"
-      endterm="SQL-CREATETABLE-storage-parameters-title">
-      for details on the available parameters.  Note that the table contents
-      will not be modified immediately by this command; depending on the
-      parameter you might need to rewrite the table to get the desired effects.
-      That can be done with <link linkend="SQL-VACUUM">VACUUM
-      FULL</>, <xref linkend="SQL-CLUSTER"> or one of the forms
-      of <command>ALTER TABLE</> that forces a table rewrite.
-      For planner related parameters, changes will take effect from the next
-      time the table is locked so currently executing queries will not be
-      affected.
+      endterm="SQL-CREATETABLE-storage-parameters-title">에서 자세히 다룬다.
+      이미 저장된 자료에 대해서 이 작업으로 그 속성이 바뀌지는 않는다.
+      이미 저장된 자료를 대상으로 적용하려면,
+      <link linkend="SQL-VACUUM">VACUUM FULL</> 또는
+      <xref linkend="SQL-CLUSTER"> 작업을 해야 한다.
+      실행 계획기와 관련된 설정 값을 바꾸는 지정은 그 작업이 완료된
+      다음부터 실행 계획기가 그 값을 사용한다.
+      실행 중인 쿼리에 대해서는 영향을 끼치지 않는다.
      </para>
 
      <para>
-      <literal>SHARE UPDATE EXCLUSIVE</literal> lock will be taken for
-      fillfactor and autovacuum storage parameters, as well as the
-      following planner related parameters:
-      <varname>effective_io_concurrency</>, <varname>parallel_workers</>, <varname>seq_page_cost</>,
-      <varname>random_page_cost</>, <varname>n_distinct</> and <varname>n_distinct_inherited</>.
+      fillfactor, autovacuum 관련 저장 매개 변수,
+      <varname>effective_io_concurrency</>, <varname>parallel_workers</>, <varname>seq_page_cost</>, <varname>random_page_cost</>, <varname>n_distinct</>, <varname>n_distinct_inherited</> 설정을 변경할 때는
+      <literal>SHARE UPDATE EXCLUSIVE</literal> 수준으로 테이블을 잠근다.
      </para>
 
      <note>
       <para>
-       While <command>CREATE TABLE</> allows <literal>OIDS</> to be specified
-       in the <literal>WITH (<replaceable
-       class="PARAMETER">storage_parameter</>)</literal> syntax,
-       <command>ALTER TABLE</> does not treat <literal>OIDS</> as a
-       storage parameter.  Instead use the <literal>SET WITH OIDS</>
-       and <literal>SET WITHOUT OIDS</> forms to change OID status.
+       <command>CREATE TABLE</> 명령에서는 이 저장 매개 변수로 
+       <literal>WITH (OIDS=TRUE or FALSE)</literal> 구문을 
+       사용할 수 있지만, <command>ALTER TABLE</> 명령에서는
+       그렇게 사용할 수 없다.  OID 관련 작업은
+       <literal>SET WITH OIDS</>, <literal>SET WITHOUT OIDS</>
+       구문을 사용해야 한다.
       </para>
      </note>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>RESET ( <replaceable class="PARAMETER">storage_parameter</replaceable> [, ... ] )</literal></term>
+    <term><literal>RESET ( <replaceable class="PARAMETER">저장_매개변수</replaceable> [, ... ] )</literal></term>
     <listitem>
      <para>
-      This form resets one or more storage parameters to their
-      defaults.  As with <literal>SET</>, a table rewrite might be
-      needed to update the table entirely.
+      이 구문은 해당 저장 매개 변수 값을 초기값으로 바꾼다.
+      <literal>SET</> 작업과 마찬가지로, 이렇게 지정한 뒤, 
+      이미 있는 자료들의 소급 적용을 위해 추가 작업이 필요할 수도 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>INHERIT <replaceable class="PARAMETER">parent_table</replaceable></literal></term>
+    <term><literal>INHERIT <replaceable class="PARAMETER">상위테이블</replaceable></literal></term>
     <listitem>
      <para>
-      This form adds the target table as a new child of the specified parent
-      table.  Subsequently, queries against the parent will include records
-      of the target table.  To be added as a child, the target table must
-      already contain all the same columns as the parent (it could have
-      additional columns, too).  The columns must have matching data types,
-      and if they have <literal>NOT NULL</literal> constraints in the parent
-      then they must also have <literal>NOT NULL</literal> constraints in the
-      child.
+      이 구문은 해당 테이블을 지정한 상위 테이블에 종속시킨다.
+      이렇게 하면, 그 상위 테이블 대상으로 실행 되는 쿼리는
+      해당 테이블에 대해서도 영향을 미친다.  이 작업이 정상 수행 되려면,
+      상위 테이블과 하위 테이블의 모든 칼럼 정의가 일치 해야 한다(물론 하위
+      테이블에는 그 외 칼럼이 더 있을 수도 있다).
+      칼럼 자료형이 같아야 하며, 상위 테이블 칼럼에
+      <literal>NOT NULL</literal> 옵션이 있으면, 하위 테이블 칼럼에는
+      반드시 있어야 하며, 그 반대는 괜찮다.
      </para>
 
      <para>
-      There must also be matching child-table constraints for all
-      <literal>CHECK</literal> constraints of the parent, except those
-      marked non-inheritable (that is, created with <literal>ALTER TABLE ... ADD CONSTRAINT ... NO INHERIT</literal>)
-      in the parent, which are ignored; all child-table constraints matched
-      must not be marked non-inheritable.
-      Currently
-      <literal>UNIQUE</literal>, <literal>PRIMARY KEY</literal>, and
-      <literal>FOREIGN KEY</literal> constraints are not considered, but
-      this might change in the future.
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term><literal>NO INHERIT <replaceable class="PARAMETER">parent_table</replaceable></literal></term>
-    <listitem>
-     <para>
-      This form removes the target table from the list of children of the
-      specified parent table.
-      Queries against the parent table will no longer include records drawn
-      from the target table.
+      또, <literal>CHECK</literal> 제약 조건도 같아야 한다. 
+      상위 테이블 제약 조건 속성이 <literal>ALTER TABLE ... 
+      ADD CONSTRAINT ... NO INHERIT</literal> 구문으로 상속을 안 하도록
+      되어 있다면, 서로간 제약 조건이 같지 않아도 된다.
+      현재 버전에서는
+      <literal>UNIQUE</literal>, <literal>PRIMARY KEY</literal>,
+      <literal>FOREIGN KEY</literal> 제약 조건은 검사하지 않는다.
+      이 특성은 다음 버전에서 바뀔 수 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OF <replaceable class="PARAMETER">type_name</replaceable></literal></term>
+    <term><literal>NO INHERIT <replaceable class="PARAMETER">상위테이블</replaceable></literal></term>
     <listitem>
      <para>
-      This form links the table to a composite type as though <command>CREATE
-      TABLE OF</> had formed it.  The table's list of column names and types
-      must precisely match that of the composite type; the presence of
-      an <literal>oid</> system column is permitted to differ.  The table must
-      not inherit from any other table.  These restrictions ensure
-      that <command>CREATE TABLE OF</> would permit an equivalent table
-      definition.
+      이 구문은 지정한 상위 테이블과 종속 관계를 끊는다.
+      이 작업을 완료 되면, 지정한 상위 테이블 관련 쿼리에서
+      해당 테이블을 더 이상 참조하지 않는다.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>OF <replaceable class="PARAMETER">자료형이름</replaceable></literal></term>
+    <listitem>
+     <para>
+      이 구문은 <command>CREATE TABLE OF</> 구문으로 이미 있는 복합 자료형을
+      기반으로 테이블을 만드는 것과 같이, 지정한 복한 자료형과, 
+      해당 테이블과의 관계를 맺는다.
+      테이블과 복합 자료형과의 칼럼 이름, 자료형이 모두 같아야 한다.
+      시스템 칼럼인 <literal>oid</> 칼럼에 대해서는 같지 않아도 된다.
+      작업 테이블은 상속 관계로 볼 때 하위 테이블이 아니여야 한다.
+      이런 제약은 <command>CREATE TABLE OF</> 작업 결과와 같아야 하기 때문이다.
      </para>
     </listitem>
    </varlistentry>
@@ -707,7 +694,7 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>NOT OF</literal></term>
     <listitem>
      <para>
-      This form dissociates a typed table from its type.
+      테이블과 자료형의 관계를 끊는다.
      </para>
     </listitem>
    </varlistentry>
@@ -716,8 +703,7 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>OWNER</literal></term>
     <listitem>
      <para>
-      This form changes the owner of the table, sequence, view, materialized view,
-      or foreign table to the specified user.
+      이 구문은 테이블, 시퀀스, 뷰, 구체화된 뷰, 외부 테이블의 소유주를 바꾼다.
      </para>
     </listitem>
    </varlistentry>
@@ -726,18 +712,19 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>REPLICA IDENTITY</literal></term>
     <listitem>
      <para>
-      This form changes the information which is written to the write-ahead log
-      to identify rows which are updated or deleted.  This option has no effect
-      except when logical replication is in use.  <literal>DEFAULT</>
-      (the default for non-system tables) records the
-      old values of the columns of the primary key, if any.  <literal>USING INDEX</>
-      records the old values of the columns covered by the named index, which
-      must be unique, not partial, not deferrable, and include only columns marked
-      <literal>NOT NULL</>.  <literal>FULL</> records the old values of all columns
-      in the row.  <literal>NOTHING</> records no information about the old row.
-      (This is the default for system tables.)
-      In all cases, no old values are logged unless at least one of the columns
-      that would be logged differs between the old and new versions of the row.
+      이 구문은 업데이트 되거나 삭제 될 식별 자료를 미리 쓰기 로그에 
+      남길 때 포함할 정보를 바꾼다.  이 작업은 논리 복제 환경이 아니라면,
+      아무런 영향력이 없다.  
+      <literal>DEFAULT</>: 기본키 칼럼 옛 값을 기록.
+      <literal>USING INDEX</>: 지정한 인덱스에 있는 해당 칼럼 옛 값을 기록.
+      이 인덱스는 유니크 인덱스여야 하며, 부분 인덱스가 아니며, 
+      지연 불가능한 인덱스여야 하며, 그 칼럼은 모두 <literal>NOT NULL</> 속성이
+      있어야 한다.
+      <literal>FULL</>: 해당 로우의 모든 칼럼 옛 값을 기록.
+      <literal>NOTHING</>: 옛 로우에 대한 기록은 안 남김.
+      (시스템 테이블은 이 값이 기본값이다.) 
+      어떤 설정을 하든, 새 버전 로우와 옛 버전 로우과 완벽하게 일치하면,
+      미리 쓰기 로그에는 어떠한 기록도 남기지 않는다.
      </para>
     </listitem>
    </varlistentry>
@@ -746,10 +733,10 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>RENAME</literal></term>
     <listitem>
      <para>
-      The <literal>RENAME</literal> forms change the name of a table
-      (or an index, sequence, view, materialized view, or foreign table), the name
-      of an individual column in a table, or the name of a constraint of the table.
-      There is no effect on the stored data.
+      <literal>RENAME</literal> 구문은 
+      해당 테이블(인덱스, 시퀀스, 뷰, 구체화된 뷰, 외부 테이블)의 
+      이름을 바꾸며, 또한 해당 칼럼의 이름과, 제약 조건의 이름을 바꾼다.
+      이 작업은 저장된 자료에는 아무런 영향을 미치지 않는다.
      </para>
     </listitem>
    </varlistentry>
@@ -758,64 +745,62 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
     <term><literal>SET SCHEMA</literal></term>
     <listitem>
      <para>
-      This form moves the table into another schema.  Associated indexes,
-      constraints, and sequences owned by table columns are moved as well.
+      스키마 바꾸기.  해당 테이블에 딸린 인덱스, 제약 조건, 칼럼에 딸린
+      스키마까지 모두 스키마가 바뀐다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>ATTACH PARTITION <replaceable class="PARAMETER">partition_name</replaceable> FOR VALUES <replaceable class="PARAMETER">partition_bound_spec</replaceable></literal></term>
+    <term><literal>ATTACH PARTITION <replaceable class="PARAMETER">파티션이름</replaceable> FOR VALUES <replaceable class="PARAMETER">파티션범위명세</replaceable></literal></term>
     <listitem>
      <para>
-      This form attaches an existing table (which might itself be partitioned)
-      as a partition of the target table using the same syntax for
-      <replaceable class="PARAMETER">partition_bound_spec</replaceable> as
-      <xref linkend="sql-createtable">.  The partition bound specification
-      must correspond to the partitioning strategy and partition key of the
-      target table.  The table to be attached must have all the same columns
-      as the target table and no more; moreover, the column types must also
-      match.  Also, it must have all the <literal>NOT NULL</literal> and
-      <literal>CHECK</literal> constraints of the target table.  Currently
-      <literal>UNIQUE</literal>, <literal>PRIMARY KEY</literal>, and
-      <literal>FOREIGN KEY</literal> constraints are not considered.
-      If any of the <literal>CHECK</literal> constraints of the table being
-      attached is marked <literal>NO INHERIT</literal>, the command will fail;
-      such a constraint must be recreated without the <literal>NO INHERIT</literal>
-      clause.
+      해당 테이블에 하위 파티션 테이블을 추가하는 구문.
+      <replaceable class="PARAMETER">파티션범위명세</replaceable> 구문은
+      <xref linkend="sql-createtable"> 명령 설명서에 나온 것과 같음.
+      파티션 범위 명세는 해당 테이블(ALTER TABLE의 대상 테이블, 상위 파티션 
+      테이블)에서 지정한 파티션 종류와 파티션 키 정의와 맞아야 함.
+      추가할 테이블의 칼럼과 칼럼 자료형은 상위 파티션 테이블과
+      정확하게 모두 일치 해야 한다. <literal>NOT NULL</literal>,
+      <literal>CHECK</literal> 제약조건도 같아야 한다.
+      현재 버전에서는 <literal>UNIQUE</literal>,
+      <literal>PRIMARY KEY</literal>, <literal>FOREIGN KEY</literal> 제약 조건은
+      일치하는지 검사하지 않는다.
+      추가할 테이블에  <literal>CHECK</literal> 제약 조건에,
+      <literal>NO INHERIT</literal> 옵션이 있는 경우는 허용하지 않는다.
+      <literal>NO INHERIT</literal> 옵션 없이 해당 제약 조건을 다시 만들어야
+      추가할 수 있다.
      </para>
 
      <para>
-      If the new partition is a regular table, a full table scan is performed
-      to check that no existing row in the table violates the partition
-      constraint.  It is possible to avoid this scan by adding a valid
-      <literal>CHECK</literal> constraint to the table that would allow only
-      the rows satisfying the desired partition constraint before running this
-      command.  It will be determined using such a constraint that the table
-      need not be scanned to validate the partition constraint.  This does not
-      work, however, if any of the partition keys is an expression and the
-      partition does not accept <literal>NULL</literal> values.  If attaching
-      a list partition that will not accept <literal>NULL</literal> values,
-      also add <literal>NOT NULL</literal> constraint to the partition key
-      column, unless it's an expression.
+      추가할 파티션 테이블이 자료가 이미 있는 일반 테이블이라면,
+      그 자료들이 파티션 조건에 맞는 자료인지 확인하기 위해 모든 
+      자료의 유효성 검사를 한다.  이 작업은 자료가 많은 경우 
+      시간이 오래 걸린다. 이 문제를 피하려면, 먼저 그 테이블에 
+      파티션 조건에 맞는 <literal>CHECK</literal> 제약 조건을 만든다.
+      이렇게 하면, 모든 자료를 대상으로 유효성 검사를 하지 않게 된다.
+      하지만, 파티션 키가 표현식이거나, 그 칼럼이, 
+      <literal>NOT NULL</literal> 속성이라면, 전체 자료 유효성 검사를
+      한다.  <literal>NULL</literal> 값을 허용하지 않는 목록 파티션을
+      추가하는 경우에는 해당 파티션 키 칼럼에 <literal>NOT NULL</literal>
+      제약 조건을 추가 해야 한다.
      </para>
 
      <para>
-      If the new partition is a foreign table, nothing is done to verify
-      that all the rows in the foreign table obey the partition constraint.
-      (See the discussion in <xref linkend="SQL-CREATEFOREIGNTABLE"> about
-      constraints on the foreign table.)
+      추가할 하위 파티션 테이블이 외부 테이블이라면,
+      이런 모든 제약 조건 관련 검사를 하지 않는다. 
+      (외부 테이블의 제약 조건 이야기는
+      <xref linkend="SQL-CREATEFOREIGNTABLE"> 명령 설명서에서 다룬다.)
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>DETACH PARTITION</literal> <replaceable class="PARAMETER">partition_name</replaceable></term>
+    <term><literal>DETACH PARTITION</literal> <replaceable class="PARAMETER">파티션이름</replaceable></term>
     <listitem>
      <para>
-      This form detaches specified partition of the target table.  The detached
-      partition continues to exist as a standalone table, but no longer has any
-      ties to the table from which it was detached.
+      지정한 파티션 이름의 하위 테이블을 해당 테이블과 종속 관계를 끊는다.
+      해당 테이블과 아무런 관계가 없게 된다.
      </para>
     </listitem>
    </varlistentry>
@@ -824,36 +809,34 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
   </para>
 
   <para>
-   All the forms of ALTER TABLE that act on a single table, except
    <literal>RENAME</literal>, <literal>SET SCHEMA</literal>,
-   <literal>ATTACH PARTITION</literal>, and
-   <literal>DETACH PARTITION</literal> can be combined into
-   a list of multiple alterations to be applied together.  For example, it
-   is possible to add several columns and/or alter the type of several
-   columns in a single command.  This is particularly useful with large
-   tables, since only one pass over the table need be made.
+   <literal>ATTACH PARTITION</literal>, <literal>DETACH PARTITION</literal> 
+   구문은 딱 한 작업만 할 수 있으며, 그 외 작업들은 
+   여러 작업들을 하나의 명령으로 함께 사용할 수 있다.
+   예를 들어, 여러 칼럼을 추가하거나, 삭제하고, 자료형을 바꾸는 것은 
+   하나의 명령으로 실행할 수 있다.  이런 기능은 
+   자료량이 많은 테이블을 대상으로 작업할 때 하나의 작업으로
+   처리 되기 때문에, 유용하게 사용될 수 있다.
   </para>
 
   <para>
-   You must own the table to use <command>ALTER TABLE</>.
-   To change the schema or tablespace of a table, you must also have
-   <literal>CREATE</literal> privilege on the new schema or tablespace.
-   To add the table as a new child of a parent table, you must own the parent
-   table as well.  Also, to attach a table as a new partition of the table,
-   you must own the table being attached.
-   To alter the owner, you must also be a direct or indirect member of the new
-   owning role, and that role must have <literal>CREATE</literal> privilege on
-   the table's schema.  (These restrictions enforce that altering the owner
-   doesn't do anything you couldn't do by dropping and recreating the table.
-   However, a superuser can alter ownership of any table anyway.)
-   To add a column or alter a column type or use the <literal>OF</literal>
-   clause, you must also have <literal>USAGE</literal> privilege on the data
-   type.
+   <command>ALTER TABLE</> 명령은 해당 테이블 소유주가 실행 할 수 있다.
+   스키마나 테이블스페이스를 바꿀 때는 새 스키마나 테이블스페이스에 대해서
+   해당 사용자에게 <literal>CREATE</literal> 권한이 있어야 한다.
+   새로운 하위 테이블을 추가할 때는 그 하위 테이블도 같은 사용자 것이여어야
+   한다.  파티션 테이블에서 하위 파티션 테이블을 추가할 때도 마찬가지다.
+   소유주를 바꾸는 경우, 기존 소유주는 직간접적으로 새 소유주의 
+   소속원이어야 하며, 새 소유주는 해당 스키마에 대해서, 
+   <literal>CREATE</literal> 권한이 있어야 한다.
+   (새 소유주가 해당 테이블을 삭제 하거나, 새로 만들 수 있어야 하기 때문이다.
+   슈퍼유저인 경우는 이런 제약이 없다.)
+   자료형을 바꾸는 경우, 새 자료형에 대해서 해당 사용자는
+   <literal>USAGE</literal> 권한이 있어야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
     <variablelist>
 
@@ -861,77 +844,76 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
       <term><literal>IF EXISTS</literal></term>
       <listitem>
        <para>
-        Do not throw an error if the table does not exist. A notice is issued
-        in this case.
+        해당 테이블이 없어도 오류로 처리하지 않고, 알림 메시지만 보여준다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">name</replaceable></term>
+      <term><replaceable class="PARAMETER">이름</replaceable></term>
       <listitem>
        <para>
-        The name (optionally schema-qualified) of an existing table to
-        alter. If <literal>ONLY</> is specified before the table name, only
-        that table is altered. If <literal>ONLY</> is not specified, the table
-        and all its descendant tables (if any) are altered.  Optionally,
-        <literal>*</> can be specified after the table name to explicitly
-        indicate that descendant tables are included.
+        작업 대상 해당 테이블 이름(스키마 이름 포함).
+        이 이름 앞에 <literal>ONLY</> 옵션을 사용하면,
+        해당 테이블만 작업 대상이 되며, 
+        <literal>ONLY</> 옵션이 없으면, 해당 테이블과 그 테이블의 하위 
+        테이블까지 모두 작업 대상이 된다.  선택적으로
+        이 하위 테이블 모두 작업 대상이라고 명시적으로 표시하기 위해
+        테이블 이름 뒤에, <literal>*</> 문자를 추가할 수도 있다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">column_name</replaceable></term>
+      <term><replaceable class="PARAMETER">칼럼이름</replaceable></term>
       <listitem>
        <para>
-        Name of a new or existing column.
+        작업 대상 칼럼 이름이나, 새로 추가할 칼럼 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_column_name</replaceable></term>
+      <term><replaceable class="PARAMETER">새칼럼이름</replaceable></term>
       <listitem>
        <para>
-        New name for an existing column.
+        바뀔 칼럼의 새 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_name</replaceable></term>
+      <term><replaceable class="PARAMETER">새이름</replaceable></term>
       <listitem>
        <para>
-        New name for the table.
+        바뀔 테이블의 새 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">data_type</replaceable></term>
+      <term><replaceable class="PARAMETER">자료형</replaceable></term>
       <listitem>
        <para>
-        Data type of the new column, or new data type for an existing
-        column.
+        새로 추가할 칼럼의 자료형이나, 기존 자료형의 바뀔 새 자료형 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">table_constraint</replaceable></term>
+      <term><replaceable class="PARAMETER">테이블제약조건</replaceable></term>
       <listitem>
        <para>
-        New table constraint for the table.
+        해당 테이블의 새 제약 조건 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">constraint_name</replaceable></term>
+      <term><replaceable class="PARAMETER">제약조건</replaceable></term>
       <listitem>
        <para>
-        Name of a new or existing constraint.
+        새로 추가하거나 기존 제약 조건 이름.
        </para>
       </listitem>
      </varlistentry>
@@ -940,10 +922,9 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
       <term><literal>CASCADE</literal></term>
       <listitem>
        <para>
-        Automatically drop objects that depend on the dropped column
-        or constraint (for example, views referencing the column),
-        and in turn all objects that depend on those objects
-        (see <xref linkend="ddl-depend">).
+        해당 칼럼이 지울 때, 그 칼럼을 사용하는 다른 모든 개체(예,
+        그 칼럼을 참조하는 뷰)들도 함께 지운다.
+        (<xref linkend="ddl-depend"> 참조)
        </para>
       </listitem>
      </varlistentry>
@@ -952,17 +933,17 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
       <term><literal>RESTRICT</literal></term>
       <listitem>
        <para>
-        Refuse to drop the column or constraint if there are any dependent
-        objects. This is the default behavior.
+        해당 칼럼을 지울 때 그 칼럼을 사용하는 다른 개체들이 있으면, 
+        해당 칼럼을 지우지 않는다.  이것이 기본값이다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">trigger_name</replaceable></term>
+      <term><replaceable class="PARAMETER">트리거이름</replaceable></term>
       <listitem>
        <para>
-        Name of a single trigger to disable or enable.
+        활성화, 비활성화할 트리거 이름.
        </para>
       </listitem>
      </varlistentry>
@@ -971,11 +952,11 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
       <term><literal>ALL</literal></term>
       <listitem>
        <para>
-        Disable or enable all triggers belonging to the table.
-        (This requires superuser privilege if any of the triggers are
-        internally generated constraint triggers such as those that are used
-        to implement foreign key constraints or deferrable uniqueness and
-        exclusion constraints.)
+        트리거 활성화, 비활성화 설정을 할 때 대상 트리거를 
+        내부 트리거까지 포함해서 모든 트리거로 한 번에 지정할 때 사용 한다.
+        (내부 트리거 - 참조키에서 사용하는 트리거, 또는 지연 가능한 유니크 
+        제약 조건, 제외 제약 조건 - 까지 대상이 되기 때문에, 이 작업을 할 때는
+        슈퍼유저여야 한다.)
        </para>
       </listitem>
      </varlistentry>
@@ -984,28 +965,27 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
       <term><literal>USER</literal></term>
       <listitem>
        <para>
-        Disable or enable all triggers belonging to the table except for
-        internally generated constraint triggers such as those that are used
-        to implement foreign key constraints or deferrable uniqueness and
-        exclusion constraints.
+        참조키나, 지연 가능한 유니크, 제외 제약 조건에서 사용하는 
+        내부 트리거를 제외한 나머지 모든 트리거를 한꺼번에, 
+        활성화나 비활성화 할 때 사용하는 키워드.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">index_name</replaceable></term>
+      <term><replaceable class="PARAMETER">인덱스이름</replaceable></term>
       <listitem>
        <para>
-        The name of an existing index.
+        해당 인덱스 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">storage_parameter</replaceable></term>
+      <term><replaceable class="PARAMETER">저장_매개변수</replaceable></term>
       <listitem>
        <para>
-        The name of a table storage parameter.
+        해당 테이블의 저장 매개 변수 이름.
        </para>
       </listitem>
      </varlistentry>
@@ -1014,63 +994,64 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
       <term><replaceable class="PARAMETER">value</replaceable></term>
       <listitem>
        <para>
-        The new value for a table storage parameter.
-        This might be a number or a word depending on the parameter.
+        새롭게 지정할 테이블 저장 매개 변수 값.
+        이 값은 해당 매개 변수에 따라 숫자 일수도 있고, 문자열 일 수도 있다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">parent_table</replaceable></term>
+      <term><replaceable class="PARAMETER">상위테이블</replaceable></term>
       <listitem>
        <para>
-        A parent table to associate or de-associate with this table.
+        상속 관계를 맺거나 끊을 해당 테이블의 상위 테이블 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_owner</replaceable></term>
+      <term><replaceable class="PARAMETER">새소유주</replaceable></term>
       <listitem>
        <para>
-        The user name of the new owner of the table.
+        바뀔 해당 테이블의 새 소유주 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_tablespace</replaceable></term>
+      <term><replaceable class="PARAMETER">새테이블스페이스</replaceable></term>
       <listitem>
        <para>
-        The name of the tablespace to which the table will be moved.
+        바뀔 해당 테이블의 새 테이블스페이스 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">new_schema</replaceable></term>
+      <term><replaceable class="PARAMETER">새스키마</replaceable></term>
       <listitem>
        <para>
-        The name of the schema to which the table will be moved.
+        바뀔 해당 테이블의 새 스키마 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">partition_name</replaceable></term>
+      <term><replaceable class="PARAMETER">파티션이름</replaceable></term>
       <listitem>
        <para>
-        The name of the table to attach as a new partition or to detach from this table.
+        추가하거나, 뺄 파티션 테이블 이름.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">partition_bound_spec</replaceable></term>
+      <term><replaceable class="PARAMETER">파티션범위명세</replaceable></term>
       <listitem>
        <para>
-        The partition bound specification for a new partition.  Refer to
-        <xref linkend="sql-createtable"> for more details on the syntax of the same.
+        지정한 파티션이 어떤 범위를 대상으로 하는지 지정한다.
+        여기서 사용하는 문법은 <xref linkend="sql-createtable"> 명령
+        설명서에서 자세히 다룬다.
        </para>
       </listitem>
      </varlistentry>
@@ -1079,162 +1060,160 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">name</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
    <para>
-    The key word <literal>COLUMN</literal> is noise and can be omitted.
+    <literal>COLUMN</literal> 키워드는 무시 된다. 빠져도 괜찮다.
    </para>
 
    <para>
-    When a column is added with <literal>ADD COLUMN</literal>, all existing
-    rows in the table are initialized with the column's default value
-    (NULL if no <literal>DEFAULT</> clause is specified).
-    If there is no <literal>DEFAULT</> clause, this is merely a metadata
-    change and does not require any immediate update of the table's data;
-    the added NULL values are supplied on readout, instead.
+    새 칼럼을 추가하는데, <literal>DEFAULT</> 설정이 있으면,
+    기존 모든 자료에 대해서 이 기본값으로 설정한다. (자료가
+    많으면 시간이 꽤 걸린다 - 옮긴이). 기본값 설정이 없으면,
+    시스템 카탈로그 정보만 갱신하고, 기존 모든 자료의 해당 칼럼은
+    null 로 간주한다.  그 칼럼 값으로 null 값을 허용하지 않겠다고
+    지정하는 경우는 반드시 <literal>DEFAULT</> 설정도 함께 있어야 
+    한다.  
    </para>
 
    <para>
-    Adding a column with a <literal>DEFAULT</> clause or changing the type of
-    an existing column will require the entire table and its indexes to be
-    rewritten.  As an exception when changing the type of an existing column,
-    if the <literal>USING</> clause does not change the column
-    contents and the old type is either binary coercible to the new type or
-    an unconstrained domain over the new type, a table rewrite is not needed;
-    but any indexes on the affected columns must still be rebuilt.  Adding or
-    removing a system <literal>oid</> column also requires rewriting the entire
-    table.  Table and/or index rebuilds may take a significant amount of time
-    for a large table; and will temporarily require as much as double the disk
-    space.
+    <literal>DEFAULT</> 옵션을 사용해서 칼럼을 추가했거나,
+    기존 칼럼의 자료형을 바꾼 경우에 테이블과 인덱스를 다시 만들기 작업을
+    해야 할 경우도 있다.   <literal>USING</> 옵션을 사용해서 
+    변경 작업과 함께 기존 자료들도 모두 바뀐 경우나, 새로 바뀌는 자료형이 
+    기존 자료형을 수용할 수 있는 더 확장된 자료형이 경우는 
+    테이블이나, 인덱스를 다시 만들 필요는 없다.
+    그 외 해당 칼럼을 사용하고 있는 인덱스가 있다면, 그 인덱스는 
+    다시 만들어야 한다.  시스템 <literal>oid</>  칼럼을 추가 하거나 
+    뺄 경우 해당 테이블 전체를 다시 만들어야 한다(VACUUM FULL 사용 - 옮긴이).
+    이 테이블 또는 인덱스 다시 만들기 작업은 자료량이 많은 경우 시간이 
+    꽤 걸린다. 또한 일시적으로 디스크 공간도 두 배를 사용한다.
    </para>
 
    <para>
-    Adding a <literal>CHECK</> or <literal>NOT NULL</> constraint requires
-    scanning the table to verify that existing rows meet the constraint,
-    but does not require a table rewrite.
+    <literal>CHECK</> 또는 <literal>NOT NULL</>  제약 조건 추가를 할 때는
+    기존 자료 모두를 검사하지만, 테이블을 다시 만들 필요는 없다.
    </para>
 
    <para>
-    Similarly, when attaching a new partition it may be scanned to verify that
-    existing rows meet the partition constraint.
+    비슷하게, 새 파티션 테이블을 추가할 때도 그 파티션 조건에 맞게
+    자료가 잘 저장 되어 있는지 확인하는 작업을 한다.
    </para>
 
    <para>
-    The main reason for providing the option to specify multiple changes
-    in a single <command>ALTER TABLE</> is that multiple table scans or
-    rewrites can thereby be combined into a single pass over the table.
+    <command>ALTER TABLE</> 명령에서 여러 작업들을 함께 사용할 수 있게한
+    이유는 그 작업들이 연관성이 있어 하나의 작업으로 처리되어야 
+    필요가 있기 때문이다.
    </para>
 
    <para>
-    The <literal>DROP COLUMN</literal> form does not physically remove
-    the column, but simply makes it invisible to SQL operations.  Subsequent
-    insert and update operations in the table will store a null value for the
-    column. Thus, dropping a column is quick but it will not immediately
-    reduce the on-disk size of your table, as the space occupied
-    by the dropped column is not reclaimed.  The space will be
-    reclaimed over time as existing rows are updated.  (These statements do
-    not apply when dropping the system <literal>oid</> column; that is done
-    with an immediate rewrite.)
+    <literal>DROP COLUMN</literal> 작업은 물리적으로 해당 칼럼을 
+    지우지 않고, SQL 작업에서 단지 해당 칼럼을 볼 수 없게만 한다.
+    이 작업 뒤 일어나는 자료 추가, 변경 작업에서는 해당 칼럼에 null 값을
+    채운다.  이렇게 해서, 칼럼 삭제는 작업 시간을 줄일 수는 있지만,
+    당장에 디스크 여유 공간을 확보하지는 못한다. (시스템 <literal>oid</>
+    칼럼 삭제인 경우는 이 방식을 따르지 않고, 즉시 모든 자료를 대상으로
+    해당 칼럼 실재 자료를 지운다.)
    </para>
 
    <para>
-    To force immediate reclamation of space occupied by a dropped column,
-    you can execute one of the forms of <command>ALTER TABLE</> that
-    performs a rewrite of the whole table.  This results in reconstructing
-    each row with the dropped column replaced by a null value.
+    칼럼 삭제 작업으로 물리적으로 해당 자료가 모두 지워지길 바란다면,
+    <command>ALTER TABLE</> 명령에서, 칼럼 삭제 작업과 함께, 
+    기존 모든 자료들 대상으로 하는 작업을 함께 지정하면 된다.
+    그러면, 그 작업을 하면서 삭제된 칼럼에 대해서는 null 값으로 바꿔
+    처리한다.
    </para>
 
    <para>
-    The rewriting forms of <command>ALTER TABLE</> are not MVCC-safe.
-    After a table rewrite, the table will appear empty to concurrent
-    transactions, if they are using a snapshot taken before the rewrite
-    occurred.  See <xref linkend="mvcc-caveats"> for more details.
+    <command>ALTER TABLE</> 명령의 테이블 다시 쓰기 작업은
+    안전하지 않은 MVCC 작업이다.
+    어떤 다른 사용자가 테이블 다시 쓰기 작업 전에, 
+    해당 테이블 스냅샷을 만들어 사용하고 있다면, 
+    테이블 다시 쓰기 작업이 끝난 뒤에는 그 사용자는 빈 테이블을 
+    보게 된다.
+    이 문제는 <xref linkend="mvcc-caveats">에서 자세히 다룬다.
    </para>
 
    <para>
-    The <literal>USING</literal> option of <literal>SET DATA TYPE</> can actually
-    specify any expression involving the old values of the row; that is, it
-    can refer to other columns as well as the one being converted.  This allows
-    very general conversions to be done with the <literal>SET DATA TYPE</>
-    syntax.  Because of this flexibility, the <literal>USING</literal>
-    expression is not applied to the column's default value (if any); the
-    result might not be a constant expression as required for a default.
-    This means that when there is no implicit or assignment cast from old to
-    new type, <literal>SET DATA TYPE</> might fail to convert the default even
-    though a <literal>USING</literal> clause is supplied.  In such cases,
-    drop the default with <literal>DROP DEFAULT</>, perform the <literal>ALTER
-    TYPE</>, and then use <literal>SET DEFAULT</> to add a suitable new
-    default.  Similar considerations apply to indexes and constraints involving
-    the column.
+    <literal>SET DATA TYPE</> 구문에서 <literal>USING</literal> 옵션을 
+    사용하면, 자료형 변환의 유연성 아주 높아진다.  <literal>USING</literal>
+    뒤에 사용하는 표현식으로 얼마든지, 기존 자료에 대한 
+    형 변환 작업을 할 수 있기 때문이다.  이 때 주의해야 할 점은
+    해당 칼럼의 <literal>DEFAULT</> 설정으로 지정한 그 기본값이
+    새 자료형에서는 사용할 수 없는 경우가 있다는 것이다.
+    이 경우는 먼저 <literal>DROP DEFAULT</> 작업을 먼저하고, 
+    <literal>ALTER TYPE</> 작업 뒤, 새 기본값을 지정하는
+    <literal>SET DEFAULT</> 작업을 하면 된다.  이런 작업 방식은
+    한 칼럼과 관계된 인덱스나, 제약 조건 변경 작업에서도 사용될 수 있다.
    </para>
 
    <para>
-    If a table has any descendant tables, it is not permitted to add,
-    rename, or change the type of a column in the parent table without doing
-    same to the descendants.  This ensures that the descendants always have
-    columns matching the parent.  Similarly, a constraint cannot be renamed
-    in the parent without also renaming it in all descendants, so that
-    constraints also match between the parent and its descendants.
-    Also, because selecting from the parent also selects from its descendants,
-    a constraint on the parent cannot be marked valid unless it is also marked
-    valid for those descendants.  In all of these cases, <command>ALTER TABLE
-    ONLY</command> will be rejected.
+    해당 테이블이 상속 관계의 상위 테이블이라면,
+    그 테이블만을 대상으로 칼럼 추가, 삭제, 자료형 바꾸기를 할 수 없다.
+    테이블 상속 기능의 가장 큰 특성이 상위 테이블이 바뀌면,
+    하위 테이블은 자동으로 바뀌는 것이기 때문이다.
+    비슷하게, 제약 조건 이름도 상위 테이블만 대상으로 바꿀 수 없다.
+    또한 상위 테이블만 참조하면 모든 하위 테이블도 함께 참조하기 때문에, 
+    모든 하위 테이블에서 자료 유효성 검사를 하는 제약 조건이 있어야
+    상위 테이블에 그 유요성 검사를 추가할 수 있다. 
+    이 모든 경우  <command>ALTER TABLE ONLY</command> 명령은 오류로 처리한다.
+    (설명이 더 어려운데, 상속 관계 테이블 대상으로 일어나는  문제들은
+    서버에서 아주 친절하게 적절한 메시지를 보여준다. 서버 메시지를
+    차근하게 읽고 작업하면 된다. - 옮긴이)
    </para>
 
    <para>
-    A recursive <literal>DROP COLUMN</literal> operation will remove a
-    descendant table's column only if the descendant does not inherit
-    that column from any other parents and never had an independent
-    definition of the column.  A nonrecursive <literal>DROP
-    COLUMN</literal> (i.e., <command>ALTER TABLE ONLY ... DROP
-    COLUMN</command>) never removes any descendant columns, but
-    instead marks them as independently defined rather than inherited.
-    A nonrecursive <literal>DROP COLUMN</literal> command will fail for a
-    partitioned table, because all partitions of a table must have the same
-    columns as the partitioning root.
+    하위 테이블의 칼럼도 함께 삭제하는 <literal>DROP COLUMN</literal> 
+    작업은 그 칼럼이 상위 테이블로부터 상속 받은 칼럼에 대해서만
+    함께 삭제한다.
+    <command>ALTER TABLE ONLY ... DROP
+    COLUMN</command> 구문인 경우는 하위 테이블의 칼럼을 삭제하지 않는다.
+    이 작업은 파티션 테이블인 경우는 사용할 수 없다. 파티션 테이블은
+    상위 테이블과 하위 테이블의 칼럼 구성이 똑같아야 하기 때문이다.
    </para>
 
    <para>
-    The actions for identity columns (<literal>ADD
-    GENERATED</literal>, <literal>SET</literal> etc., <literal>DROP
-    IDENTITY</literal>), as well as the actions
+    식별 칼럼에 대한 작업(<literal>ADD
+    GENERATED</literal>, <literal>SET</literal> 등, <literal>DROP
+    IDENTITY</literal>)과,
     <literal>TRIGGER</>, <literal>CLUSTER</>, <literal>OWNER</>,
-    and <literal>TABLESPACE</> never recurse to descendant tables;
-    that is, they always act as though <literal>ONLY</> were specified.
-    Adding a constraint recurses only for <literal>CHECK</> constraints
-    that are not marked <literal>NO INHERIT</>.
+    <literal>TABLESPACE</> 작업은 하위 테이블에 대해서는 자동으로
+    함께 작업하지 않는다.  이런 작업은 <literal>오직</> 해당 테이블에
+    대해서만 작업한다.  
+    <literal>CHECK</> 제약 조건인 경우, <literal>NO INHERIT</> 옵션을
+    지정하지 않았다면, 이 작업은 하위 테이블 모두 작업한다.
    </para>
 
    <para>
-    Changing any part of a system catalog table is not permitted.
+    시스템 카탈로그 테이블의 변경은 할 수 없다.
    </para>
 
    <para>
-    Refer to <xref linkend="sql-createtable"> for a further description of valid
-    parameters. <xref linkend="ddl"> has further information on
-    inheritance.
+    사용 가능한 매개 변수에 대한 설명은 <xref linkend="sql-createtable"> 명령
+    설명서에서 자세히 다루고 있으며, 테이블 상속에 대한 자세한 설명은
+    <xref linkend="ddl">에서 다룬다.
    </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To add a column of type <type>varchar</type> to a table:
+   테이블에 새 칼럼 추가:
 <programlisting>
 ALTER TABLE distributors ADD COLUMN address varchar(30);
 </programlisting>
   </para>
 
   <para>
-   To drop a column from a table:
+   칼럼 삭제:
 <programlisting>
 ALTER TABLE distributors DROP COLUMN address RESTRICT;
 </programlisting>
   </para>
 
   <para>
-   To change the types of two existing columns in one operation:
+   하나의 명령으로 두 칼럼의 자료형을 동시에 바꾸는 경우:
 <programlisting>
 ALTER TABLE distributors
     ALTER COLUMN address TYPE varchar(80),
@@ -1243,8 +1222,8 @@ ALTER TABLE distributors
   </para>
 
   <para>
-   To change an integer column containing Unix timestamps to <type>timestamp
-   with time zone</type> via a <literal>USING</literal> clause:
+   정수형 칼럼을  <literal>USING</literal> 옵션을 사용해서,
+   <type>timestamp with time zone</type> 자료형으로 바꾸는 경우:
 <programlisting>
 ALTER TABLE foo
     ALTER COLUMN foo_timestamp SET DATA TYPE timestamp with time zone
@@ -1254,8 +1233,9 @@ ALTER TABLE foo
   </para>
 
   <para>
-   The same, when the column has a default expression that won't automatically
-   cast to the new data type:
+   윗 예제와 비슷한데, 이 경우는 해당 칼럼에 기본값 설정이 있어,
+   그것을 지우고, 자료형 바꾸고, 다시 기본값을 지정하는 것을
+   하나의 명령으로 작업하는 경우:
 <programlisting>
 ALTER TABLE foo
     ALTER COLUMN foo_timestamp DROP DEFAULT,
@@ -1267,32 +1247,32 @@ ALTER TABLE foo
   </para>
 
   <para>
-   To rename an existing column:
+   칼럼 이름 바꾸기:
 <programlisting>
 ALTER TABLE distributors RENAME COLUMN address TO city;
 </programlisting>
   </para>
 
   <para>
-   To rename an existing table:
+   테이블 이름 바꾸기:
 <programlisting>
 ALTER TABLE distributors RENAME TO suppliers;
 </programlisting>
   </para>
 
   <para>
-   To rename an existing constraint:
+   제약 조건 이름 바꾸기:
 <programlisting>
 ALTER TABLE distributors RENAME CONSTRAINT zipchk TO zip_check;
 </programlisting>
   </para>
 
   <para>
-   To add a not-null constraint to a column:
+   칼럼에 NOT NULL 제약 조건 추가:
 <programlisting>
 ALTER TABLE distributors ALTER COLUMN street SET NOT NULL;
 </programlisting>
-   To remove a not-null constraint from a column:
+   칼럼에 NOT NULL 제약 조건 삭제:
 <programlisting>
 ALTER TABLE distributors ALTER COLUMN street DROP NOT NULL;
 </programlisting>
@@ -1306,37 +1286,38 @@ ALTER TABLE distributors ADD CONSTRAINT zipchk CHECK (char_length(zipcode) = 5);
   </para>
 
   <para>
-   To add a check constraint only to a table and not to its children:
+   하위 테이블에 상속되지 않는 제약 조건 추가:
 <programlisting>
 ALTER TABLE distributors ADD CONSTRAINT zipchk CHECK (char_length(zipcode) = 5) NO INHERIT;
 </programlisting>
-   (The check constraint will not be inherited by future children, either.)
+   (이 체크 제약 조건은 앞으로 이 테이블을 상위 테이블로
+   상속 받는 새 하위 테이블이 만들어져도 이 제약 조건은 상속 받지 않는다.)
   </para>
 
   <para>
-   To remove a check constraint from a table and all its children:
+   해당 테이블 및 하위 테이블 모두 해당 체크 제약 조건 삭제:
 <programlisting>
 ALTER TABLE distributors DROP CONSTRAINT zipchk;
 </programlisting>
   </para>
 
   <para>
-   To remove a check constraint from one table only:
+   해당 테이블만 체크 제약 조건 삭제:
 <programlisting>
 ALTER TABLE ONLY distributors DROP CONSTRAINT zipchk;
 </programlisting>
-   (The check constraint remains in place for any child tables.)
+   (이 경우는 하위 테이블에는 그 제약 조건이 그대로 남아 있게 된다.)
   </para>
 
   <para>
-   To add a foreign key constraint to a table:
+   참조키 추가:
 <programlisting>
 ALTER TABLE distributors ADD CONSTRAINT distfk FOREIGN KEY (address) REFERENCES addresses (address);
 </programlisting>
   </para>
 
   <para>
-   To add a foreign key constraint to a table with the least impact on other work:
+   참조키를 유효성 검사 없이 추가 하고, 그 작업 뒤 유효성 검사를 하는 경우:
 <programlisting>
 ALTER TABLE distributors ADD CONSTRAINT distfk FOREIGN KEY (address) REFERENCES addresses (address) NOT VALID;
 ALTER TABLE distributors VALIDATE CONSTRAINT distfk;
@@ -1344,37 +1325,37 @@ ALTER TABLE distributors VALIDATE CONSTRAINT distfk;
   </para>
 
   <para>
-   To add a (multicolumn) unique constraint to a table:
+   다중 칼럼 유니크 제약 조건 추가 (이 작업 동안 테이블은 잠긴다 - 옮긴이):
 <programlisting>
 ALTER TABLE distributors ADD CONSTRAINT dist_id_zipcode_key UNIQUE (dist_id, zipcode);
 </programlisting>
   </para>
 
   <para>
-   To add an automatically named primary key constraint to a table, noting
-   that a table can only ever have one primary key:
+   기본키가 없는 테이블에 기본키 제약조건 이름은 임의로 지정하고,
+   그 키용 인덱스를 만드는 경우 (이 작업 동안 테이블은 잠긴다 - 옮긴이):
 <programlisting>
 ALTER TABLE distributors ADD PRIMARY KEY (dist_id);
 </programlisting>
   </para>
 
   <para>
-   To move a table to a different tablespace:
+   테이블스페이스 바꾸기:
 <programlisting>
 ALTER TABLE distributors SET TABLESPACE fasttablespace;
 </programlisting>
   </para>
 
   <para>
-   To move a table to a different schema:
+   테이블 스키마 바꾸기:
 <programlisting>
 ALTER TABLE myschema.distributors SET SCHEMA yourschema;
 </programlisting>
   </para>
 
   <para>
-   To recreate a primary key constraint, without blocking updates while the
-   index is rebuilt:
+   인덱스를 만드는데, 테이블 잠금 없이 만들고,
+   그 인덱스를 기본키 제약조건을 새로 지정하는 작업:
 <programlisting>
 CREATE UNIQUE INDEX CONCURRENTLY dist_id_temp_idx ON distributors (dist_id);
 ALTER TABLE distributors DROP CONSTRAINT distributors_pkey,
@@ -1382,21 +1363,21 @@ ALTER TABLE distributors DROP CONSTRAINT distributors_pkey,
 </programlisting></para>
 
   <para>
-   Attach a partition to range partitioned table:
+   범위 파티션된 테이블에 하위 파티션 테이블을 끼워넣기:
 <programlisting>
 ALTER TABLE measurement
     ATTACH PARTITION measurement_y2016m07 FOR VALUES FROM ('2016-07-01') TO ('2016-08-01');
 </programlisting></para>
 
   <para>
-   Attach a partition to list partitioned table:
+   목록 파티션된 테이블에 하위 파티션 테이블을 끼워넣기:
 <programlisting>
 ALTER TABLE cities
     ATTACH PARTITION cities_ab FOR VALUES IN ('a', 'b');
 </programlisting></para>
 
   <para>
-   Detach a partition from partitioned table:
+   파티션된 테이블에서 하위 파티션 테이블을 떼어놓기:
 <programlisting>
 ALTER TABLE measurement
     DETACH PARTITION measurement_y2015m12;
@@ -1405,28 +1386,26 @@ ALTER TABLE measurement
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The forms <literal>ADD</literal> (without <literal>USING INDEX</literal>),
+   <literal>ADD</literal> (<literal>USING INDEX</literal> 빼고),
    <literal>DROP [COLUMN]</>, <literal>DROP IDENTITY</literal>, <literal>RESTART</literal>,
-   <literal>SET DEFAULT</>, <literal>SET DATA TYPE</literal> (without <literal>USING</literal>),
-   <literal>SET GENERATED</literal>, and <literal>SET <replaceable>sequence_option</replaceable></literal>
-   conform with the SQL standard.  The other forms are
-   <productname>PostgreSQL</productname> extensions of the SQL standard.
-   Also, the ability to specify more than one manipulation in a single
-   <command>ALTER TABLE</> command is an extension.
+   <literal>SET DEFAULT</>, <literal>SET DATA TYPE</literal> (<literal>USING</literal> 빼고),
+   <literal>SET GENERATED</literal>, <literal>SET <replaceable>시퀀스옵션</replaceable></literal> 이런 구문은 표준 SQL을 따른다.  나머지 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다.
+   또한, 한 번의 명령으로 여러 작업을 동시에 하는 것도 확장 기능이다.
   </para>
 
   <para>
-   <command>ALTER TABLE DROP COLUMN</> can be used to drop the only
-   column of a table, leaving a zero-column table.  This is an
-   extension of SQL, which disallows zero-column tables.
+   <command>ALTER TABLE DROP COLUMN</> 명령은 해당 테이블에
+   모든 칼럼이 없을 때까지도 사용할 수 있다.  이 특성은 확장 기능이다.
+   표준에서는 칼럼이 없는 테이블을 허용하지 않는다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createtable"></member>
