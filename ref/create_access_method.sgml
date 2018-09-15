@@ -16,69 +16,69 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE ACCESS METHOD</refname>
-  <refpurpose>define a new access method</refpurpose>
+  <refpurpose>새 접근 방법 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE ACCESS METHOD <replaceable class="parameter">name</replaceable>
-    TYPE <replaceable class="parameter">access_method_type</replaceable>
-    HANDLER <replaceable class="parameter">handler_function</replaceable>
+CREATE ACCESS METHOD <replaceable class="parameter">이름</replaceable>
+    TYPE <replaceable class="parameter">접근방법종류</replaceable>
+    HANDLER <replaceable class="parameter">핸들러함수</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE ACCESS METHOD</command> creates a new access method.
+   <command>CREATE ACCESS METHOD</command> 명령은 새 접근 방법을 만든다.
   </para>
 
   <para>
-   The access method name must be unique within the database.
+   한 접근 방법 이름은 해당 데이터베이스 안에서 하나만 있어야 한다.
   </para>
 
   <para>
-   Only superusers can define new access methods.
+   새 접근 방법은 슈퍼유저만 만들 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of the access method to be created.
+      만들 새 접근 방법 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">access_method_type</replaceable></term>
+    <term><replaceable class="parameter">접근방법종류</replaceable></term>
     <listitem>
      <para>
-      This clause specifies the type of access method to define.
-      Only <literal>INDEX</literal> is supported at present.
+      접근 방법 종류.
+      현재, <literal>INDEX</literal>만 사용할 수 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">handler_function</replaceable></term>
+    <term><replaceable class="parameter">핸들러함수</replaceable></term>
     <listitem>
      <para>
-      <replaceable class="parameter">handler_function</replaceable> is the
-      name (possibly schema-qualified) of a previously registered function
-      that represents the access method.  The handler function must be
-      declared to take a single argument of type <type>internal</>,
-      and its return type depends on the type of access method;
-      for <literal>INDEX</literal> access methods, it must
-      be <type>index_am_handler</type>.  The C-level API that the handler
-      function must implement varies depending on the type of access method.
-      The index access method API is described in <xref linkend="indexam">.
+      접근 방법을 구현한 이미 등록되어 있는
+      <replaceable class="parameter">핸들러함수</replaceable> 이름
+      (스키마 이름 포함).
+      이 핸들러 함수의 입력 인자는 하나만 있고, 그 자료형은
+      <type>internal</> 형이어야 하며, 접근 방법 종류가
+      <literal>INDEX</literal>인 경우, 반환값은
+      <type>index_am_handler</type> 자료형이어야 한다.
+      이 함수는 C 언어로 구현 되어야 한다.
+      인덱스 접근 방법 API는 <xref linkend="indexam">에서 다룬다.
      </para>
     </listitem>
    </varlistentry>
@@ -86,27 +86,27 @@ CREATE ACCESS METHOD <replaceable class="parameter">name</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create an index access method <literal>heptree</> with
-   handler function <literal>heptree_handler</>:
+   <literal>heptree_handler</> 핸들러 함수를 사용하는
+   <literal>heptree</> 접근 방법을 만드는 예제:
 <programlisting>
 CREATE ACCESS METHOD heptree TYPE INDEX HANDLER heptree_handler;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE ACCESS METHOD</command> is a
-   <productname>PostgreSQL</> extension.
+   <command>CREATE ACCESS METHOD</command> 구문은
+   <productname>PostgreSQL</> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-drop-access-method"></member>
