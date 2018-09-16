@@ -13,39 +13,39 @@
 
  <refnamediv>
   <refname>CREATE CAST</refname>
-  <refpurpose>define a new cast</refpurpose>
+  <refpurpose>새 형변환자 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE CAST (<replaceable>source_type</replaceable> AS <replaceable>target_type</replaceable>)
-    WITH FUNCTION <replaceable>function_name</replaceable> [ (<replaceable>argument_type</replaceable> [, ...]) ]
+CREATE CAST (<replaceable>기존자료형</replaceable> AS <replaceable>대상자료형</replaceable>)
+    WITH FUNCTION <replaceable>함수이름</replaceable> [ (<replaceable>인자자료형</replaceable> [, ...]) ]
     [ AS ASSIGNMENT | AS IMPLICIT ]
 
-CREATE CAST (<replaceable>source_type</replaceable> AS <replaceable>target_type</replaceable>)
+CREATE CAST (<replaceable>기존자료형</replaceable> AS <replaceable>대상자료형</replaceable>)
     WITHOUT FUNCTION
     [ AS ASSIGNMENT | AS IMPLICIT ]
 
-CREATE CAST (<replaceable>source_type</replaceable> AS <replaceable>target_type</replaceable>)
+CREATE CAST (<replaceable>기존자료형</replaceable> AS <replaceable>대상자료형</replaceable>)
     WITH INOUT
     [ AS ASSIGNMENT | AS IMPLICIT ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1 id="sql-createcast-description">
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE CAST</command> defines a new cast.  A cast
-   specifies how to perform a conversion between
-   two data types.  For example,
+   <command>CREATE CAST</command> 명령은 새 형변환자를 정의한다.  형변환자란
+   두 종류의 자료형을 어떻게 서로 바꿀 것인지를 지정하는 것이다.
+   예를 들어,
 <programlisting>
 SELECT CAST(42 AS float8);
 </programlisting>
-   converts the integer constant 42 to type <type>float8</type> by
-   invoking a previously specified function, in this case
-   <literal>float8(int4)</>. (If no suitable cast has been defined, the
-   conversion fails.)
+   구문은 42 라는 상수를 <type>float8</type> 자료형으로 바꾼다.
+   이 때, 해당 형변환용으로 지정한 <literal>float8(int4)</>
+   함수가 사용된다.  (이런 형변환 작업에서 사용할 적당한
+   형변환자가 없다면 오류로 처리한다.)
   </para>
 
   <para>
@@ -168,40 +168,41 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <variablelist>
     <varlistentry>
-     <term><replaceable>source_type</replaceable></term>
+     <term><replaceable>기존자료형</replaceable></term>
 
      <listitem>
       <para>
-       The name of the source data type of the cast.
+       해당 형변환자용 기존 자료형(입력 자료형) 이름.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>target_type</replaceable></term>
+     <term><replaceable>대상자료형</replaceable></term>
 
      <listitem>
       <para>
-       The name of the target data type of the cast.
+       해당 형변환자용 대상 자료형(출력 자료형) 이름.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><literal><replaceable>function_name</replaceable>[(<replaceable>argument_type</replaceable> [, ...])]</literal></term>
+     <term><literal><replaceable>함수이름</replaceable>[(<replaceable>인자자료형</replaceable> [, ...])]</literal></term>
 
      <listitem>
       <para>
-       The function used to perform the cast.  The function name can
-       be schema-qualified.  If it is not, the function will be looked
-       up in the schema search path.  The function's result data type must
-       match the target type of the cast.   Its arguments are discussed below.
-       If no argument list is specified, the function name must be unique in
-       its schema.
+       형변환 작업을 할 함수 이름.  이 함수 이름에 스키마 이름도 함께
+       지정할 수 있다.  스키마 이름이 없으면, search_path 
+       설정값으로 지정한 스키마 안에서 그 함수를 찾는다.
+       해당 함수의 반환 자료형은 이 명령에서 지정하는 대상 자료형과 
+       같아야 한다.  이 함수의 인자에 대해서는 아래에서 설명한다.
+       인자 자료형을 지정하지 않는다면, 그 함수는 해당 스키마 내에서 
+       하나만 있어야 한다.
       </para>
      </listitem>
     </varlistentry>
@@ -211,8 +212,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
 
      <listitem>
       <para>
-       Indicates that the source type is binary-coercible to the target type,
-       so no function is required to perform the cast.
+       형변환 작업용 함수가 필요 없는 경우임을 지정한다.
       </para>
      </listitem>
     </varlistentry>
@@ -245,7 +245,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
 
      <listitem>
       <para>
-       Indicates that the cast can be invoked implicitly in any context.
+       모든 상황에서 이 형변환자가 자동 사용될 수 있도록 지정한다.
       </para>
      </listitem>
     </varlistentry>
@@ -298,20 +298,19 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
  </refsect1>
 
  <refsect1 id="sql-createcast-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Use <xref linkend="sql-dropcast"> to remove user-defined casts.
+   사용자 정의 형변환자는 <xref linkend="sql-dropcast"> 명령으로 지운다.
   </para>
 
   <para>
-   Remember that if you want to be able to convert types both ways you
-   need to declare casts both ways explicitly.
+   양방향 형변환을 원하면, 각각의 형변환자를 만들어야 함을 기억해야 한다.
   </para>
 
  <indexterm zone="sql-createcast">
   <primary>cast</primary>
-  <secondary>I/O conversion</secondary>
+  <secondary>I/O 변환</secondary>
  </indexterm>
 
   <para>
@@ -382,7 +381,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
 
 
  <refsect1 id="sql-createcast-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
    To create an assignment cast from type <type>bigint</type> to type
@@ -390,26 +389,26 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
 <programlisting>
 CREATE CAST (bigint AS int4) WITH FUNCTION int4(bigint) AS ASSIGNMENT;
 </programlisting>
-   (This cast is already predefined in the system.)
+   (이 형변환자는 이미 시스템에서 제공하는 형변환자다.)
   </para>
  </refsect1>
 
  <refsect1 id="sql-createcast-compat">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The <command>CREATE CAST</command> command conforms to the
-   <acronym>SQL</acronym> standard,
-   except that SQL does not make provisions for binary-coercible
-   types or extra arguments to implementation functions.
-   <literal>AS IMPLICIT</> is a <productname>PostgreSQL</productname>
-   extension, too.
+   <command>CREATE CAST</command> 구문은 표준 <acronym>SQL</acronym>
+   구문을 따른다.
+   표준 SQL에는 함수를 사용하지 않는 경우와,
+   함수 인자를 지정하는 구문은 허용하지 않는다. 또한
+   <literal>AS IMPLICIT</> 옵션은 <productname>PostgreSQL</productname>
+   확장 기능이다.
   </para>
  </refsect1>
 
 
  <refsect1 id="sql-createcast-seealso">
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <para>
    <xref linkend="sql-createfunction">,
