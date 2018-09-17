@@ -140,38 +140,43 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
   </para>
 
   <para>
-   It is wise to be conservative about marking casts as implicit.  An
-   overabundance of implicit casting paths can cause
-   <productname>PostgreSQL</productname> to choose surprising
-   interpretations of commands, or to be unable to resolve commands at
-   all because there are multiple possible interpretations.  A good
-   rule of thumb is to make a cast implicitly invokable only for
-   information-preserving transformations between types in the same
-   general type category.  For example, the cast from <type>int2</type> to
-   <type>int4</type> can reasonably be implicit, but the cast from
-   <type>float8</type> to <type>int4</type> should probably be
-   assignment-only.  Cross-type-category casts, such as <type>text</>
-   to <type>int4</>, are best made explicit-only.
+   묵시적 형변환은 보다 엄격하게 사용하는 것이 좋다. 
+   묵시적 형변환을 유연하게 쓰면, 그 해석 범위가 넓어져,
+   <productname>PostgreSQL</productname> 구문 분석기는
+   엉뚱한 처리를 하거나, 아에 처리하지 않는 경우가 생길 수도 있다.
+   이런 문제점을 피하기 위한 단순한 규칙은
+   그 두 자료형이 일반적으로 같은 범주안에 있는 경우,
+   그들 사이 그 값을 보호하는 변환에 대해서만
+   묵시적으로 형변환을 허용하는 것이다.
+   예를 들어, <type>int2</type> 자료형을
+   <type>int4</type> 자료형으로 묵시적 형변환을 충분히 쓸 수 있지만,
+   <type>float8</type> 자료형을 <type>int4</type> 자료형으로
+   바꿀 때는 대입인 경우에만 묵시적 형변환을 허용하는 것이 좋다.
+   <type>text</> 형과 <type>int4</> 형 처럼
+   두 자료형이 서로 다른 범위에 속한 경우라면 
+   명시적 형변환이 제일 안전하다.
   </para>
 
   <note>
    <para>
-    Sometimes it is necessary for usability or standards-compliance reasons
-    to provide multiple implicit casts among a set of types, resulting in
-    ambiguity that cannot be avoided as above.  The parser has a fallback
-    heuristic based on <firstterm>type categories</> and <firstterm>preferred
-    types</> that can help to provide desired behavior in such cases.  See
-    <xref linkend="sql-createtype"> for
-    more information.
+    그럼에도 불구하고, 몇몇 경우에서,
+    유용성이나 표준 규약 준수 때문에, 여러가지 묵시적인
+    형번환을 허용해서 앞에서 언급한 것처럼 결과가 모호해지는 상황이 
+    발생한다.
+    구문 분석기는 fallback heuristic을 제공한다.
+    fallback heuristic은 <firstterm>자료형 유형(범주)</>과
+    이런 상황에서 바람직한 형변환이 되도록 도와주는
+    <firstterm>preferred type</>을 기반으로 한다.
+    <xref linkend="sql-createtype"> 명령 설명서 참조.
    </para>
   </note>
 
   <para>
-   To be able to create a cast, you must own the source or the target data type
-   and have <literal>USAGE</literal> privilege on the other type.  To create a
-   binary-coercible cast, you must be superuser.  (This restriction is made
-   because an erroneous binary-coercible cast conversion can easily crash the
-   server.)
+   하나의 형변환자를 만드려면, 기존 자료형, 대상 자료형 두 자료형에 대해서
+   사용자는 <literal>USAGE</literal> 권한이 있어야 한다.
+   내부 임의 변환 형변환자는 슈퍼유저만 만들 수 있다.
+   (이렇게 제한 하는 이유는 잘못 만들면, 
+   서버가 비정상 종료 될 수 있기 때문이다.)
   </para>
  </refsect1>
 
@@ -230,9 +235,9 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
 
      <listitem>
       <para>
-       Indicates that the cast is an I/O conversion cast, performed by
-       invoking the output function of the source data type, and passing the
-       resulting string to the input function of the target data type.
+       해당 형변환자를 입력출력용 형변환자로 지정한다.
+       기존 자료형 출력 함수 반환 값을 대상 자료형 입력 함수의 인자로
+       사용하는 형변환자다.
       </para>
      </listitem>
     </varlistentry>
@@ -242,8 +247,8 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
 
      <listitem>
       <para>
-       Indicates that the cast can be invoked implicitly in assignment
-       contexts.
+       문맥상 대입 연산이 일어나는 경우에 묵시적으로 호출되는
+       형 변환자를 만든다.
       </para>
      </listitem>
     </varlistentry>
@@ -260,47 +265,47 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
    </variablelist>
 
   <para>
-   Cast implementation functions can have one to three arguments.
-   The first argument type must be identical to or binary-coercible from
-   the cast's source type.  The second argument,
-   if present, must be type <type>integer</>; it receives the type
-   modifier associated with the destination type, or <literal>-1</>
-   if there is none.  The third argument,
-   if present, must be type <type>boolean</>; it receives <literal>true</>
-   if the cast is an explicit cast, <literal>false</> otherwise.
-   (Bizarrely, the SQL standard demands different behaviors for explicit and
-   implicit casts in some cases.  This argument is supplied for functions
-   that must implement such casts.  It is not recommended that you design
-   your own data types so that this matters.)
+   형변환자를 만들 때 사용하는 함수는 그 인자를 한 개에서 세 개까지 
+   지정할 수 있다.  첫번째 인자는 만들 형변환자의 기존 자료형과 같아야 한다.
+   또는 내부 임의 변환용이라면 바로 대상 자료형이어야 한다.
+   두번째 인자는 <type>integer</> 이어야 하며, 대상 자료형의 길이 제한 값이다.
+   없는 경우는 <literal>-1</>을 사용한다.
+   세번째 인자는 <type>boolean</>형으로 
+   <literal>true</>면 명시적 형변환자, <literal>false</>면 묵시적
+   형변화자 함수를 뜻한다.
+   (특이하게, 표준 SQL에서는 명시적 변환과 묵시적 변환이 서로 반대인 경우가
+   있다, 이 때 이 인자값을 조정해서 맞춘다.  형변환자가 사용자 정의
+   자료형인 경우에는 만드는 이가 이 형변환을 고민해야 하기 때문에, 
+   세번째 인자를 사용할 필요는 없다.)
   </para>
 
   <para>
-   The return type of a cast function must be identical to or
-   binary-coercible to the cast's target type.
+   형변화자에서 사용하는 함수의 반환 자료형은 
+   대상 자료형과 같아야 한다.
   </para>
 
   <para>
-   Ordinarily a cast must have different source and target data types.
-   However, it is allowed to declare a cast with identical source and
-   target types if it has a cast implementation function with more than one
-   argument.  This is used to represent type-specific length coercion
-   functions in the system catalogs.  The named function is used to
-   coerce a value of the type to the type modifier value given by its
-   second argument.
+   일반적으로 형변환자는 기존 자료형과 대상 자료형이 서로 다르다.
+   그런데, 두 자료형이 같은 경우가 있는데, 
+   이 경우는 대상 자료형에서 해당 자료의 길이 제한을 걸 때 사용된다.
+   이렇게 사용하면, 자료형을 바꾼다기 보다 최대 길이를 조정하는
+   용도로 사용된다. (time, timestamp, timestamptz 형변화자인 경우는
+   윤초 처리를 위해서 허용하고 있다 - 옮긴이)
   </para>
 
   <para>
-   When a cast has different source and
-   target types and a function that takes more than one argument, it
-   supports converting from one type to another and applying a length
-   coercion in a single step.  When no such entry is available, coercion
-   to a type that uses a type modifier involves two cast steps, one to
-   convert between data types and a second to apply the modifier.
+   기존 자료형과 대상 자료형이 서로 다른 형변환자를 만들 때,
+   사용하는 함수의 인자가 하나 이상이면, 그 두번째 인자는
+   대상 자료형의 길이 제한으로 사용된다. 예를 들어,
+   어떤 값을 varchar(10) 으로 형변환해야 할 경우, 
+   먼저 자료형 변환도 하고, 다음 그 변환된 문자열의 길이 제한도 
+   하는 두가지 일을 동시에 해야 한다. 이런 경우 사용한다.
   </para>
 
   <para>
-   A cast to or from a domain type currently has no effect.  Casting
-   to or from a domain uses the casts associated with its underlying type.
+   원본 자료형이 도메인이거나, 대상 자료형이 도메인으로 
+   지정하는 형 변환자는 아무런 작업을 하지 않는다.
+   그 형변환은 그 도메인의 바탕이 되는 자료형을 대상으로 한다.
   </para>
 
  </refsect1>
@@ -392,8 +397,9 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
   <title>예제</title>
 
   <para>
-   To create an assignment cast from type <type>bigint</type> to type
-   <type>int4</type> using the function <literal>int4(bigint)</literal>:
+   <literal>int4(bigint)</literal> 함수를 사용하는
+   <type>bigint</type> 형에서 <type>int4</type> 형으로 바꾸는
+   대입 형변환자를 만드는 예제:
 <programlisting>
 CREATE CAST (bigint AS int4) WITH FUNCTION int4(bigint) AS ASSIGNMENT;
 </programlisting>
