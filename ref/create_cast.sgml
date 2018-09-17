@@ -49,86 +49,94 @@ SELECT CAST(42 AS float8);
   </para>
 
   <para>
-   Two types can be <firstterm>binary coercible</firstterm>, which
-   means that the conversion can be performed <quote>for free</quote>
-   without invoking any function.  This requires that corresponding
-   values use the same internal representation.  For instance, the
-   types <type>text</type> and <type>varchar</type> are binary
-   coercible both ways.  Binary coercibility is not necessarily a
-   symmetric relationship.  For example, the cast
-   from <type>xml</type> to <type>text</type> can be performed for
-   free in the present implementation, but the reverse direction
-   requires a function that performs at least a syntax check.  (Two
-   types that are binary coercible both ways are also referred to as
-   binary compatible.)
+   두 자료형은 서로(쌍방 또는 일방) <firstterm>내부 임의 변환</firstterm>
+   <firstterm>binary coercible</firstterm> 될 수 있다. 
+   이것은 형 변환이 일어날 때, 어떠한 함수도 사용하지 않고, 
+   <quote>그냥</quote> 바꾸는 것을 말한다.
+   두 자료형이 내부적으로는 같은 자료형으로 처리하는 경우가 그렇다.
+   예를 들어, <type>text</type> 형과 <type>varchar</type> 형이 대표적인
+   내부 임의 변환을 하는 경우다.
+   내부 임의 변환이 쌍방이 아닌 경우도 있다.  예를 들어,
+   <type>xml</type> 형을 <type>text</type> 형으로 바꿀 때는 
+   내부 임의 변환이 가능하지만, 그 반대인 경우는 
+   xml 문법에 맞는지 유효성 검사를 하는 함수가 필요하기 때문이다.
+   (쌍방 내부 임의 변환인 경우를 특히 이진 호환
+   binary compatible 이라고 하기도 한다.)
   </para>
 
   <para>
-   You can define a cast as an <firstterm>I/O conversion cast</> by using
-   the <literal>WITH INOUT</literal> syntax. An I/O conversion cast is
-   performed by invoking the output function of the source data type, and
-   passing the resulting string to the input function of the target data type.
-   In many common cases, this feature avoids the need to write a separate
-   cast function for conversion. An I/O conversion cast acts the same as
-   a regular function-based cast; only the implementation is different.
+   <literal>WITH INOUT</literal> 구문을 이용해서
+   <firstterm>입출력 형변환자</> <firstterm>I/O conversion cast</>
+   를 만들 수도 있다.
+   입출력 형변화자는 기존 자료형의 출력 함수를 호출하고,
+   대상 자료형의 입력 함수에 결과 문자열을 지정해서 처리한다.
+   일반적으로 많은 경우에, 이런 처리 방식은 
+   형 변환 작업용 분리된 형 변환 함수를 각각 만드는 일을 줄인다.
+   입출력 형변화자는 일반 함수 기반 형변환자와 하는 일은 동일하다.
+   구현 방법이 다를 뿐이다.
   </para>
 
   <para>
-   By default, a cast can be invoked only by an explicit cast request,
-   that is an explicit <literal>CAST(<replaceable>x</> AS
-   <replaceable>typename</>)</literal> or
-   <replaceable>x</><literal>::</><replaceable>typename</>
-   construct.
+   사용자가 만드는 형 변환자는 기본적으로 명시적으로 지정해서
+   사용한다.  명시적 사용법은 <literal>CAST(<replaceable>x</> AS
+   <replaceable>자료형</>)</literal> 구문이나
+   <replaceable>x</><literal>::</><replaceable>자료형</>
+   구문을 사용한다.
   </para>
 
   <para>
-   If the cast is marked <literal>AS ASSIGNMENT</> then it can be invoked
-   implicitly when assigning a value to a column of the target data type.
-   For example, supposing that <literal>foo.f1</literal> is a column of
-   type <type>text</type>, then:
+   <literal>AS ASSIGNMENT</> 옵션을 사용하면, 
+   대상 자료형 칼럼에 값을 대입하는 경우에는 
+   묵시적으로 형변환이 일어난다.  예를 들어
+   <literal>foo.f1</literal> 칼럼의 자료형이
+   <type>text</type>형인 경우:
 <programlisting>
 INSERT INTO foo (f1) VALUES (42);
 </programlisting>
-   will be allowed if the cast from type <type>integer</type> to type
-   <type>text</type> is marked <literal>AS ASSIGNMENT</>, otherwise not.
-   (We generally use the term <firstterm>assignment
-   cast</firstterm> to describe this kind of cast.)
+   명령을 실행하면, <type>integer</type> 자료형을
+   <type>text</type> 자료형으로 바꾸는 형 변환자가 있는데, 
+   이 변환자에 <literal>AS ASSIGNMENT</> 옵션 추가 되어 있다면,
+   그 형 변환자를 특별히 지정하지 않아도 묵시적으로 사용한다.
+   (이런 형 변환자를 <firstterm>대입 형변환자</firstterm>
+   <firstterm>assignment cast</firstterm> 라고 한다.)
   </para>
 
   <para>
-   If the cast is marked <literal>AS IMPLICIT</> then it can be invoked
-   implicitly in any context, whether assignment or internally in an
-   expression.  (We generally use the term <firstterm>implicit
-   cast</firstterm> to describe this kind of cast.)
-   For example, consider this query:
+   <literal>AS IMPLICIT</> 옵션을 사용하면, 
+   어떤 상황에서 그냥 묵시적으로 형 변환을 한다.
+   (이런 형 변환자를 
+   <firstterm>묵시적 형변환자</firstterm> 
+   <firstterm>implicit cast</firstterm> 라고 한다.)
+   다음 예제를 보자:
 <programlisting>
 SELECT 2 + 4.0;
 </programlisting>
-   The parser initially marks the constants as being of type <type>integer</>
-   and <type>numeric</> respectively.  There is no <type>integer</>
-   <literal>+</> <type>numeric</> operator in the system catalogs,
-   but there is a <type>numeric</> <literal>+</> <type>numeric</> operator.
-   The query will therefore succeed if a cast from <type>integer</> to
-   <type>numeric</> is available and is marked <literal>AS IMPLICIT</> &mdash;
-   which in fact it is.  The parser will apply the implicit cast and resolve
-   the query as if it had been written
+   구문분석기는 두 상수를 각각 <type>integer</>형과 <type>numeric</>형으로 
+   간주할 것이다.  이 때 <type>integer</>
+   <literal>+</> <type>numeric</> 용 연산자는 없고, 
+   <type>numeric</> <literal>+</> <type>numeric</> 용 연산자만 있는데,
+   이 쿼리는 정상 실행 된다.
+   <type>integer</> 형이 <type>numeric</> 형으로 바꾸는 <literal>AS IMPLICIT</>
+   옵션이 지정된 묵시적 형변환자가 사용되었기 때문이다. &mdash;
+   내부적으로 보면, 결국 구문분석기는 다음과 같이 쿼리를 재작성한다:
 <programlisting>
 SELECT CAST ( 2 AS numeric ) + 4.0;
 </programlisting>
   </para>
 
   <para>
-   Now, the catalogs also provide a cast from <type>numeric</> to
-   <type>integer</>.  If that cast were marked <literal>AS IMPLICIT</> &mdash;
-   which it is not &mdash; then the parser would be faced with choosing
-   between the above interpretation and the alternative of casting the
-   <type>numeric</> constant to <type>integer</> and applying the
-   <type>integer</> <literal>+</> <type>integer</> operator.  Lacking any
-   knowledge of which choice to prefer, it would give up and declare the
-   query ambiguous.  The fact that only one of the two casts is
-   implicit is the way in which we teach the parser to prefer resolution
-   of a mixed <type>numeric</>-and-<type>integer</> expression as
-   <type>numeric</>; there is no built-in knowledge about that.
+   시스템 카탈로그에서는 <type>numeric</> 형에서 
+   <type>integer</> 형으로 바꾸는 형 변환자도 제공한다.
+   이런 형변환자에 <literal>AS IMPLICIT</> 옵션이 있다면 &mdash; 
+   실재로는 없다 &mdash; 구문분석기는
+   그냥 <type>integer</> <literal>+</> <type>integer</> 연산을
+   해 버릴 것이다.  그럼 앞에서 이야기한 <type>integer</>형에서
+   <type>numeric</>형으로 바꾸는 형 변환자와 충돌이 생긴다.
+   이렇게 되면 구문분석기는 자신이 어느 것을 선택하지 않고, 
+   그냥 오류로 처리한다.  사용자가 결정하라고.
+   이런 불편함을 해결하기 위한 어느 한 쪽이 묵시적 형변환을 
+   사용한다면, 그 반대 쪽에 대해서는 같은 묵시적 형변환으로 
+   지정하는 것에 대해서 꼼꼼히 확인해 봐야 한다.
   </para>
 
   <para>
