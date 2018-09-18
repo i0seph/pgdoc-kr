@@ -13,13 +13,13 @@
 
  <refnamediv>
   <refname>CREATE CONVERSION</refname>
-  <refpurpose>define a new encoding conversion</refpurpose>
+  <refpurpose>새 인코딩 변환 규칙 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ DEFAULT ] CONVERSION <replaceable>name</replaceable>
-    FOR <replaceable>source_encoding</replaceable> TO <replaceable>dest_encoding</replaceable> FROM <replaceable>function_name</replaceable>
+CREATE [ DEFAULT ] CONVERSION <replaceable>이름</replaceable>
+    FOR <replaceable>원래인코딩</replaceable> TO <replaceable>대상인코딩</replaceable> FROM <replaceable>함수이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -27,17 +27,17 @@ CREATE [ DEFAULT ] CONVERSION <replaceable>name</replaceable>
   <title>설명</title>
 
   <para>
-   <command>CREATE CONVERSION</command> defines a new conversion between
-   character set encodings.  Also, conversions that
-   are marked <literal>DEFAULT</> can be used for automatic encoding
-   conversion between
-   client and server. For this purpose, two conversions, from encoding A to
-   B <emphasis>and</emphasis> from encoding B to A, must be defined.
+   <command>CREATE CONVERSION</command> 명령은
+   두 인코딩 간 문자 세트 변환 규칙을 만든다.
+   <literal>DEFAULT</> 옵션을 지정해서
+   클라이언트와 서버가 변환을 자동으로 할 수 있게 한다.
+   이 변환 규칙은 반드시 A에서 B, B에서 A, 쌍방 두 가지 모두 만들어야 한다.
  </para>
 
   <para>
-   To be able to create a conversion, you must have <literal>EXECUTE</literal> privilege
-   on the function and <literal>CREATE</literal> privilege on the destination schema.
+   지정하는 함수에 대해서는 <literal>EXECUTE</literal> 권한,
+   만들어질 변환 규칙의 스키마에 대해서는 <literal>CREATE</literal> 권한이 
+   있어야 한다.
   </para>
  </refsect1>
 
@@ -51,67 +51,65 @@ CREATE [ DEFAULT ] CONVERSION <replaceable>name</replaceable>
 
      <listitem>
       <para>
-       The <literal>DEFAULT</> clause indicates that this conversion
-       is the default for this particular source to destination
-       encoding. There should be only one default encoding in a schema
-       for the encoding pair.
+       <literal>DEFAULT</> 옵션은 원래 인코딩을 대상 인코딩으로 
+       바꿀 때 사용할 이 변환 규칙을 기본으로 설정한다.
+       한 스키마 안에서는 이 인코딩 쌍에 대한 기본 변환 규칙은 
+       하나만 있어야 한다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>name</replaceable></term>
+     <term><replaceable>이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of the conversion. The conversion name can be
-       schema-qualified. If it is not, the conversion is defined in the
-       current schema. The conversion name must be unique within a
-       schema.
+       인코딩 변환 규칙 이름.  스키마 이름을 포함할 수도 있음.
+       스키마 이름을 지정하지 않으면, 현재 스키마 안에 만든다.
+       해당 변환 규칙 이름은 해당 스키마 안에서 유일해야 한다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>source_encoding</replaceable></term>
+     <term><replaceable>원래인코딩</replaceable></term>
 
      <listitem>
       <para>
-       The source encoding name.
+       원래 인코딩 이름.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>dest_encoding</replaceable></term>
+     <term><replaceable>대상인코딩</replaceable></term>
 
      <listitem>
       <para>
-       The destination encoding name.
+       대상 인코딩 이름.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>function_name</replaceable></term>
+     <term><replaceable>함수이름</replaceable></term>
 
      <listitem>
       <para>
-       The function used to perform the conversion.  The function name can
-       be schema-qualified.  If it is not, the function will be looked
-       up in the path.
+       인코딩 변환 작업을 수행할 함수 이름.  스키마 이름을 포함 할 수 있음.
+       스키마 이름이 빠지면, search_path 설정값 기준으로 함수를 찾는다.
       </para>
 
       <para>
-       The function must have the following signature:
+       사용할 함수는 다음과 같이 정의된다:
 
 <programlisting>
 conv_proc(
-    integer,  -- source encoding ID
-    integer,  -- destination encoding ID
-    cstring,  -- source string (null terminated C string)
-    internal, -- destination (fill with a null terminated C string)
-    integer   -- source string length
+    integer,  -- 원래 인코딩 ID
+    integer,  -- 대상 인코딩 ID
+    cstring,  -- 원본 문자열 (null로 끝나는 C 문자열)
+    internal, -- 변환된 문자열 (null 마침 문자가 포함된 C 문자열)
+    integer   -- 원본 문자열 길이
 ) RETURNS void;
 </programlisting></para>
      </listitem>
@@ -123,12 +121,12 @@ conv_proc(
   <title>참고</title>
 
   <para>
-   Use <command>DROP CONVERSION</command> to remove user-defined conversions.
+   사용자 정의 인코딩 변환 규칙은 <command>DROP CONVERSION</command> 
+   명령으로 지운다.
   </para>
 
   <para>
-   The privileges required to create a conversion might be changed in a future
-   release.
+   다음 버전에서는 인코딩 변환 규칙을 만드는데 필요한 권한이 바뀔 수도 있다.
   </para>
  </refsect1>
 
@@ -136,8 +134,9 @@ conv_proc(
   <title>예제</title>
 
   <para>
-   To create a conversion from encoding <literal>UTF8</literal> to
-   <literal>LATIN1</literal> using <function>myfunc</>:
+   <function>myfunc</> 함수를 이용해서
+   <literal>UTF8</literal>에서 <literal>LATIN1</literal> 인코딩으로
+   바꾸는 인코딩 변환 규칙을 만드는 경우:
 <programlisting>
 CREATE CONVERSION myconv FOR 'UTF8' TO 'LATIN1' FROM myfunc;
 </programlisting></para>
@@ -148,11 +147,11 @@ CREATE CONVERSION myconv FOR 'UTF8' TO 'LATIN1' FROM myfunc;
   <title>호환성</title>
 
   <para>
-    <command>CREATE CONVERSION</command>
-    is a <productname>PostgreSQL</productname> extension.
-    There is no <command>CREATE CONVERSION</command>
-    statement in the SQL standard, but a <command>CREATE TRANSLATION</command>
-    statement that is very similar in purpose and syntax.
+    <command>CREATE CONVERSION</command> 구문은
+    <productname>PostgreSQL</productname> 확장 기능이다.
+    <command>CREATE CONVERSION</command> 구문은
+    표준 SQL에 없지만, 같은 일을 하고, 
+    문법도 비슷한 <command>CREATE TRANSLATION</command> 표준 구문이 있다.
   </para>
  </refsect1>
 
