@@ -276,7 +276,7 @@ PostgreSQL documentation
   </para>
 
   <para>
-   <command>pg_resetwal</command> 명령은 같은 메이져 버전에서만
+   <command>pg_resetwal</command> 명령은 같은 메이저 버전에서만
    사용할 수 있다.
   </para>
  </refsect1>

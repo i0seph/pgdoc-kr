@@ -611,10 +611,10 @@ protocol to make nodes agree on a serializable transactional order.
    </para>
 
    <para>
-    일반적으로 로그 전달 방식 복제는 메이져 버전이 서로 다른 
+    일반적으로 로그 전달 방식 복제는 메이저 버전이 서로 다른 
         <productname>PostgreSQL</> 서버 간은 구현이 불가능하다.
         디스크 자료 저장 포멧이 바뀔 경우에, 
-        PostgreSQL 개발 그룹에서는 메이져 버전을 바꾸어 릴리즈하는 것이 
+        PostgreSQL 개발 그룹에서는 메이저 버전을 바꾸어 릴리즈하는 것이 
         정책이기 때문이다. 물론 마이너 버전의 서로 틀린 경우는 이 복제 
         환경을 구축해도 잘 작동할 것이다. 이렇게 서로 마이너 버전이 틀린 경우
         해결 하기 힘든 예상치 못한 문제가 발생할 수도 있기 때문에, 
