@@ -16,121 +16,122 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE DOMAIN</refname>
-  <refpurpose>define a new domain</refpurpose>
+  <refpurpose>새 도메인 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE DOMAIN <replaceable class="parameter">name</replaceable> [ AS ] <replaceable class="parameter">data_type</replaceable>
-    [ COLLATE <replaceable>collation</replaceable> ]
-    [ DEFAULT <replaceable>expression</replaceable> ]
-    [ <replaceable class="PARAMETER">constraint</replaceable> [ ... ] ]
+CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replaceable class="parameter">자료형</replaceable>
+    [ COLLATE <replaceable>문자정렬규칙</replaceable> ]
+    [ DEFAULT <replaceable>표현식</replaceable> ]
+    [ <replaceable class="PARAMETER">제약조건</replaceable> [ ... ] ]
 
-<phrase>where <replaceable class="PARAMETER">constraint</replaceable> is:</phrase>
+<phrase><replaceable class="PARAMETER">제약조건</replaceable> 자리에는:</phrase>
 
-[ CONSTRAINT <replaceable class="PARAMETER">constraint_name</replaceable> ]
-{ NOT NULL | NULL | CHECK (<replaceable class="PARAMETER">expression</replaceable>) }
+[ CONSTRAINT <replaceable class="PARAMETER">제약조건이름</replaceable> ]
+{ NOT NULL | NULL | CHECK (<replaceable class="PARAMETER">표현식</replaceable>) }
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE DOMAIN</command> creates a new domain.  A domain is
-   essentially a data type with optional constraints (restrictions on
-   the allowed set of values).
-   The user who defines a domain becomes its owner.
+   <command>CREATE DOMAIN</command> 명령은 새 도메인을 만든다.
+   도메인이란 기본 자료형의 새로운 정의로 그 값 범위를 제한하는 제약 조건을
+   선택적으로 추가한 것이다.
+   이 도메인을 만드는 사용자가 도메인 소유주가 된다.
   </para>
 
   <para>
-   If a schema name is given (for example, <literal>CREATE DOMAIN
-   myschema.mydomain ...</>) then the domain is created in the
-   specified schema.  Otherwise it is created in the current schema.
-   The domain name must be unique among the types and domains existing
-   in its schema.
+   스키마 이름을 포함하면, 해당 도메인은 그 스키마 안에
+   만들어 진다. (예, <literal>CREATE DOMAIN myschema.mydomain ...</>)
+   스키마를 지정하지 않으면, 현재 스키마 안에 만들어진다.
+   도메인 이름은 해당 스키마와 기반 자료형을 함께 따져 그 스키마 안에서
+   유일해야 한다.
   </para>
 
   <para>
-   Domains are useful for abstracting common constraints on fields into
-   a single location for maintenance.  For example, several tables might
-   contain email address columns, all requiring the same CHECK constraint
-   to verify the address syntax.
-   Define a domain rather than setting up each table's constraint
-   individually.
+   도메인 개체는 자료 관리용으로 입력되는 자료 값을 유효성을 엄격하게
+   제한하고자 할 때 유용하게 사용된다.
+   예를 들어, 여러 테이블에서 이메인 주소를 저장하는 칼럼이 있을 때,
+   그 칼럼을 문자열 자료형으로 지정하고, 그 모든 칼럼들에 
+   체크 제약 조건을 추가해서 자료 유효성을 보장할 수 있다.
+   이 때, 하나의 도메인을 만들면서 체크 제약 조건을 해당 도메인에
+   지정하고, 그 도메인을 이메일 칼럼의 자료형으로 사용하면,
+   보다 일관된 자료 유효성을 보장한다.
   </para>
 
   <para>
-   To be able to create a domain, you must have <literal>USAGE</literal>
-   privilege on the underlying type.
+   도메인을 만드려면, 그 기반 자료형에 대해서, 
+   <literal>USAGE</literal> 권한이 있어야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
     <variablelist>
      <varlistentry>
-      <term><replaceable class="parameter">name</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
-        The name (optionally schema-qualified) of a domain to be created.
+        만들고자 하는 도메인 이름(스키마 이름 포함).
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">data_type</replaceable></term>
+      <term><replaceable class="PARAMETER">자료형</replaceable></term>
       <listitem>
        <para>
-        The underlying data type of the domain. This can include array
-        specifiers.
+        해당 도메인의 기반 자료형 이름.  배열 자료형도 가능하다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable>collation</replaceable></term>
+      <term><replaceable>문자정렬규칙</replaceable></term>
       <listitem>
        <para>
-        An optional collation for the domain.  If no collation is
-        specified, the underlying data type's default collation is used.
-        The underlying type must be collatable if <literal>COLLATE</>
-        is specified.
+        해당 도메인의 문자 정렬 규칙.  지정하지 않으면,
+        이 도메인의 문자 정렬 규칙은 기반 자료형의 그것을 따른다.
+        <literal>COLLATE</> 옵션을 사용하면, 그 기반 자료형도
+        이 문자 정렬 규칙을 사용할 수 있어야 한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>DEFAULT <replaceable>expression</replaceable></literal></term>
+      <term><literal>DEFAULT <replaceable>표현식</replaceable></literal></term>
 
       <listitem>
        <para>
-        The <literal>DEFAULT</> clause specifies a default value for
-        columns of the domain data type.  The value is any
-        variable-free expression (but subqueries are not allowed).
-        The data type of the default expression must match the data
-        type of the domain.  If no default value is specified, then
-        the default value is the null value.
+        해당 도메인의 기본값을 지정하는 구문.
+        이 기본값을 지정하는 표현식은 자유롭다. (단 서브 쿼리는 허용하지 않음)
+        이 표현식으로 만들어지는 값의 자료형은 기반 자료형과 
+        같아야 한다.
+        이 옵션을 사용하지 않으면 해당 도메인의 기본값은 null이다.
        </para>
 
        <para>
-        The default expression will be used in any insert operation
-        that does not specify a value for the column.  If a default
-        value is defined for a particular column, it overrides any
-        default associated with the domain.  In turn, the domain
-        default overrides any default value associated with the
-        underlying data type.
+        이 도메인을 사용하는 칼럼에 특정한 값을 지정하지 않으면,
+        이 옵션으로 지정한 기본값이 해당 칼럼 값으로 사용된다.
+        하지만, 어떤 칼럼에서 그 칼럼 고유 기본값을 지정하면, 
+        이 도메인의 기본값보다 우선적으로 사용된다.
+        특정 칼럼의 기본값을 지정하지 않았다면,
+        도메인 기본값이 그 도메인의 기반 자료형 기본값보다
+        우선적으로 사용된다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>CONSTRAINT <replaceable class="PARAMETER">constraint_name</replaceable></literal></term>
+      <term><literal>CONSTRAINT <replaceable class="PARAMETER">제약조건</replaceable></literal></term>
       <listitem>
        <para>
-        An optional name for a constraint.  If not specified,
-        the system generates a name.
+        선택적으로 지정하는 제약 조건의 이름.
+        지정하지 않으면, 서버가 자동으로 만든 이름을 사용한다.
        </para>
       </listitem>
      </varlistentry>
@@ -139,8 +140,8 @@ CREATE DOMAIN <replaceable class="parameter">name</replaceable> [ AS ] <replacea
       <term><literal>NOT NULL</></term>
       <listitem>
        <para>
-        Values of this domain are prevented from being null
-        (but see notes below).
+        해당 도메인 값으로 null 값을 사용하지 못하도록 지정한다.
+        (아래 참고도 살펴 볼 것)
        </para>
       </listitem>
      </varlistentry>
@@ -149,40 +150,39 @@ CREATE DOMAIN <replaceable class="parameter">name</replaceable> [ AS ] <replacea
       <term><literal>NULL</></term>
       <listitem>
        <para>
-        Values of this domain are allowed to be null.  This is the default.
+        해당 도메인 값으로 null 값을 사용하도록 지정한다. 이것은 기본값이다.
        </para>
 
        <para>
-        This clause is only intended for compatibility with
-        nonstandard SQL databases.  Its use is discouraged in new
-        applications.
+        비표준 SQL 데이터베이스와 호환하기 위해 있는 옵션이다.
+        새 응용 프로그램에서는 사용하지 않는 것이 좋다.
        </para>
       </listitem>
      </varlistentry>
 
    <varlistentry>
-    <term><literal>CHECK (<replaceable class="PARAMETER">expression</replaceable>)</literal></term>
+    <term><literal>CHECK (<replaceable class="PARAMETER">표현식</replaceable>)</literal></term>
     <listitem>
-     <para><literal>CHECK</> clauses specify integrity constraints or tests
-      which values of the domain must satisfy.
-      Each constraint must be an expression
-      producing a Boolean result.  It should use the key word <literal>VALUE</>
-      to refer to the value being tested.  Expressions evaluating
-      to TRUE or UNKNOWN succeed.  If the expression produces a FALSE result,
-      an error is reported and the value is not allowed to be converted
-      to the domain type.
+     <para><literal>CHECK</> 옵션은 해당 도메인의
+      자료 무결성 검사, 또는 자료 유효성 검사를 지정한다.
+      여기서 사용하는 표현식의 결과는 불리언 값(참, 거짓, 알수없음)이여야 한다.
+      이 표현식에서 입력되는 값은 <literal>VALUE</> 라는 키워드를
+      사용한다.  
+      이 표현의 결과값으로 TRUE 또는 UNKNOWN이면 검사를 통과한 것으로 간주한다.
+      FALSE면, 오류로 처리한다. 즉 해당 도메인 값으로 쓸 수 없다는 뜻이다.
      </para>
 
      <para>
-      Currently, <literal>CHECK</literal> expressions cannot contain
-      subqueries nor refer to variables other than <literal>VALUE</>.
+      현재 버전에서는 <literal>CHECK</literal> 표현식에는
+      서브쿼리를 사용할 수 없으며, <literal>VALUE</> 외 다른 변수값을
+      대상으로 검사할 수도 없다.
      </para>
 
      <para>
-      When a domain has multiple <literal>CHECK</literal> constraints,
-      they will be tested in alphabetical order by name.
-      (<productname>PostgreSQL</> versions before 9.5 did not honor any
-      particular firing order for <literal>CHECK</literal> constraints.)
+      하나 이상의 <literal>CHECK</literal> 제약 조건을 지정한다면,
+      그 제약 조건의 이름 알파벳 순으로 검사를 진행한다.
+      (<productname>PostgreSQL</> 9.5 이전 버전에서는 
+      <literal>CHECK</literal> 제약 조건의 검사 순서를 정하지 않았다.)
      </para>
     </listitem>
    </varlistentry>
@@ -190,39 +190,41 @@ CREATE DOMAIN <replaceable class="parameter">name</replaceable> [ AS ] <replacea
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Domain constraints, particularly <literal>NOT NULL</>, are checked when
-   converting a value to the domain type.  It is possible for a column that
-   is nominally of the domain type to read as null despite there being such
-   a constraint.  For example, this can happen in an outer-join query, if
-   the domain column is on the nullable side of the outer join.  A more
-   subtle example is
+   도메인 제약 조건으로 <literal>NOT NULL</> 제약 조건은
+   도메인으로 변환 될 때 검사 한다.  이럼이도 불구하고
+   명목상 도메인 유형의 열에 null 값이 올 수 있다.
+   예를 들어, 이런 일은 outer 조인에서 일어난다.
+   outer 조인의 결과는 도메인인데, 해당 자료가 없으면
+   결국 그 값은 null이 될 수 밖에 없다.
+   또 다른 경우는 다음과 같이,
 <programlisting>
 INSERT INTO tab (domcol) VALUES ((SELECT domcol FROM tab WHERE false));
 </programlisting>
-   The empty scalar sub-SELECT will produce a null value that is considered
-   to be of the domain type, so no further constraint checking is applied
-   to it, and the insertion will succeed.
+   스칼라 서브 셀렉트 값이 null 인 경우에도 이런 문제가 생길 수 있다.
+   이 경우 domcol 도메인에 not null 제약 조건이 있음에도 불구하고,
+   null 값으로 insert 작업은 성공한다.
   </para>
 
   <para>
-   It is very difficult to avoid such problems, because of SQL's general
-   assumption that a null value is a valid value of every data type.  Best practice
-   therefore is to design a domain's constraints so that a null value is allowed,
-   and then to apply column <literal>NOT NULL</> constraints to columns of
-   the domain type as needed, rather than directly to the domain type.
+   null 값은 어떠한 자료형에서도 그 값으로 사용할 수 
+   있다는 SQL 기본 사상 때문에, 이런 문제를 피할 방법은 많이 어렵다.
+   이 문제를 피할 가장 좋은 방법은 
+   not null 제약 조건은 테이블을 만들 때 해당 도메인을 사용하는
+   칼럼의 제약 조건으로 지정하는 것이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   This example creates the <type>us_postal_code</type> data type and
-   then uses the type in a table definition.  A regular expression test
-   is used to verify that the value looks like a valid US postal code:
+   다음 예제는 <type>us_postal_code</type> 도메인을 만드는 예제다.
+   이 도메인을 이용해서
+   미국 우편 번호 자료를 저장하는 테이블도 함께 만든다.
+   정규식을 이용해서 입력되는 값이 타당한지 확인한다:
 
 <programlisting>
 CREATE DOMAIN us_postal_code AS TEXT
@@ -243,16 +245,15 @@ CREATE TABLE us_snail_addy (
  </refsect1>
 
  <refsect1 id="SQL-CREATEDOMAIN-compatibility">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The command <command>CREATE DOMAIN</command> conforms to the SQL
-   standard.
+   <command>CREATE DOMAIN</command> 구문은 표준 SQL 규약을 준수한다.
   </para>
  </refsect1>
 
  <refsect1 id="SQL-CREATEDOMAIN-see-also">
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterdomain"></member>
