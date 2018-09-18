@@ -13,76 +13,79 @@
 
  <refnamediv>
   <refname>CREATE COLLATION</refname>
-  <refpurpose>define a new collation</refpurpose>
+  <refpurpose>새 문자 정렬 규칙 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> (
-    [ LOCALE = <replaceable>locale</replaceable>, ]
+CREATE COLLATION [ IF NOT EXISTS ] <replaceable>이름</replaceable> (
+    [ LOCALE = <replaceable>로케일</replaceable>, ]
     [ LC_COLLATE = <replaceable>lc_collate</replaceable>, ]
     [ LC_CTYPE = <replaceable>lc_ctype</replaceable>, ]
-    [ PROVIDER = <replaceable>provider</replaceable>, ]
-    [ VERSION = <replaceable>version</replaceable> ]
+    [ PROVIDER = <replaceable>제공자</replaceable>, ]
+    [ VERSION = <replaceable>버전</replaceable> ]
 )
-CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replaceable>existing_collation</replaceable>
+CREATE COLLATION [ IF NOT EXISTS ] <replaceable>이름</replaceable> FROM <replaceable>기존_문자정렬규칙</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1 id="sql-createcollation-description">
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE COLLATION</command> defines a new collation using
-   the specified operating system locale settings,
-   or by copying an existing collation.
+   <command>CREATE COLLATION</command> 명령은
+   운영체제 로케일 설정에 지정된 정렬 규칙을 이용하는 새 
+   문자 정렬 규칙을 만들거나, 기존 문자 정렬 규칙을 복사해서
+   새 문자 정렬 규칙을 만든다.
  </para>
 
   <para>
-   To be able to create a collation, you must
-   have <literal>CREATE</literal> privilege on the destination schema.
+   문자 정렬 규칙을 만드려면, 해당 스키마에 대해서
+   <literal>CREATE</literal> 권한이 있어야 한다.
   </para>
  </refsect1>
 
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <variablelist>
     <varlistentry>
      <term><literal>IF NOT EXISTS</literal></term>
      <listitem>
       <para>
-       Do not throw an error if a collation with the same name already exists.
-       A notice is issued in this case. Note that there is no guarantee that
-       the existing collation is anything like the one that would have been created.
+       지정한 이름의 문자 정렬 규칙이 이미 있어도 오류로 처리하지 않고,
+       알림 메시지만 보여준다.  이 때 기존 문자 정렬 규칙이 
+       새로 만드려고 하는 정렬 규칙과 정확하게 같은지는 확인하지 않는다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>name</replaceable></term>
+     <term><replaceable>이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of the collation. The collation name can be
-       schema-qualified. If it is not, the collation is defined in the
-       current schema. The collation name must be unique within that
-       schema.  (The system catalogs can contain collations with the
-       same name for other encodings, but these are ignored if the
-       database encoding does not match.)
+       작업 대상 문자 정렬 규칙 이름.  이 이름에는 스키마 이름도
+       포함 할 수 있다.  스키마 이름을 지정하지 않으면, 
+       현재 스키마 안에 만들어진다.  이 이름은 해당 스키마 안에서
+       유일해야 한다.  (시스템 카탈로그에는 
+       인코딩이 각기 다른 같은 이름의 문자 정렬 규칙이 있다.
+       이 경우 사용되는 문자 정렬 규칙은 현재 사용하고 있는 
+       데이터베이스의 인코딩과 같은 것이 사용된다. 그 외의 것은
+       무시된다.)
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>locale</replaceable></term>
+     <term><replaceable>로케일</replaceable></term>
 
      <listitem>
       <para>
-       This is a shortcut for setting <symbol>LC_COLLATE</symbol>
-       and <symbol>LC_CTYPE</symbol> at once.  If you specify this,
-       you cannot specify either of those parameters.
+       이 설정은 <symbol>LC_COLLATE</symbol>,
+       <symbol>LC_CTYPE</symbol> 설정을 한 번에 하는 간편 설정이다.
+       이 설정을 하면, 이 개별 설정은 안해도 된다.
       </para>
      </listitem>
     </varlistentry>
@@ -92,8 +95,7 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replace
 
      <listitem>
       <para>
-       Use the specified operating system locale for
-       the <symbol>LC_COLLATE</symbol> locale category.
+       로케일의 <symbol>LC_COLLATE</symbol> 설정.
       </para>
      </listitem>
     </varlistentry>
@@ -103,55 +105,53 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replace
 
      <listitem>
       <para>
-       Use the specified operating system locale for
-       the <symbol>LC_CTYPE</symbol> locale category.
+       로케일의 <symbol>LC_CTYPE</symbol> 설정.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>provider</replaceable></term>
+     <term><replaceable>제공자</replaceable></term>
 
      <listitem>
       <para>
-       Specifies the provider to use for locale services associated with this
-       collation.  Possible values
-       are: <literal>icu</literal>,<indexterm><primary>ICU</></>
+       해당 문자 정렬 규칙과 관련된 로케일 서비스용 제공자를 지정한다.
+       사용할 수 있는 값:
+       <literal>icu</literal>,<indexterm><primary>ICU</></>
        <literal>libc</literal>.
-       <literal>libc</literal> is the default.
-       The available choices depend on the operating system and build options.
+       <literal>libc</literal>가 기본값이다.
+       OS와 서버 빌드 옵션에 따라 이것을 선택할 수 있다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>version</replaceable></term>
+     <term><replaceable>버전</replaceable></term>
 
      <listitem>
       <para>
-       Specifies the version string to store with the collation.  Normally,
-       this should be omitted, which will cause the version to be computed
-       from the actual version of the collation as provided by the operating
-       system.  This option is intended to be used
-       by <command>pg_upgrade</command> for copying the version from an
-       existing installation.
+       문장 정렬 규칙의 버전 이름(문자열값).  보통 이 옵션은 
+       생략하며, 이렇게 해서 기존 운영체제에서 제공하는 
+       해당 정렬 규칙의 버전을 그대로 사용한다.
+       이 버전 값은 <command>pg_upgrade</command> 사용할 때,
+       기본 정렬 규칙을 그대로 사용하기 위해서 그 값을 기록해 둔다.
       </para>
 
       <para>
-       See also <xref linkend="sql-altercollation"> for how to handle
-       collation version mismatches.
+       이 버전에 대해서는 <xref linkend="sql-altercollation"> 명령
+       설명서에서 소개한다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>existing_collation</replaceable></term>
+     <term><replaceable>기존_문자정렬규칙</replaceable></term>
 
      <listitem>
       <para>
-       The name of an existing collation to copy.  The new collation
-       will have the same properties as the existing one, but it
-       will be an independent object.
+       복사할 원본 기존 문자 정렬 규칙 이름.
+       만들어질 새 문자 정렬 규칙의 세부 속성은 기존 문자 정렬 규칙의
+       것을 그대로 따르며, 두 정렬 규칙과 의존 관계는 없다.
       </para>
      </listitem>
     </varlistentry>
@@ -160,67 +160,69 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replace
 
 
  <refsect1 id="sql-createcollation-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Use <command>DROP COLLATION</command> to remove user-defined collations.
+   사용자 정의 문자 정렬 규칙은 <command>DROP COLLATION</command> 명령으로
+   지운다.
   </para>
 
   <para>
-   See <xref linkend="collation-create"> for more information on how to create collations.
+   문자 정령 규칙을 만드는 방법에 대해서는
+   <xref linkend="collation-create">에서 자세히 소개하고 있다.
   </para>
 
   <para>
-   When using the <literal>libc</literal> collation provider, the locale must
-   be applicable to the current database encoding.
-   See <xref linkend="sql-createdatabase"> for the precise rules.
+   특정 <literal>libc</literal> 문자 정렬 규칙 제공자를 사용할 때는,
+   그 로케일이 현재 데이터베이스에서 수용 가능해야한다.
+   이 정확한 규칙은 <xref linkend="sql-createdatabase">에서 다루고 있다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createcollation-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To create a collation from the operating system locale
-   <literal>fr_FR.utf8</literal>
-   (assuming the current database encoding is <literal>UTF8</literal>):
+   현재 데이터베이스 인코딩이 <literal>UTF8</literal> 일 때, 
+   <literal>fr_FR.utf8</literal> 운영체제 로케일을
+   이용해서 새 로케일을 만드는 경우:
 <programlisting>
 CREATE COLLATION french (locale = 'fr_FR.utf8');
 </programlisting>
   </para>
 
   <para>
-   To create a collation using the ICU provider using German phone book sort order:
+   ICU 제공자를 이용해서 독일 전화번호부 정렬 규칙을 만드는 경우:
 <programlisting>
 CREATE COLLATION german_phonebook (provider = icu, locale = 'de-u-co-phonebk');
 </programlisting>
   </para>
 
   <para>
-   To create a collation from an existing collation:
+   기존 문자 정렬 규칙에서 새 규칙을 만드는 경우:
 <programlisting>
 CREATE COLLATION german FROM "de_DE";
 </programlisting>
-   This can be convenient to be able to use operating-system-independent
-   collation names in applications.
+   이 때 사용할 수 있는 기존 문자 정렬 규칙 이름은 
+   데이터베이스 서버가 사용할 수 있는 운영체제 의존적 것이여야 한다.
   </para>
  </refsect1>
 
 
  <refsect1 id="sql-createcollation-compat">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is a <command>CREATE COLLATION</command> statement in the SQL
-   standard, but it is limited to copying an existing collation.  The
-   syntax to create a new collation is
-   a <productname>PostgreSQL</productname> extension.
+   <command>CREATE COLLATION</command> 구문은 표준 SQL 구문이지만,
+   표준 SQL은 기존 문자 정렬 규칙을 복사하는 기능만 제공한다.
+   새 문자 정렬 규칙을 만드는 기능은
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
 
  <refsect1 id="sql-createcollation-seealso">
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altercollation"></member>
