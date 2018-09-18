@@ -373,9 +373,9 @@ SELECT city, (temp_hi+temp_lo)/2 AS temp_avg, date FROM weather;
    <para>
     쿼리 문장은 <literal>WHERE</> 절을 사용해서, 
     검색 결과의 조건을 지정할 수 있습니다.  <literal>WHERE</> 절에
-    사용할 조건은 불린 조건(참이냐 거짓이냐)
-    들의 집합으로 구성됩니다.  일반적으로 불린 조건은 
-    불린 연산자(<literal>AND</literal>, <literal>OR</literal>,
+    사용할 조건은 논리 조건(참이냐 거짓이냐)
+    들의 집합으로 구성됩니다.  일반적으로 논리 조건은 
+    불리언 연산자(<literal>AND</literal>, <literal>OR</literal>,
     <literal>NOT</literal>)를 이용해서, <literal>WHERE</> 절 전체의
     조건을 구성합니다.  다음 예제는 San Francisco에서 
     비온 날을 찾는 구문입니다:

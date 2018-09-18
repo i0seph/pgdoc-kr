@@ -181,7 +181,7 @@ SELECT (a + b) AS c FROM test_complex;
 
     <para>
      <literal>NEGATOR</>절에 (제공한다면) 해당 연산자의 부정 연산자 이름을
-     지정한다.  입력된 x, y 값에 대해서 (x A y) 식의 결과값(불린형)과
+     지정한다.  입력된 x, y 값에 대해서 (x A y) 식의 결과값(불리언 자료형)과
      NOT (x B y) 식의 결과값이 같을 때, A 연산자를 B 연산자의 부정 연산자라고
      한다.  물론 B 연산자는 A 연산자의 부정 연산자이기도 하다.
      예를 들어, <literal>&lt;</> 연산자와 <literal>&gt;=</> 연산자는 

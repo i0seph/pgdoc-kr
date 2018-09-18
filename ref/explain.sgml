@@ -228,7 +228,7 @@ ROLLBACK;
     <term><replaceable class="parameter">boolean</replaceable></term>
     <listitem>
      <para>
-      각 옵션의 값으로 불린형을 사용하는데, 
+      각 옵션의 값으로 불리언 자료형을 사용하는데, 
       <literal>TRUE</literal>, <literal>ON</>, <literal>1</literal>
       은 그 옵션의 기능을 사용하는 것이며, 
       <literal>FALSE</literal>, <literal>OFF</>, <literal>0</literal>
