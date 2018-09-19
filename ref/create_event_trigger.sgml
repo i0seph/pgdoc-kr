@@ -16,87 +16,87 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE EVENT TRIGGER</refname>
-  <refpurpose>define a new event trigger</refpurpose>
+  <refpurpose>새 이벤트 트리거 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable>
-    ON <replaceable class="PARAMETER">event</replaceable>
-    [ WHEN <replaceable class="PARAMETER">filter_variable</replaceable> IN (filter_value [, ... ]) [ AND ... ] ]
-    EXECUTE PROCEDURE <replaceable class="PARAMETER">function_name</replaceable>()
+CREATE EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable>
+    ON <replaceable class="PARAMETER">이벤트</replaceable>
+    [ WHEN <replaceable class="PARAMETER">조건변수</replaceable> IN (조건값 [, ... ]) [ AND ... ] ]
+    EXECUTE PROCEDURE <replaceable class="PARAMETER">함수이름</replaceable>()
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE EVENT TRIGGER</command> creates a new event trigger.
-   Whenever the designated event occurs and the <literal>WHEN</> condition
-   associated with the trigger, if any, is satisfied, the trigger function
-   will be executed.  For a general introduction to event triggers, see
-   <xref linkend="event-triggers">.  The user who creates an event trigger
-   becomes its owner.
+   <command>CREATE EVENT TRIGGER</command> 명령은 새 이벤트 트리거를 만든다.
+   이 이벤트 트리거는
+   지정한 이벤트가 있고, 그 트리거 <literal>WHEN</> 조건절에서
+   지정한 조건에 맞으면, 지정한 트리거 함수가 실행 되도록 한다.
+   이벤트 트리거에 대한 보다 자세한 설명은 <xref linkend="event-triggers">에서
+   한다.  이벤트 트리거를 만드는 사용자가 그 트리거의 소유주가 된다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name to give the new trigger.  This name must be unique within
-      the database.
+      새 이벤트 트리거 이름.  이 이름은 접속한 데이터베이스 안에서 
+      유일해야 한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">event</replaceable></term>
+    <term><replaceable class="parameter">이벤트</replaceable></term>
     <listitem>
      <para>
-      The name of the event that triggers a call to the given function.
-      See <xref linkend="event-trigger-definition"> for more information
-      on event names.
+      이벤트 트리거용 함수가 실행되는 그 이벤트 이름.
+      이벤트 이름에 대한 자세한 설명은 <xref
+      linkend="event-trigger-definition">에서 한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">filter_variable</replaceable></term>
+    <term><replaceable class="parameter">조건변수</replaceable></term>
     <listitem>
      <para>
-      The name of a variable used to filter events.  This makes it possible
-      to restrict the firing of the trigger to a subset of the cases in which
-      it is supported.  Currently the only supported
-      <replaceable class="parameter">filter_variable</replaceable>
-      is <literal>TAG</literal>.
+      이벤트 가운데, 지정한 함수가 실행될 조건을 지정할 조건 변수 이름.
+      이것은 지정한 이벤트 가운데서도 어느 특정 상황에서만 트리거 
+      함수가 실행되도록 한다.  현재 사용할 수 있는
+      <replaceable class="parameter">조건변수</replaceable>용
+      이름은 <literal>TAG</literal> 뿐이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">filter_value</replaceable></term>
+    <term><replaceable class="parameter">조건값</replaceable></term>
     <listitem>
      <para>
-      A list of values for the
-      associated <replaceable class="parameter">filter_variable</replaceable>
-      for which the trigger should fire.  For <literal>TAG</>, this means a
-      list of command tags (e.g. <literal>'DROP FUNCTION'</>).
+      위 조건 변수에 지정할 변수 값이다.
+      <literal>TAG</> 변수에 지정할 수 있는 값은
+      SQL 명령이다(예, <literal>'DROP FUNCTION'</>).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">function_name</replaceable></term>
+    <term><replaceable class="parameter">함수이름</replaceable></term>
     <listitem>
      <para>
-      A user-supplied function that is declared as taking no argument and
-      returning type <literal>event_trigger</literal>.
+      해당 이벤트 발생시 작업할 함수 이름.
+      이 함수는 입력 인자는 없고, 반환값은 <literal>event_trigger</literal>
+      자료형인 함수여야 한다.
      </para>
     </listitem>
    </varlistentry>
@@ -105,25 +105,25 @@ CREATE EVENT TRIGGER <replaceable class="PARAMETER">name</replaceable>
  </refsect1>
 
  <refsect1 id="sql-createeventtrigger-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Only superusers can create event triggers.
+   이벤트 트리거는 슈퍼유저만 만들 수 있다.
   </para>
 
   <para>
-   Event triggers are disabled in single-user mode (see <xref
-   linkend="app-postgres">).  If an erroneous event trigger disables the
-   database so much that you can't even drop the trigger, restart in
-   single-user mode and you'll be able to do that.
+   이벤트 트리거는 단일 사용자 모드(<xref linkend="app-postgres">)에서는
+   비활성화 된다.  어떤 오류가 있는 이벤트 트리거를 해당 데이터베이스에
+   지정하면, 이 트리거를 지우지 못한는 상황이 발생할 수도 있다.
+   이 때는 단일 사용자 모드로 재실행 해서 해당 이벤트 트리거를 지워야 한다. 
   </para>
  </refsect1>
 
  <refsect1 id="sql-createeventtrigger-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Forbid the execution of any <link linkend="ddl">DDL</link> command:
+   모든 <link linkend="ddl">DDL</link> 작업 시 항상 무시하는 이벤트 트리거:
 
 <programlisting>
 CREATE OR REPLACE FUNCTION abort_any_command()
@@ -141,17 +141,16 @@ CREATE EVENT TRIGGER abort_ddl ON ddl_command_start
  </refsect1>
 
  <refsect1 id="sql-createeventtrigger-compatibility">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>CREATE EVENT TRIGGER</command> statement in the
-   SQL standard.
+   <command>CREATE EVENT TRIGGER</command> 구문은 표준 SQL 구문이 아니다.
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altereventtrigger"></member>
