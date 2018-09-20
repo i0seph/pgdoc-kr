@@ -703,7 +703,7 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
     <term><literal>OWNER</literal></term>
     <listitem>
      <para>
-      이 구문은 테이블, 시퀀스, 뷰, 구체화된 뷰, 외부 테이블의 소유주를 바꾼다.
+      이 구문은 테이블, 시퀀스, 뷰, 구체화한 뷰, 외부 테이블의 소유주를 바꾼다.
      </para>
     </listitem>
    </varlistentry>
@@ -734,7 +734,7 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
     <listitem>
      <para>
       <literal>RENAME</literal> 구문은 
-      해당 테이블(인덱스, 시퀀스, 뷰, 구체화된 뷰, 외부 테이블)의 
+      해당 테이블(인덱스, 시퀀스, 뷰, 구체화한 뷰, 외부 테이블)의 
       이름을 바꾸며, 또한 해당 칼럼의 이름과, 제약 조건의 이름을 바꾼다.
       이 작업은 저장된 자료에는 아무런 영향을 미치지 않는다.
      </para>

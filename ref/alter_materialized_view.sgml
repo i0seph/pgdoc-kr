@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>ALTER MATERIALIZED VIEW</refname>
-  <refpurpose>구체화된 뷰 정의 바꾸기</refpurpose>
+  <refpurpose>구체화한 뷰 정의 바꾸기</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -53,7 +53,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
 
   <para>
    <command>ALTER MATERIALIZED VIEW</command> 명령은
-   구체화된 뷰 정의를 바꾼다.
+   구체화한 뷰 정의를 바꾼다.
   </para>
 
   <para>
@@ -69,7 +69,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
 
   <para>
    <literal>DEPENDS ON EXTENSION</literal> 구문은 
-   해당 구체화된 뷰를 지정한 확장 모듈의 구성 요소로 지정한다. 
+   해당 구체화한 뷰를 지정한 확장 모듈의 구성 요소로 지정한다. 
    이렇게 하면, 그 확장 모듈이 삭제 될 경우, 자동으로 이 뷰도 함께 
    삭제할 있다.
   </para>
@@ -91,7 +91,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
      <term><replaceable class="parameter">이름</replaceable></term>
      <listitem>
       <para>
-       작업 대상 구체화된 뷰 이름(스키마 포함).
+       작업 대상 구체화한 뷰 이름(스키마 포함).
       </para>
      </listitem>
     </varlistentry>
@@ -109,7 +109,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
      <term><replaceable class="PARAMETER">확장모듈</replaceable></term>
      <listitem>
       <para>
-       해당 구체화된 뷰를 구성 요소로 하는 확장 모듈 이름.
+       해당 구체화한 뷰를 구성 요소로 하는 확장 모듈 이름.
       </para>
      </listitem>
     </varlistentry>
@@ -127,7 +127,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     <term><replaceable class="PARAMETER">새소유주</replaceable></term>
     <listitem>
      <para>
-      해당 구체화된 뷰의 바뀔 새 소유주 이름.
+      해당 구체화한 뷰의 바뀔 새 소유주 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -136,7 +136,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
-      해당 구체화된 뷰의 바뀔 새 이름.
+      해당 구체화한 뷰의 바뀔 새 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -145,7 +145,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     <term><replaceable class="parameter">새스키마</replaceable></term>
     <listitem>
      <para>
-      해당 구체화된 뷰의 바뀔 새 스키마 이름.
+      해당 구체화한 뷰의 바뀔 새 스키마 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -156,7 +156,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
   <title>예제</title>
 
   <para>
-   구체화된 뷰 이름이 <literal>foo</literal>인 개체의 이름을
+   구체화한 뷰 이름이 <literal>foo</literal>인 개체의 이름을
    <literal>bar</literal>로 바꾸는 경우:
 <programlisting>
 ALTER MATERIALIZED VIEW foo RENAME TO bar;
