@@ -15,29 +15,29 @@ doc/src/sgml/ref/create_function.sgml
 
  <refnamediv>
   <refname>CREATE FUNCTION</refname>
-  <refpurpose>define a new function</refpurpose>
+  <refpurpose>새 함수 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
 CREATE [ OR REPLACE ] FUNCTION
-    <replaceable class="parameter">name</replaceable> ( [ [ <replaceable class="parameter">argmode</replaceable> ] [ <replaceable class="parameter">argname</replaceable> ] <replaceable class="parameter">argtype</replaceable> [ { DEFAULT | = } <replaceable class="parameter">default_expr</replaceable> ] [, ...] ] )
-    [ RETURNS <replaceable class="parameter">rettype</replaceable>
-      | RETURNS TABLE ( <replaceable class="parameter">column_name</replaceable> <replaceable class="parameter">column_type</replaceable> [, ...] ) ]
-  { LANGUAGE <replaceable class="parameter">lang_name</replaceable>
-    | TRANSFORM { FOR TYPE <replaceable class="parameter">type_name</replaceable> } [, ... ]
+    <replaceable class="parameter">이름</replaceable> ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자모드</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [ { DEFAULT | = } <replaceable class="parameter">기본값표현식</replaceable> ] [, ...] ] )
+    [ RETURNS <replaceable class="parameter">반환자료형</replaceable>
+      | RETURNS TABLE ( <replaceable class="parameter">칼럼이름</replaceable> <replaceable class="parameter">칼럼자료형</replaceable> [, ...] ) ]
+  { LANGUAGE <replaceable class="parameter">언어이름</replaceable>
+    | TRANSFORM { FOR TYPE <replaceable class="parameter">자료형이름</replaceable> } [, ... ]
     | WINDOW
     | IMMUTABLE | STABLE | VOLATILE | [ NOT ] LEAKPROOF
     | CALLED ON NULL INPUT | RETURNS NULL ON NULL INPUT | STRICT
     | [ EXTERNAL ] SECURITY INVOKER | [ EXTERNAL ] SECURITY DEFINER
     | PARALLEL { UNSAFE | RESTRICTED | SAFE }
-    | COST <replaceable class="parameter">execution_cost</replaceable>
-    | ROWS <replaceable class="parameter">result_rows</replaceable>
-    | SET <replaceable class="parameter">configuration_parameter</replaceable> { TO <replaceable class="parameter">value</replaceable> | = <replaceable class="parameter">value</replaceable> | FROM CURRENT }
-    | AS '<replaceable class="parameter">definition</replaceable>'
-    | AS '<replaceable class="parameter">obj_file</replaceable>', '<replaceable class="parameter">link_symbol</replaceable>'
+    | COST <replaceable class="parameter">실행비용</replaceable>
+    | ROWS <replaceable class="parameter">반환로우수</replaceable>
+    | SET <replaceable class="parameter">환경설정_매개변수</replaceable> { TO <replaceable class="parameter">값</replaceable> | = <replaceable class="parameter">값</replaceable> | FROM CURRENT }
+    | AS '<replaceable class="parameter">정의</replaceable>'
+    | AS '<replaceable class="parameter">오브젝트파일</replaceable>', '<replaceable class="parameter">링크_심벌</replaceable>'
   } ...
-    [ WITH ( <replaceable class="parameter">attribute</replaceable> [, ...] ) ]
+    [ WITH ( <replaceable class="parameter">속성</replaceable> [, ...] ) ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -564,19 +564,19 @@ CREATE [ OR REPLACE ] FUNCTION
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">attribute</replaceable></term>
+     <term><replaceable class="parameter">속성</replaceable></term>
 
      <listitem>
       <para>
-       The historical way to specify optional pieces of information
-       about the function.  The following attributes can appear here:
+       옛 버전과의 호환성 때문에 아직 남아있는 옵션이다.
+       다음 두 가지 속성값을 지정할 수 있다:
 
       <variablelist>
        <varlistentry>
         <term><literal>isStrict</></term>
         <listitem>
          <para>
-          Equivalent to <literal>STRICT</literal> or <literal>RETURNS NULL ON NULL INPUT</literal>.
+          <literal>STRICT</literal> 또는 <literal>RETURNS NULL ON NULL INPUT</literal> 옵션과 같다.
          </para>
         </listitem>
        </varlistentry>
@@ -584,16 +584,15 @@ CREATE [ OR REPLACE ] FUNCTION
        <varlistentry>
         <term><literal>isCachable</></term>
         <listitem>
-         <para><literal>isCachable</literal> is an obsolete equivalent of
-          <literal>IMMUTABLE</literal>; it's still accepted for
-          backwards-compatibility reasons.
+         <para>
+          <literal>IMMUTABLE</literal> 옵션과 같다.
          </para>
         </listitem>
        </varlistentry>
 
       </variablelist>
 
-      Attribute names are not case-sensitive.
+      속성 이름은 대소문자 구분을 하지 않는다.
      </para>
     </listitem>
    </varlistentry>
@@ -601,28 +600,33 @@ CREATE [ OR REPLACE ] FUNCTION
    </variablelist>
 
    <para>
-    Refer to <xref linkend="xfunc"> for further information on writing
-    functions.
+    함수 만들기에 대한 자세한 내용은 <xref linkend="xfunc">에서 
+    다룬다.
    </para>
 
  </refsect1>
 
  <refsect1 id="sql-createfunction-overloading">
-  <title>Overloading</title>
+  <title>오버로드</title>
 
    <para>
-    <productname>PostgreSQL</productname> allows function
-    <firstterm>overloading</firstterm>; that is, the same name can be
-    used for several different functions so long as they have distinct
-    input argument types.  Whether or not you use it, this capability entails
-    security precautions when calling functions in databases where some users
-    mistrust other users; see <xref linkend="typeconv-func">.
+    <productname>PostgreSQL</productname>에서는
+    함수 <firstterm>오버로드</firstterm>가 가능하다.
+    함수 오버로드란 입력 인자 자료형은 다르지만, 
+    함수 이름이 같은 함수를 만들 수 있는 것을 말한다.
+    이 기능을 사용하든 하지 않든 간에,
+    이 기능 때문에, 의도하지 않게 생길 수 있는 
+    보안 사고를 예방해야 한다.
+    다중 사용자 환경에서 의도하지 않게, 
+    같은 이름의 악의적인 코드가 숨겨진 다른 함수를 
+    호출할 가능성이 있기 때문이다.  <xref linkend="typeconv-func"> 참조.
    </para>
 
    <para>
-    Two functions are considered the same if they have the same names and
-    <emphasis>input</> argument types, ignoring any <literal>OUT</>
-    parameters.  Thus for example these declarations conflict:
+    같은 함수인지를 확인 하는 기준은 함수 이름과 입력 인자 자료형이다.
+    <literal>OUT</> 인자는 무시한다.
+    즉 다음 두 함수는 이미 해당 함수가 있는지 확인하는 작업에서 
+    같은 함수로 취급한다:
 <programlisting>
 CREATE FUNCTION foo(int) ...
 CREATE FUNCTION foo(int, out text) ...
@@ -630,21 +634,20 @@ CREATE FUNCTION foo(int, out text) ...
    </para>
 
    <para>
-    Functions that have different argument type lists will not be considered
-    to conflict at creation time, but if defaults are provided they might
-    conflict in use.  For example, consider
+    아래의 경우 처럼, 입력 인자가 달라 만들어 질 수는 있지만,
+    이 두 함수도 같은 함수로 취급될 가능성이 있다:
 <programlisting>
 CREATE FUNCTION foo(int) ...
 CREATE FUNCTION foo(int, int default 42) ...
 </programlisting>
-    A call <literal>foo(10)</> will fail due to the ambiguity about which
-    function should be called.
+    예를 들어 <literal>foo(10)</> 형태로 호출한다면, 어느 
+    함수를 사용해야 할지 몰라 오류로 처리한다.
    </para>
 
  </refsect1>
 
  <refsect1 id="sql-createfunction-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
    <para>
     The full <acronym>SQL</acronym> type syntax is allowed for
@@ -679,11 +682,12 @@ CREATE FUNCTION foo(int, int default 42) ...
  </refsect1>
 
  <refsect1 id="sql-createfunction-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Here are some trivial examples to help you get started.  For more
-   information and examples, see <xref linkend="xfunc">.
+   여기서는 처음 함수를 만들어 보는 사용자를 위해 여러 예제를 소개한다.
+   <xref linkend="xfunc">에서는 좀더 자세한 내용가 예제도 있다.
+   다음은 두 정수를 더하는 예제:
 <programlisting>
 CREATE FUNCTION add(integer, integer) RETURNS integer
     AS 'select $1 + $2;'
@@ -694,8 +698,8 @@ CREATE FUNCTION add(integer, integer) RETURNS integer
   </para>
 
   <para>
-   Increment an integer, making use of an argument name, in
-   <application>PL/pgSQL</application>:
+   <application>PL/pgSQL</application> 언어를 사용해서 입력 인자 이름을 
+   사용하는 경우:
 <programlisting>
 CREATE OR REPLACE FUNCTION increment(i integer) RETURNS integer AS $$
         BEGIN
@@ -706,7 +710,7 @@ $$ LANGUAGE plpgsql;
   </para>
 
   <para>
-   Return a record containing multiple output parameters:
+   다중 출력 인자가 있고 그것을 여러 칼럼으로 처리하는 경우:
 <programlisting>
 CREATE FUNCTION dup(in int, out f1 int, out f2 text)
     AS $$ SELECT $1, CAST($1 AS text) || ' is text' $$
@@ -714,8 +718,8 @@ CREATE FUNCTION dup(in int, out f1 int, out f2 text)
 
 SELECT * FROM dup(42);
 </programlisting>
-   You can do the same thing more verbosely with an explicitly named
-   composite type:
+   위 함수와 같은데, 이번에는 함수 반환 자료형을 복합 자료형으로
+   처리하는 경우:
 <programlisting>
 CREATE TYPE dup_result AS (f1 int, f2 text);
 
@@ -725,8 +729,7 @@ CREATE FUNCTION dup(int) RETURNS dup_result
 
 SELECT * FROM dup(42);
 </programlisting>
-   Another way to return multiple columns is to use a <literal>TABLE</>
-   function:
+   <literal>TABLE</> 반환 자료형 처리:
 <programlisting>
 CREATE FUNCTION dup(int) RETURNS TABLE(f1 int, f2 text)
     AS $$ SELECT $1, CAST($1 AS text) || ' is text' $$
@@ -734,34 +737,45 @@ CREATE FUNCTION dup(int) RETURNS TABLE(f1 int, f2 text)
 
 SELECT * FROM dup(42);
 </programlisting>
-   However, a <literal>TABLE</> function is different from the
-   preceding examples, because it actually returns a <emphasis>set</>
-   of records, not just one record.
+   <literal>TABLE</> 반환 처리는 위 함수들과 약간 다르다.
+   이것은 레코드 <emphasis>집합</>을 반환하는 것이고, 
+   다른 함수들은 그냥 하나의 레코드만 반환한다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createfunction-security">
-  <title>Writing <literal>SECURITY DEFINER</literal> Functions Safely</title>
+  <title><literal>SECURITY DEFINER</literal> 함수를 안전하게 만드는 방법</title>
 
   <indexterm>
-   <primary><varname>search_path</varname> configuration parameter</>
-   <secondary>use in securing functions</>
+   <primary><varname>search_path</varname> 환경 변수 매개 변수</>
+   <secondary>함수 보안</>
   </indexterm>
 
    <para>
-    Because a <literal>SECURITY DEFINER</literal> function is executed
-    with the privileges of the user that owns it, care is needed to
-    ensure that the function cannot be misused.  For security,
-    <xref linkend="guc-search-path"> should be set to exclude any schemas
-    writable by untrusted users.  This prevents
+    <literal>SECURITY DEFINER</literal> 함수는 
+    그 함수 본문에 정의한 작업들이 그 함수 만든 사용자의
+    권한으로 실행되는 함수이기 때문에, 잘못 사용되면, 
+    권한 침해 사고가 발생할 수 있어 조심해야 한다.
+    보안을 위해, 신뢰할 수 없는 사용자도 쓰기 가능한 
+    스키마들은 <xref linkend="guc-search-path"> 설정값으로 
+    사용하지 말아야 한다.
+    악의적인 사용자가
+    개체 만들기(예, 테이블, 함수, 연산자)를 해서, 
+    해당 함수에서 사용해야 하는 개체를 사용하지 못하게 되는 
+    문제를 이런 조치로 막을 수 있다.
+    (원문:
+    This prevents
     malicious users from creating objects (e.g., tables, functions, and
-    operators) that mask objects intended to be used by the function.
-    Particularly important in this regard is the
-    temporary-table schema, which is searched first by default, and
-    is normally writable by anyone.  A secure arrangement can be obtained
-    by forcing the temporary schema to be searched last.  To do this,
-    write <literal>pg_temp</><indexterm><primary>pg_temp</><secondary>securing functions</></> as the last entry in <varname>search_path</>.
-    This function illustrates safe usage:
+    operators) that mask objects intended to be used by the function.)
+    여기서 특별히 중요한 것은 임시 테이블 스키마다.
+    이 스키마는 특별히 지정하지 않으면, 가장 먼저 개체 찾기 작업에
+    사용되며, 보통 모두가 쓰기 가능한 권한으로 지정되어있다.
+    이 임시 스키마(<literal>pg_temp</><indexterm>
+    <primary>pg_temp</>
+    <secondary>함수 보안</>
+    </>)를 <varname>search_path</> 값 맨 뒤에 강제로 지정해서 
+    보안 취약점을 해결할 수 있다.
+    다음이 사용 예다:
 
 <programlisting>
 CREATE FUNCTION check_password(uname TEXT, pass TEXT)
@@ -776,22 +790,24 @@ BEGIN
 END;
 $$  LANGUAGE plpgsql
     SECURITY DEFINER
-    -- Set a secure search_path: trusted schema(s), then 'pg_temp'.
+    -- search_path 안전하게 지정: 신뢰하는 스키마들, 다음에 'pg_temp'.
     SET search_path = admin, pg_temp;
 </programlisting>
-
-    This function's intention is to access a table <literal>admin.pwds</>.
-    But without the <literal>SET</> clause, or with a <literal>SET</> clause
-    mentioning only <literal>admin</>, the function could be subverted by
-    creating a temporary table named <literal>pwds</>.
+    이 함수는 <literal>admin.pwds</> 테이블을 사용한다는 가정에서
+    작성 되었다.  그런데
+    <literal>SET</> 설정이 없거나, <literal>SET</> 설정에 
+    단지 <literal>admin</> 만 지정했다면, 
+    <literal>pwds</> 이름의 임시 테이블을 만들면, 
+    그 함수는 새로 만들어진 임시 테이블을 대상으로 작업하게 된다.
    </para>
 
    <para>
-    Before <productname>PostgreSQL</productname> version 8.3, the
-    <literal>SET</> clause was not available, and so older functions may
-    contain rather complicated logic to save, set, and restore
-    <varname>search_path</>.  The <literal>SET</> clause is far easier
-    to use for this purpose.
+    8.3 이전 버전에서는 <literal>SET</> 옵션이 없어서, 
+    이런 설정을 하려면, 
+    함수 본문 안에, 기존 <varname>search_path</> 값 구해서 
+    따로 보관하고, 새 값을 지정하고, 작업이 끝나면, 다시 
+    기존 값으로 바꾸는 번거로운 작업을 해야 했었다.
+    <literal>SET</> 옵션이 생겨 한결 쉬워졌다.
    </para>
 
    <para>
