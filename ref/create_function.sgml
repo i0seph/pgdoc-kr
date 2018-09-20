@@ -21,7 +21,7 @@ doc/src/sgml/ref/create_function.sgml
  <refsynopsisdiv>
 <synopsis>
 CREATE [ OR REPLACE ] FUNCTION
-    <replaceable class="parameter">이름</replaceable> ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자모드</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [ { DEFAULT | = } <replaceable class="parameter">기본값표현식</replaceable> ] [, ...] ] )
+    <replaceable class="parameter">이름</replaceable> ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [ { DEFAULT | = } <replaceable class="parameter">기본값표현식</replaceable> ] [, ...] ] )
     [ RETURNS <replaceable class="parameter">반환자료형</replaceable>
       | RETURNS TABLE ( <replaceable class="parameter">칼럼이름</replaceable> <replaceable class="parameter">칼럼자료형</replaceable> [, ...] ) ]
   { LANGUAGE <replaceable class="parameter">언어이름</replaceable>
@@ -42,239 +42,254 @@ CREATE [ OR REPLACE ] FUNCTION
  </refsynopsisdiv>
 
  <refsect1 id="sql-createfunction-description">
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE FUNCTION</command> defines a new function.
-   <command>CREATE OR REPLACE FUNCTION</command> will either create a
-   new function, or replace an existing definition.
-   To be able to define a function, the user must have the
-   <literal>USAGE</literal> privilege on the language.
+   <command>CREATE FUNCTION</command> 명령은 새 함수를 만든다.
+   <command>CREATE OR REPLACE FUNCTION</command> 명령은 함수를 새로 
+   만들 거나, 이미 있는 함수 정의를 바꾼다.
+   함수를 만드려면, 그 함수가 사용하는 언어에 대해서
+   <literal>USAGE</literal> 권한이 있어야 한다.
   </para>
 
   <para>
-   If a schema name is included, then the function is created in the
-   specified schema.  Otherwise it is created in the current schema.
-   The name of the new function must not match any existing function
-   with the same input argument types in the same schema.  However,
-   functions of different argument types can share a name (this is
-   called <firstterm>overloading</>).
+   함수 이름에 스키마 이름을 포함하면, 해당 스키마 안에 함수가 만들어진다.
+   지정하지 않으면 현재 스키마 안에 만든다.
+   특정 스키마 안에, 함수 이름과 그 함수가 사용하는 입력 인자 자료형이
+   모두 일치하는 다른 함수는 만들 수 없다.  하지만 이름은 같은데
+   입력 인자 자료형이 다른 함수는 만들 수 있다. (이것은 함수
+   <firstterm>오버로드</>라고 한다.)
   </para>
 
   <para>
-   To replace the current definition of an existing function, use
-   <command>CREATE OR REPLACE FUNCTION</command>.  It is not possible
-   to change the name or argument types of a function this way (if you
-   tried, you would actually be creating a new, distinct function).
-   Also, <command>CREATE OR REPLACE FUNCTION</command> will not let
-   you change the return type of an existing function.  To do that,
-   you must drop and recreate the function.  (When using <literal>OUT</>
-   parameters, that means you cannot change the types of any
-   <literal>OUT</> parameters except by dropping the function.)
+   이미 만들어진 함수 정의를 바꿀 때는
+   <command>CREATE OR REPLACE FUNCTION</command> 명령을 사용한다.  이 명령은
+   함수 이름과 입력 인자 자료형이 일치 하는 경우만 그 함수를
+   바꾼다. (입력 인자가 바뀌면 오버로드된 새로운 함수가 만들어진다 - 옮긴이)
+   또한, 함수 이름과 입력 인자 자료형이 같은데, 반환 자료형을 바꿔
+   실행하면 오류로 처리한다.  반환 자료형을 바꿀 때는 
+   그 함수를 지우고, 새로 만들어야 한다. (<literal>OUT</>
+   인자를 쓰는 경우도 이것이 반환 자료형이기 때문에 이 정책을 그대로 따른다.)
   </para>
 
   <para>
-   When <command>CREATE OR REPLACE FUNCTION</> is used to replace an
-   existing function, the ownership and permissions of the function
-   do not change.  All other function properties are assigned the
-   values specified or implied in the command.  You must own the function
-   to replace it (this includes being a member of the owning role).
+   <command>CREATE OR REPLACE FUNCTION</> 명령을 이용해서 함수를 바꾸는
+   경우, 그 함수의 소요주와 접근 권한은 바뀌지 않는다.
+   그외 모든 함수 속성 변경 작업은 이 명령으로 수행할 수 있다.
+   함수를 바꾸려면, 해당 함수의 소유주이거나 그 소유주의 소속원이어야 한다.
   </para>
 
   <para>
-   If you drop and then recreate a function, the new function is not
-   the same entity as the old; you will have to drop existing rules, views,
-   triggers, etc. that refer to the old function.  Use
-   <command>CREATE OR REPLACE FUNCTION</command> to change a function
-   definition without breaking objects that refer to the function.
-   Also, <command>ALTER FUNCTION</> can be used to change most of the
-   auxiliary properties of an existing function.
+   함수를 지우고 다시 만들면, 새 함수의 oid는 기존 oid와 다르게 된다.
+   또한 기존 함수를 사용하고 있는 룰, 뷰, 트리거 등 의존 관계에 있는
+   개체들도 모두 삭제 되어야 그 함수를 지울 수 있다.
+   단지 함수 속성이나, 함수의 본문 내용을 바꾸고자 한다면,
+   <command>CREATE OR REPLACE FUNCTION</command> 명령을
+   사용해서 이런 의존 관계 개체들의 삭제 작업 없이 함수를 바꿀 수 있다.
+   또한, <command>ALTER FUNCTION</> 명령은 해당 함수의 외부 속성들
+   바꾸는데 사용 한다.
   </para>
 
   <para>
-   The user that creates the function becomes the owner of the function.
+   함수를 만드는 사용자가 그 함수의 소유주가 된다.
   </para>
 
   <para>
-   To be able to create a function, you must have <literal>USAGE</literal>
-   privilege on the argument types and the return type.
+   함수를 만드려면, 그 함수에서 사용하는 입력 인자 자료형과 
+   반환 자료형에 대해서 <literal>USAGE</literal> 권한이 있어야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <variablelist>
 
     <varlistentry>
-     <term><replaceable class="parameter">name</replaceable></term>
+     <term><replaceable class="parameter">이름</replaceable></term>
 
      <listitem>
       <para>
-       The name (optionally schema-qualified) of the function to create.
+       새로 만들고자 하는 함수의 이름(스키마 이름 포함).
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">argmode</replaceable></term>
+     <term><replaceable class="parameter">인자모드</replaceable></term>
 
      <listitem>
       <para>
-       The mode of an argument: <literal>IN</>, <literal>OUT</>,
-       <literal>INOUT</>, or <literal>VARIADIC</>.
-       If omitted, the default is <literal>IN</>.
-       Only <literal>OUT</> arguments can follow a <literal>VARIADIC</> one.
-       Also, <literal>OUT</> and <literal>INOUT</> arguments cannot be used
-       together with the <literal>RETURNS TABLE</> notation.
+       사용할 수 있는 모드값: <literal>IN</>, <literal>OUT</>,
+       <literal>INOUT</>, 또는 <literal>VARIADIC</>.
+       생략하면 기본값인 <literal>IN</>으로 간주한다.
+       <literal>OUT</>  <literal>VARIADIC</> 형은 한번만 사용할 수 있다.
+       또한, <literal>OUT</> , <literal>INOUT</> 인자는
+       <literal>RETURNS TABLE</> 구문과 함께 사용할 수 없다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">argname</replaceable></term>
+     <term><replaceable class="parameter">인자이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of an argument. Some languages (including SQL and PL/pgSQL)
-       let you use the name in the function body.  For other languages the
-       name of an input argument is just extra documentation, so far as
-       the function itself is concerned; but you can use input argument names
-       when calling a function to improve readability (see <xref
-       linkend="sql-syntax-calling-funcs">).  In any case, the name
-       of an output argument is significant, because it defines the column
-       name in the result row type.  (If you omit the name for an output
-       argument, the system will choose a default column name.)
+       해당 인자의 이름.   SQL, PL/pgSQL 언어를 포함해서 몇 언어를
+       사용하는 함수에서는 함수 본문에서 여기서 지정한 이름을 
+       변수명으로 사용할 수 있다.  그외 다른 언어에서는 
+       단순히 함수 문서화 작업에 도움을 줄 뿐이다.  물론
+       함수를 호출 할 때 명령문의 가독성을 높이기 위해서, 
+       입력 인자 이름과 그 값을 함께 지정해서 쓰기도 한다(<xref
+       linkend="sql-syntax-calling-funcs"> 참조).
+       (이렇게 함수 이름을 사용할 수 없는
+       언어에서는 그 인자값을 사용하기 위해 별도의 변수 선언, 변수 값 할당
+       같은 부가 작업을 함수 본문에 추가해서 보통 진행한다. - 옮긴이)
+       한편, 출력 인자 이름은 그 함수 결과의 칼럼 이름으로 사용하기 
+       때문에, 중요한 의미를 지닌다.
+       (출력 인자 이름을 사용하지 않은 경우에는 출력 결과에 
+       사용하는 각 칼럼 이름은 시스템이 자동으로 부여한다.)
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">argtype</replaceable></term>
+     <term><replaceable class="parameter">인자자료형</replaceable></term>
 
      <listitem>
       <para>
-       The data type(s) of the function's arguments (optionally
-       schema-qualified), if any. The argument types can be base, composite,
-       or domain types, or can reference the type of a table column.
+       함수 인자의 해당 자료형 이름(스키마 이름 포함).
+       그 자료형으로 기본 자료형, 복합 자료형, 도메인, 한 테이블의 칼럼이
+       사용하는 자료형을 뜻하는 참조 자료형을 사용할 수 있다.
       </para>
       <para>
-       Depending on the implementation language it might also be allowed
-       to specify <quote>pseudo-types</> such as <type>cstring</>.
-       Pseudo-types indicate that the actual argument type is either
-       incompletely specified, or outside the set of ordinary SQL data types.
+       사용하는 언어에 따라 어떤 경우는 <type>cstring</> 같은
+       <quote>의사-자료형</> <quote>pseudo-type</>도 사용할 수 있다.
+       의사 자료형은 그 진짜 인자 자료형이 불완전한 지정이거나,
+       (SQL 수준에서 임의로 어떤 자료형으로 바뀔 수 있는),
+       보통의 SQL 자료형이 아닌 경우를 뜻한다.
       </para>
       <para>
-       The type of a column is referenced by writing
+       인자 자료형으로 
        <literal><replaceable
-       class="parameter">table_name</replaceable>.<replaceable
-       class="parameter">column_name</replaceable>%TYPE</literal>.
-       Using this feature can sometimes help make a function independent of
-       changes to the definition of a table.
+       class="parameter">테이블이름</replaceable>.<replaceable
+       class="parameter">칼럼이름</replaceable>%TYPE</literal> 구문으로
+       특정 테이블의 특정 칼럼이 사용하는 참조 자료형을 쓸 수 있다.
+       이런 자료형 정의는 테이블 정의 변경과 독립적인 함수를 만드는데 
+       유용하게 쓰인다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">default_expr</replaceable></term>
+     <term><replaceable class="parameter">기본값표현식</replaceable></term>
 
      <listitem>
       <para>
-       An expression to be used as default value if the parameter is
-       not specified.  The expression has to be coercible to the
-       argument type of the parameter.
-       Only input (including <literal>INOUT</>) parameters can have a default
-        value.  All input parameters following a
-       parameter with a default value must have default values as well.
+       이 표현식으로 지정한 기본값은 함수를 호출 할 때, 
+       해당 인자를 아에 지정하지 않았을 때, 자동으로 사용할 인자값이 된다.
+       즉, 이 표현식의 계산 결과는 해당 인자 자료형과 같아야 한다.
+       입력 인자 (<literal>INOUT</> 인자 포함)만 기본값을 사용할 수 있다.
+       모든 입력 인자는 이 기본값 표현식을 구문을 이용해서 기본값을 
+       지정할 수 있다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">rettype</replaceable></term>
+     <term><replaceable class="parameter">반환자료형</replaceable></term>
 
      <listitem>
       <para>
-       The return data type (optionally schema-qualified). The return type
-       can be a base, composite, or domain type,
-       or can reference the type of a table column.
-       Depending on the implementation language it might also be allowed
-       to specify <quote>pseudo-types</> such as <type>cstring</>.
-       If the function is not supposed to return a value, specify
-       <type>void</> as the return type.
+       함수 반환값의 자료형 이름(스키마 이름 포함).
+       이 자료형으로 기본 자료형, 복합 자료형, 도메인, 테이블 칼럼의
+       참조 자료형을 사용할 수 있다.
+       사용하는 언어에 따라  <type>cstring</> 같은 <quote>의사-자료형</>도
+       사용할 수 있다.  반환값이 없는 함수를 만드려면, 
+       이 반환 자료형을 <type>void</>로 지정한다.
       </para>
       <para>
-       When there are <literal>OUT</> or <literal>INOUT</> parameters,
-       the <literal>RETURNS</> clause can be omitted.  If present, it
-       must agree with the result type implied by the output parameters:
-       <literal>RECORD</> if there are multiple output parameters, or
-       the same type as the single output parameter.
+       <literal>OUT</> 또는 <literal>INOUT</> 인자를 지정했다면,
+       <literal>RETURNS</> 절은 생략할 수 있다.  둘 다 있다면,
+       출력 인자의 자료형과 이 반환 자료형이 같아야 한다.
+       반환 자료형이
+       <literal>RECORD</> 형이라면,  각 개별 출력 인자의 자료형은
+       그 출력 결과의 각 칼럼 자료형과 같아야 한다.
       </para>
       <para>
-       The <literal>SETOF</literal>
-       modifier indicates that the function will return a set of
-       items, rather than a single item.
+       <literal>SETOF</literal> 옵션을 자료형 이름 앞에 지정할 수 있는데,
+       이 때는 반환 되는 자료형이 단일 자료가 아니라, 그 자료들의 집합임을 
+       지시한다. (다중 로우 반환을 뜻한다.)
       </para>
       <para>
-       The type of a column is referenced by writing
+       이 자료형으로
        <literal><replaceable
-       class="parameter">table_name</replaceable>.<replaceable
-       class="parameter">column_name</replaceable>%TYPE</literal>.
+       class="parameter">테이블이름</replaceable>.<replaceable
+       class="parameter">칼럼이름</replaceable>%TYPE</literal> 형태의
+       테이블 칼럼 참조 자료형도 사용할 수 있다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">column_name</replaceable></term>
+     <term><replaceable class="parameter">칼럼이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of an output column in the <literal>RETURNS TABLE</>
-       syntax.  This is effectively another way of declaring a named
-       <literal>OUT</> parameter, except that <literal>RETURNS TABLE</>
-       also implies <literal>RETURNS SETOF</>.
+       <literal>RETURNS TABLE</> 구문에서 사용하는
+       반환 테이블의 칼럼 이름.
+       <literal>RETURNS TABLE</> 반환은 <literal>RETURNS SETOF</>
+       옵션을 사용하지 않아도, 집합을 반환한다.
+       또한 <literal>OUT</> 인자에 이름을 함께 사용하는 출력 자료형
+       지정보다 편하게 다중 칼럼 출력 자료형을 지정할 수 있다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">column_type</replaceable></term>
+     <term><replaceable class="parameter">칼럼자료형</replaceable></term>
 
      <listitem>
       <para>
-       The data type of an output column in the <literal>RETURNS TABLE</>
-       syntax.
+       <literal>RETURNS TABLE</> 구문에서 사용하는
+       반환 테이블의 칼럼 자료형.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">lang_name</replaceable></term>
+     <term><replaceable class="parameter">언어이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of the language that the function is implemented in.
-       It can be <literal>sql</literal>, <literal>c</literal>,
-       <literal>internal</literal>, or the name of a user-defined
-       procedural language, e.g. <literal>plpgsql</literal>.  Enclosing the
-       name in single quotes is deprecated and requires matching case.
+       함수 본문으로 지정하는 코드들을 해석하고 처리하는 내장 언어 
+       이름.
+       <literal>sql</literal>, <literal>c</literal>,
+       <literal>internal</literal> 이렇게 기본 3 종을 제공하면, 
+       일반적으로 SQL 사용자 정의 함수나 프로시져를 만들 때 사용하는
+       <literal>plpgsql</literal> 언어를 확장 모듈로 제공한다(이것은
+       데이터베이스를 만들 때 자동 설치된다.)
+       언어 이름에 작은 따옴표를 함께 쓰지 않으며, 대소문자를 구분한다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><literal>TRANSFORM { FOR TYPE <replaceable class="parameter">type_name</replaceable> } [, ... ] }</literal></term>
+     <term><literal>TRANSFORM { FOR TYPE <replaceable class="parameter">자료형이름</replaceable> } [, ... ] }</literal></term>
 
      <listitem>
       <para>
-       Lists which transforms a call to the function should apply.  Transforms
-       convert between SQL types and language-specific data types;
-       see <xref linkend="sql-createtransform">.  Procedural language
-       implementations usually have hardcoded knowledge of the built-in types,
-       so those don't need to be listed here.  If a procedural language
-       implementation does not know how to handle a type and no transform is
-       supplied, it will fall back to a default behavior for converting data
-       types, but this depends on the implementation.
+       해당 함수에서 사용할 transform 목록. 
+       transform은 SQL 자료형과 프로시져 언어에서 사용하는
+       고유 자료형 사이 전환을 담당한다.
+       <xref linkend="sql-createtransform"> 명령 설명서 참조.
+       일반적으로 프로시져 언어는 내장 자료형에 대한 하드 코딩된 
+       정보를 구현해서 제공한다. 그래서, 그 언어가 다루지 못하는
+       자료형이 아니면, 이 구문은 필요가 없다.  프로시져 언어가
+       SQL 자료형을 자신이 쓸 자료형으로 바꾸지 못하면(여기서 지정한
+       transform을 사용하든, 아니면, 기본 자료형으로 바꾸든, 이런 
+       변환 작업을 못하면) 오류를 발생한다.
+       이런 형 변환에 대한 부분은 각 언어를 어떻게 구현했는가에 달렸다.
       </para>
      </listitem>
     </varlistentry>
@@ -283,11 +298,10 @@ CREATE [ OR REPLACE ] FUNCTION
      <term><literal>WINDOW</literal></term>
 
      <listitem>
-      <para><literal>WINDOW</literal> indicates that the function is a
-       <firstterm>window function</> rather than a plain function.
-       This is currently only useful for functions written in C.
-       The <literal>WINDOW</> attribute cannot be changed when
-       replacing an existing function definition.
+      <para><literal>WINDOW</literal> 옵션은 이 함수가
+       <firstterm>윈도우 함수</>로 사용함을 지정한다.
+       C 언어로 구현한 함수에서 사용된다.
+       <literal>WINDOW</> 속성은 CREATE OR REPLACE 작업으로는 변경될 수 없다.
       </para>
      </listitem>
     </varlistentry>
@@ -299,46 +313,54 @@ CREATE [ OR REPLACE ] FUNCTION
 
      <listitem>
       <para>
-       These attributes inform the query optimizer about the behavior
-       of the function.  At most one choice
-       can be specified.  If none of these appear,
-       <literal>VOLATILE</literal> is the default assumption.
+       쿼리 최적화기가 이 함수를 사용하는 쿼리를 최적화 할 때
+       참조하는 속성값.
+       세 가지 중 하나를 선택한다.
+       지정하지 않으면
+       <literal>VOLATILE</literal> 함수로 간주한다.
       </para>
 
-      <para><literal>IMMUTABLE</literal> indicates that the function
-       cannot modify the database and always
-       returns the same result when given the same argument values; that
-       is, it does not do database lookups or otherwise use information not
-       directly present in its argument list.  If this option is given,
-       any call of the function with all-constant arguments can be
-       immediately replaced with the function value.
+      <para><literal>IMMUTABLE</literal> 옵션은
+       한 입력값에 대해서는 항상 같은 반환값을 반환하는 함수임을
+       알린다.  즉, 이 옵션을 사용하는 함수는
+       데이터베이스 자료를 찾는 작업을 하지 않는 함수임을 뜻한다.
+       또는
+       this function use information not
+       directly present in its argument list. (번역 불가)
+       이 옵션을 사용하는 함수에 상수값 인자가 사용되면, 
+       그 반환값을 구해서 그것을 기준으로 최적화기를 실행 계획을
+       짜는데 반영한다.
       </para>
 
-      <para><literal>STABLE</literal> indicates that the function
-       cannot modify the database,
-       and that within a single table scan it will consistently
-       return the same result for the same argument values, but that its
-       result could change across SQL statements.  This is the appropriate
-       selection for functions whose results depend on database lookups,
-       parameter variables (such as the current time zone), etc.  (It is
-       inappropriate for <literal>AFTER</> triggers that wish to
-       query rows modified by the current command.)  Also note
-       that the <function>current_timestamp</> family of functions qualify
-       as stable, since their values do not change within a transaction.
+      <para><literal>STABLE</literal> 옵션은
+       데이터베이스 자료 조작 작업은 하지 않는 함수임을 의미한다.
+       하나의 테이블 탐색에서 이 함수가 호출되면, 동일 입력 인자 값에 대해서는
+       동일 반환 값을 갖는다.  하지만, 각각 다른 SQL 명령에서는
+       입력 인자 값이 같더라도 반환 값이 다를 수 있다고 여긴다.
+       이 옵션은 해당 함수가 자료 조회용 작업이나, 
+       매개 변수 값(예, timezone) 조회를 하는 등, 이런 작업을 하는 
+       함수에 사용한다.  (자료 조작 뒤에 실행 되는
+       <literal>AFTER</> 트리거용 함수에 이 옵션을 지정하면 위험하다.)
+       <function>current_timestamp</> 계열 값을 사용하는 경우도 
+       사용할 수 있다. 이 계열 값들은 한 트랜잭션 내에서 그 값이 
+       바뀌지 않기 때문이다.
       </para>
 
-      <para><literal>VOLATILE</literal> indicates that the function value can
-       change even within a single table scan, so no optimizations can be
-       made.  Relatively few database functions are volatile in this sense;
-       some examples are <literal>random()</>, <literal>currval()</>,
-       <literal>timeofday()</>.  But note that any function that has
-       side-effects must be classified volatile, even if its result is quite
-       predictable, to prevent calls from being optimized away; an example is
-       <literal>setval()</>.
+      <para><literal>VOLATILE</literal> 옵션은 그 함수의 반환 값이
+       상황에 따라 얼마든지 바뀔 수 있는 경우에 사용한다.  최적화기에서는
+       예상값 추정을 못하는 경우로 처리한다.
+       이런 이유로 기본으로 제공하는 내장 SQL 함수 중에는 
+       이 속성이 있는 함수가 상대적으로 적다.
+       <literal>random()</>, <literal>currval()</>, <literal>timeofday()</>
+       이런 종류의 함수들이다.  그러나, 그 반환값이 일정할지라도,
+       예측하지 못하는 부작용이 생길 수 있는 함수들은 이 휘발성 함수로
+       지정하는 것이 안전하다.  그래야 최적화 계산에서 빠지게 된다.
+       대표적인 함수가 <literal>setval()</> 함수다.
       </para>
 
       <para>
-       For additional details see <xref linkend="xfunc-volatility">.
+       이 속성들에 대한 자세한 설명은 <xref linkend="xfunc-volatility">에서
+       다룬다.
       </para>
      </listitem>
     </varlistentry>
@@ -650,33 +672,33 @@ CREATE FUNCTION foo(int, int default 42) ...
   <title>참고</title>
 
    <para>
-    The full <acronym>SQL</acronym> type syntax is allowed for
-    declaring a function's arguments and return value.  However,
-    parenthesized type modifiers (e.g., the precision field for
-    type <type>numeric</type>) are discarded by <command>CREATE FUNCTION</>.
-    Thus for example
+    함수 인자나, 반환 값의 자료형을 지정할 때,
+    전체 <acronym>SQL</acronym> 자료형 문법을 허용한다.
+    하지만, 
+    <command>CREATE FUNCTION</> 작업에서는
+    자료형 변환자는 무시한다. (예, <type>numeric</type>
+    자료형의 정밀도 지정)
+    예를 들면
     <literal>CREATE FUNCTION foo (varchar(10)) ...</>
-    is exactly the same as
-    <literal>CREATE FUNCTION foo (varchar) ...</>.
+    구문과
+    <literal>CREATE FUNCTION foo (varchar) ...</> 구문은 동일하게 처리한다.
    </para>
 
    <para>
-    When replacing an existing function with <command>CREATE OR REPLACE
-    FUNCTION</>, there are restrictions on changing parameter names.
-    You cannot change the name already assigned to any input parameter
-    (although you can add names to parameters that had none before).
-    If there is more than one output parameter, you cannot change the
-    names of the output parameters, because that would change the
-    column names of the anonymous composite type that describes the
-    function's result.  These restrictions are made to ensure that
-    existing calls of the function do not stop working when it is replaced.
+    <command>CREATE OR REPLACE FUNCTION</> 구문으로
+    함수 정의를 바꿀 때, 이미 지정한 인자 이름은 바꿀 수 없고, 
+    인자 이름이 없었던 인자에 새 이름을 지정하는 것은 가능하다.
+    둘 이상의 출력 인자를 쓰는 경우 그 인자 이름을 바꿀 수 없다.
+    왜냐하면, 이렇게 되면 반환값으로 쓸 내부적으로 자동으로 만들어진
+    그 반환값용 복합 자료형을 바꿔야하기 때문이다.
+    이렇게 제한하는 이유는 함수 바꾸기 작업이 진행 되는 동안에도
+    기존 함수는 정상적으로 작동되도록 하기 위함이다.
    </para>
 
    <para>
-    If a function is declared <literal>STRICT</> with a <literal>VARIADIC</>
-    argument, the strictness check tests that the variadic array <emphasis>as
-    a whole</> is non-null.  The function will still be called if the
-    array has null elements.
+    <literal>STRICT</> 옵션이 있는데 인자를 <literal>VARIADIC</> 형으로
+    지정했다면, 그 가변 배열 그 자체가 null이 아닌지 검사한다.
+    즉, 그 배열 요소 중 하나가 null이어도 그 함수는 호출 될 수 있다.
    </para>
 
  </refsect1>
@@ -811,15 +833,18 @@ $$  LANGUAGE plpgsql
    </para>
 
    <para>
-    Another point to keep in mind is that by default, execute privilege
-    is granted to <literal>PUBLIC</> for newly created functions
-    (see <xref linkend="sql-grant"> for more
-    information).  Frequently you will wish to restrict use of a security
-    definer function to only some users.  To do that, you must revoke
-    the default <literal>PUBLIC</> privileges and then grant execute
-    privilege selectively.  To avoid having a window where the new function
-    is accessible to all, create it and set the privileges within a single
-    transaction.  For example:
+    또 하나 기억해야 할 것은,
+    함수를 새로 만들면, 모두(<literal>PUBLIC</>)가 그 함수를
+    실행할 수 있게 실행 권한이 부여된다는 점이다.(이게 기본값이다)
+    (<xref linkend="sql-grant"> 명령 설명서 참조)
+    즉, 특정 사용자만 그 함수를 사용하도록 제한하려면, 
+    (SECURITY DEFINER 함수는 그럴 필요가 종종 있다 - 옮긴이)
+    함수를 만든 뒤 반드시 권한 조정 작업을 해야한다.
+    그 첫번째 작업은 <literal>PUBLIC</> 대상으로 실행권한을 
+    박탈하는 일이다.
+    이런 보안 위험성을 피하려면, 
+    다음과 같이 함수 만드는 작업과 권한 조정 작업을 하나의
+    트랜잭션으로 처리하는 것이다:
    </para>
 
 <programlisting>
@@ -833,32 +858,33 @@ COMMIT;
  </refsect1>
 
  <refsect1 id="sql-createfunction-compat">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   A <command>CREATE FUNCTION</command> command is defined in SQL:1999 and later.
-   The <productname>PostgreSQL</productname> version is similar but
-   not fully compatible.  The attributes are not portable, neither are the
-   different available languages.
+   <command>CREATE FUNCTION</command> 구문은 SQL:1999 그 뒤 규약에 있다.
+   <productname>PostgreSQL</productname>의 구문은 표준과 문법이 비슷하지만,
+   모두 호환되지는 않는다.  함수 속성들과 프로시져 언어 지정하는 부분은 
+   PostgreSQL 확장 기능이다.
   </para>
 
   <para>
-   For compatibility with some other database systems,
-   <replaceable class="parameter">argmode</replaceable> can be written
-   either before or after <replaceable class="parameter">argname</replaceable>.
-   But only the first way is standard-compliant.
+   각 데이터베이스 시스템 마다
+   <replaceable class="parameter">인자모드</replaceable> 는
+   <replaceable class="parameter">인자이름</replaceable> 앞이나 뒤에 오는 식으로
+   문법이 다른데, <replaceable class="parameter">인자모드</replaceable>
+   <replaceable class="parameter">인자이름</replaceable> 형식이 표준이다.
   </para>
 
   <para>
-   For parameter defaults, the SQL standard specifies only the syntax with
-   the <literal>DEFAULT</literal> key word.  The syntax
-   with <literal>=</literal> is used in T-SQL and Firebird.
+   인자 기본값 지정 구문은 표준에서는
+   <literal>DEFAULT</literal> 키워드만 사용할 수 있다.
+   <literal>=</literal> 기호는 T-SQL이나 Firebird에서 사용한다.
   </para>
  </refsect1>
 
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterfunction"></member>
