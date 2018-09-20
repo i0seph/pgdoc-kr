@@ -16,15 +16,15 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE FOREIGN DATA WRAPPER</refname>
-  <refpurpose>define a new foreign-data wrapper</refpurpose>
+  <refpurpose>새 외부 자료 싸개 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">name</replaceable>
-    [ HANDLER <replaceable class="parameter">handler_function</replaceable> | NO HANDLER ]
-    [ VALIDATOR <replaceable class="parameter">validator_function</replaceable> | NO VALIDATOR ]
-    [ OPTIONS ( <replaceable class="PARAMETER">option</replaceable> '<replaceable class="PARAMETER">value</replaceable>' [, ... ] ) ]
+CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable>
+    [ HANDLER <replaceable class="parameter">핸들러함수</replaceable> | NO HANDLER ]
+    [ VALIDATOR <replaceable class="parameter">유효성검사함수</replaceable> | NO VALIDATOR ]
+    [ OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -32,17 +32,17 @@ CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">name</replaceable>
   <title>설명</title>
 
   <para>
-   <command>CREATE FOREIGN DATA WRAPPER</command> creates a new
-   foreign-data wrapper.  The user who defines a foreign-data wrapper
-   becomes its owner.
+   <command>CREATE FOREIGN DATA WRAPPER</command> 명령은
+   새 외부 자료 싸개를 만든다.
+   이 외부 자료 싸개를 만드는 사용자가 그것의 소유주가 된다.
   </para>
 
   <para>
-   The foreign-data wrapper name must be unique within the database.
+   해당 데이터베이스에서 지정한 이름의 외부 자료 싸개는 하나만 있어야 한다.
   </para>
 
   <para>
-   Only superusers can create foreign-data wrappers.
+   외부 자료 싸개는 슈퍼유저만 만들 수 있다.
   </para>
  </refsect1>
 
@@ -51,62 +51,64 @@ CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">name</replaceable>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of the foreign-data wrapper to be created.
+      만들 외부 자료 싸개 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>HANDLER <replaceable class="parameter">handler_function</replaceable></literal></term>
+    <term><literal>HANDLER <replaceable class="parameter">핸들러함수</replaceable></literal></term>
     <listitem>
-     <para><replaceable class="parameter">handler_function</replaceable> is the
-      name of a previously registered function that will be called to
-      retrieve the execution functions for foreign tables.
-      The handler function must take no arguments, and
-      its return type must be <type>fdw_handler</type>.
+     <para><replaceable class="parameter">핸들러함수</replaceable>는
+      외부 테이블을 사용할 때 내부적으로 작업하는 내용이 담긴 함수다.
+      이 함수는 외부 자료 싸개를 만들기 전에 먼저 해당 데이터베이스에
+      등록되어 있어야 한다.
+      입력 인자는 없으며, 반환 자료형은 <type>fdw_handler</type> 자료형이어야
+      한다.
      </para>
 
      <para>
-      It is possible to create a foreign-data wrapper with no handler
-      function, but foreign tables using such a wrapper can only be declared,
-      not accessed.
+      이 핸들러 함수를 지정하지 않고 외부 자료 싸개를 만들 수는 있지만,
+      이 경우 외부 테이블 정의만 할 수 있지, 그 테이블을 사용할 수는 없다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>VALIDATOR <replaceable class="parameter">validator_function</replaceable></literal></term>
+    <term><literal>VALIDATOR <replaceable class="parameter">유효성검사함수</replaceable></literal></term>
     <listitem>
-     <para><replaceable class="parameter">validator_function</replaceable>
-      is the name of a previously registered function that will be called to
-      check the generic options given to the foreign-data wrapper, as
-      well as options for foreign servers, user mappings and foreign tables
-      using the foreign-data wrapper.  If no validator function or <literal>NO
-      VALIDATOR</literal> is specified, then options will not be
-      checked at creation time.  (Foreign-data wrappers will possibly
-      ignore or reject invalid option specifications at run time,
-      depending on the implementation.)  The validator function must
-      take two arguments: one of type <type>text[]</type>, which will
-      contain the array of options as stored in the system catalogs,
-      and one of type <type>oid</type>, which will be the OID of the
-      system catalog containing the options. The return type is ignored;
-      the function should report invalid options using the
-      <function>ereport(ERROR)</function> function.
+     <para><replaceable class="parameter">유효성검사함수</replaceable>는
+      외부 자료 싸개에서 제공하는 일반 옵션의 유효성을 검사하는 함수 이름이다.
+      이 함수는 외부 자료 싸개를 만들기 전에 먼저 해당 데이터베이스에 
+      등록되어 있어야 한다.
+      이 함수는 외부 자료 싸개를 이용하는
+      사용자 맵핑, 외부 서버의 옵션들, 외부 테이블의 유효성을 검사한다.
+      유효성 검사 함수를 지정하지 않거나, <literal>NO VALIDATOR</literal>
+      로 지정하면, 외부 자료 싸개를 이용하는 각 개체들을 만들 때,
+      유효성 검사를 하지 않는다.  (각 외부 자료 싸개에 따라
+      각 개체들을 사용할 때 이 유효성 관련에 문제가 있는 경우 
+      오류로 처리하거나 무시한다.)
+      유효성 검사 함수의 입력 인자는 두개를 사용하는데,
+      첫번째는 시스템 카탈로그 안에 저장되어 있는 옵션들의 배열인
+      <type>text[]</type> 자료형,  두번째는 그 자료가 있는 시스템 카탈로그의
+      OID를 지정하는 <type>oid</type> 자료형이다.
+      반환 자료형은 무시한다.  잘못된 옵션에 대한 오류 처리는
+      <function>ereport(ERROR)</function> 함수를 사용해야 한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( <replaceable class="PARAMETER">option</replaceable> '<replaceable class="PARAMETER">value</replaceable>' [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] )</literal></term>
     <listitem>
      <para>
-      This clause specifies options for the new foreign-data wrapper.
-      The allowed option names and values are specific to each foreign
-      data wrapper and are validated using the foreign-data wrapper's
-      validator function.  Option names must be unique.
+      새 외부 자료 싸개에서 사용할 옵션을 지정한다.
+      여기서 사용할 수 있는 옵션과 그 값의 유효성은 
+      외부 자료 싸개 유효성 검사 함수가 담당한다.  같은 옵션 이름은 
+      한 명령에서 여러 번 사용할 수 없다.
      </para>
     </listitem>
    </varlistentry>
@@ -114,13 +116,12 @@ CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">name</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   <productname>PostgreSQL</>'s foreign-data functionality is still under
-   active development.  Optimization of queries is primitive (and mostly left
-   to the wrapper, too).  Thus, there is considerable room for future
-   performance improvements.
+   <productname>PostgreSQL</> 외부 자료 처리 기능은 여전히 개발 중이다.
+   쿼리 최적화 부분은 대부분 싸개가 모두 미흡하다.
+   그래서, 앞으로 성능 관련 부분은 많이 개선될 가능성이 있다.
   </para>
  </refsect1>
 
@@ -128,23 +129,22 @@ CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">name</replaceable>
   <title>예제</title>
 
   <para>
-   Create a useless foreign-data wrapper <literal>dummy</>:
+   <literal>dummy</> 이름의 쓸모 없는 외부 자료 싸개 만들기:
 <programlisting>
 CREATE FOREIGN DATA WRAPPER dummy;
 </programlisting>
   </para>
 
   <para>
-   Create a foreign-data wrapper <literal>file</> with
-   handler function <literal>file_fdw_handler</>:
+   <literal>file_fdw_handler</> 핸들러 함수를 이용하는 
+   <literal>file</> 외부 자료 싸개 만들기:
 <programlisting>
 CREATE FOREIGN DATA WRAPPER file HANDLER file_fdw_handler;
 </programlisting>
   </para>
 
   <para>
-   Create a foreign-data wrapper <literal>mywrapper</> with some
-   options:
+   옵션을 지정하는 외부 자료 싸개:
 <programlisting>
 CREATE FOREIGN DATA WRAPPER mywrapper
     OPTIONS (debug 'true');
@@ -155,16 +155,15 @@ CREATE FOREIGN DATA WRAPPER mywrapper
   <title>호환성</title>
 
   <para>
-   <command>CREATE FOREIGN DATA WRAPPER</command> conforms to ISO/IEC
-   9075-9 (SQL/MED), with the exception that the <literal>HANDLER</literal>
-   and <literal>VALIDATOR</literal> clauses are extensions and the standard
-   clauses <literal>LIBRARY</literal> and <literal>LANGUAGE</literal>
-   are not implemented in <productname>PostgreSQL</>.
+   <command>CREATE FOREIGN DATA WRAPPER</command> 구문은 ISO/IEC
+   9075-9 (SQL/MED) 구문은 준수한다. 단 <literal>HANDLER</literal>
+   <literal>VALIDATOR</literal> 옵션은 확장 기능이고,
+   <literal>LIBRARY</literal>, <literal>LANGUAGE</literal> 옵션은
+   <productname>PostgreSQL</>에서 아직 지원하지 않는다.
   </para>
 
   <para>
-   Note, however, that the SQL/MED functionality as a whole is not yet
-   conforming.
+   하지만, 아직까지는 SQL/MED 모든 기능에 대해 호환하지는 않는다.
   </para>
  </refsect1>
 
