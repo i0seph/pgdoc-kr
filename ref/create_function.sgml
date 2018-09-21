@@ -477,114 +477,119 @@ CREATE [ OR REPLACE ] FUNCTION
    </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">execution_cost</replaceable></term>
+     <term><replaceable class="parameter">실행비용</replaceable></term>
 
      <listitem>
       <para>
-       A positive number giving the estimated execution cost for the function,
-       in units of <xref linkend="guc-cpu-operator-cost">.  If the function
-       returns a set, this is the cost per returned row.  If the cost is
-       not specified, 1 unit is assumed for C-language and internal functions,
-       and 100 units for functions in all other languages.  Larger values
-       cause the planner to try to avoid evaluating the function more often
-       than necessary.
+       해당 함수의 <xref linkend="guc-cpu-operator-cost"> 값.
+       이 값은 양수여야 하며, 실행계획기가 이 값을 사용한다.
+       해당 함수가 다중 로우를 반환한다면, 이 비용은 한 로우를 반환하는데
+       드는 비용이다.  이 옵션을 사용하지 않으면,
+       C 언어 함수와 내장 함수는 1, 그외 함수는 100이 기본값이다.
+       이 값이 크면, 실행계획기는 최대한 이 함수를 자주 사용하지 않도록
+       계획을 짠다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">result_rows</replaceable></term>
+     <term><replaceable class="parameter">반환로우수</replaceable></term>
 
      <listitem>
       <para>
-       A positive number giving the estimated number of rows that the planner
-       should expect the function to return.  This is only allowed when the
-       function is declared to return a set.  The default assumption is
-       1000 rows.
+       함수가 레코드 반환 또는 테이블 반환하는 경우에, 
+       그 예상 자료 수를 지정한다.
+       이 값은 실행계획기에서 사용한다. 이 옵션은
+       다중 로우를 반환하는 함수에서만 쓸 수 있다.  기본 값은 1000 개의 로우다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable>configuration_parameter</replaceable></term>
-     <term><replaceable>value</replaceable></term>
+     <term><replaceable>환경설정_매개변수</replaceable></term>
+     <term><replaceable>값</replaceable></term>
      <listitem>
       <para>
-       The <literal>SET</> clause causes the specified configuration
-       parameter to be set to the specified value when the function is
-       entered, and then restored to its prior value when the function exits.
-       <literal>SET FROM CURRENT</> saves the value of the parameter that
-       is current when <command>CREATE FUNCTION</> is executed as the value
-       to be applied when the function is entered.
+       <literal>SET</> 옵션은 해당 함수가 실행 될 때 
+       사용할 환경 설정 매개 변수를 설정한다.
+       기존 환경 설정 매개 변수값은 따로 보관해 두고, 
+       함수가 실행 될 때는 이 설정 값을 사용하고, 함수 실행이 끝나면
+       설정값을 자동으로 사용한다.
+       <literal>SET FROM CURRENT</> 옵션은
+       <command>CREATE FUNCTION</> 명령을 실행할 때 그 세션이
+       사용하고 있는 해당 환경 설정 매개 변수의 값을 지정한다.
       </para>
 
       <para>
-       If a <literal>SET</> clause is attached to a function, then
-       the effects of a <command>SET LOCAL</> command executed inside the
-       function for the same variable are restricted to the function: the
-       configuration parameter's prior value is still restored at function exit.
-       However, an ordinary
-       <command>SET</> command (without <literal>LOCAL</>) overrides the
-       <literal>SET</> clause, much as it would do for a previous <command>SET
-       LOCAL</> command: the effects of such a command will persist after
-       function exit, unless the current transaction is rolled back.
+       <literal>SET</> 옵션을 추가해서 함수를 만들면, 
+       내부적으로 그 함수 본문이 실행 되기 전에, 
+       <command>SET LOCAL</> 명령이 먼저 실행 되는 것과 
+       같은 기능을 한다: 이것은 함수 실행 전 설정 값은 보관하고, 
+       지정한 매개 변수 값으로 지정한 값을 사용하고, 함수가 끝날 때
+       이전 값으로 다시 설정 한다.
+       반면, 함수 본문 내, <literal>LOCAL</> 옵션이 없는 <command>SET</>
+       명령을 사용하면 그 설정값은 함수가 실패로 끝나지 않는 한,
+       해당 세션이 종료되기 전까지 유지된다.
       </para>
 
       <para>
-       See <xref linkend="sql-set"> and
-       <xref linkend="runtime-config">
-       for more information about allowed parameter names and values.
+       여기서 사용할 수 있는 매개 변수 이름과 값에 대한 설명은
+       <xref linkend="sql-set"> 명령 설명서와 
+       See <xref linkend="sql-set">에서 보다 자세히 다룬다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">definition</replaceable></term>
+     <term><replaceable class="parameter">정의</replaceable></term>
 
      <listitem>
       <para>
-       A string constant defining the function; the meaning depends on the
-       language.  It can be an internal function name, the path to an
-       object file, an SQL command, or text in a procedural language.
+       LANGUAGE 옵션에서 지정한
+       언어와 관계된 해당 함수가 하는 일을 문자열로 지정한다.
+       여기에 내장 함수 이름, 오브젝트 파일 경로, SQL 명령어, 
+       또는 프로시져 언어 문법으로 작성된 코드들을 지정한다.
       </para>
 
       <para>
-       It is often helpful to use dollar quoting (see <xref
-       linkend="sql-syntax-dollar-quoting">) to write the function definition
-       string, rather than the normal single quote syntax.  Without dollar
-       quoting, any single quotes or backslashes in the function definition must
-       be escaped by doubling them.
+       함수 정의 문자열을 지정할 때는 일반 작은 따옴표 인용법 보다,
+       때로는 달러 인용법이 유용하게 쓰인다(<xref
+       linkend="sql-syntax-dollar-quoting"> 참조).
+       달러 인용법을 사용하지 않으면, 
+       이 함수 정의 안에 작은 따옴표는 모두 두 개로 표기해야 하기 때문이다.
       </para>
 
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><literal><replaceable class="parameter">obj_file</replaceable>, <replaceable class="parameter">link_symbol</replaceable></literal></term>
+     <term><literal><replaceable class="parameter">오브젝트파일</replaceable>, <replaceable class="parameter">링그_심벌</replaceable></literal></term>
 
      <listitem>
       <para>
-       This form of the <literal>AS</literal> clause is used for
-       dynamically loadable C language functions when the function name
-       in the C language source code is not the same as the name of
-       the SQL function. The string <replaceable
-       class="parameter">obj_file</replaceable> is the name of the shared
-       library file containing the compiled C function, and is interpreted
-       as for the <xref linkend="SQL-LOAD"> command.  The string
-       <replaceable class="parameter">link_symbol</replaceable> is the
-       function's link symbol, that is, the name of the function in the C
-       language source code.  If the link symbol is omitted, it is assumed to
-       be the same as the name of the SQL function being defined.  The C names
-       of all functions must be different, so you must give overloaded C
-       functions different C names (for example, use the argument types as
-       part of the C names).
+       C 언어 소스 코드 안에 있는 함수 이름이 만들고자 하는 SQL 함수 이름과
+       다를 때, 이 구문을 이용해서 동적 불러오기 가능한 C 언어 함수를 
+       지정한다.
+
+       <replaceable
+       class="parameter">오브젝트파일</replaceable>은 컴파일된 C 함수를
+       포함하고 있는 공유 라이브러리 파일 이름이다.  이 함수를 서버로
+       불러오려면, <xref linkend="SQL-LOAD"> 명령을 사용한다.
+       <replaceable class="parameter">링크_심벌</replaceable>은
+       그 라이브러리 파일에 있는 C 함수 이름이다.
+       링크 심벌이 빠지면, SQL 함수 이름과 같은 함수로 간주한다.
+       SQL 함수 이름은 오버로드되지만, C 함수 이름은 그렇게 사용할 수
+       없기 때문에, C 함수 이름은 모두 달라야 한다(예, C 함수 이름으로
+       함수 이름과 인자 자료형 이름을 함께 사용한다).
       </para>
 
       <para>
-       When repeated <command>CREATE FUNCTION</command> calls refer to
-       the same object file, the file is only loaded once per session.
-       To unload and
-       reload the file (perhaps during development), start a new session.
+       세션이 해당 함수가 처음 한 번 사용하면, 이 때
+       해당 공유 라이브러리를 자동으로 서버로 불러온다.  이 상황에서 
+       개발 중에, 다시 만든 같은 공유 라이브러리를 이용해서
+       <command>CREATE FUNCTION</command> 작업을 하는 경우는 
+       먼저 불러온 공유 라이브러리를 다시 불러오고, 
+       세션을 다시 시작 한 다음 작업해야 한다.
       </para>
 
      </listitem>
