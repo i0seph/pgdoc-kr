@@ -369,24 +369,30 @@ CREATE [ OR REPLACE ] FUNCTION
      <term><literal>LEAKPROOF</literal></term>
      <listitem>
       <para>
-       <literal>LEAKPROOF</literal> indicates that the function has no side
-       effects.  It reveals no information about its arguments other than by
-       its return value.  For example, a function which throws an error message
-       for some argument values but not others, or which includes the argument
-       values in any error message, is not leakproof.  This affects how the
-       system executes queries against views created with the
-       <literal>security_barrier</literal> option or tables with row level
-       security enabled.  The system will enforce conditions from security
-       policies and security barrier views before any user-supplied conditions
-       from the query itself that contain non-leakproof functions, in order to
-       prevent the inadvertent exposure of data.  Functions and operators
-       marked as leakproof are assumed to be trustworthy, and may be executed
-       before conditions from security policies and security barrier views.
-       In addition, functions which do not take arguments or which are not
-       passed any arguments from the security barrier view or table do not have
-       to be marked as leakproof to be executed before security conditions.  See
-       <xref linkend="sql-createview"> and <xref linkend="rules-privileges">.
-       This option can only be set by the superuser.
+       <literal>LEAKPROOF</literal> 옵션은 해당 함수 처리에서
+       의도하지 않은 결과 side effect 가 없다고 지정한다.
+       이 옵션이 지정된 함수는 입력 인자를 받아 반환 값을 반환 하는 것
+       외에는 어떠한 정보도 보여주지 않는 함수임을 뜻한다.  예를 들어,
+       같은 인자에 대해 그 인자값에 따라 어떤 경우는 오류 메시지를
+       보여주고, 어떤 경우는 정상 처리하는 함수나, 어떤 오류 메시지에서
+       그 인자값을 포함하는 함수가 <literal>NOT LEAKPROOF</literal> 함수다.
+       <literal>security_barrier</literal> 옵션을 지정한 뷰 또는,
+       로우 단위 보안 정책이 있는 테이블을 사용하는 뷰를
+       사용하는데 이 옵션은 영향을 준다.
+       의도되지 않은 자료 누출 사고를 막기 위해,
+       <literal>NOT LEAKPROOF</literal> 함수를 포함하는 뷰 쿼리의
+       사용자 지정 조건 보다 먼저, 
+       보안 정책과 자료 보호 뷰(security_barrier 옵션이 있는 뷰)의
+       조건이 적용된다.
+       이 <literal>LEAKPROOF</literal> 옵션을 지정한 함수나, 
+       그 함수를 사용하는 연산자는 
+       보안 정책이나, 자료 보호 뷰의 조건보다 먼저 실행 될 수도 있다.
+       추가로, 아무런 인자도 사용하지 않는 함수나,
+       자료 보호 뷰나, 테이블에서 어떤 인자도 전달하지 않는
+       함수는 보안 조건 전에 실행 될 수 있도록 
+       이 옵션을 사용하지 말아야 한다.
+       <xref linkend="sql-createview"> 명령 설명서와 <xref linkend="rules-privileges"> 참조.
+       이 옵션은 슈퍼유저만 지정할 수 있다.
       </para>
      </listitem>
     </varlistentry>
@@ -397,19 +403,16 @@ CREATE [ OR REPLACE ] FUNCTION
      <term><literal>STRICT</literal></term>
 
      <listitem>
-      <para><literal>CALLED ON NULL INPUT</literal> (the default) indicates
-       that the function will be called normally when some of its
-       arguments are null.  It is then the function author's
-       responsibility to check for null values if necessary and respond
-       appropriately.
+      <para><literal>CALLED ON NULL INPUT</literal> (기본값) 옵션은
+       인자값으로 null 값을 사용해도 해당 함수 본문을 실행하도록
+       지정한다.  즉, 인자값 유효성 검사는 
+       함수 본문에서 진행되며, 이 부분에 대한 책임은 사용자 몫이다.
       </para>
 
-      <para><literal>RETURNS NULL ON NULL INPUT</literal> or
-       <literal>STRICT</literal> indicates that the function always
-       returns null whenever any of its arguments are null.  If this
-       parameter is specified, the function is not executed when there
-       are null arguments; instead a null result is assumed
-       automatically.
+      <para><literal>RETURNS NULL ON NULL INPUT</literal> 또는
+       <literal>STRICT</literal> 옵션은 
+       입력 인자 가운데 하나라도 null 값이 있으면, 
+       함수 본문을 실행하지 않고, 무조건 null 값을 반환하도록 지정한다.
       </para>
      </listitem>
     </varlistentry>
@@ -419,17 +422,16 @@ CREATE [ OR REPLACE ] FUNCTION
     <term><literal><optional>EXTERNAL</optional> SECURITY DEFINER</literal></term>
 
     <listitem>
-     <para><literal>SECURITY INVOKER</literal> indicates that the function
-      is to be executed with the privileges of the user that calls it.
-      That is the default.  <literal>SECURITY DEFINER</literal>
-      specifies that the function is to be executed with the
-      privileges of the user that owns it.
+     <para><literal>SECURITY INVOKER</literal> 옵션은
+      함수 본문을 실행할 때 그 실행 권한이 그 실행자의 권한을 사용한다.
+      이것이 기본값이다.  반면
+      <literal>SECURITY DEFINER</literal> 옵션은 
+      함수 본문 실행 권한이 해당 함수 소유주의 권한을 사용한다.
      </para>
 
      <para>
-      The key word <literal>EXTERNAL</literal> is allowed for SQL
-      conformance, but it is optional since, unlike in SQL, this feature
-      applies to all functions not only external ones.
+      <literal>EXTERNAL</literal> 옵션은 SQL 호환성 때문에 허용한다.
+      표준과 달리 이 옵션을 사용해도 모든 함수가 그 대상이 된다.
      </para>
     </listitem>
    </varlistentry>
@@ -438,35 +440,38 @@ CREATE [ OR REPLACE ] FUNCTION
     <term><literal>PARALLEL</literal></term>
 
     <listitem>
-     <para><literal>PARALLEL UNSAFE</literal> indicates that the function
-      can't be executed in parallel mode and the presence of such a
-      function in an SQL statement forces a serial execution plan.  This is
-      the default.  <literal>PARALLEL RESTRICTED</literal> indicates that
-      the function can be executed in parallel mode, but the execution is
-      restricted to parallel group leader.  <literal>PARALLEL SAFE</literal>
-      indicates that the function is safe to run in parallel mode without
-      restriction.
+     <para><literal>PARALLEL UNSAFE</literal> 옵션은 
+      해당 함수가 병렬 쿼리 작업에서 안전하지 않다고 지정한다.
+      이것이 기본값이다.
+      <literal>PARALLEL RESTRICTED</literal> 옵션은
+      병렬 쿼리 작업에서 사용될 수 있지만, 
+      이 함수는 반드시 병렬 그룹 리더 작업자만 실행해야 하는 함수로 지정한다.
+      <literal>PARALLEL SAFE</literal> 옵션은 해당 함수가 
+      병렬 쿼리 작업에서 어떤 제한도 없이 안전하다고 지정한다.
      </para>
 
      <para>
-      Functions should be labeled parallel unsafe if they modify any database
-      state, or if they make changes to the transaction such as using
-      sub-transactions, or if they access sequences or attempt to make
-      persistent changes to settings (e.g. <literal>setval</>).  They should
-      be labeled as parallel restricted if they access temporary tables,
-      client connection state, cursors, prepared statements, or miscellaneous
-      backend-local state which the system cannot synchronize in parallel mode
-      (e.g.  <literal>setseed</> cannot be executed other than by the group
-      leader because a change made by another process would not be reflected
-      in the leader).  In general, if a function is labeled as being safe when
-      it is restricted or unsafe, or if it is labeled as being restricted when
-      it is in fact unsafe, it may throw errors or produce wrong answers
-      when used in a parallel query.  C-language functions could in theory
-      exhibit totally undefined behavior if mislabeled, since there is no way
-      for the system to protect itself against arbitrary C code, but in most
-      likely cases the result will be no worse than for any other function.
-      If in doubt, functions should be labeled as <literal>UNSAFE</>, which is
-      the default.
+      데이터베이스 상태를 변경하거나,
+      서브 트랜잭션 같은 것을 사용해서 트랜잭션에 변경 사항을 만들거나,
+      시쿼스를 사용하거나, <literal>setval</> 같이 값을 고정하거나 하는
+      함수는 <literal>UNSAFE</literal>로 지정해야 한다.
+      임시 테이블을 사용하거나, 클라이언트 접속 상태를 조회하거나,
+      커서, 미리 준비된 구문, <literal>setseed</> 같이 
+      하나의 작업에서는 일관성을 유지해야 하는 일을 하는 함수는
+      <literal>RESTRICTED</literal>로 지정해야 한다.
+      일반적으로,
+      <literal>RESTRICTED</literal>나, <literal>UNSAFE</literal> 함수를
+      <literal>SAFE</literal> 함수로 지정하거나,
+      <literal>UNSAFE</literal> 함수를 <literal>RESTRICTED</literal> 함수로
+      지정하면, 그 함수를 사용하는 쿼리는 병렬 쿼리로 처리된다.
+      이렇게 되면, 그 쿼리가 오류로 처리되든가, 잘못된 결과를 보여 줄 수 있다.
+      서버는 임의 C 코드에 대항해서 자신을 지킬 방법이 없어,
+      이론적으로, 이런 잘못된 속성을 지정한 C 언어로 만든 함수는 
+      충분히 오동작을 할 수 있다.
+      하지만 그 오동작 결과가 다른 언어로 만든 함수들 보다는 
+      더 나쁘지는 않다.
+      그 함수가 하는 일을 정확히 몰라 오동작이 우려되면, 
+      기본값인 <literal>UNSAFE</> 옵션을 사용하는 것이 안전하다.
      </para>
     </listitem>
    </varlistentry>
