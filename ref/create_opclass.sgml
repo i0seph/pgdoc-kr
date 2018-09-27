@@ -249,24 +249,25 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
   <title>참고</title>
 
   <para>
-   Because the index machinery does not check access permissions on functions
-   before using them, including a function or operator in an operator class
-   is tantamount to granting public execute permission on it.  This is usually
-   not an issue for the sorts of functions that are useful in an operator
-   class.
+   연산자 클래스에 지정한 함수나 연산자는 그 연산자 클래스를 사용하는 
+   인덱스 관련 작업을 하는 그 때 접근 권한을 검사한다.  이렇기 때문에, 
+   연산자 클래스의 접근 권한은 누구나 실행할 수 있도록 한다.  이 기본 정책은
+   일반적인 상황에서는 특별히 문제되지 않는다.
   </para>
 
   <para>
-   The operators should not be defined by SQL functions.  A SQL function
-   is likely to be inlined into the calling query, which will prevent
-   the optimizer from recognizing that the query matches an index.
+   연산자는 SQL 함수로 만들지 말아야 한다.  SQL 함수로 만들면,
+   해당 쿼리가 실행 될 때, 그 함수에서 정의한 SQL 구문으로 변환해서 
+   쿼리를 실행하기 때문에, 실행 계획 최적화기가 인덱스 사용 여부에 대한
+   판단을 잘못할 수 있기 때문이다.
   </para>
 
   <para>
-   Before <productname>PostgreSQL</productname> 8.4, the <literal>OPERATOR</>
-   clause could include a <literal>RECHECK</> option.  This is no longer
-   supported because whether an index operator is <quote>lossy</> is now
-   determined on-the-fly at run time.  This allows efficient handling of
+   <productname>PostgreSQL</productname> 8.4 이전 버전에서는
+   <literal>OPERATOR</> 구문에서 <literal>RECHECK</> 옵션을  사용할 수 있었으나,
+   지금은 빠졌다. 이제는 인덱스 연산자는 그것을 사용할 때마다 
+   항상 확인하기 때문이다.
+   This allows efficient handling of
    cases where an operator might or might not be lossy.
   </para>
  </refsect1>
