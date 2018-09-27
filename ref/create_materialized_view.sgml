@@ -16,110 +16,114 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE MATERIALIZED VIEW</refname>
-  <refpurpose>define a new materialized view</refpurpose>
+  <refpurpose>새 구체화한 뷰 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>table_name</replaceable>
-    [ (<replaceable>column_name</replaceable> [, ...] ) ]
-    [ WITH ( <replaceable class="PARAMETER">storage_parameter</replaceable> [= <replaceable class="PARAMETER">value</replaceable>] [, ... ] ) ]
-    [ TABLESPACE <replaceable class="PARAMETER">tablespace_name</replaceable> ]
-    AS <replaceable>query</replaceable>
+CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>테이블이름</replaceable>
+    [ (<replaceable>칼럼이름</replaceable> [, ...] ) ]
+    [ WITH ( <replaceable class="PARAMETER">저장_매개변수</replaceable> [= <replaceable class="PARAMETER">값</replaceable>] [, ... ] ) ]
+    [ TABLESPACE <replaceable class="PARAMETER">테이블스페이스이름</replaceable> ]
+    AS <replaceable>쿼리</replaceable>
     [ WITH [ NO ] DATA ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE MATERIALIZED VIEW</command> defines a materialized view of
-   a query.  The query is executed and used to populate the view at the time
-   the command is issued (unless <command>WITH NO DATA</> is used) and may be
-   refreshed later using <command>REFRESH MATERIALIZED VIEW</command>.
+   <command>CREATE MATERIALIZED VIEW</command> 명령은 지정한 쿼리에 대한 
+   구체화한 뷰를 만든다.
+   이 명령이 실행 될 때(<command>WITH NO DATA</> 옵션을 사용하지 않았다면)
+   지정한 쿼리를 실행하고, 그 결과를 지정한 테이블에 저장한다.  이 자료는
+   나중에, <command>REFRESH MATERIALIZED VIEW</command> 명령으로
+   갱신한다.
   </para>
 
   <para>
-   <command>CREATE MATERIALIZED VIEW</command> is similar to
-   <command>CREATE TABLE AS</>, except that it also remembers the query used
-   to initialize the view, so that it can be refreshed later upon demand.
-   A materialized view has many of the same properties as a table, but there
-   is no support for temporary materialized views or automatic generation of
-   OIDs.
+   <command>CREATE MATERIALIZED VIEW</command> 명령은
+   <command>CREATE TABLE AS</> 명령과 흡사하지만, 
+   그 자료 추출 쿼리를 기억하고 있어, 필요에 따라, 
+   단순한 갱신 명령으로 자료를 갱신할 수 있다는 장점이 있다.
+   구체화한 뷰는 테이블과 비슷하기 때문에, 테이블에서 사용하는 
+   대부분 속성들을 사용한다.  임시 구체화화 뷰는 지원하지 않으며, 
+   OID 자동 생성 기능도 지원하지 않는다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
     <term><literal>IF NOT EXISTS</></term>
     <listitem>
      <para>
-      Do not throw an error if a materialized view with the same name already
-      exists. A notice is issued in this case.  Note that there is no guarantee
-      that the existing materialized view is anything like the one that would
-      have been created.
+      지정한 이름의 개체가 이미 있어도 오류로 처리하지 않고, 
+      알림 메시지만 보여준다.  이미 있는 해당 이름의 개체가 
+      만들고자 하는 구체화한 뷰와 정확히 일치하는지는 확인하지 않는다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>table_name</replaceable></term>
+    <term><replaceable>테이블이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the materialized view to be
-      created.
+      새로 만들 구체화한 뷰 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>column_name</replaceable></term>
+    <term><replaceable>칼럼이름</replaceable></term>
     <listitem>
      <para>
-      The name of a column in the new materialized view.  If column names are
-      not provided, they are taken from the output column names of the query.
+      새 구체화한 뷰의 칼럼 이름.  칼럼 이름을 생략하면,
+      지정한 쿼리 결과로 사용된 칼럼 이름이 사용된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>WITH ( <replaceable class="PARAMETER">storage_parameter</replaceable> [= <replaceable class="PARAMETER">value</replaceable>] [, ... ] )</literal></term>
+    <term><literal>WITH ( <replaceable class="PARAMETER">저장_매개변수</replaceable> [= <replaceable class="PARAMETER">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
-      This clause specifies optional storage parameters for the new
-      materialized view; see <xref linkend="sql-createtable-storage-parameters"
-      endterm="sql-createtable-storage-parameters-title"> for more
-      information.  All parameters supported for <literal>CREATE
-      TABLE</literal> are also supported for <literal>CREATE MATERIALIZED
-      VIEW</literal> with the exception of <literal>OIDS</literal>.
-      See <xref linkend="sql-createtable"> for more information.
+      해당 구체화한 뷰의 저장 매개 변수 값을 지정한다.
+      여기서 사용할 수 있는 매개 변수 이름과 그 값은
+      <xref linkend="sql-createtable-storage-parameters"
+      endterm="sql-createtable-storage-parameters-title">에서
+      자세히 다룬다.
+      <literal>OIDS</literal> 를 빼고,
+      <literal>CREATE TABLE</literal> 명령에서 사용할 수 있는
+      모든 매개 변수는 <literal>CREATE MATERIALIZED
+      VIEW</literal> 명령에서도 사용할 수 있다.
+      <xref linkend="sql-createtable"> 명령 설명서 참조.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>TABLESPACE <replaceable class="PARAMETER">tablespace_name</replaceable></literal></term>
+    <term><literal>TABLESPACE <replaceable class="PARAMETER">테이블스페이스이름</replaceable></literal></term>
     <listitem>
      <para>
-      The <replaceable class="PARAMETER">tablespace_name</replaceable> is the name
-      of the tablespace in which the new materialized view is to be created.
-      If not specified, <xref linkend="guc-default-tablespace"> is consulted.
+      새 구체화한 뷰가 저장될 <replaceable class="PARAMETER">테이블스페이스이름</replaceable>.
+      지정하지 않으며, <xref linkend="guc-default-tablespace"> 설정값의
+      테이블스페이스가 사용된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>query</replaceable></term>
+    <term><replaceable>쿼리</replaceable></term>
     <listitem>
      <para>
-      A <xref linkend="sql-select">, <link linkend="sql-table">TABLE</link>,
-      or <xref linkend="sql-values"> command.  This query will run within a
-      security-restricted operation; in particular, calls to functions that
-      themselves create temporary tables will fail.
+      <xref linkend="sql-select">, <link linkend="sql-table">TABLE</link>,
+      또는 <xref linkend="sql-values"> 명령.  이 쿼리는 보안-제한 동작으로
+      실행되며, 임시 테이블을 만드는 함수에서 같이 사용되면, 
+      작업은 실패한다.
      </para>
     </listitem>
    </varlistentry>
@@ -128,10 +132,9 @@ CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>table_name</replaceable>
     <term><literal>WITH [ NO ] DATA</></term>
     <listitem>
      <para>
-      This clause specifies whether or not the materialized view should be
-      populated at creation time.  If not, the materialized view will be
-      flagged as unscannable and cannot be queried until <command>REFRESH
-      MATERIALIZED VIEW</> is used.
+      구체화한 뷰를 아직 사용하지 않는 것으로 간주하고 만든다.
+      이렇게 만들어진 구체화한 뷰는 <command>REFRESH
+      MATERIALIZED VIEW</> 명령이 실행되기 전까지는 사용할 수 없다.
      </para>
     </listitem>
    </varlistentry>
@@ -140,16 +143,16 @@ CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>table_name</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE MATERIALIZED VIEW</command> is a
-   <productname>PostgreSQL</productname> extension.
+   <command>CREATE MATERIALIZED VIEW</command> 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altermaterializedview"></member>
