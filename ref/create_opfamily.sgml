@@ -16,12 +16,12 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE OPERATOR FAMILY</refname>
-  <refpurpose>define a new operator family</refpurpose>
+  <refpurpose>새 연산자 가족 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE OPERATOR FAMILY <replaceable class="parameter">name</replaceable> USING <replaceable class="parameter">index_method</replaceable>
+CREATE OPERATOR FAMILY <replaceable class="parameter">이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -29,42 +29,41 @@ CREATE OPERATOR FAMILY <replaceable class="parameter">name</replaceable> USING <
   <title>설명</title>
 
   <para>
-   <command>CREATE OPERATOR FAMILY</command> creates a new operator family.
-   An operator family defines a collection of related operator classes,
-   and perhaps some additional operators and support functions that are
-   compatible with these operator classes but not essential for the
-   functioning of any individual index.  (Operators and functions that
-   are essential to indexes should be grouped within the relevant operator
-   class, rather than being <quote>loose</> in the operator family.
-   Typically, single-data-type operators are bound to operator classes,
-   while cross-data-type operators can be loose in an operator family
-   containing operator classes for both data types.)
+   <command>CREATE OPERATOR FAMILY</command> 명령은 새 연산자 가족을 만든다.
+   연산자 가족이란 연산자 클래스 집합이다.
+   각 개별 인덱스 처리를 위한 필수적이지는 않지만, 
+   해당 연산자 클래스와 호환되는 연산자와 지원 함수들을 추가적으로 포함할
+   수도 있다.
+   (인덱스 처리에 필수적인 연산자와 함수는 관련 연산자 클래스에 있어야 하지만,
+   이 연산자 가족은 그 관계가 <quote>느슨하다</>.
+   일반적으로 단일 자료형 연산자는 연산자 클래스에서 정의하며, 
+   교자 자료형 연산자는 연산자 가족에서 각 단일 자료형에 대한 연산자 
+   클래스를 정의해서 느슨한 관계로 만든다.)
   </para>
 
   <para>
-   The new operator family is initially empty.  It should be populated
-   by issuing subsequent <command>CREATE OPERATOR CLASS</command> commands
-   to add contained operator classes, and optionally
-   <command>ALTER OPERATOR FAMILY</command> commands to add <quote>loose</>
-   operators and their corresponding support functions.
+   연산자 가족은 처음 만들어 질때, 그 구성원 없이 만들어진다.
+   관련 연산자 클래스를 추가하려면, 먼저 <command>CREATE OPERATOR
+   CLASS</command> 명령으로 연산자 클래스를 만들고, 
+   <command>ALTER OPERATOR FAMILY</command> 명령으로 
+   <quote>느슨하게</> 연결 한다.
   </para>
 
   <para>
-   If a schema name is given then the operator family is created in the
-   specified schema.  Otherwise it is created in the current schema.
-   Two operator families in the same schema can have the same name only if they
-   are for different index methods.
+   연산자 가족 이름에 스키마 이름을 포함하면, 해당 스키마 안에 만든다.
+   스키마 이름이 생략되면 현재 스키마에 만든다.
+   하나의 스키마 안에는 연산자 가족 이름과 색인 방법을 합쳐 유일한 개체만
+   허용한다.  (색인 방법이 다른 같은 이름의 연산자 가족을 만들 수 있다.)
   </para>
 
   <para>
-   The user who defines an operator family becomes its owner.  Presently,
-   the creating user must be a superuser.  (This restriction is made because
-   an erroneous operator family definition could confuse or even crash the
-   server.)
+   이 명령 사용자가 해당 연산자 가족의 소유주가 된다. 현재, 
+   이 사용자는 슈퍼유저여야 한다. (잘못 만들어진 연산자 가족을 
+   사용하는 경우 서버가 비정상 중지될 수 있기 때문에 이런 제한을 둔다.)
   </para>
 
   <para>
-   Refer to <xref linkend="xindex"> for further information.
+   더 많은 내용은 <xref linkend="xindex">에서 다룬다.
   </para>
  </refsect1>
 
@@ -73,20 +72,19 @@ CREATE OPERATOR FAMILY <replaceable class="parameter">name</replaceable> USING <
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of the operator family to be created.  The name can be
-      schema-qualified.
+      새로 만들 연산자 가족 이름. 스키마 이름도 포함될 수 있음.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">index_method</replaceable></term>
+    <term><replaceable class="parameter">색인방법</replaceable></term>
     <listitem>
      <para>
-      The name of the index method this operator family is for.
+      연산자 가족용 색인 방법 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -97,10 +95,10 @@ CREATE OPERATOR FAMILY <replaceable class="parameter">name</replaceable> USING <
   <title>호환성</title>
 
   <para>
-   <command>CREATE OPERATOR FAMILY</command> is a
-   <productname>PostgreSQL</productname> extension.  There is no
-   <command>CREATE OPERATOR FAMILY</command> statement in the SQL
-   standard.
+   <command>CREATE OPERATOR FAMILY</command> 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다. 
+   <command>CREATE OPERATOR FAMILY</command> 구문은 표준 SQL 규약에는
+   없다.
   </para>
  </refsect1>
 
