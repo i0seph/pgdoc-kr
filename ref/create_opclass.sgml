@@ -16,81 +16,79 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE OPERATOR CLASS</refname>
-  <refpurpose>define a new operator class</refpurpose>
+  <refpurpose>새 연산자 클래스 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAULT ] FOR TYPE <replaceable class="parameter">data_type</replaceable>
-  USING <replaceable class="parameter">index_method</replaceable> [ FAMILY <replaceable class="parameter">family_name</replaceable> ] AS
-  {  OPERATOR <replaceable class="parameter">strategy_number</replaceable> <replaceable class="parameter">operator_name</replaceable> [ ( <replaceable class="parameter">op_type</replaceable>, <replaceable class="parameter">op_type</replaceable> ) ] [ FOR SEARCH | FOR ORDER BY <replaceable class="parameter">sort_family_name</replaceable> ]
-   | FUNCTION <replaceable class="parameter">support_number</replaceable> [ ( <replaceable class="parameter">op_type</replaceable> [ , <replaceable class="parameter">op_type</replaceable> ] ) ] <replaceable class="parameter">function_name</replaceable> ( <replaceable class="parameter">argument_type</replaceable> [, ...] )
-   | STORAGE <replaceable class="parameter">storage_type</replaceable>
+CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFAULT ] FOR TYPE <replaceable class="parameter">자료형</replaceable>
+  USING <replaceable class="parameter">색인방법</replaceable> [ FAMILY <replaceable class="parameter">가족이름</replaceable> ] AS
+  {  OPERATOR <replaceable class="parameter">전략번호</replaceable> <replaceable class="parameter">연산자이름</replaceable> [ ( <replaceable class="parameter">연산자자료형</replaceable>, <replaceable class="parameter">연산자자료형</replaceable> ) ] [ FOR SEARCH | FOR ORDER BY <replaceable class="parameter">sort_family_name</replaceable> ]
+   | FUNCTION <replaceable class="parameter">지원번호</replaceable> [ ( <replaceable class="parameter">연산자자료형</replaceable> [ , <replaceable class="parameter">연산자자료형</replaceable> ] ) ] <replaceable class="parameter">함수이름</replaceable> ( <replaceable class="parameter">인자자료형</replaceable> [, ...] )
+   | STORAGE <replaceable class="parameter">저장자료형</replaceable>
   } [, ... ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE OPERATOR CLASS</command> creates a new operator class.
-   An operator class defines how a particular data type can be used with
-   an index.  The operator class specifies that certain operators will fill
-   particular roles or <quote>strategies</> for this data type and this
-   index method.  The operator class also specifies the support procedures to
-   be used by
-   the index method when the operator class is selected for an
-   index column.  All the operators and functions used by an operator
-   class must be defined before the operator class can be created.
+   <command>CREATE OPERATOR CLASS</command> 명령은 새 연산자 클래스를 만든다.
+   연산자 클래스란 한 인덱스에서 특정 자료형이 어떻게 사용되는지 정의한
+   연산자와 함수들의 모음입니다.
+   연산자 클래스에서는 특정 자료형과 특정 색인 방법에서 사용할 수 있는 
+   연산자와 그 <quote>전략</> 정보를 지정한다.
+   또한 한 인덱스 칼럼용으로 선택된 연산자 클래스를 이용해서 
+   그 색인 방법의 인덱스를 처리할 때 지원할 함수들을 지정한다.
+   여기서 지정하는 모든 연산자와 함수는 해당 연산자 클래스를 만들기
+   전에 이미 해당 데이터베이스에 있어야 한다.
   </para>
 
   <para>
-   If a schema name is given then the operator class is created in the
-   specified schema.  Otherwise it is created in the current schema.
-   Two operator classes in the same schema can have the same name only if they
-   are for different index methods.
+   연산자 클래스 이름으로 스키마 이름을 포함하면, 해당 스키마 안에 만든다.
+   스키마 이름을 생량하면, 현재 스키마 안에 만든다.
+   같은 스키마 안에 같은 연산자 클래스를 만들 때는 그 색인 방법이 달라야 한다.
   </para>
 
   <para>
-   The user who defines an operator class becomes its owner.  Presently,
-   the creating user must be a superuser.  (This restriction is made because
-   an erroneous operator class definition could confuse or even crash the
-   server.)
+   이 명령을 실행하는 사용자가 해당 연산자 클래스의 소유주가 된다.
+   현재, 이 명령은 슈퍼유저만 실행할 수 있다.  (잘못 만들어진 
+   연산자 클래스가 사용되면 서버가 비정상 종료될 가능성이 있어, 
+   이런 제한을 둔다.)
   </para>
 
   <para>
-   <command>CREATE OPERATOR CLASS</command> does not presently check
-   whether the operator class definition includes all the operators and
-   functions required by the index method, nor whether the operators and
-   functions form a self-consistent set.  It is the user's
-   responsibility to define a valid operator class.
+   <command>CREATE OPERATOR CLASS</command> 작업에서
+   해당 색인 방법으로 사용할 모든 연산자와 함수를 포함하고 있는지는
+   확인하지 않으며, 또한 각 연산자와 함수가 색인 방법에 맞게 
+   작동하는지에 대한 검사도 하지 않는다.  이 확인은 연산자 클래스를
+   만드는 사용자가 해야할 일이다.
   </para>
 
   <para>
-   Related operator classes can be grouped into <firstterm>operator
-   families</>.  To add a new operator class to an existing family,
-   specify the <literal>FAMILY</> option in <command>CREATE OPERATOR
-   CLASS</command>.  Without this option, the new class is placed into
-   a family named the same as the new class (creating that family if
-   it doesn't already exist).
+   연관된 연산자 클래스는 <firstterm>연산자 가족</>으로 묶을 수 있다.
+   이미 있는 연산자 가족에 해당 연산자 클래스를 포함하려면,
+   <command>CREATE OPERATOR CLASS</command> 명령에서
+   <literal>FAMILY</> 옵션을 이용한다.
+   이 옵션을 사용하지 않으면, 해당 연산자 클래스 이름과 같은
+   연산자 가족안에 포함된다.  (해당 연산자 가족이 없으면 만든다.)
   </para>
 
   <para>
-   Refer to <xref linkend="xindex"> for further information.
+   보다 자세한 내용은 <xref linkend="xindex">에서 다룬다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
     <term><replaceable class="parameter">name</replaceable></term>
     <listitem>
      <para>
-      The name of the operator class to be created.  The name can be
-      schema-qualified.
+      새로 만들 연산자 클래스 이름.  스키마 이름을 포함 할 수 있음.
      </para>
     </listitem>
    </varlistentry>
@@ -99,84 +97,80 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
     <term><literal>DEFAULT</></term>
     <listitem>
      <para>
-      If present, the operator class will become the default
-      operator class for its data type.  At most one operator class
-      can be the default for a specific data type and index method.
+      이 옵션을 사용하면, 해당 자료형의 기본 연산자 클래스로 지정한다.
+      특정 자료형과 특정 색인 방법에 대한 기본 연산자 클래스는 
+      하나만 지정할 수 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">data_type</replaceable></term>
+    <term><replaceable class="parameter">자료형</replaceable></term>
     <listitem>
      <para>
-      The column data type that this operator class is for.
+      새로 만들 연산자 클래스가 사용될 대상 자료형.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">index_method</replaceable></term>
+    <term><replaceable class="parameter">색인방법</replaceable></term>
     <listitem>
      <para>
-      The name of the index method this operator class is for.
+      새로 만들 연산자 클래스가 사용될 색인 방법.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">family_name</replaceable></term>
+    <term><replaceable class="parameter">가족이름</replaceable></term>
     <listitem>
      <para>
-      The name of the existing operator family to add this operator class to.
-      If not specified, a family named the same as the operator class is
-      used (creating it, if it doesn't already exist).
+      해당 연산자 클래스가 포함될 연산자 가족 이름.
+      지정하지 않으면, 연산자 클래스와 같은 이름의 연산자 가족이 사용되며,
+      그 연산자 가족이 없으면 새로 만든다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">strategy_number</replaceable></term>
+    <term><replaceable class="parameter">전략번호</replaceable></term>
     <listitem>
      <para>
-      The index method's strategy number for an operator
-      associated with the operator class.
+      해당 연산자 클래스와 관련된 연산자의 색인 방법 전략 번호.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">operator_name</replaceable></term>
+    <term><replaceable class="parameter">연산자이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an operator associated
-      with the operator class.
+      연산자 클래스 소속 연산자 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">op_type</replaceable></term>
+    <term><replaceable class="parameter">연산자자료형</replaceable></term>
     <listitem>
      <para>
-      In an <literal>OPERATOR</> clause,
-      the operand data type(s) of the operator, or <literal>NONE</> to
-      signify a left-unary or right-unary operator.  The operand data
-      types can be omitted in the normal case where they are the same
-      as the operator class's data type.
+      <literal>OPERATOR</> 옵션에서는
+      해당 연산자가 사용하는 자료형으로, 단항 연산자인 경우, 
+      필요 없는 부분에는 <literal>NONE</>.  일반적으로 해당 연산자가
+      연산자 클래스의 대상 자료형과 같은 경우라면 이 연산자 자료형은 생략한다.
      </para>
 
      <para>
-      In a <literal>FUNCTION</> clause, the operand data type(s) the
-      function is intended to support, if different from
-      the input data type(s) of the function (for B-tree comparison functions
-      and hash functions)
-      or the class's data type (for B-tree sort support functions and all
-      functions in GiST, SP-GiST, GIN and BRIN operator classes).  These defaults
-      are correct, and so <replaceable
-      class="parameter">op_type</replaceable> need not be specified in
-      <literal>FUNCTION</> clauses, except for the case of a B-tree sort
-      support function that is meant to support cross-data-type comparisons.
+      <literal>FUNCTION</> 옵션에서는 
+      해당 함수가 사용하는 자료형이다.  
+      보통, B-tree 비교 함수나, 해시 함수이 경우는 해당 연산자 클래스
+      대상 자료형과 다르게 사용된다. 이 때 지정한다.
+      B-tree 정렬 지원 함수와 GiST, SP-GiST, GIN, BRIN 연산자 클래스의
+      모든 함수는 연산자 클래스 대상 자료형을 사용한다.
+      이 경우는 이 이 연산자 자료형을 지정할 필요는 없다.
+      단, B-tree 정렬 지원 함수인데, 교차 자료형 비교인 경우는 
+      이 연산자 자료형을 지정할 필요가 있다.
      </para>
     </listitem>
    </varlistentry>
@@ -185,74 +179,74 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
     <term><replaceable class="parameter">sort_family_name</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of an existing <literal>btree</literal> operator
-      family that describes the sort ordering associated with an ordering
-      operator.
+      정렬 연산과 관련된 작업을 지정한 이미 있는 <literal>btree</literal>
+      연산자 가족 이름(스키마 이름 포함).
      </para>
 
      <para>
-      If neither <literal>FOR SEARCH</> nor <literal>FOR ORDER BY</> is
-      specified, <literal>FOR SEARCH</> is the default.
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term><replaceable class="parameter">support_number</replaceable></term>
-    <listitem>
-     <para>
-      The index method's support procedure number for a
-      function associated with the operator class.
+      <literal>FOR SEARCH</>, <literal>FOR ORDER BY</> 둘 다 사용하지 않으면,
+      <literal>FOR SEARCH</> 옵션으로 간주한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">function_name</replaceable></term>
+    <term><replaceable class="parameter">지원번호</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of a function that is an
-      index method support procedure for the operator class.
+      해당 연산자 클래스와 관련된 색인 방법의 해당 함수에 대한 
+      지원 프로시져 번호.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">argument_type</replaceable></term>
+    <term><replaceable class="parameter">함수이름</replaceable></term>
     <listitem>
      <para>
-      The parameter data type(s) of the function.
+      해당 연산자 클래스용 색인 방법 지원 프로시져로 쓸 함수 이름
+      (스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">storage_type</replaceable></term>
+    <term><replaceable class="parameter">인자자료형</replaceable></term>
     <listitem>
      <para>
-      The data type actually stored in the index.  Normally this is
-      the same as the column data type, but some index methods
-      (currently GiST, GIN and BRIN) allow it to be different.  The
-      <literal>STORAGE</> clause must be omitted unless the index
-      method allows a different type to be used.
-      If the column <replaceable class="parameter">data_type</> is specified
-      as <type>anyarray</>, the <replaceable class="parameter">storage_type</>
-      can be declared as <type>anyelement</> to indicate that the index
-      entries are members of the element type belonging to the actual array
-      type that each particular index is created for.
+      해당 함수의 입력 인자 자료형.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><replaceable class="parameter">저장자료형</replaceable></term>
+    <listitem>
+     <para>
+      인덱스에 저장될 실제 자료형.  일반적으로
+      해당 연산자 클래스 대상 자료형과 같지만,
+      몇 색인 방법(현재, GiST, GIN, BRIN)은 다른 자료형도 허용한다.
+      이렇게 연산자 클래스 대상 자료형과 같은 경우는
+      <literal>STORAGE</> 옵션을 사용하지 말아야하며, 다른 경우만
+      지정해야 한다.
+      연산자 클래스의 <replaceable class="parameter">자료형</>으로
+      <type>anyarray</> 형을 지정했다면, 
+      <replaceable class="parameter">저장자료형</>으로
+      <type>anyelement</> 형을 지정해서, 그 배열의 한 요소임을 지정할 
+      수 있다.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
 
   <para>
-   The <literal>OPERATOR</>, <literal>FUNCTION</>, and <literal>STORAGE</>
-   clauses can appear in any order.
+   <literal>OPERATOR</>, <literal>FUNCTION</>, 및 <literal>STORAGE</>
+   절은 그 순서에 상관 없이 사용할 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
    Because the index machinery does not check access permissions on functions
@@ -278,12 +272,12 @@ CREATE OPERATOR CLASS <replaceable class="parameter">name</replaceable> [ DEFAUL
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   The following example command defines a GiST index operator class
-   for the data type <literal>_int4</> (array of <type>int4</type>).  See the
-   <xref linkend="intarray"> module for the complete example.
+   다음은 <literal>_int4</> (<type>int4</type> 배열) 자료형을 위한
+   GiST 인덱스 연산자 클래스를 정의한 예제다.  이 부분의 전체 예제는
+   <xref linkend="intarray"> 확장 모듈에서 다룬다.
   </para>
 
 <programlisting>
@@ -305,18 +299,17 @@ CREATE OPERATOR CLASS gist__int_ops
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE OPERATOR CLASS</command> is a
-   <productname>PostgreSQL</productname> extension.  There is no
-   <command>CREATE OPERATOR CLASS</command> statement in the SQL
-   standard.
+   <command>CREATE OPERATOR CLASS</command> 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다.  표준
+   SQL에는 <command>CREATE OPERATOR CLASS</command> 구문이 없다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alteropclass"></member>
