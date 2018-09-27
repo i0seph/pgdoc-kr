@@ -16,114 +16,113 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE LANGUAGE</refname>
-  <refpurpose>define a new procedural language</refpurpose>
+  <refpurpose>새 프로시져 언어 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ OR REPLACE ] [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">name</replaceable>
-CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">name</replaceable>
-    HANDLER <replaceable class="parameter">call_handler</replaceable> [ INLINE <replaceable class="parameter">inline_handler</replaceable> ] [ VALIDATOR <replaceable>valfunction</replaceable> ]
+CREATE [ OR REPLACE ] [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">이름</replaceable>
+CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">이름</replaceable>
+    HANDLER <replaceable class="parameter">호출핸들러</replaceable> [ INLINE <replaceable class="parameter">인라인핸들러</replaceable> ] [ VALIDATOR <replaceable>유효성검사함수</replaceable> ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1 id="sql-createlanguage-description">
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE LANGUAGE</command> registers a new
-   procedural language with a <productname>PostgreSQL</productname>
-   database.  Subsequently, functions and trigger procedures can be
-   defined in this new language.
+   <command>CREATE LANGUAGE</command> 명령은
+   <productname>PostgreSQL</productname> 내 함수를 만들거나, 
+   <command>DO</command> 명령을 사용할 때 지정하는 프로시져
+   언어를 만든다. - 새로 만드는 개념보다는 조합해서 그 언어를 사용할 수 
+   있도록 등록한다 - 옮긴이.
   </para>
 
   <note>
    <para>
-    As of <productname>PostgreSQL</productname> 9.1, most procedural
-    languages have been made into <quote>extensions</>, and should
-    therefore be installed with <xref linkend="sql-createextension">
-    not <command>CREATE LANGUAGE</command>.  Direct use of
-    <command>CREATE LANGUAGE</command> should now be confined to
-    extension installation scripts.  If you have a <quote>bare</>
-    language in your database, perhaps as a result of an upgrade,
-    you can convert it to an extension using
+    <productname>PostgreSQL</productname> 9.1 이후부터 
+    대부분의 프로시져 언어는 <quote>확장 모듈</>로 관리되기 
+    때문에, <command>CREATE LANGUAGE</command> 명령을 직접 
+    사용하기 보다는 <xref linkend="sql-createextension"> 명령으로
+    등록한다.  이렇기 때문에, <command>CREATE LANGUAGE</command>
+    명령은 그 확장 모듈 설치 스크립트 안에서만 사용되어야 한다.
+    한편, 이미 확장 모듈로 설치하지 않은 언어가 있다면,
     <literal>CREATE EXTENSION <replaceable>langname</> FROM
-    unpackaged</literal>.
+    unpackaged</literal> 명령으로 확장 모듈로 변환해서 
+    사용하는 것이 향후 업그레이드를 위해서 좋다.
    </para>
   </note>
 
   <para>
-   <command>CREATE LANGUAGE</command> effectively associates the
-   language name with handler function(s) that are responsible for executing
-   functions written in the language.  Refer to <xref linkend="plhandler">
-   for more information about language handlers.
+   <command>CREATE LANGUAGE</command> 명령의 내부 작업은
+   해당 언어로 작성된 함수 본문을 처리하는 핸들러 함수와 
+   해당 언어 이름의 연결 작업이다.  언어 핸들러에 대한
+   자세한 설명은 <xref linkend="plhandler">에서 다룬다.
   </para>
 
   <para>
-   There are two forms of the <command>CREATE LANGUAGE</command> command.
-   In the first form, the user supplies just the name of the desired
-   language, and the <productname>PostgreSQL</productname> server consults
-   the <link linkend="catalog-pg-pltemplate"><structname>pg_pltemplate</structname></link>
-   system catalog to determine the correct parameters.  In the second form,
-   the user supplies the language parameters along with the language name.
-   The second form can be used to create a language that is not defined in
-   <structname>pg_pltemplate</>, but this approach is considered obsolescent.
+   사용법은 두 가지 방식이 있는데, 
+   첫번째 문법은 <link linkend="catalog-pg-pltemplate"><structname>pg_pltemplate</structname></link> 시스템 카탈로그에 미리 정의된 언어를 등록할 때
+   사용한다.  그냥 언어 이름만 지정하면 된다. 두번째 문법은
+   <structname>pg_pltemplate</> 시스템 카탈로그에 정의되지 않은
+   언어를 등록할 때 쓰는 방법인데, 예전 방식이다.
   </para>
 
   <para>
-   When the server finds an entry in the <structname>pg_pltemplate</> catalog
-   for the given language name, it will use the catalog data even if the
-   command includes language parameters.  This behavior simplifies loading of
-   old dump files, which are likely to contain out-of-date information
-   about language support functions.
+   이 명령에서 해당 언어 관련 여러 옵션을 함께 사용했다 하더라도, 
+   <structname>pg_pltemplate</> 카탈로그에 등록되어 있는 언어라면, 
+   카탈로그 정보를 이용해서 언어를 등록한다.
+   이렇게 하는 이유는 오래된 버전의 덤프 파일을 새 버전에서 복원할 때
+   보다 안전하게 복원하기 위함이다.
   </para>
 
   <para>
-   Ordinarily, the user must have the
-   <productname>PostgreSQL</productname> superuser privilege to
-   register a new language.  However, the owner of a database can register
-   a new language within that database if the language is listed in
-   the <structname>pg_pltemplate</structname> catalog and is marked
-   as allowed to be created by database owners (<structfield>tmpldbacreate</>
-   is true).  The default is that trusted languages can be created
-   by database owners, but this can be adjusted by superusers by modifying
-   the contents of <structname>pg_pltemplate</structname>.
-   The creator of a language becomes its owner and can later
-   drop it, rename it, or assign it to a new owner.
+   통상, 새 언어 등록은 <productname>PostgreSQL</productname> 슈퍼유저
+   권한이 있어야 가능하다.  한편, 
+   <structname>pg_pltemplate</structname> 카탈로그에서
+   <structfield>tmpldbacreate</> 칼럼값이 true인 언어에 대해서는
+   데이터베이스 소유주도 자신의 데이터베이스 내에서는 그 언어를
+   등록할 수 있다.
+   데이터베이스 소유주가 등록할 수 있는 언어는 신뢰할 수 있는
+   (<structfield>tmpltrusted</> 칼럼값이 true인) 것이여야 한다.
+   물론 슈퍼유저는 <structname>pg_pltemplate</structname> 내용을 
+   바꿀 수 있다.
+   해당 언어를 등록한 사용자가 그 언어의 소유주가 되며, 
+   삭제, 이름 변경, 소유주 변경 작업을 할 수 있는 권한을 가진다.
   </para>
 
   <para>
-   <command>CREATE OR REPLACE LANGUAGE</command> will either create a
-   new language, or replace an existing definition.  If the language
-   already exists, its parameters are updated according to the values
-   specified or taken from <structname>pg_pltemplate</structname>,
-   but the language's ownership and permissions settings do not change,
-   and any existing functions written in the language are assumed to still
-   be valid.  In addition to the normal privilege requirements for creating
-   a language, the user must be superuser or owner of the existing language.
-   The <literal>REPLACE</> case is mainly meant to be used to
-   ensure that the language exists.  If the language has a
-   <structname>pg_pltemplate</structname> entry then <literal>REPLACE</>
-   will not actually change anything about an existing definition, except in
-   the unusual case where the <structname>pg_pltemplate</structname> entry
-   has been modified since the language was created.
+   <command>CREATE OR REPLACE LANGUAGE</command> 구문은
+   없으면 새 언어로 등록하고, 있으면, 그 정의를 바꾼다.
+   이때 이미 있어 정의가 변경 될 때는 <structname>pg_pltemplate</structname>
+   내에 정의된 정보로 바꾼다.
+   이때, 소유주, 접근 권한은 바뀌지 않는다.
+   기존에 있는 그 언어용 함수들은 여전히 유효한 것으로 간주한다.
+   추가로 <literal>REPLACE</>인 경우에도, 그 접근권한은 새로 등록할 때와 같다.
+   슈퍼유저이거나, 해당 언어의 소유주여야 한다.
+   <literal>REPLACE</> 구문은 주로 해당 언어가 이미 있어도 
+   이 작업을 오류로 처리하지 않게 하려고 사용한다.
+   <structname>pg_pltemplate</structname> 안에 등록된 언어라면,
+   특별한 경우를 제외하고는  <literal>REPLACE</> 작업으로
+   변경되는 것은 없다. 물론 앞에서 설명한 대로 기존 언어가
+   <structname>pg_pltemplate</structname>에서 정의된 정보와 다른 경우는
+   등록 정보가 변경 된다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createlanguage-parameters">
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <variablelist>
     <varlistentry>
      <term><literal>TRUSTED</literal></term>
 
      <listitem>
-      <para><literal>TRUSTED</literal> specifies that the language does
-       not grant access to data that the user would not otherwise
-       have.  If this key word is omitted
-       when registering the language, only users with the
-       <productname>PostgreSQL</productname> superuser privilege can
-       use this language to create new functions.
+      <para><literal>TRUSTED</literal> 옵션을 사용하면,
+       그 사용자가 사용하면 안될 자료에 접근을 금지한다.
+       이 키워드가 빠지면,
+       <productname>PostgreSQL</productname> 슈퍼유저만
+       이 언어를 이용해서 새 함수를 만들 수 있다.
       </para>
      </listitem>
     </varlistentry>
@@ -133,164 +132,156 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
 
      <listitem>
       <para>
-       This is a noise word.
+       호환성을 위해 있는 키워드. 무시함.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">name</replaceable></term>
+     <term><replaceable class="parameter">이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of the new procedural language.
-       The name must be unique among the languages in the database.
+       새 프로시져 언어 이름.
+       이 이름은 해당 데이터베이스 내에 유일해야 한다.
       </para>
 
       <para>
-       For backward compatibility, the name can be enclosed by single
-       quotes.
+       하위 호환성을 위해, 이 이름은 작은 따옴표로 둘러 쌀 수도 있다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><literal>HANDLER</literal> <replaceable class="parameter">call_handler</replaceable></term>
+     <term><literal>HANDLER</literal> <replaceable class="parameter">호출핸들러</replaceable></term>
 
      <listitem>
-      <para><replaceable class="parameter">call_handler</replaceable> is
-       the name of a previously registered function that will be
-       called to execute the procedural language's functions.  The call
-       handler for a procedural language must be written in a compiled
-       language such as C with version 1 call convention and
-       registered with <productname>PostgreSQL</productname> as a
-       function taking no arguments and returning the
-       <type>language_handler</type> type, a placeholder type that is
-       simply used to identify the function as a call handler.
+      <para><replaceable class="parameter">호출핸들러</replaceable>는
+       이 언어를 사용하는 함수에서 그 함수 본문을 처리할 함수 이름이다.
+       이 호출 핸들러 함수는 
+       C 언어로 작성되며, <productname>PostgreSQL</productname> 
+       C 언어 함수 버전 1 규칙으로 만들어야 하며, 
+       입력 인자는 없고, 반환 자료형은 <type>language_handler</type>
+       형이다.  이 자료형은 
+       이 함수가 호출 핸들러로 사용됨을 식별하기 위한 자료형이다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><literal>INLINE</literal> <replaceable class="parameter">inline_handler</replaceable></term>
+     <term><literal>INLINE</literal> <replaceable class="parameter">인라인핸들러</replaceable></term>
 
      <listitem>
-      <para><replaceable class="parameter">inline_handler</replaceable> is the
-       name of a previously registered function that will be called
-       to execute an anonymous code block
-       (<xref linkend="sql-do"> command)
-       in this language.
-       If no <replaceable class="parameter">inline_handler</replaceable>
-       function is specified, the language does not support anonymous code
-       blocks.
-       The handler function must take one argument of
-       type <type>internal</type>, which will be the <command>DO</> command's
-       internal representation, and it will typically return
-       <type>void</>.  The return value of the handler is ignored.
+      <para><replaceable class="parameter">인라인핸들러</replaceable>는
+       <xref linkend="sql-do"> 명령에서 사용하는 코드 블럭을 처리할 때
+       사용하는 함수 이름이다.
+       <replaceable class="parameter">인라인핸들러</replaceable> 함수를
+       지정하지 않으면, <xref linkend="sql-do"> 명령에서 해당 언어를
+       사용할 수 없게 된다.
+       이 함수의 입력 인자는 <type>internal</type> 형 하나를 사용하며,
+       반환 값은 <type>void</>다.  핸들러의 반환값은 무시된다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><literal>VALIDATOR</literal> <replaceable class="parameter">valfunction</replaceable></term>
+     <term><literal>VALIDATOR</literal> <replaceable class="parameter">유효성검사함수</replaceable></term>
 
      <listitem>
-      <para><replaceable class="parameter">valfunction</replaceable> is the
-       name of a previously registered function that will be called
-       when a new function in the language is created, to validate the
-       new function.
-       If no
-       validator function is specified, then a new function will not
-       be checked when it is created.
-       The validator function must take one argument of
-       type <type>oid</type>, which will be the OID of the
-       to-be-created function, and will typically return <type>void</>.
+      <para><replaceable class="parameter">유효성검사함수</replaceable>는
+       한 함수가 만들어질 때, 함수 본문의 구문 검사를 하는 함수 이름이다.
+       이 함수를 지정하지 않으면, 새 함수를 만들 때, 유효성 검사를 
+       하지 않는다.
+       이 유효성 검사 함수의 입력 인자는 만들어지는 함수의 
+       OID를 넘겨 받는  <type>oid</type> 형 인자 하나이고, 
+       반환은 <type>void</> 다.
       </para>
 
       <para>
-       A validator function would typically inspect the function body
-       for syntactical correctness, but it can also look at other
-       properties of the function, for example if the language cannot
-       handle certain argument types.  To signal an error, the
-       validator function should use the <function>ereport()</function>
-       function.  The return value of the function is ignored.
+       이 유효성 검사 함수는 함수 본문 내 문법 검사를 주로 담당하지만,
+       그 외 함수 여러 속성들도 함께 검사하기도 한다.
+       예를 들어, 해당 언어가 처리할 수 없는 자료형이 함수의 입력 인자로
+       사용되는 것을 막는데도 사용된다.  유효성 검사의
+       오류 처리는 이 함수 내 <function>ereport()</function> 함수 
+       호출로 한다.  이 함수 반환 값은 무시된다.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
 
   <para>
-   The <literal>TRUSTED</> option and the support function name(s) are
-   ignored if the server has an entry for the specified language
-   name in <structname>pg_pltemplate</>.
+   <literal>TRUSTED</> 옵션과 지원 함수들은 
+   그 언어가 <structname>pg_pltemplate</> 내에 미리 정의된 것이라면, 
+   무시된다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createlanguage-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Use <xref linkend="sql-droplanguage"> to drop procedural languages.
+   프로시져 언어를 지울 때는 <xref linkend="sql-droplanguage"> 명령을 
+   사용한다.
   </para>
 
   <para>
-   The system catalog <classname>pg_language</classname> (see <xref
-   linkend="catalog-pg-language">) records information about the
-   currently installed languages.  Also, the <application>psql</application>
-   command <command>\dL</command> lists the installed languages.
+   현재 설치된 언어의 등록 정보는 
+   <classname>pg_language</classname> 시스템 카탈로그에 보관된다(<xref
+   linkend="catalog-pg-language"> 참조).
+   또한 <application>psql</application>에서
+   <command>\dL</command> 명령어로 설치된 언어를 살펴볼 수도 있다.
   </para>
 
   <para>
-   To create functions in a procedural language, a user must have the
-   <literal>USAGE</literal> privilege for the language.  By default,
-   <literal>USAGE</> is granted to <literal>PUBLIC</> (i.e., everyone)
-   for trusted languages.  This can be revoked if desired.
+   해당 언어용 함수를 만들 때는 사용자가 그 언어에 대해
+   <literal>USAGE</literal> 권한이 있어야 한다.
+   신뢰할 수 있는 trusted 언어는 기본적으로
+   <literal>USAGE</> 권한이 <literal>PUBLIC</>(모든 사용자)에게 
+   부여된다.
+   이 권한은 필요 하다면 도로 거둘 revoke 수 있다.
   </para>
 
   <para>
-   Procedural languages are local to individual databases.
-   However, a language can be installed into the <literal>template1</literal>
-   database, which will cause it to be available automatically in
-   all subsequently-created databases.
+   프로시져 언어는 각 데이터베이스 별로 설치해서 사용한다.
+   자주 쓰는 언어라면, <literal>template1</literal> 데이터베이스에 
+   미리 설치해서, 새로운 데이터베이스를 만들 때 그 언어를 
+   설치해야하는 번거로움을 줄일 수 있다.
   </para>
 
   <para>
-   The call handler function, the inline handler function (if any),
-   and the validator function (if any)
-   must already exist if the server does not have an entry for the language
-   in <structname>pg_pltemplate</>.  But when there is an entry,
-   the functions need not already exist;
-   they will be automatically defined if not present in the database.
-   (This might result in <command>CREATE LANGUAGE</> failing, if the
-   shared library that implements the language is not available in
-   the installation.)
+   <structname>pg_pltemplate</> 카탈로그에 미리 정의된 언어가 아닌 경우,
+   그 언어를 등록할 때 필요한 호출 핸들러 함수, 인라인 핸들러 함수(필요하다면),
+   유효성 검사 함수(필요하다면)는 먼저 그 데이터베이스에 있어야 한다.
+   반면, <structname>pg_pltemplate</> 카탈로그에 정의된 언어를 
+   등록(설치)하는 경우는 그 관련 함수들을 따로 만들어(설치) 둘 필요는 없다.
+   해당 데이터베이스에 없으면 자동으로 만든다.
+   (그 언어용 공유 라이브러리를 사용할 수 없는 경우, - 설치가 잘못된 경우
+   <command>CREATE LANGUAGE</> 명령은 실패한다.) 
   </para>
 
   <para>
-   In <productname>PostgreSQL</productname> versions before 7.3, it was
-   necessary to declare handler functions as returning the placeholder
-   type <type>opaque</>, rather than <type>language_handler</>.
-   To support loading
-   of old dump files, <command>CREATE LANGUAGE</> will accept a function
-   declared as returning <type>opaque</>, but it will issue a notice and
-   change the function's declared return type to <type>language_handler</>.
+   <productname>PostgreSQL</productname> 7.3 이전 버전에서는
+   핸들러 함수의 반환 자료형이 <type>language_handler</>가 아니라, 
+   <type>opaque</>였다.
+   오래된 버전의 덤프 파일의 호환성을 위해서, 
+   이 경우도 허용하기는 하지만, <type>language_handler</>
+   형으로 바꾸라는 알림 메시지를 보여준다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createlanguage-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   The preferred way of creating any of the standard procedural languages
-   is just:
+   표준 프로시져 언어인 경우는 다음과 같이 간단하게 만들 수 있음:
 <programlisting>
 CREATE LANGUAGE plperl;
 </programlisting>
   </para>
 
   <para>
-   For a language not known in the <structname>pg_pltemplate</> catalog, a
-   sequence such as this is needed:
+   <structname>pg_pltemplate</> 카탈로그에 없는 언어인 경우는 다음과
+   같은 방식으로 등록한다:
 <programlisting>
 CREATE FUNCTION plsample_call_handler() RETURNS language_handler
     AS '$libdir/plsample'
@@ -301,16 +292,16 @@ CREATE LANGUAGE plsample
  </refsect1>
 
  <refsect1 id="sql-createlanguage-compat">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE LANGUAGE</command> is a
-   <productname>PostgreSQL</productname> extension.
+   <command>CREATE LANGUAGE</command> 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterlanguage"></member>
