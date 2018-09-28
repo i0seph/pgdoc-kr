@@ -16,14 +16,14 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE ROLE</refname>
-  <refpurpose>define a new database role</refpurpose>
+  <refpurpose>새 데이터베이스 롤 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE ROLE <replaceable class="PARAMETER">name</replaceable> [ [ WITH ] <replaceable class="PARAMETER">option</replaceable> [ ... ] ]
+CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <replaceable class="PARAMETER">옵션</replaceable> [ ... ] ]
 
-<phrase>where <replaceable class="PARAMETER">option</replaceable> can be:</phrase>
+<phrase><replaceable class="PARAMETER">옵션</replaceable> 자리에는:</phrase>
 
       SUPERUSER | NOSUPERUSER
     | CREATEDB | NOCREATEDB
@@ -32,48 +32,55 @@ CREATE ROLE <replaceable class="PARAMETER">name</replaceable> [ [ WITH ] <replac
     | LOGIN | NOLOGIN
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
-    | CONNECTION LIMIT <replaceable class="PARAMETER">connlimit</replaceable>
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">password</replaceable>'
-    | VALID UNTIL '<replaceable class="PARAMETER">timestamp</replaceable>'
-    | IN ROLE <replaceable class="PARAMETER">role_name</replaceable> [, ...]
-    | IN GROUP <replaceable class="PARAMETER">role_name</replaceable> [, ...]
-    | ROLE <replaceable class="PARAMETER">role_name</replaceable> [, ...]
-    | ADMIN <replaceable class="PARAMETER">role_name</replaceable> [, ...]
-    | USER <replaceable class="PARAMETER">role_name</replaceable> [, ...]
+    | CONNECTION LIMIT <replaceable class="PARAMETER">접속제한</replaceable>
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
+    | VALID UNTIL '<replaceable class="PARAMETER">타임스탬프</replaceable>'
+    | IN ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
+    | IN GROUP <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
+    | ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
+    | ADMIN <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
+    | USER <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
     | SYSID <replaceable class="PARAMETER">uid</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE ROLE</command> adds a new role to a
-   <productname>PostgreSQL</productname> database cluster.  A role is
-   an entity that can own database objects and have database privileges;
-   a role can be considered a <quote>user</>, a <quote>group</>, or both
-   depending on how it is used.  Refer to
-   <xref linkend="user-manag"> and <xref
-   linkend="client-authentication"> for information about managing
-   users and authentication.  You must have <literal>CREATEROLE</>
-   privilege or be a database superuser to use this command.
+   <command>CREATE ROLE</command> 명령은
+   <productname>PostgreSQL</productname> 데이터베이스 클러스터에
+   새 롤을 추가한다.  하나의 롤은
+   데이터베이스 개체들을 소유할 수 있고, 
+   데이터베이스 권한을 가질 수 있다.
+   롤은 그 사용 용도에 따라, <quote>사용자</>도 되고, 
+   <quote>그룹</>도 되고, 둘 다도 될 수 있다.
+   롤 관리는 <xref linkend="user-manag">에서,
+   롤 인증은 <xref linkend="client-authentication">에서 자세히
+   다룬다.
+   이 명령을 실행하려면, 사용자가 <literal>CREATEROLE</> 권한이 있거나
+   슈퍼유저여야 한다.
   </para>
 
   <para>
-   Note that roles are defined at the database cluster
-   level, and so are valid in all databases in the cluster.
+   롤은 데이터베이스 클러스터 전역 개체다.
+   그래서, 그 클러스터 내 모든 데이터베이스에서 사용할 수 있다.
+  </para>
+
+  <para>
+   롤을 <quote>역할</>로 옮길까 고민하다가 외래어 차용으로 결정했다. - 옮긴이
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
     <variablelist>
      <varlistentry>
-      <term><replaceable class="parameter">name</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
-        The name of the new role.
+        새로 만들 롤 이름.
        </para>
       </listitem>
      </varlistentry>
@@ -317,8 +324,8 @@ CREATE ROLE <replaceable class="PARAMETER">name</replaceable> [ [ WITH ] <replac
       <term><literal>SYSID</> <replaceable class="parameter">uid</replaceable></term>
       <listitem>
        <para>
-        The <literal>SYSID</literal> clause is ignored, but is accepted
-        for backwards compatibility.
+        <literal>SYSID</literal> 옵션은 무시된다. 하위 버전 호환성 때문에 있는 
+        옵션이다.
        </para>
       </listitem>
      </varlistentry>
@@ -326,7 +333,7 @@ CREATE ROLE <replaceable class="PARAMETER">name</replaceable> [ [ WITH ] <replac
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
    Use <xref linkend="SQL-ALTERROLE"> to
@@ -411,28 +418,26 @@ CREATE ROLE <replaceable class="PARAMETER">name</replaceable> [ [ WITH ] <replac
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create a role that can log in, but don't give it a password:
+   비밀번호 없는 로그인 가능한 롤:
 <programlisting>
 CREATE ROLE jonathan LOGIN;
 </programlisting>
   </para>
 
   <para>
-   Create a role with a password:
+   비밀번호 있는 로그인 가능한 롤:
 <programlisting>
 CREATE USER davide WITH PASSWORD 'jw8s0F4';
 </programlisting>
-   (<command>CREATE USER</> is the same as <command>CREATE ROLE</> except
-   that it implies <literal>LOGIN</>.)
+   (<command>CREATE USER</> 명령은 <command>CREATE ROLE</> 명령에
+   자동으로 <literal>LOGIN</> 옵션을 사용하는 것과 같다.)
   </para>
 
   <para>
-   Create a role with a password that is valid until the end of 2004.
-   After one second has ticked in 2005, the password is no longer
-   valid.
+   비밀번호가 2005-01-01 00:00:00 까지만 유효한 로그인 가능한 롤:
 
 <programlisting>
 CREATE ROLE miriam WITH LOGIN PASSWORD 'jw8s0F4' VALID UNTIL '2005-01-01';
@@ -440,44 +445,42 @@ CREATE ROLE miriam WITH LOGIN PASSWORD 'jw8s0F4' VALID UNTIL '2005-01-01';
   </para>
 
   <para>
-   Create a role that can create databases and manage roles:
+   데이터베이스 만들기 권한과 롤 관리 권한이 있는 롤:
 <programlisting>
 CREATE ROLE admin WITH CREATEDB CREATEROLE;
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The <command>CREATE ROLE</command> statement is in the SQL standard,
-   but the standard only requires the syntax
+   <command>CREATE ROLE</command> 구문은 표준 SQL 구문이다.
+   하지만 표준 구문에서는 다음 구문만 정의한다.
 <synopsis>
-CREATE ROLE <replaceable class="PARAMETER">name</> [ WITH ADMIN <replaceable class="PARAMETER">role_name</> ]
+CREATE ROLE <replaceable class="PARAMETER">이름</> [ WITH ADMIN <replaceable class="PARAMETER">롤이름</> ]
 </synopsis>
-   Multiple initial administrators, and all the other options of
-   <command>CREATE ROLE</command>, are
-   <productname>PostgreSQL</productname> extensions.
+   다중 초기 관리자와 여러 옵션들은 <productname>PostgreSQL</productname>
+   확장 기능이다.
   </para>
 
   <para>
-   The SQL standard defines the concepts of users and roles, but it
-   regards them as distinct concepts and leaves all commands defining
-   users to be specified by each database implementation.  In
-   <productname>PostgreSQL</productname> we have chosen to unify
-   users and roles into a single kind of entity.  Roles therefore
-   have many more optional attributes than they do in the standard.
+   SQL 표준에서는 사용자와 롤 개념을 다르게 정의하고 있으며,
+   사용자를 정의하는 모든 명령은 각 데이터베이스에서 
+   알아서 구현하도록 맡기고 있다.  
+   <productname>PostgreSQL</productname>에서는 
+   사용자와 롤을 같은 개체로 통합했다.  그래서, 
+   롤 속성으로 표준보다 다양한 선택 옵션들이 있다.
   </para>
 
   <para>
-   The behavior specified by the SQL standard is most closely approximated
-   by giving users the <literal>NOINHERIT</> attribute, while roles are
-   given the <literal>INHERIT</> attribute.
+   SQL 표준에서는, <literal>NOINHERIT</> 속성이면 사용자,
+   <literal>INHERIT</> 속성이면 롤로 정의하고 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-set-role"></member>
