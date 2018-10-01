@@ -16,153 +16,155 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE RULE</refname>
-  <refpurpose>define a new rewrite rule</refpurpose>
+  <refpurpose>새 룰 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ OR REPLACE ] RULE <replaceable class="parameter">name</replaceable> AS ON <replaceable class="parameter">event</replaceable>
-    TO <replaceable class="parameter">table_name</replaceable> [ WHERE <replaceable class="parameter">condition</replaceable> ]
-    DO [ ALSO | INSTEAD ] { NOTHING | <replaceable class="parameter">command</replaceable> | ( <replaceable class="parameter">command</replaceable> ; <replaceable class="parameter">command</replaceable> ... ) }
+CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> AS ON <replaceable class="parameter">이벤트</replaceable>
+    TO <replaceable class="parameter">테이블이름</replaceable> [ WHERE <replaceable class="parameter">조건</replaceable> ]
+    DO [ ALSO | INSTEAD ] { NOTHING | <replaceable class="parameter">명령</replaceable> | ( <replaceable class="parameter">명령</replaceable> ; <replaceable class="parameter">명령</replaceable> ... ) }
 
-<phrase>where <replaceable class="parameter">event</replaceable> can be one of:</phrase>
+<phrase><replaceable class="parameter">이벤트</replaceable> 자리에는:</phrase>
 
     SELECT | INSERT | UPDATE | DELETE
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE RULE</command> defines a new rule applying to a specified
-   table or view.
-   <command>CREATE OR REPLACE RULE</command> will either create a
-   new rule, or replace an existing rule of the same name for the same
-   table.
+   <command>CREATE RULE</command> 명령은 해당 테이블이나 뷰에 새
+   룰을 추가한다.
+   <command>CREATE OR REPLACE RULE</command> 명령은 같은 이름의
+   해당 룰이 있으면 바꾸고 그렇지 않으면 새로 추가한다.
   </para>
 
   <para>
-   The <productname>PostgreSQL</productname> rule system allows one to
-   define an alternative action to be performed on insertions, updates,
-   or deletions in database tables.  Roughly speaking, a rule causes
-   additional commands to be executed when a given command on a given
-   table is executed.  Alternatively, an <literal>INSTEAD</literal>
-   rule can replace a given command by another, or cause a command
-   not to be executed at all.  Rules are used to implement SQL
-   views as well.  It is important to realize that a rule is really
-   a command transformation mechanism, or command macro.  The
-   transformation happens before the execution of the command starts.
-   If you actually want an operation that fires independently for each
-   physical row, you probably want to use a trigger, not a rule.
-   More information about the rules system is in <xref linkend="rules">.
+   <productname>PostgreSQL</productname> 룰 시스템은 
+   데이터베이스 내 테이블 대상으로 수행되는
+   자료 추가, 변경, 삭제 작업에 대해서 대체 작업을 수행할 수 있게 한다.
+   간단히 이야기하면, 이런 자료 조작 작업이 있을 때, 
+   추가로 다른 작업을 함께 할 수 있게 한다.  또한 다른 한편으로
+   <literal>INSTEAD</literal> 옵션을 사용한다면, 아에 그 원래 작업을 
+   진행하지 않고 지정한 작업을 진행하거나, 아무런 작업도 안하게 
+   할 수도 있다.  룰은 SQL 뷰를 구현하는 도구로 사용된다.
+   룰은 일종의 명령 변환 메카니즘이거나, 명령 메크로로 이해해야 한다.
+   이 변환은 해당 명령이 실행 되기 이전에 일어남을 기억해야 한다.
+   작업 대상 각 개별 로우를 대상으로 추가 작업이 필요한 경우는
+   룰 대신에 트리거를 쓰는 것이 더 좋다.
+   룰에 대한 더 많은 정보는 <xref linkend="rules">에 있다.
   </para>
 
   <para>
-   Presently, <literal>ON SELECT</literal> rules must be unconditional
-   <literal>INSTEAD</literal> rules and must have actions that consist
-   of a single <command>SELECT</command> command.  Thus, an
-   <literal>ON SELECT</literal> rule effectively turns the table into
-   a view, whose visible contents are the rows returned by the rule's
-   <command>SELECT</command> command rather than whatever had been
-   stored in the table (if anything).  It is considered better style
-   to write a <command>CREATE VIEW</command> command than to create a
-   real table and define an <literal>ON SELECT</literal> rule for it.
+   현재, <literal>ON SELECT</literal> 룰은
+   <literal>INSTEAD</literal> 룰이어야 하며, 대신 실행될 명령은
+   단일 <command>SELECT</command> 명령이어야 한다. 
+   즉, <literal>ON SELECT</literal> 룰은 
+   테이블을 뷰로 바꾸는 역할을 한다.  
+   이 뷰는 테이블에 저장된 자료를 보여주는 것이 아니라, 
+   이 룰에서 지정한 명령의 결과를 보여주는 것이 된다.
+   하지만, <literal>ON SELECT</literal> 룰을 만들기보다 
+   이미 <command>CREATE VIEW</command> 명령을 제공하고 
+   있기 때문에, 이 명령을 이용하는 것이 더 낫다.
   </para>
 
   <para>
-   You can create the illusion of an updatable view by defining
-   <literal>ON INSERT</literal>, <literal>ON UPDATE</literal>, and
-   <literal>ON DELETE</literal> rules (or any subset of those that's
-   sufficient for your purposes) to replace update actions on the view
-   with appropriate updates on other tables.  If you want to support
-   <command>INSERT RETURNING</> and so on, then be sure to put a suitable
-   <literal>RETURNING</> clause into each of these rules.
+   이 룰은 특정 뷰를 마치 테이블인 마냥 쓸 수 있도록
+   <literal>ON INSERT</literal>, <literal>ON UPDATE</literal>,
+   <literal>ON DELETE</literal> 룰을 그 뷰에 추가해서
+   자료를 조작할 수도 있다. 또한
+   <command>INSERT RETURNING</> 작업도 룰로 구현할 수 있는데, 
+   이 때는 <literal>RETURNING</> 부분의 결과를 
+   직접 지정해야 한다.
   </para>
 
   <para>
-   There is a catch if you try to use conditional rules for complex view
-   updates: there <emphasis>must</> be an unconditional
-   <literal>INSTEAD</literal> rule for each action you wish to allow
-   on the view.  If the rule is conditional, or is not
-   <literal>INSTEAD</literal>, then the system will still reject
-   attempts to perform the update action, because it thinks it might
+   복잡한 뷰 갱신 작업으로 조건절 있는 룰을 사용하려면,
+   먼저, 그 뷰에 각 작업에 대한 
+   조건절 없는 <literal>INSTEAD</literal> 룰을 각각
+   만들어야 한다는 것을 알고 있어야 한다.
+   조건절 있는 룰이거나, <literal>INSTEAD</literal> 룰이 아니면,
+   update 작업을 정상적으로 진행하지 않는다.
+   왜냐하면, 서버는 
+   몇몇 경우에 이런 작업은 그 뷰의 dummy 테이블에 대한 작업이 
+   마지막으로 수행될 것이라고 판단해서 실행 금지하기 때문이다.
+   (원문: it thinks it might
    end up trying to perform the action on the dummy table of the view
-   in some cases.  If you want to handle all the useful cases in
-   conditional rules, add an unconditional <literal>DO
-   INSTEAD NOTHING</literal> rule to ensure that the system
-   understands it will never be called on to update the dummy table.
-   Then make the conditional rules non-<literal>INSTEAD</literal>; in
-   the cases where they are applied, they add to the default
-   <literal>INSTEAD NOTHING</literal> action.  (This method does not
-   currently work to support <literal>RETURNING</> queries, however.)
+   in some cases.)
+   조건절 있는 룰을 사용하는 경우라면, 
+   먼저 조건절 없는 <literal>DO
+   INSTEAD NOTHING</literal> 룰을 만들어서,
+   서버가 더미 테이블 관련 작업을 아에 할 수 없도록 하는 것이 
+   중요하다.  이렇게 하면, 조건절에 적용 되지 않는 자료들에 대해서는
+   <literal>INSTEAD NOTHING</literal> 작업을 하게 된다.
+   (현재, 이 방법은  <literal>RETURNING</>  쿼리를 지원하지 않는다.)
   </para>
 
   <note>
    <para>
-    A view that is simple enough to be automatically updatable (see <xref
-    linkend="sql-createview">) does not require a user-created rule in
-    order to be updatable.  While you can create an explicit rule anyway,
-    the automatic update transformation will generally outperform an
-    explicit rule.
+    단순한 뷰인 경우는 이미 기본적으로 자료 갱신 작업을 
+    허용하고 있다. (<xref linkend="sql-createview"> 명령 설명서 참조)
+    그래서, 굳이 사용자가 이 작업을 위해 룰을 만들 필요는 없다.
+    당연히 성능도 내장 자동 갱신 기능이 더 우수하다.
    </para>
 
    <para>
-    Another alternative worth considering is to use <literal>INSTEAD OF</>
-    triggers (see <xref linkend="sql-createtrigger">) in place of rules.
+    또 하나, 룰을 쓰는 자리에, 
+    <literal>INSTEAD OF</> 트리거를 대신 쓰는 것도 고려해볼만 하다(<xref
+    linkend="sql-createtrigger"> 명령 설명서 참조).
    </para>
   </note>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of a rule to create.  This must be distinct from the
-      name of any other rule for the same table.  Multiple rules on
-      the same table and same event type are applied in alphabetical
-      name order.
+      새로 만들 룰 이름.  이 이름은 해당 테이블 대상으로 유일해야 한다.
+      동일 테이블 동일 이벤트에 여러 룰이 있다면, 
+      그 룰은 알파벳 순으로 사용된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">event</replaceable></term>
+    <term><replaceable class="parameter">이벤트</replaceable></term>
     <listitem>
      <para>
-      The event is one of <literal>SELECT</literal>,
-      <literal>INSERT</literal>, <literal>UPDATE</literal>, or
-      <literal>DELETE</literal>.  Note that an
-      <command>INSERT</command> containing an <literal>ON
-      CONFLICT</literal> clause cannot be used on tables that have
-      either <literal>INSERT</literal> or <literal>UPDATE</literal>
-      rules.  Consider using an updatable view instead.
+      <literal>SELECT</literal>,
+      <literal>INSERT</literal>, <literal>UPDATE</literal>, 또는
+      <literal>DELETE</literal>.  
+      <command>INSERT</command> 또는 <literal>UPDATE</literal>
+      룰을 사용하고 있는 테이블 대상으로는
+      <literal>INSERT ... ON CONFLICT</literal> 쿼리는 사용할 수 없다.
+      대신에 업데이트 가능한 뷰 사용을 고려해 볼 수 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">table_name</replaceable></term>
+    <term><replaceable class="parameter">테이블이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the table or view the
-      rule applies to.
+      대상 테이블 또는 뷰 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">condition</replaceable></term>
+    <term><replaceable class="parameter">조건</replaceable></term>
     <listitem>
      <para>
-      Any <acronym>SQL</acronym> conditional expression (returning
-      <type>boolean</type>).  The condition expression cannot refer
-      to any tables except <literal>NEW</> and <literal>OLD</>, and
-      cannot contain aggregate functions.
+      <acronym>SQL</acronym> 구문으로 작성된 표현식( 결과는 
+      <type>boolean</type> 형).  이 식에서는
+      <literal>NEW</>, <literal>OLD</> 변수를 사용할 수 없으며,
+      집계 함수도 사용할 수 없다.
      </para>
     </listitem>
    </varlistentry>
@@ -170,8 +172,8 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">name</replaceable> AS 
    <varlistentry>
     <term><option>INSTEAD</option></term>
     <listitem>
-     <para><literal>INSTEAD</literal> indicates that the commands should be
-      executed <emphasis>instead of</> the original command.
+     <para><literal>INSTEAD</literal> 명령을 사용할 때.
+     원래 쿼리 대신에 여기서 지정한 명령을 <emphasis>대신</> 실행함.
      </para>
     </listitem>
    </varlistentry>
@@ -179,76 +181,73 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">name</replaceable> AS 
    <varlistentry>
     <term><option>ALSO</option></term>
     <listitem>
-     <para><literal>ALSO</literal> indicates that the commands should be
-      executed <emphasis>in addition to</emphasis> the original
-      command.
+     <para><literal>ALSO</literal> 원래 쿼리 다음에 추가로 
+     지정한 명령을 <emphasis>더</> 실행함.
      </para>
 
      <para>
-      If neither <literal>ALSO</literal> nor
-      <literal>INSTEAD</literal> is specified, <literal>ALSO</literal>
-      is the default.
+      <literal>ALSO</literal>, <literal>INSTEAD</literal> 둘 다 지정하지
+      않았다면, <literal>ALSO</literal> 로 간주한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">command</replaceable></term>
+    <term><replaceable class="parameter">명령</replaceable></term>
     <listitem>
      <para>
-      The command or commands that make up the rule action.  Valid
-      commands are <command>SELECT</command>,
+      룰 실 작업 명령.  이 명령으로
+      <command>SELECT</command>,
       <command>INSERT</command>, <command>UPDATE</command>,
-      <command>DELETE</command>, or <command>NOTIFY</command>.
+      <command>DELETE</command>, 또는 <command>NOTIFY</command> 명령을
+      사용할 수 있다.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
 
   <para>
-   Within <replaceable class="parameter">condition</replaceable> and
-   <replaceable class="parameter">command</replaceable>, the special
-   table names <literal>NEW</literal> and <literal>OLD</literal> can
-   be used to refer to values in the referenced table.
-   <literal>NEW</literal> is valid in <literal>ON INSERT</literal> and
-   <literal>ON UPDATE</literal> rules to refer to the new row being
-   inserted or updated.  <literal>OLD</literal> is valid in
-   <literal>ON UPDATE</literal> and <literal>ON DELETE</literal> rules
-   to refer to the existing row being updated or deleted.
+   <replaceable class="parameter">조건</replaceable>과
+   <replaceable class="parameter">명령</replaceable> 안에서는
+   <literal>NEW</literal>, <literal>OLD</literal> 이름의 미리
+   예약된 테이블을 이름을 사용할 수 있다.
+   <literal>NEW</literal>는 <literal>ON INSERT</literal> 또는
+   <literal>ON UPDATE</literal> 룰에 사용하는 신규 자료의 로우를 뜻하며,
+   <literal>OLD</literal>는 <literal>ON UPDATE</literal> 또는
+   <literal>ON DELETE</literal> 룰에 사용하는 옛날 자료의 로우를 뜻한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   You must be the owner of a table to create or change rules for it.
+   테이블 소유주가 그 테이블에 새 룰을 추가하거나 변경 할 수 있다.
   </para>
 
   <para>
-   In a rule for <literal>INSERT</literal>, <literal>UPDATE</literal>, or
-   <literal>DELETE</literal> on a view, you can add a <literal>RETURNING</>
-   clause that emits the view's columns.  This clause will be used to compute
-   the outputs if the rule is triggered by an <command>INSERT RETURNING</>,
-   <command>UPDATE RETURNING</>, or <command>DELETE RETURNING</> command
-   respectively.  When the rule is triggered by a command without
-   <literal>RETURNING</>, the rule's <literal>RETURNING</> clause will be
-   ignored.  The current implementation allows only unconditional
-   <literal>INSTEAD</> rules to contain <literal>RETURNING</>; furthermore
-   there can be at most one <literal>RETURNING</> clause among all the rules
-   for the same event.  (This ensures that there is only one candidate
-   <literal>RETURNING</> clause to be used to compute the results.)
-   <literal>RETURNING</> queries on the view will be rejected if
-   there is no <literal>RETURNING</> clause in any available rule.
+   뷰에 <literal>INSERT</literal>, <literal>UPDATE</literal>, 또는
+   <literal>DELETE</literal> 룰이 있는 경우,
+   뷰 칼럼을 보기 위해 <literal>RETURNING</> 구문을 사용할 수 있다.
+   이런 경우는 각각 <command>INSERT RETURNING</>,
+   <command>UPDATE RETURNING</>, 또는 <command>DELETE RETURNING</>
+   명령이 그 출력을 위해 사용된다.
+   뷰 변경 작업에서 <literal>RETURNING</>을 사용하지 않았다면,
+   그런데, 룰 명령으로 이 <literal>RETURNING</> 절은 무시된다.
+   현재 <literal>INSTEAD</> 룰에서만 
+   <literal>RETURNING</> 절을 사용할 수 있다.
+   게다가, 이 <literal>RETURNING</> 절은 동일 이벤트에 대한 여러개의 
+   룰이 있는 경우, 최종 하나에만 지정해야한다.
+   이 <literal>RETURNING</> 절이 하나도 없다면, 뷰 조작 쿼리에서
+   <literal>RETURNING</>을 사용하면 그 쿼리는 실행되지 않는다.
   </para>
 
   <para>
-   It is very important to take care to avoid circular rules.  For
-   example, though each of the following two rule definitions are
-   accepted by <productname>PostgreSQL</productname>, the
-   <command>SELECT</command> command would cause
-   <productname>PostgreSQL</productname> to report an error because
-   of recursive expansion of a rule:
+   룰을 사용할 때는
+   순환하는 룰 사용을 하고 있지는 않는지  꼭 확인이 필요하다.
+   예를 들어, 두 개의 룰이 각각 서로 사용하도록 지정한 경우다.
+   다음과 같은 경우, <command>SELECT</command> 명령을 실행할 때
+   오류가 발생한다:
 
 <programlisting>
 CREATE RULE "_RETURN" AS
@@ -266,35 +265,33 @@ SELECT * FROM t1;
   </para>
 
   <para>
-   Presently, if a rule action contains a <command>NOTIFY</command>
-   command, the <command>NOTIFY</command> command will be executed
-   unconditionally, that is, the <command>NOTIFY</command> will be
-   issued even if there are not any rows that the rule should apply
-   to.  For example, in:
+   현재, 룰에서 실행할 명령으로 
+   <command>NOTIFY</command> 명령을 사용할 있다.
+   이 경우 <command>NOTIFY</command>  명령은 조건에 상관 없이 
+   실행된다.  예를 들어:
 <programlisting>
 CREATE RULE notify_me AS ON UPDATE TO mytable DO ALSO NOTIFY mytable;
 
 UPDATE mytable SET name = 'foo' WHERE id = 42;
 </programlisting>
-   one <command>NOTIFY</command> event will be sent during the
-   <command>UPDATE</command>, whether or not there are any rows that
-   match the condition <literal>id = 42</literal>.  This is an
-   implementation restriction that might be fixed in future releases.
+   이 경우 <literal>id = 42</literal> 조건에 맞는 자료가 없어도
+   <command>NOTIFY</command> 명령은 실행된다.
+   이 특성은 다음 버전에서는 그 대상 자료가 있는 경우만 
+   실행되도록 변경되어야 할 것이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE RULE</command> is a
-   <productname>PostgreSQL</productname> language extension, as is the
-   entire query rewrite system.
+   <command>CREATE RULE</command> 구문은
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterrule"></member>
