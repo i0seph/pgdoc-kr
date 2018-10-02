@@ -16,95 +16,102 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE SCHEMA</refname>
-  <refpurpose>define a new schema</refpurpose>
+  <refpurpose>새 스키마 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE SCHEMA <replaceable class="parameter">schema_name</replaceable> [ AUTHORIZATION <replaceable class="PARAMETER">role_specification</replaceable> ] [ <replaceable class="parameter">schema_element</replaceable> [ ... ] ]
-CREATE SCHEMA AUTHORIZATION <replaceable class="PARAMETER">role_specification</replaceable> [ <replaceable class="parameter">schema_element</replaceable> [ ... ] ]
-CREATE SCHEMA IF NOT EXISTS <replaceable class="parameter">schema_name</replaceable> [ AUTHORIZATION <replaceable class="PARAMETER">role_specification</replaceable> ]
-CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">role_specification</replaceable>
+CREATE SCHEMA <replaceable class="parameter">스키마이름</replaceable> [ AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable> ] [ <replaceable class="parameter">스키마요소</replaceable> [ ... ] ]
+CREATE SCHEMA AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable> [ <replaceable class="parameter">스키마요소</replaceable> [ ... ] ]
+CREATE SCHEMA IF NOT EXISTS <replaceable class="parameter">스키마이름</replaceable> [ AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable> ]
+CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable>
 
-<phrase>where <replaceable class="PARAMETER">role_specification</replaceable> can be:</phrase>
+<phrase><replaceable class="PARAMETER">롤명세</replaceable> 자리에는:</phrase>
 
-    <replaceable class="PARAMETER">user_name</replaceable>
+    <replaceable class="PARAMETER">사용자이름</replaceable>
   | CURRENT_USER
   | SESSION_USER
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE SCHEMA</command> enters a new schema
-   into the current database.
-   The schema name must be distinct from the name of any existing schema
-   in the current database.
+   <command>CREATE SCHEMA</command> 명령은 현재 데이터베이스에 
+   새 스키마를 만든다.
+   스키마 이름은 현재 데이터베이스에서 유일해야 한다.
   </para>
 
   <para>
-   A schema is essentially a namespace:
-   it contains named objects (tables, data types, functions, and operators)
-   whose names can duplicate those of other objects existing in other
-   schemas.  Named objects are accessed either by <quote>qualifying</>
-   their names with the schema name as a prefix, or by setting a search
-   path that includes the desired schema(s).  A <literal>CREATE</> command
-   specifying an unqualified object name creates the object
-   in the current schema (the one at the front of the search path,
-   which can be determined with the function <function>current_schema</function>).
+   스키마란 하나의 이름 공간이다:
+   이 스키마 안에, 여러 개체들(테이블, 자료형, 함수, 연산자)이
+   담긴다(포함된다).  이 개체들은 같은 이름으로 다른 스키마에 다른 
+   개체로 있을 수도 있다.  
+   이 각 개체를 사용하기 위해 그 이름을 지정할 때, 
+   개체 이름 앞에 스키마 이름을 접두사로 두고, 스키마 이름과 개체 이름 
+   사이에 점(.)을 찍어 그 개체를 식별한다.  또한 스키마 이름을 
+   생략하면, 해당 개체는 search_path 환경 설정값으로 지정한 스키마들 가운데
+   차례대로 찾고, 처음 발견 된 것을 작업 개체로 판단한다.
+   이런 개체를 만드는 각종 <literal>CREATE</> 명령에서도
+   그 이름 앞에 스키마 이름을 지정할 수 있으며, 
+   스키마 이름을 생략하면, search_path 값 제일 앞에 있는 스키마 안에 
+   해당 개체를 만든다.  이 기본 스키마를 현재 스키마라고 하며, 
+   <function>current_schema</function> 함수로 그 값을 확인할 수 있다.
   </para>
 
   <para>
-   Optionally, <command>CREATE SCHEMA</command> can include subcommands
-   to create objects within the new schema.  The subcommands are treated
-   essentially the same as separate commands issued after creating the
-   schema, except that if the <literal>AUTHORIZATION</> clause is used,
-   all the created objects will be owned by that user.
+   선택적으로, <command>CREATE SCHEMA</command> 명령에는
+   그 스키마를 만들면서, 그 스키마 안에 포함될 개체들을 함께 만들 수 
+   있는 하위 명령도 포함할 수 있다.  이 하위 명령은 
+   스키마를 만들고 난 다음 분리되어 따로 실행할 수 있는 명령들로 
+   구성된다.  이 때 <literal>AUTHORIZATION</>  옵션이 있으면, 
+   소속 개별 개체들도 같은 소유주로 지정한다.
+   그 소속 개별 개체들의 각각의 소유주를 다르게 지정하려면, 하위 명령을
+   분리해서 작업하거나, 만든 뒤 소유주 변경 작업으로 진행하면 된다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
     <variablelist>
      <varlistentry>
-      <term><replaceable class="parameter">schema_name</replaceable></term>
+      <term><replaceable class="parameter">스키마이름</replaceable></term>
       <listitem>
        <para>
-        The name of a schema to be created.  If this is omitted, the
-        <replaceable class="parameter">user_name</replaceable>
-        is used as the schema name.  The name cannot
-        begin with <literal>pg_</literal>, as such names
-        are reserved for system schemas.
+        새로 만들 스키마 이름.  생략하면,
+        현재 사용자 이름(<replaceable
+        class="parameter">사용자이름</replaceable>)을 스키마 이름으로 한다.
+        스키마 이름으로 <literal>pg_</literal>로 시작하는 이름은
+        시스템 스키마로 예약되어 있어 사용할 수 없다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">user_name</replaceable></term>
+      <term><replaceable class="parameter">사용자이름</replaceable></term>
       <listitem>
        <para>
-        The role name of the user who will own the new schema.  If omitted,
-        defaults to the user executing the command.  To create a schema
-        owned by another role, you must be a direct or indirect member of
-        that role, or be a superuser.
+        새 스키마의 소유주 이름.
+        생략하면 이 명령을 수행하는 사용자를 소유주로 한다.
+        이 사용자 이름과 현재 명령 수행하는 사용자가 다르면,
+        현재 사용자는 슈퍼유저이거나, 직간접적으로 지정하는
+        사용자이름 롤의 구성원이어야 한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">schema_element</replaceable></term>
+      <term><replaceable class="parameter">스키마요소</replaceable></term>
       <listitem>
        <para>
-        An SQL statement defining an object to be created within the
-        schema. Currently, only <command>CREATE
+        새 스키마를 만들면서 그 스키마 소속 하위 개체들도 함께 만든다.
+        현재, <command>CREATE
         TABLE</>, <command>CREATE VIEW</>, <command>CREATE
         INDEX</>, <command>CREATE SEQUENCE</>, <command>CREATE
-        TRIGGER</> and <command>GRANT</> are accepted as clauses
-        within <command>CREATE SCHEMA</>. Other kinds of objects may
-        be created in separate commands after the schema is created.
+        TRIGGER</> 및 <command>GRANT</> 명령만 하위 명령으로 사용할 수 있다.
+        그 외 개체들에 대해서는 스키마를 만든 뒤 따로 만들어야 한다.
        </para>
       </listitem>
      </varlistentry>
@@ -113,9 +120,10 @@ CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">role_sp
       <term><literal>IF NOT EXISTS</literal></term>
       <listitem>
        <para>
-        Do nothing (except issuing a notice) if a schema with the same name
-        already exists.  <replaceable class="parameter">schema_element</>
-        subcommands cannot be included when this option is used.
+        해당 이름의 스키마가 이미 있으면, 알림 메시지만 보이고, 
+        무시한다.  이 옵션을 사용하면, 
+        <replaceable class="parameter">스키마요소</> 하위
+        명령은 사용할 수 없다.
        </para>
       </listitem>
      </varlistentry>
@@ -123,55 +131,54 @@ CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">role_sp
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   To create a schema, the invoking user must have the
-   <literal>CREATE</> privilege for the current database.
-   (Of course, superusers bypass this check.)
+   스키마를 만드려면, 해당 데이터베이스에 대해서
+   <literal>CREATE</> 권한이 있는 사용자여야 한다.
+   (슈퍼유저는 이 제약 무시하고 만들 수 있다.)
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create a schema:
+   스키마 만들기:
 <programlisting>
 CREATE SCHEMA myschema;
 </programlisting>
   </para>
 
   <para>
-   Create a schema for user <literal>joe</>; the schema will also be
-   named <literal>joe</>:
+   <literal>joe</> 사용자를 소유주로 하는 같은 이름의 스키마 만들기:
 <programlisting>
 CREATE SCHEMA AUTHORIZATION joe;
 </programlisting>
   </para>
 
   <para>
-   Create a schema named <literal>test</> that will be owned by user
-   <literal>joe</>, unless there already is a schema named <literal>test</>.
-   (It does not matter whether <literal>joe</> owns the pre-existing schema.)
+   <literal>test</> 이름의 스키마가 없으면, 이 이름의 스키마를 만들면서
+   소유주를 <literal>joe</>로 지정.
+   이미 있으면, 무시. (소유주가 누구인지는 상관하지 않고 무시함)
 <programlisting>
 CREATE SCHEMA IF NOT EXISTS test AUTHORIZATION joe;
 </programlisting>
   </para>
 
   <para>
-   Create a schema and create a table and view within it:
+   스키마를 만들면서, 테이블과 뷰도 함께 만들기:
 <programlisting>
 CREATE SCHEMA hollywood
     CREATE TABLE films (title text, release date, awards text[])
     CREATE VIEW winners AS
         SELECT title, release FROM films WHERE awards IS NOT NULL;
 </programlisting>
-   Notice that the individual subcommands do not end with semicolons.
+   개별 개체를 만드는 명령 뒤에 각각 세미 콜론을 쓰지 않음을 주의해야 한다.
   </para>
 
   <para>
-   The following is an equivalent way of accomplishing the same result:
+   다음은 윗 명령을 개별 명령으로 분리한 경우:
 <programlisting>
 CREATE SCHEMA hollywood;
 CREATE TABLE hollywood.films (title text, release date, awards text[]);
@@ -182,41 +189,38 @@ CREATE VIEW hollywood.winners AS
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   The SQL standard allows a <literal>DEFAULT CHARACTER SET</> clause
-   in <command>CREATE SCHEMA</command>, as well as more subcommand
-   types than are presently accepted by
-   <productname>PostgreSQL</productname>.
+   SQL 표준에서는 <productname>PostgreSQL</productname> 에서 제공하고
+   있는 하위 명령과 함께, 
+   <literal>DEFAULT CHARACTER SET</> 구문도 허용한다.
   </para>
 
   <para>
-   The SQL standard specifies that the subcommands in <command>CREATE
-   SCHEMA</command> can appear in any order.  The present
-   <productname>PostgreSQL</productname> implementation does not
-   handle all cases of forward references in subcommands; it might
-   sometimes be necessary to reorder the subcommands in order to avoid
-   forward references.
+   SQL 표준에서는 하위 명령의 순서는 상관 없다.
+   <productname>PostgreSQL</productname>에서는 이 부분이 구현 되어 있지 
+   않고, 단지 차례 대로 수행하기 때문에, 하위 개체들의 의존성 문제가 
+   발생하면 그 하위 명령의 순서를 바꿔서 다시 실행해야 한다.
   </para>
 
   <para>
-   According to the SQL standard, the owner of a schema always owns
-   all objects within it.  <productname>PostgreSQL</productname>
-   allows schemas to contain objects owned by users other than the
-   schema owner.  This can happen only if the schema owner grants the
-   <literal>CREATE</> privilege on their schema to someone else, or a
-   superuser chooses to create objects in it.
+   SQL 표준에서는 해당 스키마의 소유주는 그 스키마 소속 모든 
+   개체의 소유주가 된다.
+   <productname>PostgreSQL</productname>에서는 스키마의 소유주와
+   그 소속 개체들의 소유주가 각기 다를 수 있다.
+   이 경우는 해당 스키마에 대해서 어떤 사용자가 
+   <literal>CREATE</> 권한이 있거나, 슈퍼유저면 가능하다.
   </para>
 
   <para>
-   The <literal>IF NOT EXISTS</literal> option is a
-   <productname>PostgreSQL</productname> extension.
+   <literal>IF NOT EXISTS</literal> 옵션은 
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterschema"></member>
