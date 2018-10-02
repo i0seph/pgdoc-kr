@@ -41,7 +41,7 @@ LOAD 'auto_explain';
  </para>
 
  <sect2>
-  <title>환경설정 매개변수들</title>
+  <title>환경 설정 매개 변수들</title>
 
  <para>
   <filename>auto_explain</filename> 모듈의 동작 방식을 제어하는 

@@ -110,14 +110,14 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
  </refsect1>
 
  <refsect1>
-  <title>매개변수</title>
+  <title>매개 변수</title>
 
   <refsect2 id="SQL-INSERTING-PARAMS">
    <title id="sql-inserting-params-title">Inserting</title>
 
    <para>
-    이 절에서는 새로운 행을 삽입할 때에만 사용되는 매개변수를 다룬다.
-    <literal>ON CONFLICT</literal> 절에서만 <emphasis>배타적으로</emphasis> 사용되는 매개변수들은 
+    이 절에서는 새로운 행을 삽입할 때에만 사용되는 매개 변수를 다룬다.
+    <literal>ON CONFLICT</literal> 절에서만 <emphasis>배타적으로</emphasis> 사용되는 매개 변수들은 
     별도로 설명한다.
    </para>
 

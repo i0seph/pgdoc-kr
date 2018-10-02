@@ -1023,9 +1023,9 @@ FROM ( { <replaceable class="PARAMETER">numeric_literal</replaceable> | <replace
         <firstterm>storage parameters</>를 지정할 수 있습니다.
         인덱스에 대한 storage parameter는 <xref linkend="SQL-CREATEINDEX">에 문서화되어 있습니다.
         테이블에 현재 설정할 수 있는 storage parameter는 아래에 나열되어 있습니다.
-        특별히 명시되어있지 않다면, 각 매개변수에는, 해당 테이블의 부가적인
+        특별히 명시되어있지 않다면, 각 매개 변수에는, 해당 테이블의 부가적인
         <acronym>TOAST</> 테이블(있다면)의 동작 방식을 제어하는데 사용할 수 있는,
-        같은 이름에 <literal>toast.</literal>접두어가 붙여진 이름의 추가 매개변수가 존재합니다.
+        같은 이름에 <literal>toast.</literal>접두어가 붙여진 이름의 추가 매개 변수가 존재합니다.
         (TOAST에 대한 더 많은 정보는 (see <xref linkend="storage-toast">을 참고하십시오).
         TOAST 테이블은, <literal>toast.autovacuum_*</literal> 설정을 하지 않았다면,
         부모 테이블의 <literal>autovacuum_*</literal> 값을 상속받는다는 점에 주의하십시오
@@ -1047,7 +1047,7 @@ FROM ( { <replaceable class="PARAMETER">numeric_literal</replaceable> | <replace
           이는 다른 페이지로 들어가는 것보다 효율적입니다. 
           절대로 항목이 업데이트 되지 않는 테이블이라면 완전 패킹이 가장 좋은 선택이지만, 
           빈번하게 업데이트되는 테이블이라면 작은 fillfactor 값이 적합할 것입니다.
-          이 매개변수는 TOAST 테이블에 설정할 수 없습니다.
+          이 매개 변수는 TOAST 테이블에 설정할 수 없습니다.
      </para>
     </listitem>
    </varlistentry>

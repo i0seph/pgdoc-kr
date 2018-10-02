@@ -86,7 +86,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       </para>
      <note>
       <para>
-       기본 동작이 로컬 루프백 주소 <literal>localhost</>에 대해서만 TCP/IP 연결을 listen하는 것이므로 <xref linkend="guc-listen-addresses"> 환경 설정 매개변수에 적절한 값으로 서버가 시작되지 않으면 원격 TCP/IP 연결이 불가능하다.
+       기본 동작이 로컬 루프백 주소 <literal>localhost</>에 대해서만 TCP/IP 연결을 listen하는 것이므로 <xref linkend="guc-listen-addresses"> 환경 설정 매개 변수에 적절한 값으로 서버가 시작되지 않으면 원격 TCP/IP 연결이 불가능하다.
       </para>
      </note>
      </listitem>

@@ -74,7 +74,7 @@
    <para>
     검색 공간에서 한 개체의 위치는 <firstterm>염색체</firstterm>라고 간주하고,
     이것은 하나의 문자열로 처리된다.  <firstterm>유전자</firstterm>는 염색체의
-    구성요소이며, 염색체는 단일 매개변수값으로 최적화된 자료로 인코딩된다.
+    구성요소이며, 염색체는 단일 매개 변수값으로 최적화된 자료로 인코딩된다.
     유전자 인코딩은 <firstterm>이진자료형</firstterm>이나,
     <firstterm>정수형</firstterm>으로 처리한다.
    </para>
@@ -261,7 +261,7 @@
    <title><productname>PostgreSQL</> <acronym>GEQO</acronym> 개선 할 점</title>
 
      <para>
-      유전 알고리즘 매개변수 설정에 관련하여 여전히 작업이 필요하다.
+      유전 알고리즘 매개 변수 설정에 관련하여 여전히 작업이 필요하다.
       <filename>src/backend/optimizer/geqo/geqo_main.c</filename> 파일 안,
       <function>gimme_pool_size</function>, <function>gimme_number_generations</function> 
       함수 부분이며, 작업은 다음 두가지 서로 상충한 부분을 어떻게 적절하게 타협하여

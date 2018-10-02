@@ -104,11 +104,11 @@
   </sect2>
 
   <sect2 id="plpgsql-args-results">
-   <title>지원되는 매개변수와 결과 자료형</title>
+   <title>지원되는 매개 변수와 결과 자료형</title>
 
     <para>
      <application>PL/pgSQL</application>에서 작성된 함수는 서버에서 지원하는
-     스칼라나 배열 자료형을 매개변수로 받을수 있다. 
+     스칼라나 배열 자료형을 매개 변수로 받을수 있다. 
      또한, 이름으로 지정된 복합 타입(로우 타입)을 받거나 반환할 수 있다. 
      <xref linkend="queries-tablefunctions">에 나온것 처럼 
      쿼리 호출에서 명시된대로 컬럼들의 로우 타입 결과인
@@ -118,7 +118,7 @@
     <para>
      <xref linkend="xfunc-sql-variadic-functions">.
      <application>PL/pgSQL</> 함수는 <literal>VARIADIC</> 지시자를 이용해서 
-     여러개의 매개변수를 선언할 수 있다. 이것은 <xref linkend="xfunc-sql-variadic-functions">에
+     여러개의 매개 변수를 선언할 수 있다. 이것은 <xref linkend="xfunc-sql-variadic-functions">에
      나온것과 같이 SQL함수와 같은 방법으로 작동한다.
     </para>
 
@@ -143,7 +143,7 @@
     </para>
 
     <para>
-     <application>PL/pgSQL</> 함수는 반환형으로 지정된 형식 대신에 매개변수를 출력하도록 선언될 수 있다.
+     <application>PL/pgSQL</> 함수는 반환형으로 지정된 형식 대신에 매개 변수를 출력하도록 선언될 수 있다.
      이것은 언어에 함수적인 기능을 추가하지 않지만, 종종 편리할 때가 있다. 특히, 여러개의 결과를 반환할때 유용하다.
      <literal>RETURNS TABLE</> 기호는 <literal>RETURNS SETOF</> 위치에 사용될 수 있다.
     </para>
@@ -260,10 +260,10 @@ $$ LANGUAGE plpgsql;
       
       모든 <application>PL/pgSQL</> 함수의 본문에는 본문을 둘러싸는 
       숨겨진 <quote>outer block(외부블록)</>이 존재한다.
-      이 블록은 함수 매개변수들의 선언을 제공한다.
+      이 블록은 함수 매개 변수들의 선언을 제공한다.
       뿐만아니라, <literal>FOUND</literal> 같은 일부 특수한 변수도 제공한다.
       (<xref linkend="plpgsql-statements-diagnostics"> 참고).
-      외부블록은 함수의 이름으로 구분되고, 매개변수나 특수변수들은 함수의 이름으로 구분될 수 있다.
+      외부블록은 함수의 이름으로 구분되고, 매개 변수나 특수변수들은 함수의 이름으로 구분될 수 있다.
      </para>
     </note>
 

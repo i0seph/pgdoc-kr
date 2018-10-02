@@ -38,13 +38,13 @@
      <varlistentry id="restore-command" xreflabel="restore_command">
       <term><varname>restore_command</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>restore_command</> 복구 매개변수</primary>
+        <primary><varname>restore_command</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
             복구 과정에서 사용할 WAL 세그먼트 파일들을 서버에 적용시킬 시스템 명령이다.
-                아카이브 모드 복구 작업을 하는 경우에 이 매개변수는 반드시 지정해야 한다.
+                아카이브 모드 복구 작업을 하는 경우에 이 매개 변수는 반드시 지정해야 한다.
                 스트리밍 리플리케이션 대기 서버를 구축하는 경우라면, 이 설정이 꼭 필요한 것은 
                 아니지만, 마스터 서버와의 통신이 끊겨서 수동으로 트랜잭션 로그를 반영해야하는 
                 경우를 대비해서 설정해 두는 것이 좋다.
@@ -77,7 +77,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="archive-cleanup-command" xreflabel="archive_cleanup_command">
       <term><varname>archive_cleanup_command</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>archive_cleanup_command</> 복구 매개변수</primary>
+        <primary><varname>archive_cleanup_command</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -116,7 +116,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-end-command" xreflabel="recovery_end_command">
       <term><varname>recovery_end_command</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_end_command</> 복구 매개변수</primary>
+        <primary><varname>recovery_end_command</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -163,15 +163,15 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-target" xreflabel="recovery_target">
       <term><varname>recovery_target</varname><literal> = 'immediate'</literal>
       <indexterm>
-        <primary><varname>recovery_target</> 복구 매개변수</primary>
+        <primary><varname>recovery_target</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
-        이 매개변수는 일관적인 상태가 되자마자 복구가 종료되도록 한다. 온라인 백업에서 복구하는 경우, 백업이 끝난 시점을 가리킨다.
+        이 매개 변수는 일관적인 상태가 되자마자 복구가 종료되도록 한다. 온라인 백업에서 복구하는 경우, 백업이 끝난 시점을 가리킨다.
        </para>
        <para>
-        실질적으로, 이는 문자열 매개변수지만 <literal>'immediate'</>
+        실질적으로, 이는 문자열 매개 변수지만 <literal>'immediate'</>
         가 쓸 수 있는 유일한 값이다.
        </para>
       </listitem>
@@ -181,12 +181,12 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_name</varname>
            (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_target_name</> 복구 매개변수</primary>
+        <primary><varname>recovery_target_name</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
-            이 매개변수는 특정 복구 위치를 이름으로 지정한다.
+            이 매개 변수는 특정 복구 위치를 이름으로 지정한다.
                 그 이름은 <function>pg_create_restore_point()</> 함수에서 
                 지정한 이름이다. 
        </para>
@@ -197,12 +197,12 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_time</varname>
            (<type>timestamp</type>)
       <indexterm>
-        <primary><varname>recovery_target_time</> 복구 매개변수</primary>
+        <primary><varname>recovery_target_time</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
-            이 매개변수는 특정 시점을 시간으로 지정한다.
+            이 매개 변수는 특정 시점을 시간으로 지정한다.
                 또한 <xref linkend="recovery-target-inclusive"> 값에 영향을 받아서
                 정확한 중지 위치가 결정되기도 한다.
        </para>
@@ -212,12 +212,12 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-target-xid" xreflabel="recovery_target_xid">
       <term><varname>recovery_target_xid</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_target_xid</> 복구 매개변수</primary>
+        <primary><varname>recovery_target_xid</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
-            이 매개변수는 특정 트랜잭션 ID로 지정한다.
+            이 매개 변수는 특정 트랜잭션 ID로 지정한다.
                 지정한 이 트랜잭션 ID까지 복구 작업을 한다.
                 트랜잭션 ID는 복구 서버의 마지막부터 차례대로 진행되기 때문에, 
                 결과적으로 백업의 트랜잭션 ID와 복구 서버의 트랜잭션 ID가 같지 
@@ -233,7 +233,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-target-lsn" xreflabel="recovery_target_lsn">
       <term><varname>recovery_target_lsn</varname> (<type>pg_lsn</type>)
       <indexterm>
-        <primary><varname>recovery_target_lsn</> 복구 매개변수</primary>
+        <primary><varname>recovery_target_lsn</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -258,7 +258,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_inclusive</varname>
         (<type>boolean</type>)
       <indexterm>
-        <primary><varname>recovery_target_inclusive</> 복구 매개변수</primary>
+        <primary><varname>recovery_target_inclusive</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -280,7 +280,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_timeline</varname>
         (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_target_timeline</> 복구 매개변수</primary>
+        <primary><varname>recovery_target_timeline</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -302,7 +302,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
                    xreflabel="recovery_target_action">
       <term><varname>recovery_target_action</varname> (<type>enum</type>)
       <indexterm>
-        <primary><varname>recovery_target_action</> 복구 매개변수</primary>
+        <primary><varname>recovery_target_action</> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -358,7 +358,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
        <varlistentry id="standby-mode" xreflabel="standby_mode">
         <term><varname>standby_mode</varname> (<type>boolean</type>)
         <indexterm>
-          <primary><varname>standby_mode</> 복구 매개변수</primary>
+          <primary><varname>standby_mode</> 복구 매개 변수</primary>
         </indexterm></term>
         <listitem>
          <para>
@@ -377,7 +377,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
        <varlistentry id="primary-conninfo" xreflabel="primary_conninfo">
         <term><varname>primary_conninfo</varname> (<type>문자열</type>)
         <indexterm>
-          <primary><varname>primary_conninfo</> 복구 매개변수</primary>
+          <primary><varname>primary_conninfo</> 복구 매개 변수</primary>
         </indexterm></term>
         <listitem>
          <para>
@@ -410,7 +410,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
        <varlistentry id="trigger-file" xreflabel="trigger_file">
         <term><varname>trigger_file</varname> (<type>문자열</type>)
         <indexterm>
-          <primary><varname>trigger_file</> 복구 매개변수</primary>
+          <primary><varname>trigger_file</> 복구 매개 변수</primary>
         </indexterm></term>
         <listitem>
          <para>

@@ -16,22 +16,22 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE SEQUENCE</refname>
-  <refpurpose>define a new sequence generator</refpurpose>
+  <refpurpose>새 시퀀스 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ TEMPORARY | TEMP ] SEQUENCE [ IF NOT EXISTS ] <replaceable class="parameter">name</replaceable>
-    [ AS <replaceable class="parameter">data_type</replaceable> ]
-    [ INCREMENT [ BY ] <replaceable class="parameter">increment</replaceable> ]
-    [ MINVALUE <replaceable class="parameter">minvalue</replaceable> | NO MINVALUE ] [ MAXVALUE <replaceable class="parameter">maxvalue</replaceable> | NO MAXVALUE ]
-    [ START [ WITH ] <replaceable class="parameter">start</replaceable> ] [ CACHE <replaceable class="parameter">cache</replaceable> ] [ [ NO ] CYCLE ]
-    [ OWNED BY { <replaceable class="parameter">table_name</replaceable>.<replaceable class="parameter">column_name</replaceable> | NONE } ]
+CREATE [ TEMPORARY | TEMP ] SEQUENCE [ IF NOT EXISTS ] <replaceable class="parameter">이름</replaceable>
+    [ AS <replaceable class="parameter">자료형</replaceable> ]
+    [ INCREMENT [ BY ] <replaceable class="parameter">증가값</replaceable> ]
+    [ MINVALUE <replaceable class="parameter">최소값</replaceable> | NO MINVALUE ] [ MAXVALUE <replaceable class="parameter">최대값</replaceable> | NO MAXVALUE ]
+    [ START [ WITH ] <replaceable class="parameter">시작값</replaceable> ] [ CACHE <replaceable class="parameter">캐시</replaceable> ] [ [ NO ] CYCLE ]
+    [ OWNED BY { <replaceable class="parameter">테이블이름</replaceable>.<replaceable class="parameter">칼럼이름</replaceable> | NONE } ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
    <command>CREATE SEQUENCE</command> creates a new sequence number
@@ -75,7 +75,7 @@ SELECT * FROM <replaceable>name</replaceable>;
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>

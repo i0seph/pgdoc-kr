@@ -888,7 +888,7 @@ analyze 임계치 = analyze 초기 임계치 + analyze 배율값 * 로우수
     이 부분에 대한 것은 <xref linkend="sql-createtable-storage-parameters"
     endterm="sql-createtable-storage-parameters-title">에서
     자세히 다룬다.
-    이 값들과 autovacuum 제어 매개변수 값들이 각 테이블 별로 지정 되면, 
+    이 값들과 autovacuum 제어 매개 변수 값들이 각 테이블 별로 지정 되면, 
     그 테이블에 대해서는 서버 전역으로 설정된 값이 무시된다.
     그외 테이블에 대해서는 시스템 전역 환경 설정값이 적용된다.
     자세한 전역 환경 설정은 <xref linkend="runtime-config-autovacuum">에서

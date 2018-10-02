@@ -347,7 +347,7 @@ pg_restore -d <replaceable class="parameter">dbname</replaceable> <replaceable c
     <para>
      대용량 데이터베이스의 덤프 속도를 높이기 위해서는 
      <application>pg_dump</application>의 병렬 모드를 사용하면 된다.  
-     그러면 테이블들을 동시에 덤프한다.  병렬 처리 수준은 <command>-j</command> 매개변수로 조절할 수 있다.  병렬적 덤프는 “디렉터리” 아카이브 형식만 지원한다.  
+     그러면 테이블들을 동시에 덤프한다.  병렬 처리 수준은 <command>-j</command> 매개 변수로 조절할 수 있다.  병렬적 덤프는 “디렉터리” 아카이브 형식만 지원한다.  
 
 <programlisting>
 pg_dump -j <replaceable class="parameter">num</replaceable> -F d -f <replaceable class="parameter">out.dir</replaceable> <replaceable class="parameter">dbname</replaceable>
@@ -611,10 +611,10 @@ tar -cf backup.tar /usr/local/pgsql/data
 
    <para>
     WAL 아카이브 파일을 만드려면, 
-    <xref linkend="guc-wal-level"> 환경설정 매개변수의 값으로
+    <xref linkend="guc-wal-level"> 환경 설정 매개 변수의 값으로
     <literal>replica</> 또는 그 이상으로 지정한다.
-    다음, <xref linkend="guc-archive-mode"> 환경설정 매개변수 값은 <literal>on</>,
-    <xref linkend="guc-archive-command"> 환경설정 매개변수 값에는 
+    다음, <xref linkend="guc-archive-mode"> 환경 설정 매개 변수 값은 <literal>on</>,
+    <xref linkend="guc-archive-command"> 환경 설정 매개 변수 값에는 
     적당한 시스템 명령어를 지정한다. 이 설정은 모두 <filename>postgresql.conf</filename>
     파일 안에서 설정한다.
     <varname>archive_command</> 값으로 지정할 쉘 명령어에는
@@ -1441,7 +1441,7 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
           베이스 백업에서 언급했던 것처럼 독립된 핫백업 서버를 구축하는 
           가장 손쉬운 방법은 <xref linkend="app-pgbasebackup"> 툴을 이용해서 
           베이스 백업을 받는 것이다. 
-          <xref linkend="app-pgbasebackup">을 호출할 때 <literal>-X</> 매개변수를 쓰면 사용되는 트랜잭션 로그 전체가 백업에 자동으로 쓰이고, 
+          <xref linkend="app-pgbasebackup">을 호출할 때 <literal>-X</> 매개 변수를 쓰면 사용되는 트랜잭션 로그 전체가 백업에 자동으로 쓰이고, 
           그 이상의 작업은 필요 없다. 
 
      </para>

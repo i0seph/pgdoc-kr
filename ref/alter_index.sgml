@@ -85,7 +85,7 @@ ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RE
     <listitem>
      <para>
           이 구문은 해당 인덱스의 저장 방식에 대한 옵션을 변경 할 수 있는 
-          저장옵션 매개변수값을 지정할 수 있다.  이 매개변수에 대한 
+          저장옵션 매개 변수값을 지정할 수 있다.  이 매개 변수에 대한 
           자세한 설명은 <xref linkend="SQL-CREATEINDEX"> 명령에서 
           소개하고 있다.  이 명령으로 지정한 값은 실재 인덱스에 바로 
           적용되지 않는다는 점을 기억해야한다.  <xref linkend="SQL-REINDEX">
@@ -98,7 +98,7 @@ ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RE
     <term><literal>RESET ( <replaceable class="PARAMETER">저장옵션_매개변수명</replaceable> [, ... ] )</literal></term>
     <listitem>
      <para>
-          지정한 저장옵션 매개변수에 대해서 시스템 초기값으로 되돌리는 작업을 
+          지정한 저장 옵션 매개 변수에 대해서 시스템 초기값으로 되돌리는 작업을 
           한다.  이 작업 또한 <literal>SET</> 구문의 사용법처럼, 
           <literal>REINDEX</literal> 작업을 해주어야 반영된다.
      </para>
@@ -155,7 +155,7 @@ ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RE
       <term><replaceable class="PARAMETER">저장옵션_매개변수명</replaceable></term>
       <listitem>
        <para>
-            변경할 인덱스 저장 옵션의 매개변수명.
+            변경할 인덱스 저장 옵션의 매개 변수명.
        </para>
       </listitem>
      </varlistentry>
@@ -164,7 +164,7 @@ ALTER INDEX [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> RE
       <term><replaceable class="PARAMETER">값</replaceable></term>
       <listitem>
        <para>
-            인덱스 저장 옵션 매개변수의 값.  이 값은 해당 매개변수 값으로
+            인덱스 저장 옵션 매개 변수의 값.  이 값은 해당 매개 변수 값으로
                 사용할 수 있는 숫자이거나 문자열이여야한다.
        </para>
       </listitem>

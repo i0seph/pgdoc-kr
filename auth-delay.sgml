@@ -22,14 +22,14 @@
  </para>
 
  <sect2>
-  <title>환경 설정 매개변수</title>
+  <title>환경 설정 매개 변수</title>
 
   <variablelist>
    <varlistentry>
     <term>
      <varname>auth_delay.milliseconds</varname> (<type>int</type>)
     <indexterm>
-     <primary><varname>auth_delay.milliseconds</> 환경설정 매개변수</primary>
+     <primary><varname>auth_delay.milliseconds</> 환경 설정 매개 변수</primary>
     </indexterm>
     </term>
     <listitem>
