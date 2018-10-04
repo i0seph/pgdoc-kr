@@ -16,54 +16,53 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE TABLE AS</refname>
-  <refpurpose>define a new table from the results of a query</refpurpose>
+  <refpurpose>쿼리 결과로 새 테이블 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXISTS ] <replaceable>table_name</replaceable>
-    [ (<replaceable>column_name</replaceable> [, ...] ) ]
-    [ WITH ( <replaceable class="PARAMETER">storage_parameter</replaceable> [= <replaceable class="PARAMETER">value</replaceable>] [, ... ] ) | WITH OIDS | WITHOUT OIDS ]
+CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXISTS ] <replaceable>테이블이름</replaceable>
+    [ (<replaceable>칼럼이름</replaceable> [, ...] ) ]
+    [ WITH ( <replaceable class="PARAMETER">저장_매개변수</replaceable> [= <replaceable class="PARAMETER">값</replaceable>] [, ... ] ) | WITH OIDS | WITHOUT OIDS ]
     [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
-    [ TABLESPACE <replaceable class="PARAMETER">tablespace_name</replaceable> ]
-    AS <replaceable>query</replaceable>
+    [ TABLESPACE <replaceable class="PARAMETER">테이블스페이스이름</replaceable> ]
+    AS <replaceable>쿼리</replaceable>
     [ WITH [ NO ] DATA ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE TABLE AS</command> creates a table and fills it
-   with data computed by a <command>SELECT</command> command.
-   The table columns have the
-   names and data types associated with the output columns of the
-   <command>SELECT</command> (except that you can override the column
-   names by giving an explicit list of new column names).
+   <command>CREATE TABLE AS</command> 명령은
+   <command>SELECT</command> 명령 결과를 새 테이블로 만든다.
+   만들어지는 테이블의 칼럼 이름과 자료형은
+   <command>SELECT</command> 명령 출력 칼럼을 사용한다.
+   (물론 칼럼 이름은 새로 지정할 있다.)
   </para>
 
   <para>
-   <command>CREATE TABLE AS</command> bears some resemblance to
-   creating a view, but it is really quite different: it creates a new
-   table and evaluates the query just once to fill the new table
-   initially.  The new table will not track subsequent changes to the
-   source tables of the query.  In contrast, a view re-evaluates its
-   defining <command>SELECT</command> statement whenever it is
-   queried.
+   <command>CREATE TABLE AS</command> 명령은 결과적으로 보면
+   뷰를 만드는 것과 비슷하지만, 내부적으로는 전혀 다른 것이다.
+   이 명령이 실행되면, 새 테이블이 만들어지고, 그 안에 쿼리 
+   결과가 물리적으로 채워진다.  그래서, 원본 테이블의 자료와 
+   별개의 자료가 된다.  반면, 뷰는 뷰를 조회할 때마다, 
+   뷰를 만들 때 지정한 쿼리를 실행하는 형태여서, 
+   원본 테이블의 자료가 바뀌면 뷰의 결과도 바뀐다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
    <varlistentry>
-    <term><literal>GLOBAL</literal> or <literal>LOCAL</literal></term>
+    <term><literal>GLOBAL</literal> 또는 <literal>LOCAL</literal></term>
     <listitem>
      <para>
-      Ignored for compatibility.  Use of these keywords is deprecated;
-      refer to <xref linkend="sql-createtable"> for details.
+      이 옵션은 호환성 때문에 있으며, 지금은 사용하지 않는다.
+      <xref linkend="sql-createtable"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -71,11 +70,11 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
 
   <variablelist>
    <varlistentry>
-    <term><literal>TEMPORARY</> or <literal>TEMP</></term>
+    <term><literal>TEMPORARY</> 또는 <literal>TEMP</></term>
     <listitem>
      <para>
-      If specified, the table is created as a temporary table.
-      Refer to <xref linkend="sql-createtable"> for details.
+      이 옵션을 사용하면, 임시 테이블로 만든다.
+      <xref linkend="sql-createtable"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -84,8 +83,8 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     <term><literal>UNLOGGED</></term>
     <listitem>
      <para>
-      If specified, the table is created as an unlogged table.
-      Refer to <xref linkend="sql-createtable"> for details.
+      이 옵션을 사용하면, 미리 쓰기 로그를 남기지 않는 테이블로 만든다.
+      <xref linkend="sql-createtable"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -94,45 +93,45 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     <term><literal>IF NOT EXISTS</></term>
     <listitem>
      <para>
-      Do not throw an error if a relation with the same name already exists.
-      A notice is issued in this case. Refer to <xref linkend="sql-createtable">
-      for details.
+      해당 이름의 개체가 있으면 오류로 처리하지 않고 알림 메시지만 보이고, 
+      작업을 중지한다.
+      <xref linkend="sql-createtable"> 참조
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>table_name</replaceable></term>
+    <term><replaceable>테이블이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the table to be created.
+      새로 만들 테이블 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>column_name</replaceable></term>
+    <term><replaceable>칼럼이름</replaceable></term>
     <listitem>
      <para>
-      The name of a column in the new table.  If column names are not
-      provided, they are taken from the output column names of the query.
+      새 테이블의 칼럼 이름.  칼럼 이름을 지정하지 않으면,
+      쿼리 결과에서 출력된 칼럼 이름을 사용한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>WITH ( <replaceable class="PARAMETER">storage_parameter</replaceable> [= <replaceable class="PARAMETER">value</replaceable>] [, ... ] )</literal></term>
+    <term><literal>WITH ( <replaceable class="PARAMETER">저장_매개변수</replaceable> [= <replaceable class="PARAMETER">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
-      This clause specifies optional storage parameters for the new table;
-      see <xref linkend="sql-createtable-storage-parameters"
-      endterm="sql-createtable-storage-parameters-title"> for more
-      information.  The <literal>WITH</> clause
-      can also include <literal>OIDS=TRUE</> (or just <literal>OIDS</>)
-      to specify that rows of the new table
-      should have OIDs (object identifiers) assigned to them, or
-      <literal>OIDS=FALSE</> to specify that the rows should not have OIDs.
-      See <xref linkend="sql-createtable"> for more information.
+      만들 새 테이블의 저장 매개 변수를 지정한다:
+      <xref linkend="sql-createtable-storage-parameters"
+      endterm="sql-createtable-storage-parameters-title">에서 
+      이 변수들을 자세히 다룬다.
+      또한, 테이블 로우의 고유 OID를 지정하고자 할 때는
+      <literal>OIDS=TRUE</> (또는 그냥 <literal>OIDS</>) 를,
+      OID를 사용하지 않을 때는 <literal>OIDS=FALSE</> 형태의
+      구문을 사용할 수 있다.
+      <xref linkend="sql-createtable"> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -142,10 +141,10 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     <term><literal>WITHOUT OIDS</></term>
     <listitem>
      <para>
-      These are obsolescent syntaxes equivalent to <literal>WITH (OIDS)</>
-      and <literal>WITH (OIDS=FALSE)</>, respectively.  If you wish to give
-      both an <literal>OIDS</> setting and storage parameters, you must use
-      the <literal>WITH ( ... )</> syntax; see above.
+      이 구문은 더 이상 쓰지 않는다. OID 관련 설정은 
+      저장 매개 변수로 처리하는 것이 일관성이 있음으로
+      <literal>WITH (OIDS)</>, <literal>WITH (OIDS=FALSE)</> 형태로
+      사용하는 것이 좋다.  윗 설명 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -154,17 +153,17 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     <term><literal>ON COMMIT</literal></term>
     <listitem>
      <para>
-      The behavior of temporary tables at the end of a transaction
-      block can be controlled using <literal>ON COMMIT</literal>.
-      The three options are:
+      만드는 테이블이 임시 테이블이고, 
+      이 테이블이 트랜잭션 블럭 안에서 사용된 경우,
+      그 트랜잭션이 커밋 되었을 때 그 임시 테이블을 어떻게 할지를 지정한다.
+      세가지 옵션이 있다:
 
       <variablelist>
        <varlistentry>
         <term><literal>PRESERVE ROWS</literal></term>
         <listitem>
          <para>
-          No special action is taken at the ends of transactions.
-          This is the default behavior.
+          특별히 다른 조작 없이 그대로 둔다.
          </para>
         </listitem>
        </varlistentry>
@@ -173,10 +172,9 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
         <term><literal>DELETE ROWS</literal></term>
         <listitem>
          <para>
-          All rows in the temporary table will be deleted at the end
-          of each transaction block.  Essentially, an automatic <xref
-          linkend="sql-truncate"> is done
-          at each commit.
+          자료만 다 지워 빈 테이블로 만든다.
+          매번 커밋 될 때마다, 자동으로 <xref
+          linkend="sql-truncate"> 명령을 수행하는 것과 같다.
          </para>
         </listitem>
        </varlistentry>
@@ -185,8 +183,7 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
         <term><literal>DROP</literal></term>
         <listitem>
          <para>
-          The temporary table will be dropped at the end of the current
-          transaction block.
+          트랜잭션이 커밋 되면 임시 테이블을 지운다.
          </para>
         </listitem>
        </varlistentry>
@@ -195,27 +192,25 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
    </varlistentry>
 
    <varlistentry>
-    <term><literal>TABLESPACE <replaceable class="PARAMETER">tablespace_name</replaceable></literal></term>
+    <term><literal>TABLESPACE <replaceable class="PARAMETER">테이블스페이스이름</replaceable></literal></term>
     <listitem>
      <para>
-      The <replaceable class="PARAMETER">tablespace_name</replaceable> is the name
-      of the tablespace in which the new table is to be created.
-      If not specified,
-      <xref linkend="guc-default-tablespace"> is consulted, or
-      <xref linkend="guc-temp-tablespaces"> if the table is temporary.
+      해당 테이블이 사용하는 테이블스페이스 이름.
+      지정하지 않으면, 일반 테이블은
+      <xref linkend="guc-default-tablespace"> 테이블스페이스를 사용하며,
+      임시 테이블은
+      <xref linkend="guc-temp-tablespaces"> 테이블스페이스를 사용한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable>query</replaceable></term>
+    <term><replaceable>쿼리</replaceable></term>
     <listitem>
      <para>
-      A <xref linkend="sql-select">, <link
-      linkend="sql-table">TABLE</link>, or <xref linkend="sql-values">
-      command, or an <xref linkend="sql-execute"> command that runs a
-      prepared <command>SELECT</>, <command>TABLE</>, or
-      <command>VALUES</> query.
+      <xref linkend="sql-select">, <link
+      linkend="sql-table">TABLE</link>, 또는 <xref linkend="sql-values">
+      명령, 또는 미리 준비된 <command>SELECT</>, <command>TABLE</>, <command>VALUES</> 명령을 실행하는 <xref linkend="sql-execute"> 명령
      </para>
     </listitem>
    </varlistentry>
@@ -224,9 +219,9 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     <term><literal>WITH [ NO ] DATA</></term>
     <listitem>
      <para>
-      This clause specifies whether or not the data produced by the query
-      should be copied into the new table.  If not, only the table structure
-      is copied.  The default is to copy the data.
+      테이블을 만든 뒤 그 테이블에 자료를 채울 것인지 지정한다.
+      채우지 않으면 빈 테이블로 만들어진다.
+      기본값은 자료를 채운다.
      </para>
     </listitem>
    </varlistentry>
@@ -235,32 +230,33 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   This command is functionally similar to <xref
-   linkend="sql-selectinto">, but it is
-   preferred since it is less likely to be confused with other uses of
-   the <command>SELECT INTO</> syntax. Furthermore, <command>CREATE
-   TABLE AS</command> offers a superset of the functionality offered
-   by <command>SELECT INTO</command>.
+   이 명령은 기능적으로 <xref
+   linkend="sql-selectinto"> 명령과 비슷하지만, 
+   <command>SELECT INTO</> 문법의 다른 용도와
+   덜 헷갈려 더 선호된다.
+   나아가, <command>SELECT INTO</command> 명령이 할 수 있는
+   기능보다 더 많은 기능을 제공하고 있다.
   </para>
 
   <para>
-   The <command>CREATE TABLE AS</command> command allows the user to
-   explicitly specify whether OIDs should be included. If the
-   presence of OIDs is not explicitly specified,
-   the <xref linkend="guc-default-with-oids"> configuration variable is
-   used.
+   <command>CREATE TABLE AS</command> 명령은 테이블을 만들 때, 
+   OID를 사용할 것인지를 지정할 수 있다.
+   이것을 지정하지 않으면, 
+   <xref linkend="guc-default-with-oids"> 환경 설정 변수 값을 
+   기준으로 처리한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create a new table <literal>films_recent</literal> consisting of only
-   recent entries from the table <literal>films</literal>:
+   <literal>films</literal> 테이블에서 최근 자료만 뽑아서
+   <literal>films_recent</literal> 테이블을 만들어 그곳에 따로 보관 하는 경우:
+   (따로 보관하기 보다는 복사해 놓는다는 것이 더 맞다)
 
 <programlisting>
 CREATE TABLE films_recent AS
@@ -269,8 +265,8 @@ CREATE TABLE films_recent AS
   </para>
 
   <para>
-   To copy a table completely, the short form using
-   the <literal>TABLE</literal> command can also be used:
+   <literal>TABLE</literal> 명령을 이용해서 
+   테이블 전체를 복사하는 경우:
 
 <programlisting>
 CREATE TABLE films2 AS
@@ -279,9 +275,10 @@ CREATE TABLE films2 AS
   </para>
 
   <para>
-   Create a new temporary table <literal>films_recent</literal>, consisting of
-   only recent entries from the table <literal>films</literal>, using a
-   prepared statement.  The new table has OIDs and will be dropped at commit:
+   미리 준비된 구문으로 자료 범위를 지정하고, 
+   EXECUTE 명령으로 실행해서, 
+   해당 트랜잭션이 커밋 되면
+   자동 삭제 되는, OID를 가진 임시 테이블을 만드는 경우:
 
 <programlisting>
 PREPARE recentfilms(date) AS
@@ -292,55 +289,53 @@ CREATE TEMP TABLE films_recent WITH (OIDS) ON COMMIT DROP AS
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE TABLE AS</command> conforms to the <acronym>SQL</acronym>
-   standard.  The following are nonstandard extensions:
+   <command>CREATE TABLE AS</command> 구문은 <acronym>SQL</acronym>
+   표준이다.  다음은 표준이 아닌 확장 기능이다:
 
    <itemizedlist spacing="compact">
     <listitem>
      <para>
-      The standard requires parentheses around the subquery clause; in
-      <productname>PostgreSQL</productname>, these parentheses are
-      optional.
+      표준에서는 서브쿼리절에는 괄호가 필요하지만,
+      <productname>PostgreSQL</productname>에서는 괄호가 선택사항이다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the standard, the <literal>WITH [ NO ] DATA</literal> clause
-      is required; in PostgreSQL it is optional.
+      표준에서는 <literal>WITH [ NO ] DATA</literal> 절이 필수지만,
+      PostgreSQL에서는 선택 사항이다.
      </para>
     </listitem>
 
     <listitem>
-     <para><productname>PostgreSQL</> handles temporary tables in a way
-      rather different from the standard; see
-      <xref linkend="sql-createtable">
-      for details.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      The <literal>WITH</> clause is a <productname>PostgreSQL</productname>
-      extension; neither storage parameters nor OIDs are in the standard.
+     <para><productname>PostgreSQL</>에서는 임시 테이블 처리도 가능하다.
+      <xref linkend="sql-createtable"> 참조.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      The <productname>PostgreSQL</productname> concept of tablespaces is not
-      part of the standard.  Hence, the clause <literal>TABLESPACE</literal>
-      is an extension.
+      표준에는 없는 OID 처리나
+      <literal>WITH</> 절은 <productname>PostgreSQL</productname> 확장
+      기능이다.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      테이블스페이스 개념도 표준이 아닌, 
+      <productname>PostgreSQL</productname> 자체 개념임으로,
+      <literal>TABLESPACE</literal> 옵션도 확장 기능이다.
      </para>
     </listitem>
    </itemizedlist></para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-creatematerializedview"></member>
