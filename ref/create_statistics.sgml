@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE STATISTICS</refname>
-  <refpurpose>define extended statistics</refpurpose>
+  <refpurpose>새 확장된 통계 정보 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
