@@ -21,35 +21,35 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">statistics_name</replaceable>
-    [ ( <replaceable class="PARAMETER">statistics_kind</replaceable> [, ... ] ) ]
-    ON <replaceable class="PARAMETER">column_name</replaceable>, <replaceable class="PARAMETER">column_name</replaceable> [, ...]
-    FROM <replaceable class="PARAMETER">table_name</replaceable>
+CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름</replaceable>
+    [ ( <replaceable class="PARAMETER">통계종류</replaceable> [, ... ] ) ]
+    ON <replaceable class="PARAMETER">칼럼이름</replaceable>, <replaceable class="PARAMETER">칼럼이름</replaceable> [, ...]
+    FROM <replaceable class="PARAMETER">테이블이름</replaceable>
 </synopsis>
 
  </refsynopsisdiv>
 
  <refsect1 id="SQL-CREATESTATISTICS-description">
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE STATISTICS</command> will create a new extended statistics
-   object tracking data about the specified table, foreign table or
-   materialized view.  The statistics object will be created in the current
-   database and will be owned by the user issuing the command.
+   <command>CREATE STATISTICS</command> 명령은
+   지정한 테이블, 외부 테이블, 구체화한 뷰를 대상으로
+   새로운 통계 정보를 만든다.  해당 통계 정보의 소유주는
+   이 명령을 실행하는 사용자가 된다. 
   </para>
 
   <para>
-   If a schema name is given (for example, <literal>CREATE STATISTICS
-   myschema.mystat ...</>) then the statistics object is created in the
-   specified schema.  Otherwise it is created in the current schema.
-   The name of the statistics object must be distinct from the name of any
-   other statistics object in the same schema.
+   통계 정보 이름에 스키마 이름을 포함하면(예,
+   <literal>CREATE STATISTICS
+   myschema.mystat ...</>) 해당 스키마 안에 만든다.
+   스키마 이름이 없으면, 현재 스키마 안에 만든다.
+   통계 정보 이름은 같은 스키마 내에서는 유일해야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
 
@@ -57,57 +57,53 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">statistics_na
     <term><literal>IF NOT EXISTS</></term>
     <listitem>
      <para>
-      Do not throw an error if a statistics object with the same name already
-      exists.  A notice is issued in this case.  Note that only the name of
-      the statistics object is considered here, not the details of its
-      definition.
+      이미 같은 이름의 통계 정보가 있으면 알림 메시지만 보이고, 
+      무시한다.  같은 이름이 있는지만 확인하기 때문에, 
+      정확히 같은 통계인지는 확인하지 않는다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">statistics_name</replaceable></term>
+    <term><replaceable class="PARAMETER">통계이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the statistics object to be
-      created.
+      만들 사용자 정의 통계 정보 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">statistics_kind</replaceable></term>
+    <term><replaceable class="PARAMETER">통계종류</replaceable></term>
     <listitem>
      <para>
-      A statistics kind to be computed in this statistics object.
-      Currently supported kinds are
-      <literal>ndistinct</literal>, which enables n-distinct statistics, and
-      <literal>dependencies</literal>, which enables functional
-      dependency statistics.
-      If this clause is omitted, all supported statistics kinds are
-      included in the statistics object.
-      For more information, see <xref linkend="planner-stats-extended">
-      and <xref linkend="multivariate-statistics-examples">.
+      이 통계 정보 개체의 통계 종류.
+      현재, n-distinct 통계용 <literal>ndistinct</literal>,
+      기능적 의존성 통계용 <literal>dependencies</literal>
+      두 종류를 지원한다.
+      이 옵션을 생략하면, 만들어지는 통계 정보에, 
+      두 종류 모든 통계를 보관한다.
+      <xref linkend="planner-stats-extended">,
+      <xref linkend="multivariate-statistics-examples">에서 이 부분에 
+      대한 자세한 내용을 다룬다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">column_name</replaceable></term>
+    <term><replaceable class="PARAMETER">칼럼이름</replaceable></term>
     <listitem>
      <para>
-      The name of a table column to be covered by the computed statistics.
-      At least two column names must be given.
+      통계 정보를 수집할 칼럼 이름.  최소 두 개 이상 지정해야 한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">table_name</replaceable></term>
+    <term><replaceable class="PARAMETER">테이블이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the table containing the
-      column(s) the statistics are computed on.
+      통계 정보를 수집할 해당 테이블 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
@@ -116,23 +112,22 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">statistics_na
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   You must be the owner of a table to create a statistics object
-   reading it.  Once created, however, the ownership of the statistics
-   object is independent of the underlying table(s).
+   사용자 정의 통계를 만드려면, 해당 테이블의 소유주여야 한다.
+   한 번 만들어진 통계는 해당 테이블에 종속되어 
+   소유주는 테이블의 소유주에 따라 자동으로 바뀐다.
   </para>
  </refsect1>
 
  <refsect1 id="SQL-CREATESTATISTICS-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create table <structname>t1</> with two functionally dependent columns, i.e.
-   knowledge of a value in the first column is sufficient for determining the
-   value in the other column. Then functional dependency statistics are built
-   on those columns:
+   <structname>t1</> 테이블에는 두 개의 칼럼이 있는데, 
+   이 칼럼은 기능적으로 서로 의존적이다.  아래의 경우는 
+   첫번째 칼럼이 100단위, 두번째 칼럼이 500단위다.
 
 <programlisting>
 CREATE TABLE t1 (
@@ -145,37 +140,38 @@ INSERT INTO t1 SELECT i/100, i/500
 
 ANALYZE t1;
 
--- the number of matching rows will be drastically underestimated:
+-- 실행 계획은 실 자료보다 적게 해당 자료를 예측한다.
 EXPLAIN ANALYZE SELECT * FROM t1 WHERE (a = 1) AND (b = 0);
 
 CREATE STATISTICS s1 (dependencies) ON a, b FROM t1;
 
 ANALYZE t1;
 
--- now the row count estimate is more accurate:
+-- 보다 정확하게 예측한다.
 EXPLAIN ANALYZE SELECT * FROM t1 WHERE (a = 1) AND (b = 0);
 </programlisting>
 
-   Without functional-dependency statistics, the planner would assume
-   that the two <literal>WHERE</> conditions are independent, and would
-   multiply their selectivities together to arrive at a much-too-small
-   row count estimate.
-   With such statistics, the planner recognizes that the <literal>WHERE</>
-   conditions are redundant and does not underestimate the rowcount.
+   기능적 의존 관계가 있는 통계 정보를 사용하지 않으면, 
+   실행 계획기는,
+   <literal>WHERE</> 조건이 두 개인 경우, 각 예측 값의 AND 연산를 
+   해서 실 자료보다 훨씬 적은 예측값을 사용하게 된다.
+   이런 사용자 정의 통계 정보를 만들면,
+   <literal>WHERE</> 조건절에 다중 칼럼을 사용하는 경우, 
+   보다 정확한 예측을 할 수 있도록 한다.
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   There is no <command>CREATE STATISTICS</command> command in the SQL standard.
+   <command>CREATE STATISTICS</command> 명령은 SQL 표준이 아니다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterstatistics"></member>
