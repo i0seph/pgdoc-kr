@@ -34,43 +34,46 @@ CREATE [ TEMPORARY | TEMP ] SEQUENCE [ IF NOT EXISTS ] <replaceable class="param
   <title>설명</title>
 
   <para>
-   <command>CREATE SEQUENCE</command> creates a new sequence number
-   generator.  This involves creating and initializing a new special
-   single-row table with the name <replaceable
-   class="parameter">name</replaceable>.  The generator will be
-   owned by the user issuing the command.
+   <command>CREATE SEQUENCE</command> 명령은 
+   일련번호 생성기인 시퀀스를 만든다.
+   이 작업은 내부적으로 지정한 <replaceable
+   class="parameter">이름</replaceable>으로 된 
+   단일 로우 특수 테이블을 만들고, 그 로우 값을 초기화하는 작업을 한다.
+   이 명령을 실행하는 
+   사용자가 해당 시퀀스의 소유주가 된다.
   </para>
 
   <para>
-   If a schema name is given then the sequence is created in the
-   specified schema.  Otherwise it is created in the current schema.
-   Temporary sequences exist in a special schema, so a schema name cannot be
-   given when creating a temporary sequence.
-   The sequence name must be distinct from the name of any other sequence,
-   table, index, view, or foreign table in the same schema.
+   시퀀스 이름에 스키마 이름을 포함하면, 해당 스키마 안에 만든다.
+   스키마 이름이 생략되면 현재 스키마 안에 만든다.
+   임시 시퀀스는 임시 스키마 안에 만들어지기 때문에, 
+   임시 시퀀스를 만들 때는 스키마 이름을 사용할 수 없다.
+   해당 시퀀스 이름은 해당 스키마 내에서,
+   시퀀스, 테이블, 인덱스, 뷰, 외부 테이블 이름과 겹칠 수 없다.
   </para>
 
   <para>
-   After a sequence is created, you use the functions
+   시퀀스를 만든 다음, 그 조작은
    <function>nextval</function>,
-   <function>currval</function>, and
-   <function>setval</function>
-   to operate on the sequence.  These functions are documented in
-   <xref linkend="functions-sequence">.
+   <function>currval</function>,
+   <function>setval</function> 함수로 한다.
+   이 함수에 대한 설명은
+   <xref linkend="functions-sequence">에서 한다.
   </para>
 
   <para>
-   Although you cannot update a sequence directly, you can use a query like:
+   시퀀스는 특수 용도 테이블이기 때문에 다음과 같은 쿼리를 사용할 수는
+   있지만, 이 테이블을 직접 조작하면 안된다:
 
 <programlisting>
 SELECT * FROM <replaceable>name</replaceable>;
 </programlisting>
 
-   to examine the parameters and current state of a sequence.  In particular,
-   the <literal>last_value</> field of the sequence shows the last value
-   allocated by any session.  (Of course, this value might be obsolete
-   by the time it's printed, if other sessions are actively doing
-   <function>nextval</> calls.)
+   이 명령으로 해당 시퀀스의 속성과 현재 상태를 살펴볼 있다.
+   특히, <literal>last_value</> 칼럼 값은 모든 세션에 아우른 가장
+   마지막 값이다.  (물론, 이 명령을 실행하는 시점의 값이다.
+   다른 세션에서 <function>nextval</> 함수를 호출 해서 바뀌었을 수도
+   있다.)
   </para>
  </refsect1>
 
@@ -79,14 +82,18 @@ SELECT * FROM <replaceable>name</replaceable>;
 
   <variablelist>
    <varlistentry>
-    <term><literal>TEMPORARY</literal> or <literal>TEMP</literal></term>
+    <term><literal>TEMPORARY</literal> 또는 <literal>TEMP</literal></term>
     <listitem>
      <para>
-      If specified, the sequence object is created only for this
-      session, and is automatically dropped on session exit.  Existing
-      permanent sequences with the same name are not visible (in this
-      session) while the temporary sequence exists, unless they are
-      referenced with schema-qualified names.
+      이 옵션을 사용하면 현재 세션에서만 사용하는 시퀀스를 만든다.
+      세션이 종료되면 시퀀스는 자동 삭제된다. 
+      같은 이름의 일반 시퀀스가 이미 있는데, 같은 이름의 임시
+      시퀀스를 만들고,
+      시퀀스를 사용할 때, 스키마 이름을 지정하지 않는다면,
+      그 세션 안에서는 search_path 기본 정책에 따라
+      임시 시퀀스가 사용된다.  일반 시퀀스를 사용하려면, 반드시
+      스키마 이름을 지정해야한다. (또는 pg_temp 스키마를 search_path 값 
+      맨 뒤에 지정하던가 - 옮긴이)
      </para>
     </listitem>
    </varlistentry>
@@ -95,106 +102,107 @@ SELECT * FROM <replaceable>name</replaceable>;
     <term><literal>IF NOT EXISTS</literal></term>
     <listitem>
      <para>
-      Do not throw an error if a relation with the same name already exists.
-      A notice is issued in this case. Note that there is no guarantee that
-      the existing relation is anything like the sequence that would have
-      been created - it might not even be a sequence.
+      같은 이름의 개체가 이미 있다면, 알림 메시지만 보여주고, 
+      이 작업은 무시한다.  이 때 이미 있는 개체가 만들고자 하는 
+      개체와 같은 것인지는 확인하지 않는다. 다만 이름만 확인한다.
+      같은 이름인데, 시퀀스가 아닐 수도 있다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name (optionally schema-qualified) of the sequence to be created.
+      만들고자 하는 시퀀스 이름(스키마 이름 포함).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">data_type</replaceable></term>
+    <term><replaceable class="parameter">자료형</replaceable></term>
     <listitem>
      <para>
-      The optional
-      clause <literal>AS <replaceable class="parameter">data_type</replaceable></literal>
-      specifies the data type of the sequence.  Valid types are
+      <literal>AS <replaceable class="parameter">자료형</replaceable></literal>
+      옵션으로 해당 시퀀스 일련번호의 자료형을 지정한다.
+      사용할 수 있는 자료형은,
       <literal>smallint</literal>, <literal>integer</literal>,
-      and <literal>bigint</literal>.  <literal>bigint</literal> is the
-      default.  The data type determines the default minimum and maximum
-      values of the sequence.
+      and <literal>bigint</literal> 세 종류다.
+      <literal>bigint</literal>형이 기본값이다.
+      해당 시퀀스의 최소값, 최대값을 따로 지정하지 않으면,
+      이 자료형 기준으로 할당된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">increment</replaceable></term>
+    <term><replaceable class="parameter">증가값</replaceable></term>
     <listitem>
      <para>
-      The optional clause <literal>INCREMENT BY <replaceable
-      class="parameter">increment</replaceable></literal> specifies
-      which value is added to the current sequence value to create a
-      new value.  A positive value will make an ascending sequence, a
-      negative one a descending sequence.  The default value is 1.
+      <literal>INCREMENT BY <replaceable
+      class="parameter">증가값</replaceable></literal> 옵션으로
+      다음 값을 구할 때(채번할 때) 이 증가값을 보태서 구한다.
+      이 값이 양수면 증가 시퀀스가 되고, 음수면 감소 시퀀스가 된다.
+      기본값은 1이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">minvalue</replaceable></term>
+    <term><replaceable class="parameter">최소값</replaceable></term>
     <term><literal>NO MINVALUE</literal></term>
     <listitem>
      <para>
-      The optional clause <literal>MINVALUE <replaceable
-      class="parameter">minvalue</replaceable></literal> determines
-      the minimum value a sequence can generate. If this clause is not
-      supplied or <option>NO MINVALUE</option> is specified, then
-      defaults will be used.  The default for an ascending sequence is 1.  The
-      default for a descending sequence is the minimum value of the data type.
+      해당 시퀀스 일련 번호 범위의 최소값.
+      이 옵션을 사용하지 않거나, 
+      <option>NO MINVALUE</option> 옵션을 사용하면, 
+      기본값이 사용된다.
+      기본값은  증가 시퀀스인 경우는 1,
+      감소 시퀀스인 경우는 해당 자료형으로 다룰 수 있는 제일 작은 값이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">maxvalue</replaceable></term>
+    <term><replaceable class="parameter">최대값</replaceable></term>
     <term><literal>NO MAXVALUE</literal></term>
     <listitem>
      <para>
-      The optional clause <literal>MAXVALUE <replaceable
-      class="parameter">maxvalue</replaceable></literal> determines
-      the maximum value for the sequence. If this clause is not
-      supplied or <option>NO MAXVALUE</option> is specified, then
-      default values will be used.  The default for an ascending sequence is
-      the maximum value of the data type.  The default for a descending
-      sequence is -1.
+      해당 시퀀스 일련 번호 범위의 최소값.
+      이 옵션을 사용하지 않거나, 
+      <option>NO MAXVALUE</option> 옵션을 사용하면, 
+      기본값이 사용된다.
+      기본값은 증가 시퀀스인 경우는 해당 자료형으로 다룰 수 있는 제일
+      큰 값이며, 감소 시퀀스인 경우는 -1 이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">start</replaceable></term>
+    <term><replaceable class="parameter">시작값</replaceable></term>
     <listitem>
      <para>
-      The optional clause <literal>START WITH <replaceable
-      class="parameter">start</replaceable> </literal> allows the
-      sequence to begin anywhere.  The default starting value is
-      <replaceable class="parameter">minvalue</replaceable> for
-      ascending sequences and <replaceable
-      class="parameter">maxvalue</replaceable> for descending ones.
+      <literal>START WITH <replaceable
+      class="parameter">시작값</replaceable> </literal> 옵션을 사용하면,
+      시퀀스를 만들어 처음 사용할 때 구하는 값이다.
+      기본값은 증가 시퀀스인 경우는
+      <replaceable class="parameter">최소값</replaceable>이며,
+      감소 시퀀스인 경우는 
+      <replaceable class="parameter">최대값</replaceable>이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">cache</replaceable></term>
+    <term><replaceable class="parameter">캐시</replaceable></term>
     <listitem>
      <para>
-      The optional clause <literal>CACHE <replaceable
-      class="parameter">cache</replaceable></literal> specifies how
-      many sequence numbers are to be preallocated and stored in
-      memory for faster access. The minimum value is 1 (only one value
-      can be generated at a time, i.e., no cache), and this is also the
-      default.
+      번호 구하기 작업을 보다 빠르게 하기 위해 메모리에서만 처리하는 
+      캐시값.
+      기본값은 1이다.
+      이 값은 캐시를 사용하지 않고, 매번 디스크를 사용함을 뜻한다.
+      (설명처럼 단순하지 않다. 캐시를 쓸 때는 꼭 아래 캐시 사용시 
+      주의해야할 점을 꼭 읽고 사용해야 한다. - 옮긴이)
      </para>
     </listitem>
    </varlistentry>
@@ -204,38 +212,36 @@ SELECT * FROM <replaceable>name</replaceable>;
     <term><literal>NO CYCLE</literal></term>
     <listitem>
      <para>
-      The <literal>CYCLE</literal> option allows the sequence to wrap
-      around when the <replaceable
-      class="parameter">maxvalue</replaceable> or <replaceable
-      class="parameter">minvalue</replaceable> has been reached by an
-      ascending or descending sequence respectively. If the limit is
-      reached, the next number generated will be the <replaceable
-      class="parameter">minvalue</replaceable> or <replaceable
-      class="parameter">maxvalue</replaceable>, respectively.
+      <literal>CYCLE</literal> 옵션을 사용하면 시퀀스 다음 번호 구하기 작업에서
+      최대값이나, 최소값으로 도달 했을 때, 다음 번호로
+      증감 시퀀스는 최소값부터 다시, 감소 시퀀스는 최대값부터 다시 
+      사용한다.
      </para>
 
      <para>
-      If <literal>NO CYCLE</literal> is specified, any calls to
-      <function>nextval</function> after the sequence has reached its
-      maximum value will return an error.  If neither
-      <literal>CYCLE</literal> or <literal>NO CYCLE</literal> are
-      specified, <literal>NO CYCLE</literal> is the default.
+      <literal>NO CYCLE</literal> 옵션을 사용하면,
+      <function>nextval</function> 작업에서 최대값에 도달하면,
+      오류로 처리한다.
+      <literal>CYCLE</literal>, <literal>NO
+      CYCLE</literal> 둘 다 사용하지 않는다면, 
+      <literal>NO CYCLE</literal> 옵션과 같다. 이것이 기본값이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OWNED BY</literal> <replaceable class="parameter">table_name</replaceable>.<replaceable class="parameter">column_name</replaceable></term>
+    <term><literal>OWNED BY</literal> <replaceable class="parameter">테이블이름</replaceable>.<replaceable class="parameter">칼럼이름</replaceable></term>
     <term><literal>OWNED BY NONE</literal></term>
     <listitem>
      <para>
-      The <literal>OWNED BY</literal> option causes the sequence to be
-      associated with a specific table column, such that if that column
-      (or its whole table) is dropped, the sequence will be automatically
-      dropped as well.  The specified table must have the same owner and be in
-      the same schema as the sequence.
-      <literal>OWNED BY NONE</literal>, the default, specifies that there
-      is no such association.
+      <literal>OWNED BY</literal> 옵션은 지정한 칼럼과 시퀀스가
+      의존 관계를 맺는다.  이렇게 하면,
+      그 테이블이나, 테이블의 칼럼이 지워지면 이 시퀀스도 자동으로
+      함께 지워진다.  이 지정은 기존에 다른 의존관계가 있다하더라도
+      오류 없이 새 의존관계로 처리한다.  테이블의 소유주와,
+      시퀀스의 소유주가 같아야 한다.
+      <literal>OWNED BY NONE</literal> 옵션이 기본값으로,
+      어떠한 의존관계 없이 시퀀스를 만든다.
      </para>
     </listitem>
    </varlistentry>
@@ -243,82 +249,79 @@ SELECT * FROM <replaceable>name</replaceable>;
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Use <command>DROP SEQUENCE</command> to remove a sequence.
+   시퀀스를 지울 때는 <command>DROP SEQUENCE</command> 명령을 사용한다.
   </para>
 
   <para>
-   Sequences are based on <type>bigint</> arithmetic, so the range
-   cannot exceed the range of an eight-byte integer
-   (-9223372036854775808 to 9223372036854775807).
+   시퀀스는 기본적으로 <type>bigint</>형 기반 계산을 한다.
+   그래서, 8 바이트 정수형 범위를 벗어날 수 없다.
+   (-9223372036854775808 ~ 9223372036854775807)
   </para>
 
   <para>
-   Because <function>nextval</> and <function>setval</> calls are never
-   rolled back, sequence objects cannot be used if <quote>gapless</>
-   assignment of sequence numbers is needed.  It is possible to build
-   gapless assignment by using exclusive locking of a table containing a
-   counter; but this solution is much more expensive than sequence
-   objects, especially if many transactions need sequence numbers
-   concurrently.
+   <function>nextval</>, <function>setval</> 함수 호출은 
+   취소가  안된다.  이 때문에, "비지 않는" 일련 번호를
+   처리하는 용도로 사용할 수 없다.
+   이런 비지 않는 일련 번호는 번호 처리용 테이블을 
+   배타적 잠금을 사용해서 구현할 수는 있지만, 
+   이 방법은 시퀀스를 쓰는 것보다 많은 비용이 든다.
+   특히나 동시 사용 빈도가 높은 환경이라면 서비스 품질을 많이 떨어뜨린다. 
   </para>
 
   <para>
-   Unexpected results might be obtained if a <replaceable
-   class="parameter">cache</replaceable> setting greater than one is
-   used for a sequence object that will be used concurrently by
-   multiple sessions.  Each session will allocate and cache successive
-   sequence values during one access to the sequence object and
-   increase the sequence object's <literal>last_value</> accordingly.
-   Then, the next <replaceable class="parameter">cache</replaceable>-1
-   uses of <function>nextval</> within that session simply return the
-   preallocated values without touching the sequence object.  So, any
-   numbers allocated but not used within a session will be lost when
-   that session ends, resulting in <quote>holes</quote> in the
-   sequence.
+   <replaceable
+   class="parameter">캐시</replaceable> 옵션을 사용하는 경우,
+   다중 세션 환경에서는 일련 번호가 순차적으로 구해지지 않는다.
+   다중 세션 환경에서는 각 세션별로 캐시 값 만큼 건너뛰어 
+   다른 세션의 첫 일련번호는 <literal>last_value</> + 
+   <replaceable class="parameter">캐시</replaceable> - 1 값을
+   그 세션의 시작 번호로 사용한다. 
+   즉 시퀀스의 캐시는 한 세션 내에서의 캐시를 의미한다.  이렇게 하여
+   다른 세션에서는 이전 세션에서 아직 사용하지 않은 일련 번호를 
+   아에 사용할 수 없도록 한다.  결국 자료 전체에서 일변 번호가 
+   드문 드문 비는 경우가 발생한다.
+   (일번 번호가 큰 자료가 반드시 작은 일번 번호보다 시간적으로
+   나중에 기록되었다는 보장이 없다. - 옮긴이)
   </para>
 
   <para>
-   Furthermore, although multiple sessions are guaranteed to allocate
-   distinct sequence values, the values might be generated out of
-   sequence when all the sessions are considered.  For example, with
-   a <replaceable class="parameter">cache</replaceable> setting of 10,
-   session A might reserve values 1..10 and return
-   <function>nextval</function>=1, then session B might reserve values
-   11..20 and return <function>nextval</function>=11 before session A
-   has generated <literal>nextval</literal>=2.  Thus, with a
-   <replaceable class="parameter">cache</replaceable> setting of one
-   it is safe to assume that <function>nextval</> values are generated
-   sequentially; with a <replaceable
-   class="parameter">cache</replaceable> setting greater than one you
-   should only assume that the <function>nextval</> values are all
-   distinct, not that they are generated purely sequentially.  Also,
-   <literal>last_value</> will reflect the latest value reserved by
-   any session, whether or not it has yet been returned by
-   <function>nextval</>.
+   더 나아가, 다중 세션 환경 일 때, 일련 번호는 항상 유일한 번호를 
+   제공하는 것은 맞지만,  모든 세션을 고려한 순차적인 일련 번호를 
+   사용해야 하는 경우라면, <replaceable class="parameter">캐시</replaceable>값은
+   1로 지정해야한다.
+   예를 들어
+   <replaceable class="parameter">캐시</replaceable>값이 10인 경우
+   A 세션은 1..10 범위의 일련번호를 사용하고, 
+   동시에 B 세션이 번호 구하기 작업을 하면, 11..20 범위를 사용하게 된다.
+   A 세션의 3번을 구하기 전에, B 세션이 12를 구한다면, 12가 3보다 큼에도
+   불구하고, 먼저 구해진 값이 된다.
+   따라서, 모든 세션을 고려한 안전한 순차적인 일련 번호를 사용하려면,
+   <replaceable class="parameter">캐시</replaceable>값을 1로 설정해야 한다.
   </para>
 
   <para>
-   Another consideration is that a <function>setval</> executed on
-   such a sequence will not be noticed by other sessions until they
-   have used up any preallocated values they have cached.
+   <replaceable class="parameter">캐시</replaceable> 옵션을 사용할 때, 
+   또 기억해야 할 점은, <function>setval</> 함수를 호출 하는 경우, 
+   해당 세션의 캐시 범위를 모두 소진하기 전까지는 반영되지 않는다는 점이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create an ascending sequence called <literal>serial</literal>, starting at 101:
+   이름이 <literal>serial</literal>인, 101부터 시작해서 증가하는 
+   시퀀스 만들기:
 <programlisting>
 CREATE SEQUENCE serial START 101;
 </programlisting>
   </para>
 
   <para>
-   Select the next number from this sequence:
+   이 시퀀스의 다음 값 구하기:
 <programlisting>
 SELECT nextval('serial');
 
@@ -329,7 +332,7 @@ SELECT nextval('serial');
   </para>
 
   <para>
-   Select the next number from this sequence:
+   또 다음 값 구하기:
 <programlisting>
 SELECT nextval('serial');
 
@@ -340,14 +343,14 @@ SELECT nextval('serial');
   </para>
 
   <para>
-   Use this sequence in an <command>INSERT</command> command:
+   이 시퀀스를 <command>INSERT</command> 명령에서 사용하기:
 <programlisting>
 INSERT INTO distributors VALUES (nextval('serial'), 'nothing');
 </programlisting>
   </para>
 
   <para>
-   Update the sequence value after a <command>COPY FROM</command>:
+   <command>COPY FROM</command> 작업 뒤 시퀀스 시작값 바꾸기:
 <programlisting>
 BEGIN;
 COPY distributors FROM 'input_file';
@@ -357,30 +360,31 @@ END;
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE SEQUENCE</command> conforms to the <acronym>SQL</acronym>
-   standard, with the following exceptions:
+   <command>CREATE SEQUENCE</command> 구문은 다음 예외 사항을 빼고는
+   <acronym>SQL</acronym> 표준을 준수한다:
    <itemizedlist>
     <listitem>
      <para>
-      Obtaining the next value is done using the <function>nextval()</>
-      function instead of the standard's <command>NEXT VALUE FOR</command>
-      expression.
+      다음 값 구하기(채번작업)는
+      표준에는 <command>NEXT VALUE FOR</command> 구문을 사용하고, 
+      <productname>PostgreSQL</>에서는 <function>nextval()</> 함수
+      호출로 한다.
      </para>
     </listitem>
     <listitem>
      <para>
-      The <literal>OWNED BY</> clause is a <productname>PostgreSQL</>
-      extension.
+      <literal>OWNED BY</> 구문은 <productname>PostgreSQL</>
+      확장 기능이다.
      </para>
     </listitem>
    </itemizedlist></para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-altersequence"></member>
