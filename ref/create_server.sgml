@@ -16,102 +16,100 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE SERVER</refname>
-  <refpurpose>define a new foreign server</refpurpose>
+  <refpurpose>새 외부 서버 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">server_name</replaceable> [ TYPE '<replaceable class="parameter">server_type</replaceable>' ] [ VERSION '<replaceable class="parameter">server_version</replaceable>' ]
-    FOREIGN DATA WRAPPER <replaceable class="parameter">fdw_name</replaceable>
-    [ OPTIONS ( <replaceable class="PARAMETER">option</replaceable> '<replaceable class="PARAMETER">value</replaceable>' [, ... ] ) ]
+CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">서버이름</replaceable> [ TYPE '<replaceable class="parameter">서버종류</replaceable>' ] [ VERSION '<replaceable class="parameter">서버버전</replaceable>' ]
+    FOREIGN DATA WRAPPER <replaceable class="parameter">fdw이름</replaceable>
+    [ OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE SERVER</command> defines a new foreign server.  The
-   user who defines the server becomes its owner.
+   <command>CREATE SERVER</command> 명령은 외부 서버를 만든다.
+   이 명령을 실행하는 사용자가 해당 외부 서버의 소유주가 된다.
   </para>
 
   <para>
-   A foreign server typically encapsulates connection information that
-   a foreign-data wrapper uses to access an external data resource.
-   Additional user-specific connection information may be specified by
-   means of user mappings.
+   외부 서버란, 외부 자료를 접근하기 위해 사용하는 외부 자료 싸개 
+   foreign-data wrapper 의 접속 정보를 캡슐화한 것이다.  더불어,
+   이 접속에 필요한 사용자와 로컬 데이터베이스 사용자와 연결 mapping 하는
+   작업(CREATE USER MAPPING)도 필요할 수 있다.
   </para>
 
   <para>
-   The server name must be unique within the database.
+   이 서버 이름은 현 데이터베이스 내 유일해야 한다.
   </para>
 
   <para>
-   Creating a server requires <literal>USAGE</> privilege on the
-   foreign-data wrapper being used.
+   외부 서버를 만드려면 이 명령을 실행하는 사용자가 먼저 해당 외부 자료
+   싸개에 대해서 <literal>USAGE</> 권한이 있어야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
   <varlistentry>
     <term><literal>IF NOT EXISTS</></term>
     <listitem>
      <para>
-      Do not throw an error if a server with the same name already exists.
-      A notice is issued in this case.  Note that there is no guarantee that
-      the existing server is anything like the one that would have been
-      created.
+      같은 이름의 외부 서버가 이미 있으면, 알림 메시지만 보이고, 
+      무시한다.  이 때 그 이름만 확인하지, 그 외부 서버가 지금 만들고자
+      하는 외부 서버와 속성까지 같은지는 확인하지 않는다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">server_name</replaceable></term>
+    <term><replaceable class="parameter">서버이름</replaceable></term>
     <listitem>
      <para>
-      The name of the foreign server to be created.
+      새로 만들 외부 서버 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">server_type</replaceable></term>
+    <term><replaceable class="parameter">서버종류</replaceable></term>
     <listitem>
      <para>
-      Optional server type, potentially useful to foreign-data wrappers.
+      서버 종류 옵션, 이것은 외부 자료 싸개 내부 작업에 사용 된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">server_version</replaceable></term>
+    <term><replaceable class="parameter">서버버전</replaceable></term>
     <listitem>
      <para>
-      Optional server version, potentially useful to foreign-data wrappers.
+      서버 버전 옵션, 이것은 외부 자료 싸개 내부 작업에 사용 된다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">fdw_name</replaceable></term>
+    <term><replaceable class="parameter">fdw이름</replaceable></term>
     <listitem>
      <para>
-      The name of the foreign-data wrapper that manages the server.
+      해당 외부 서버에서 사용하는 외부 자료 싸개 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( <replaceable class="PARAMETER">option</replaceable> '<replaceable class="PARAMETER">value</replaceable>' [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] )</literal></term>
     <listitem>
      <para>
-      This clause specifies the options for the server.  The options
-      typically define the connection details of the server, but the
-      actual names and values are dependent on the server's
-      foreign-data wrapper.
+      해당 외부 서버 전용 옵션들.
+      일반적으로 이 옵션은 서버 접속 정보를 포함하며, 
+      각 옵션 이름과 사용할 수 있는 값은 외부 자료 싸개에 의존적이다.
      </para>
     </listitem>
    </varlistentry>
@@ -119,41 +117,41 @@ CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">server_name</replac
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   When using the <xref linkend="dblink"> module,
-   a foreign server's name can be used
-   as an argument of the <xref linkend="contrib-dblink-connect">
-   function to indicate the connection parameters.  It is necessary to have
-   the <literal>USAGE</literal> privilege on the foreign server to be
-   able to use it in this way.
+   <xref linkend="dblink"> 모듈을 사용한다면,
+   <xref linkend="contrib-dblink-connect">  함수에서 지정한 
+   인자를 이 외부 서버 이름으로 사용할 수 있다.
+   이 방법으로 외부 서버를 사용하려면, 해당 서버에 대해서
+   그 사용자에게 <literal>USAGE</literal> 권한을 부여해야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create a server <literal>myserver</> that uses the
-   foreign-data wrapper <literal>postgres_fdw</>:
+   <literal>postgres_fdw</> 외부 자료 싸개를 사용하는
+   <literal>myserver</> 이름의 외부 서버 만들기:
 <programlisting>
 CREATE SERVER myserver FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host 'foo', dbname 'foodb', port '5432');
 </programlisting>
-   See <xref linkend="postgres-fdw"> for more details.
+   이 부분은 <xref linkend="postgres-fdw">에서 자세히 다룬다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE SERVER</command> conforms to ISO/IEC 9075-9 (SQL/MED).
+   <command>CREATE SERVER</command> 구문은 ISO/IEC 9075-9 (SQL/MED) 규약을
+   준수한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterserver"></member>

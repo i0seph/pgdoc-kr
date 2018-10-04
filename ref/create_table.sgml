@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE TABLE</refname>
-  <refpurpose>새로운 테이블을 정의합니다</refpurpose>
+  <refpurpose>새 테이블 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>

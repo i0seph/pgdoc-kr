@@ -31,15 +31,13 @@ ALTER USER MAPPING FOR { <replaceable class="parameter">사용자이름</replace
   <title>설명</title>
 
   <para>
-   <command>ALTER USER MAPPING</command> changes the definition of a
-   user mapping.
+   <command>ALTER USER MAPPING</command> 명령은 사용자 맵핑 정보를 바꾼다.
   </para>
 
   <para>
-   The owner of a foreign server can alter user mappings for that
-   server for any user.  Also, a user can alter a user mapping for
-   their own user name if <literal>USAGE</> privilege on the server has
-   been granted to the user.
+   해당 외부 서버 소유주가 해당 서버 모든 사용자 맵핑을 바꿀 수 있다.
+   또한 한 사용자에게 그 서버에 대한  <literal>USAGE</>  권한이 있다면,
+   그 사용자는 사용자 맵핑을 바꿀 수 있다. 
   </para>
  </refsect1>
 
