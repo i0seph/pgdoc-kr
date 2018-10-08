@@ -16,104 +16,105 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE TABLESPACE</refname>
-  <refpurpose>define a new tablespace</refpurpose>
+  <refpurpose>새 테이블스페이스 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE TABLESPACE <replaceable class="parameter">tablespace_name</replaceable>
-    [ OWNER { <replaceable>new_owner</replaceable> | CURRENT_USER | SESSION_USER } ]
-    LOCATION '<replaceable class="parameter">directory</replaceable>'
-    [ WITH ( <replaceable class="PARAMETER">tablespace_option</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] ) ]
+CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</replaceable>
+    [ OWNER { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER } ]
+    LOCATION '<replaceable class="parameter">디렉터리</replaceable>'
+    [ WITH ( <replaceable class="PARAMETER">테이블스페이스옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE TABLESPACE</command> registers a new cluster-wide
-   tablespace.  The tablespace name must be distinct from the name of any
-   existing tablespace in the database cluster.
+   <command>CREATE TABLESPACE</command> 명령은 데이베이스 전역 테이블스페이스를
+   만든다.  해당 테이블스페이스 이름은 데이터베이스 클러스터 내에 유일해야
+   한다.
   </para>
 
   <para>
-   A tablespace allows superusers to define an alternative location on
-   the file system where the data files containing database objects
-   (such as tables and indexes) can reside.
+   테이블스페이스란 OS 파일 시스템과 연결해서, 데이터 파일(테이블이나
+   인덱스)을 기본 데이터 디렉터리가 아닌 다른 디렉터리에 보관될 수 있도록
+   한다.
   </para>
 
   <para>
-   A user with appropriate privileges can pass
-   <replaceable class="parameter">tablespace_name</> to
+   <replaceable class="parameter">테이블스페이스이름</>으로 
+   지정한 테이블스페이스를 
    <command>CREATE DATABASE</>, <command>CREATE TABLE</>,
-   <command>CREATE INDEX</> or <command>ADD CONSTRAINT</> to have the data
-   files for these objects stored within the specified tablespace.
+   <command>CREATE INDEX</> 또는 <command>ADD CONSTRAINT</>  명령에서
+   테이블스페이스를 지정한다면, 그 위치에 자료를 쓸 수 있도록
+   적당한 권한이 명령을 실행하는 사용자에게 부여되어 있어야 한다.
   </para>
 
   <warning>
    <para>
-    A tablespace cannot be used independently of the cluster in which it
-    is defined;  see <xref linkend="manage-ag-tablespaces">.
+    테이블스페이스는 해당 클러스터와 분리해서 독립적으로 
+    사용될 수 없다.  <xref linkend="manage-ag-tablespaces"> 참고.
    </para>
   </warning>
 
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
     <variablelist>
      <varlistentry>
-      <term><replaceable class="parameter">tablespace_name</replaceable></term>
+      <term><replaceable class="parameter">테이블스페이스이름</replaceable></term>
       <listitem>
        <para>
-        The name of a tablespace to be created.  The name cannot
-        begin with <literal>pg_</literal>, as such names
-        are reserved for system tablespaces.
+        만들 새 테이블스페이스 이름.  이 이름은 <literal>pg_</literal>로
+        시작할 수 없다.  이 이름은 시스템 내부 테이블스페이스로 사용된다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">user_name</replaceable></term>
+      <term><replaceable class="parameter">새소유주</replaceable></term>
       <listitem>
        <para>
-        The name of the user who will own the tablespace.  If omitted,
-        defaults to the user executing the command.  Only superusers
-        can create tablespaces, but they can assign ownership of tablespaces
-        to non-superusers.
+        해당 테이블스페이스의 소유주가 될 사용자 이름.
+        생략하면 이 명령을 실행하는 사용자가 소유주가 된다.
+        테이블스페이스는 슈퍼유저만 만들 수 있으나, 
+        만들 때 일반 사용자를 소유주로 지정할 수는 있다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">directory</replaceable></term>
+      <term><replaceable class="parameter">디렉터리</replaceable></term>
       <listitem>
        <para>
-        The directory that will be used for the tablespace. The directory
-        should be empty and must be owned by the
-        <productname>PostgreSQL</> system user.  The directory must be
-        specified by an absolute path name.
+        해당 테이블스페이스와 연결 될 디렉터리 경로 이름.
+        이 디렉터리 안에는 아무 것도 없어야 하며, 
+        그 디렉터리의 OS 소유주는 <productname>PostgreSQL</> 서버를
+        실행하는 OS 사용자와 같아야 한다.  경로 이름은 절대경로 여야 한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="parameter">tablespace_option</replaceable></term>
+      <term><replaceable class="parameter">테이블스페이스옵션</replaceable></term>
       <listitem>
        <para>
-        A tablespace parameter to be set or reset.  Currently, the only
-        available parameters are <varname>seq_page_cost</>,
-        <varname>random_page_cost</> and <varname>effective_io_concurrency</>.
-        Setting either value for a particular tablespace will override the
-        planner's usual estimate of the cost of reading pages from tables in
-        that tablespace, as established by the configuration parameters of the
-        same name (see <xref linkend="guc-seq-page-cost">,
+        해당 테이블스페이스에 대한 옵션을 지정.
+        현재 지원하는 옵션은 <varname>seq_page_cost</>,
+        <varname>random_page_cost</>, <varname>effective_io_concurrency</>
+        세가지다.
+        이 설정들은 실행 계획기가 페이지 읽기 비용을 예상할 때 
+        그 개체가 이 테이블스페이스가 있다면 여기서 지정한 값을 사용해서
+        비용을 계산하도록 한다.
+        (각 <xref linkend="guc-seq-page-cost">,
         <xref linkend="guc-random-page-cost">,
-        <xref linkend="guc-effective-io-concurrency">).  This may be useful if
-        one tablespace is located on a disk which is faster or slower than the
-        remainder of the I/O subsystem.
+        <xref linkend="guc-effective-io-concurrency"> 환경 설정 변수 참조).
+        이 옵션들은 해당 디렉터리가 기본 디렉터리와 다른 I/O 성능으로 
+        운영 될 때 유용하게 사용된다.
        </para>
       </listitem>
      </varlistentry>
@@ -121,47 +122,48 @@ CREATE TABLESPACE <replaceable class="parameter">tablespace_name</replaceable>
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Tablespaces are only supported on systems that support symbolic links.
+   테이블스페이스는 심볼릭 링크를 지원하는 OS에서만 사용할 수 있다.
   </para>
 
    <para>
-    <command>CREATE TABLESPACE</> cannot be executed inside a transaction
-    block.
+    <command>CREATE TABLESPACE</> 명령은 트랜잭션 블럭 안에서는 사용할 수 없다.
    </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create a tablespace <literal>dbspace</> at <literal>/data/dbs</>:
+   <literal>/data/dbs</> 디렉터리를 <literal>dbspace</> 이름의 테이블스페이스로
+   만드는 경우:
 <programlisting>
 CREATE TABLESPACE dbspace LOCATION '/data/dbs';
 </programlisting>
   </para>
 
   <para>
-   Create a tablespace <literal>indexspace</> at <literal>/data/indexes</>
-   owned by user <literal>genevieve</>:
+   <literal>/data/indexes</> 디렉터리를
+   <literal>indexspace</> 이름의 테이블스페이스로, 소유주는
+   <literal>genevieve</>로 만드는 경우:
 <programlisting>
 CREATE TABLESPACE indexspace OWNER genevieve LOCATION '/data/indexes';
 </programlisting></para>
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE TABLESPACE</command> is a <productname>PostgreSQL</>
-   extension.
+   <command>CREATE TABLESPACE</command> 구문은 <productname>PostgreSQL</>
+   확장형이다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-createdatabase"></member>
