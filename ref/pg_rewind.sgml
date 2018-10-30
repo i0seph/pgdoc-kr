@@ -16,113 +16,61 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>pg_rewind</refname>
-  <refpurpose>synchronize a <productname>PostgreSQL</productname> data directory with another data directory that was forked from it</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname> 데이터 디렉토리를 자신으로부터 파생된 또 다른 데이터 디렉토리에게 맞춰 동기화</refpurpose>
+ <!--
+      <refpurpose>synchronize a <productname>PostgreSQL</productname> data directory with another data directory that was forked from it</refpurpose>
+-->
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_rewind</command>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
    <group choice="plain">
     <group choice="req">
      <arg choice="plain"><option>-D </option></arg>
      <arg choice="plain"><option>--target-pgdata</option></arg>
     </group>
-    <replaceable> directory</replaceable>
+    <replaceable> 디렉토리 위치</replaceable>
     <group choice="req">
-     <arg choice="plain"><option>--source-pgdata=<replaceable>directory</replaceable></option></arg>
-     <arg choice="plain"><option>--source-server=<replaceable>connstr</replaceable></option></arg>
+     <arg choice="plain"><option>--source-pgdata=<replaceable>디렉토리 위치</replaceable></option></arg>
+     <arg choice="plain"><option>--source-server=<replaceable>연결정보</replaceable></option></arg>
     </group>
    </group>
   </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <application>pg_rewind</> is a tool for synchronizing a PostgreSQL cluster
-   with another copy of the same cluster, after the clusters' timelines have
-   diverged. A typical scenario is to bring an old master server back online
-   after failover as a standby that follows the new master.
+   <application>pg_rewind</>는 클러스터의 또 다른 복사본에 맞춰 PostgreSQL 클러스터를 동기화 해주는 도구이다, 클러스터의 타임라인이 분기된 후라 할지라도. 이를 사용하는 일반적인 시나리오는 장애복구 후에 '이전의 master 서버'를 '새로운 master 서버'의 standby 로 되돌려준다.
   </para>
 
   <para>
-   The result is equivalent to replacing the target data directory with the
-   source one. Only changed blocks from relation files are copied;
-   all other files are copied in full, including configuration files. The
-   advantage of <application>pg_rewind</> over taking a new base backup, or
-   tools like <application>rsync</>, is that <application>pg_rewind</> does
-   not require reading through unchanged blocks in the cluster. This makes
-   it a lot faster when the database is large and only a small
-   fraction of blocks differ between the clusters.
+   이는 '--target-pgdata'로 지정한 데이터 디렉토리를 '--source-pgdata'로 교체하는 것과 동일하다. 오직 데이터 파일의 변경분만 복제될 뿐이다. 설정파일들까지 포함한 모든 파일들이 전체 복제된다. 
+  
+   <application>pg_rewind</>의 장점은 처음부터 백업을 뜨거나 <application>rsync</> 툴을 사용하는 것을 넘어선다. 즉, <application>pg_rewind</>는 변경되지 않은 클러스터 블록에 대해서는 체크를 위한 읽기 조차 하지 않는다. 그래서 데이터베이스 사이즈가 크고 클러스터간에 블록 변경분이 아주 작을때 보다 빠르게 수행된다..
   </para>
 
   <para>
-   <application>pg_rewind</> examines the timeline histories of the source
-   and target clusters to determine the point where they diverged, and
-   expects to find WAL in the target cluster's <filename>pg_wal</> directory
-   reaching all the way back to the point of divergence. The point of divergence
-   can be found either on the target timeline, the source timeline, or their common
-   ancestor. In the typical failover scenario where the target cluster was
-   shut down soon after the divergence, this is not a problem, but if the
-   target cluster ran for a long time after the divergence, the old WAL
-   files might no longer be present. In that case, they can be manually
-   copied from the WAL archive to the <filename>pg_wal</> directory, or
-   fetched on startup by configuring <filename>recovery.conf</>.  The use of
-   <application>pg_rewind</> is not limited to failover, e.g.  a standby
-   server can be promoted, run some write transactions, and then rewinded
-   to become a standby again.
+   <application>pg_rewind</>는 source/target 클러스간에 타임라인 이력을 조사하여 분기지점을 알아낸다. 그리고 target 클러스터의 <filename>pg_wal</> 디렉토리내에서 분기되었던 시점으로 되돌릴 전체 WAL 찾아내려 한다. 분기지점은 target, source 또는 그 이전의 공통된 클러스터 타임라인들 중에서 찾을 수 있다. 전형적인 장애복구 시나리오에서 target 클러스터는 분기된 이후 빠르게 서버가 중지있다. 이러면 문제가 없지만, 만약에 target 클러스터가 분기된 이후에도 오래도록 운영되었다면 source 클러스터쪽에서 오래된 WAL파일들을 없을 수 있다. 이 경우, 수동으로 WAL 아카이브에서 <filename>pg_wal</> 디렉토리로 복사하거나 target 클러스터의 <filename>recovery.conf</>설정파일에서 restore_command 를 설정하여 시작할때 가져올 수 있다. <application>pg_rewind</>의 사용은 장애복구에만 사용할 수 있는게 아니다. 예를 들어, standby 서버를 master 로 진급시켜 쓰기 트랜잭션을 수행하고 난뒤 다시 standby 로 되돌릴 수 있다.
   </para>
 
   <para>
-   When the target server is started for the first time after running
-   <application>pg_rewind</>, it will go into recovery mode and replay all
-   WAL generated in the source server after the point of divergence.
-   If some of the WAL was no longer available in the source server when
-   <application>pg_rewind</> was run, and therefore could not be copied by the
-   <application>pg_rewind</> session, it must be made available when the
-   target server is started. This can be done by creating a
-   <filename>recovery.conf</> file in the target data directory with a
-   suitable <varname>restore_command</>.
+   <application>pg_rewind</> 수행 후, target 서버는 최초 시작시 복구 모드로 수행되어 분기지점 이후의 source 서버내 모든 WAL 을 재생한다. source 서버로 부터 더 이상의 사용가능한 WAL이 없게 되면 <application>pg_rewind</> 세션은 더 이상 복사하지 않다. 이는 target 서버가 시작되어 있어야 하고 적합한 <varname>restore_comand </>값을 가진 <filename>recovery.conf</> 가 target 데이터 위치에 생성되어 있어야 한다. 
   </para>
 
   <para>
-   <application>pg_rewind</> requires that the target server either has
-   the <xref linkend="guc-wal-log-hints"> option enabled
-   in <filename>postgresql.conf</> or data checksums enabled when
-   the cluster was initialized with <application>initdb</>.  Neither of these
-   are currently on by default.  <xref linkend="guc-full-page-writes">
-   must also be set to <literal>on</>, but is enabled by default.
+   <applicaiton>pg_rewind</> 를 수행하기 위한  요구사항은 target 서버의 <filename>postgresql.conf</> 에서 <xref linkend="guc-wal-log-hints"> 옵션이 활성화되어 있거나, <application>initdb</> 로 클러스터를 초기화할때 체크섬이 활성화 되어 있어야 한다. 이것들의 활성화값은 모두 기본값은 아니다. <xref linkend="guc-full-page-writes"> 값은 <Liternal>on</> 되어 있어야 한다. 이건 기본값으로 활성화되어 있다.
   </para>
-
-  <warning>
-   <para>
-    If <application>pg_rewind</application> fails while processing, then
-    the data folder of the target is likely not in a state that can be
-    recovered.  In such a case, taking a new fresh backup is recommended.
-   </para>
-
-   <para>
-    <application>pg_rewind</application> will fail immediately if it finds
-    files it cannot write directly to.  This can happen for example when
-    the source and the target server use the same file mapping for read-only
-    SSL keys and certificates.  If such files are present on the target server
-    it is recommended to remove them before running
-    <application>pg_rewind</application>.  After doing the rewind, some of
-    those files may have been copied from the source, in which case it may
-    be necessary to remove the data copied and restore back the set of links
-    used before the rewind.
-   </para>
-  </warning>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>옵션</title>
 
    <para>
-    <application>pg_rewind</application> accepts the following command-line
-    arguments:
+    <application>pg_rewind</application>는 다음 명령어 줄 옵션을 사용한다.
 
     <variablelist>
      <varlistentry>
@@ -130,9 +78,7 @@ PostgreSQL documentation
       <term><option>--target-pgdata=<replaceable class="parameter">directory</replaceable></option></term>
       <listitem>
        <para>
-        This option specifies the target data directory that is synchronized
-        with the source. The target server must be shut down cleanly before
-        running <application>pg_rewind</application>
+        이 옵션은 source 서버로 부터 동기화하는 target 데이터 디렉토리를 가리킨다. target 서버는 <application>pg_rewind</application> 수행전에 완전히 내려가 있어야 한다. 
        </para>
       </listitem>
      </varlistentry>
@@ -141,9 +87,7 @@ PostgreSQL documentation
       <term><option>--source-pgdata=<replaceable class="parameter">directory</replaceable></option></term>
       <listitem>
        <para>
-        Specifies the file system path to the data directory of the source
-        server to synchronize the target with. This option requires the
-        source server to be cleanly shut down.
+        target 서버를 동기화시킬 source 서버의 데이터 디렉토리를 가리킨다. 이 옵션을 사용하려면 source 서버가 완전히 내려가 있어야 한다.
        </para>
       </listitem>
      </varlistentry>
@@ -152,11 +96,7 @@ PostgreSQL documentation
       <term><option>--source-server=<replaceable class="parameter">connstr</replaceable></option></term>
       <listitem>
        <para>
-        Specifies a libpq connection string to connect to the source
-        <productname>PostgreSQL</> server to synchronize the target with.
-        The connection must be a normal (non-replication) connection
-        with superuser access. This option requires the source
-        server to be running and not in recovery mode.
+        target 서버를 동기화시킬 source 서버의 libpq 연결정보를 가리킨다. 이 연결는 일반연결(복제연결이 아님)이며 슈퍼유저 권한이어야 합니다. 이 옵션은 source 서버가 복구 모드가 아닌 정상 기동하고 있어야 한다.
        </para>
       </listitem>
      </varlistentry>
@@ -166,7 +106,7 @@ PostgreSQL documentation
       <term><option>--dry-run</option></term>
       <listitem>
        <para>
-        Do everything except actually modifying the target directory.
+        target 디렉토리에 실제 수정없이 모든 것을 수행해 본다.
        </para>
       </listitem>
      </varlistentry>
@@ -176,8 +116,7 @@ PostgreSQL documentation
       <term><option>--progress</option></term>
       <listitem>
        <para>
-        Enables progress reporting. Turning this on will deliver an approximate
-        progress report while copying data from the source cluster.
+        진행상태를 표시한다. 이 옵션을 활성화 시키면 정확하진 않지만 source 클러스터로부터 데이터 복제하는 진행상태를 볼 수 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -186,8 +125,7 @@ PostgreSQL documentation
       <term><option>--debug</option></term>
       <listitem>
        <para>
-        Print verbose debugging output that is mostly useful for developers
-        debugging <application>pg_rewind</>.
+        <application>pg_rewind</>를 디버깅하는 개발자들에게 유용한 디버깅 메시지를 출력한다.
        </para>
       </listitem>
      </varlistentry>
@@ -195,13 +133,13 @@ PostgreSQL documentation
      <varlistentry>
       <term><option>-V</option></term>
       <term><option>--version</option></term>
-      <listitem><para>Display version information, then exit.</para></listitem>
+      <listitem><para>버전 정보를 표시하고 종료한다.</para></listitem>
      </varlistentry>
 
      <varlistentry>
       <term><option>-?</option></term>
       <term><option>--help</option></term>
-      <listitem><para>Show help, then exit.</para></listitem>
+      <listitem><para>도움말을 표시하고 종료한다.</para></listitem>
      </varlistentry>
 
     </variablelist>
@@ -209,58 +147,43 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Environment</title>
+  <title>환경</title>
 
   <para>
-   When <option>--source-server</> option is used,
-   <application>pg_rewind</application> also uses the environment variables
-   supported by <application>libpq</> (see <xref linkend="libpq-envars">).
+   <option>--source-server</> 옵션이 사용되면, <application>pg_rewind</application>는 <application>libpq</>에서 지원되는 환경 변수도 사용할 수 있다.(see <xref linkend="libpq-envars">).
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Notes</title>
+  <title>주석</title>
 
   <refsect2>
-   <title>How it works</title>
+   <title>어떻게 동작되는가?</title>
 
    <para>
-    The basic idea is to copy all file system-level changes from the source
-    cluster to the target cluster:
+    이 생각은 기본적으로은 시스템 수준에서 모든 변경 사항을 source 클러스터에서 target 클러스터로 복사한다는데 있다.
    </para>
 
    <procedure>
     <step>
      <para>
-      Scan the WAL log of the target cluster, starting from the last
-      checkpoint before the point where the source cluster's timeline
-      history forked off from the target cluster. For each WAL record,
-      record each data block that was touched. This yields a list of all
-      the data blocks that were changed in the target cluster, after the
-      source cluster forked off.
+      1. target 클러스터의 WAL을 검사한다. 범위는, target 클러스터로부터 source 클러스터의 타임라인이 나뉘어진 지점 바로 앞의 마지막 체크포인트된 지점에서 시작한다.     
+      각 WAL 레코드들을 통해서 변경된 데이터 블록들을 기록한다. 그러면 source 클러스터를 분기시킨 후에 target 클러스터에서 변경된 데이터 블록의 전체 목록을 만들 수 있다.  
      </para>
     </step>
     <step>
      <para>
-      Copy all those changed blocks from the source cluster to
-      the target cluster, either using direct file system access
-      (<option>--source-pgdata</>) or SQL (<option>--source-server</>).
+      2. 1번에서 얻은 목록을 사용해서 source 클러스터에서 target 클러스터로 변경된 블록 전체를 복사한다. 이때 직접 시스템 파일에 접근하는 (<owtion>--source-pgdata</>) 이나 SQL (<option>--source-server</>) 옵션 중 하나를 사용한다.
      </para>
     </step>
     <step>
      <para>
-      Copy all other files such as <filename>pg_xact</filename> and
-      configuration files from the source cluster to the target cluster
-      (everything except the relation files).
+      3. <filename>pg_xact</filename>이나 설정파일들도 모두 source 클러스터에서 target 클러스터로 복사한다. (변경되지 않는 릴레이션 파일을 제외하곤 모두)
      </para>
     </step>
     <step>
      <para>
-      Apply the WAL from the source cluster, starting from the checkpoint
-      created at failover. (Strictly speaking, <application>pg_rewind</>
-      doesn't apply the WAL, it just creates a backup label file that
-      makes <productname>PostgreSQL</> start by replaying all WAL from
-      that checkpoint forward.)
+      4. source 클러스터에서 가져온 WAL을 target 클러스터에 적용한다. 장애때 생성된 체크포인트 지점부터 시작한다. (엄격히 말하면 <application>pg_rewind</>는 WAL을 적용하지는 않고 백업라벨 파일을 만들 뿐이다. PostgreSQL 시작시 분기 이후의 체크포인트 내용을 담은 WAL들을 순차적으로 적용한다.
      </para>
     </step>
    </procedure>
