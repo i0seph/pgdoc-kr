@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_database.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPDATABASE">
+<refentry id="sql-dropdatabase">
  <indexterm zone="sql-dropdatabase">
   <primary>DROP DATABASE</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP DATABASE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+DROP DATABASE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -57,7 +57,7 @@ DROP DATABASE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
       삭제 하려는 데이터베이스 이름
@@ -71,13 +71,13 @@ DROP DATABASE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
   <title>참고</title>
 
    <para>
-    <command>DROP DATABASE</> 명령은 트랜잭션 안에서는 사용할 수 없다.
+    <command>DROP DATABASE</command> 명령은 트랜잭션 안에서는 사용할 수 없다.
    </para>
 
   <para>
    이 명령은 해당 데이터베이스로 접속된 세션이 있는 경우에는 
    정상적으로 실행되지 않는다.  그래서, 좀 더 편하게 이 명령을 수행할 수 
-   있도록  <xref linkend="app-dropdb"> 프로그램을 제공하고 있다.
+   있도록  <xref linkend="app-dropdb"/> 프로그램을 제공하고 있다.
   </para>
  </refsect1>
 
@@ -93,7 +93,7 @@ DROP DATABASE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createdatabase"></member>
+   <member><xref linkend="sql-createdatabase"/></member>
   </simplelist>
  </refsect1>
 </refentry>

@@ -6,15 +6,15 @@
  <para>
   이 문서는 다음과 같은 표기 규칙을 따른다:
   대괄호 (<literal>[</literal>, <literal>]</literal>)는 선택 항목을 뜻한다.
-  (Tcl 명령어에서는 물음표(<literal>?</>)로 대신한다.) 
+  (Tcl 명령어에서는 물음표(<literal>?</literal>)로 대신한다.) 
   중괄호 (<literal>{</literal>, <literal>}</literal>)와 세로 막대
   (<literal>|</literal>)는 '이들 중 하나'를 선택해야 한다. 
-  온점들 (<literal>...</>) 들은 해당 사항이 반복될 수 있음을 의미한다.
+  온점들 (<literal>...</literal>) 들은 해당 사항이 반복될 수 있음을 의미한다.
  </para>
 
  <para>
-  예제에서 SQL 명령어들은 <literal>=&gt;</> 프롬프트를 사용하며, 
-  쉘 명령어들은 <literal>$</> 프롬프트를 사용해서, 
+  예제에서 SQL 명령어들은 <literal>=&gt;</literal> 프롬프트를 사용하며, 
+  쉘 명령어들은 <literal>$</literal> 프롬프트를 사용해서, 
   구분하고 있으며, 프롬프트가 없는 경우는 쉘 명령어를 뜻한다.
  </para>
 

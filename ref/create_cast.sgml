@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/ref/create_cast.sgml -->
 
-<refentry id="SQL-CREATECAST">
+<refentry id="sql-createcast">
  <indexterm zone="sql-createcast">
   <primary>CREATE CAST</primary>
  </indexterm>
@@ -43,7 +43,7 @@ CREATE CAST (<replaceable>기존자료형</replaceable> AS <replaceable>대상�
 SELECT CAST(42 AS float8);
 </programlisting>
    구문은 42 라는 상수를 <type>float8</type> 자료형으로 바꾼다.
-   이 때, 해당 형변환용으로 지정한 <literal>float8(int4)</>
+   이 때, 해당 형변환용으로 지정한 <literal>float8(int4)</literal>
    함수가 사용된다.  (이런 형변환 작업에서 사용할 적당한
    형변환자가 없다면 오류로 처리한다.)
   </para>
@@ -66,7 +66,7 @@ SELECT CAST(42 AS float8);
 
   <para>
    <literal>WITH INOUT</literal> 구문을 이용해서
-   <firstterm>입출력 형변환자</> <firstterm>I/O conversion cast</>
+   <firstterm>입출력 형변환자</firstterm> <firstterm>I/O conversion cast</firstterm>
    를 만들 수도 있다.
    입출력 형변화자는 기존 자료형의 출력 함수를 호출하고,
    대상 자료형의 입력 함수에 결과 문자열을 지정해서 처리한다.
@@ -78,14 +78,14 @@ SELECT CAST(42 AS float8);
 
   <para>
    사용자가 만드는 형 변환자는 기본적으로 명시적으로 지정해서
-   사용한다.  명시적 사용법은 <literal>CAST(<replaceable>x</> AS
-   <replaceable>자료형</>)</literal> 구문이나
-   <replaceable>x</><literal>::</><replaceable>자료형</>
+   사용한다.  명시적 사용법은 <literal>CAST(<replaceable>x</replaceable> AS
+   <replaceable>자료형</replaceable>)</literal> 구문이나
+   <replaceable>x</replaceable><literal>::</literal><replaceable>자료형</replaceable>
    구문을 사용한다.
   </para>
 
   <para>
-   <literal>AS ASSIGNMENT</> 옵션을 사용하면, 
+   <literal>AS ASSIGNMENT</literal> 옵션을 사용하면, 
    대상 자료형 칼럼에 값을 대입하는 경우에는 
    묵시적으로 형변환이 일어난다.  예를 들어
    <literal>foo.f1</literal> 칼럼의 자료형이
@@ -95,14 +95,14 @@ INSERT INTO foo (f1) VALUES (42);
 </programlisting>
    명령을 실행하면, <type>integer</type> 자료형을
    <type>text</type> 자료형으로 바꾸는 형 변환자가 있는데, 
-   이 변환자에 <literal>AS ASSIGNMENT</> 옵션 추가 되어 있다면,
+   이 변환자에 <literal>AS ASSIGNMENT</literal> 옵션 추가 되어 있다면,
    그 형 변환자를 특별히 지정하지 않아도 묵시적으로 사용한다.
    (이런 형 변환자를 <firstterm>대입 형변환자</firstterm>
    <firstterm>assignment cast</firstterm> 라고 한다.)
   </para>
 
   <para>
-   <literal>AS IMPLICIT</> 옵션을 사용하면, 
+   <literal>AS IMPLICIT</literal> 옵션을 사용하면, 
    어떤 상황에서 그냥 묵시적으로 형 변환을 한다.
    (이런 형 변환자를 
    <firstterm>묵시적 형변환자</firstterm> 
@@ -111,12 +111,12 @@ INSERT INTO foo (f1) VALUES (42);
 <programlisting>
 SELECT 2 + 4.0;
 </programlisting>
-   구문분석기는 두 상수를 각각 <type>integer</>형과 <type>numeric</>형으로 
-   간주할 것이다.  이 때 <type>integer</>
-   <literal>+</> <type>numeric</> 용 연산자는 없고, 
-   <type>numeric</> <literal>+</> <type>numeric</> 용 연산자만 있는데,
+   구문분석기는 두 상수를 각각 <type>integer</type>형과 <type>numeric</type>형으로 
+   간주할 것이다.  이 때 <type>integer</type>
+   <literal>+</literal> <type>numeric</type> 용 연산자는 없고, 
+   <type>numeric</type> <literal>+</literal> <type>numeric</type> 용 연산자만 있는데,
    이 쿼리는 정상 실행 된다.
-   <type>integer</> 형이 <type>numeric</> 형으로 바꾸는 <literal>AS IMPLICIT</>
+   <type>integer</type> 형이 <type>numeric</type> 형으로 바꾸는 <literal>AS IMPLICIT</literal>
    옵션이 지정된 묵시적 형변환자가 사용되었기 때문이다. &mdash;
    내부적으로 보면, 결국 구문분석기는 다음과 같이 쿼리를 재작성한다:
 <programlisting>
@@ -125,13 +125,13 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
   </para>
 
   <para>
-   시스템 카탈로그에서는 <type>numeric</> 형에서 
-   <type>integer</> 형으로 바꾸는 형 변환자도 제공한다.
-   이런 형변환자에 <literal>AS IMPLICIT</> 옵션이 있다면 &mdash; 
+   시스템 카탈로그에서는 <type>numeric</type> 형에서 
+   <type>integer</type> 형으로 바꾸는 형 변환자도 제공한다.
+   이런 형변환자에 <literal>AS IMPLICIT</literal> 옵션이 있다면 &mdash; 
    실재로는 없다 &mdash; 구문분석기는
-   그냥 <type>integer</> <literal>+</> <type>integer</> 연산을
-   해 버릴 것이다.  그럼 앞에서 이야기한 <type>integer</>형에서
-   <type>numeric</>형으로 바꾸는 형 변환자와 충돌이 생긴다.
+   그냥 <type>integer</type> <literal>+</literal> <type>integer</type> 연산을
+   해 버릴 것이다.  그럼 앞에서 이야기한 <type>integer</type>형에서
+   <type>numeric</type>형으로 바꾸는 형 변환자와 충돌이 생긴다.
    이렇게 되면 구문분석기는 자신이 어느 것을 선택하지 않고, 
    그냥 오류로 처리한다.  사용자가 결정하라고.
    이런 불편함을 해결하기 위한 어느 한 쪽이 묵시적 형변환을 
@@ -152,7 +152,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
    <type>int4</type> 자료형으로 묵시적 형변환을 충분히 쓸 수 있지만,
    <type>float8</type> 자료형을 <type>int4</type> 자료형으로
    바꿀 때는 대입인 경우에만 묵시적 형변환을 허용하는 것이 좋다.
-   <type>text</> 형과 <type>int4</> 형 처럼
+   <type>text</type> 형과 <type>int4</type> 형 처럼
    두 자료형이 서로 다른 범위에 속한 경우라면 
    명시적 형변환이 제일 안전하다.
   </para>
@@ -164,10 +164,10 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
     형번환을 허용해서 앞에서 언급한 것처럼 결과가 모호해지는 상황이 
     발생한다.
     구문 분석기는 fallback heuristic을 제공한다.
-    fallback heuristic은 <firstterm>자료형 유형(범주)</>과
+    fallback heuristic은 <firstterm>자료형 유형(범주)</firstterm>과
     이런 상황에서 바람직한 형변환이 되도록 도와주는
-    <firstterm>preferred type</>을 기반으로 한다.
-    <xref linkend="sql-createtype"> 명령 설명서 참조.
+    <firstterm>preferred type</firstterm>을 기반으로 한다.
+    <xref linkend="sql-createtype"/> 명령 설명서 참조.
    </para>
   </note>
 
@@ -268,10 +268,10 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
    형변환자를 만들 때 사용하는 함수는 그 인자를 한 개에서 세 개까지 
    지정할 수 있다.  첫번째 인자는 만들 형변환자의 기존 자료형과 같아야 한다.
    또는 내부 임의 변환용이라면 바로 대상 자료형이어야 한다.
-   두번째 인자는 <type>integer</> 이어야 하며, 대상 자료형의 길이 제한 값이다.
-   없는 경우는 <literal>-1</>을 사용한다.
-   세번째 인자는 <type>boolean</>형으로 
-   <literal>true</>면 명시적 형변환자, <literal>false</>면 묵시적
+   두번째 인자는 <type>integer</type> 이어야 하며, 대상 자료형의 길이 제한 값이다.
+   없는 경우는 <literal>-1</literal>을 사용한다.
+   세번째 인자는 <type>boolean</type>형으로 
+   <literal>true</literal>면 명시적 형변환자, <literal>false</literal>면 묵시적
    형변화자 함수를 뜻한다.
    (특이하게, 표준 SQL에서는 명시적 변환과 묵시적 변환이 서로 반대인 경우가
    있다, 이 때 이 인자값을 조정해서 맞춘다.  형변환자가 사용자 정의
@@ -314,7 +314,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
   <title>참고</title>
 
   <para>
-   사용자 정의 형변환자는 <xref linkend="sql-dropcast"> 명령으로 지운다.
+   사용자 정의 형변환자는 <xref linkend="sql-dropcast"/> 명령으로 지운다.
   </para>
 
   <para>
@@ -327,11 +327,11 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
  </indexterm>
 
   <para>
-   일반적으로 사용자 정의 자료형과 표준 문자열 자료형(<type>text</>,
-   <type>varchar</>, <type>char(<replaceable>n</>)</type>, 
+   일반적으로 사용자 정의 자료형과 표준 문자열 자료형(<type>text</type>,
+   <type>varchar</type>, <type>char(<replaceable>n</replaceable>)</type>, 
    문자열 범주 자료형을 기반으로 하는 사용자 정의 자료형) 사이
    형변환자는 만들 필요가 없다.
-   <productname>PostgreSQL</>에서는 이 자료형들의 
+   <productname>PostgreSQL</productname>에서는 이 자료형들의 
    입출력 형변환은 자동으로 처리한다.  대상 자료형이 
    문자열 형인 경우의 자동 형변환은 대입 형변환자로 간주하지만,
    기존 자료형이 문자열 형인 경우의 자동 형변환은 명시적 형변환이다.
@@ -351,13 +351,13 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
    같은 것을 쓴다. 이는 필수 사항은 아니지만, 권고 사항이다.
    많은 사용자들이 함수 호출을 이용해 형 변환을 할 때, 
    대상 자료형과 같은 이름의 함수를 사용하는 익숙하기 때문이다
-   (<replaceable>typename</>(<replaceable>x</>) 이런 형태로).
+   (<replaceable>typename</replaceable>(<replaceable>x</replaceable>) 이런 형태로).
    사용자에 따라 어떤 경우는 형변환자를 더 많이 쓰고, 
    어떤 경우는 그냥 형변환 함수를 더 많이 쓰기도 한다.
    둘 다 비정상적인 사용법이 아니다.  이런 관례적 규칙을 깨고, 
    마음대로 형변환 함수를 사용한다면, 많은 사람들이 의야해 할 것이다.
    같은 이름을 쓸 수 없어, 새 이름을 사용할 필요는 없다.  왜냐하면,
-   <productname>PostgreSQL</>에서는 같은 이름의 함수로 인자 자료형만
+   <productname>PostgreSQL</productname>에서는 같은 이름의 함수로 인자 자료형만
    달리해서 여러 함수를 만들 수 있기 때문이다.
   </para>
 
@@ -367,18 +367,18 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
     마치 함수 처럼 사용되는 것 같지만(문법상) 그 함수가 없는 
     경우가 두 가지 있다.
     그 첫번째는 아에 그 함수가 없는 경우다.
-    <replaceable>name</>(<replaceable>x</>) 함수 호출인데,
+    <replaceable>name</replaceable>(<replaceable>x</replaceable>) 함수 호출인데,
     그 조건에 맞는(이름이 name이고, 인자가 하나고 그 자료형은 x의 자료형인)
     함수가 없는데, 
-    <replaceable>name</>이 자료형 이름이고, 
-    <structname>pg_cast</> 카탈로그에
-    <replaceable>x</> 자료형이 기존 자료형, 그 이름이 대상 자료형인,
+    <replaceable>name</replaceable>이 자료형 이름이고, 
+    <structname>pg_cast</structname> 카탈로그에
+    <replaceable>x</replaceable> 자료형이 기존 자료형, 그 이름이 대상 자료형인,
     내부 임의 변환 형변환자로 등록되어 있다면, 
     이런 경우 그 호출은 내부 임의 변환 형변환 호출이다.
     구문은 마치 함수 호출인 것 처럼 보이지만, 
     실제로는 함수를 호출하지 않는다.
     이와 비슷하게, 입출력 형변환인 경우인데,
-    <structname>pg_cast</> 카탈로그에는 없지만, 
+    <structname>pg_cast</structname> 카탈로그에는 없지만, 
     문자열을 받아서 변환하거나, 문자열로 변환하는 형반환이 
     있을 수 있다.  이 때도  실 함수는 없다.
    </para>
@@ -388,7 +388,7 @@ SELECT CAST ( 2 AS numeric ) + 4.0;
    <para>
     또 다른 예외 경우: 복합 자료형을 문자열 자료형으로 변환하는 경우는
     함수 호출 문법 형태로는 아에 호출이 불가능하다. 이 때는
-    <literal>CAST</> 문법이나, <literal>::</> 표기법을
+    <literal>CAST</literal> 문법이나, <literal>::</literal> 표기법을
     사용하는 명시적 형변환을 해야한다.  이 제약은 자동으로
     제공되는 입출력 형변환자를 도입한 뒤부터 있게 되었다.  
     잘못된 형변환을 너무 자주 사용하는 문제가 있었기 때문이다.
@@ -419,7 +419,7 @@ CREATE CAST (bigint AS int4) WITH FUNCTION int4(bigint) AS ASSIGNMENT;
    구문을 따른다.
    표준 SQL에는 함수를 사용하지 않는 경우와,
    함수 인자를 지정하는 구문은 허용하지 않는다. 또한
-   <literal>AS IMPLICIT</> 옵션은 <productname>PostgreSQL</productname>
+   <literal>AS IMPLICIT</literal> 옵션은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -429,9 +429,9 @@ CREATE CAST (bigint AS int4) WITH FUNCTION int4(bigint) AS ASSIGNMENT;
   <title>관련 항목</title>
 
   <para>
-   <xref linkend="sql-createfunction">,
-   <xref linkend="sql-createtype">,
-   <xref linkend="sql-dropcast">
+   <xref linkend="sql-createfunction"/>,
+   <xref linkend="sql-createtype"/>,
+   <xref linkend="sql-dropcast"/>
   </para>
  </refsect1>
 

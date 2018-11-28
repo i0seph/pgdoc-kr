@@ -32,11 +32,11 @@
   <title><structname>pg_buffercache</structname> 뷰</title>
 
   <para>
-   이 뷰에서 제공하는 칼럼은 <xref linkend="pgbuffercache-columns">  표와 같다.
+   이 뷰에서 제공하는 칼럼은 <xref linkend="pgbuffercache-columns"/>  표와 같다.
   </para>
 
   <table id="pgbuffercache-columns">
-   <title><structname>pg_buffercache</> 칼럼들</title>
+   <title><structname>pg_buffercache</structname> 칼럼들</title>
 
    <tgroup cols="4">
     <thead>
@@ -53,7 +53,7 @@
       <entry><structfield>bufferid</structfield></entry>
       <entry><type>integer</type></entry>
       <entry></entry>
-      <entry>ID, 1..<varname>shared_buffers</> 범위</entry>
+      <entry>ID, 1..<varname>shared_buffers</varname> 범위</entry>
      </row>
 
      <row>
@@ -88,7 +88,7 @@
       <entry><structfield>relforknumber</structfield></entry>
       <entry><type>smallint</type></entry>
       <entry></entry>
-      <entry>해당 릴레이션에서의 포크 번호; <filename>include/common/relpath.h</> 참조</entry>
+      <entry>해당 릴레이션에서의 포크 번호; <filename>include/common/relpath.h</filename> 참조</entry>
      </row>
 
      <row>
@@ -125,7 +125,7 @@
 
   <para>
   하나의 로우는 공유 캐시 안에서의 하나의 버퍼 정보다.
-  이 버퍼가 사용되고 있지 않다면, <structfield>bufferid</> 칼럼을 제외한 모든 
+  이 버퍼가 사용되고 있지 않다면, <structfield>bufferid</structfield> 칼럼을 제외한 모든 
   칼럼 값이 null이다.
   공용 시스템 카탈로그는 데이터베이스 OID가 0으로 표시된다.
   </para>
@@ -133,13 +133,13 @@
   <para>
   이 출력 자료는 공유되고 있는 모든 캐시 정보를 보여주기 때문에, 
   현재 데이터베이스에 속하지 않은 정보들도 출력된다.
-  그래서, <structname>pg_class</> 테이블에 없는 릴레이션 OID 값이 출력될 수도 
-  있다. <structname>pg_class</> 테이블과 join 쿼리를 사용한다면, 
-  <structfield>reldatabase</> 값이 0인 경우도 고려해서 쿼리를 작성해야한다.
+  그래서, <structname>pg_class</structname> 테이블에 없는 릴레이션 OID 값이 출력될 수도 
+  있다. <structname>pg_class</structname> 테이블과 join 쿼리를 사용한다면, 
+  <structfield>reldatabase</structfield> 값이 0인 경우도 고려해서 쿼리를 작성해야한다.
   </para>
 
   <para>
-  <structname>pg_buffercache</> 뷰를 사용하면,
+  <structname>pg_buffercache</structname> 뷰를 사용하면,
   먼저 버퍼 정보를 출력하기 위해 내장 버퍼 관리자에서 버퍼 사용을 잠그고, 
   버퍼 정보 전체를 복사한다.
   이렇게 해서, 잠겨지지 않은 일반 버퍼들도 필요 이상으로 활성상태가 되지만,

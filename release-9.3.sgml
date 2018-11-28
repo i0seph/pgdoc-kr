@@ -12,7 +12,7 @@
   <para>
    This release contains a variety of fixes from 9.3.23.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <para>
@@ -30,7 +30,7 @@
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.23,
-    see <xref linkend="release-9-3-23">.
+    see <xref linkend="release-9-3-23"/>.
    </para>
   </sect2>
 
@@ -329,7 +329,7 @@
   <para>
    This release contains a variety of fixes from 9.3.22.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -347,7 +347,7 @@
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.22,
-    see <xref linkend="release-9-3-22">.
+    see <xref linkend="release-9-3-22"/>.
    </para>
   </sect2>
 
@@ -698,7 +698,7 @@
   <para>
    This release contains a variety of fixes from 9.3.21.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -726,7 +726,7 @@
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.18,
-    see <xref linkend="release-9-3-18">.
+    see <xref linkend="release-9-3-18"/>.
    </para>
   </sect2>
 
@@ -751,10 +751,10 @@
       tedious, and it's very easy to overlook holes.  Therefore, we now
       recommend configurations in which no untrusted schemas appear in
       one's search path.  Relevant documentation appears in
-      <xref linkend="ddl-schemas-patterns"> (for database administrators and users),
-      <xref linkend="libpq-connect"> (for application authors),
-      <xref linkend="extend-extensions-style">  (for extension authors), and
-      <xref linkend="sql-createfunction"> (for authors
+      <xref linkend="ddl-schemas-patterns"/> (for database administrators and users),
+      <xref linkend="libpq-connect"/> (for application authors),
+      <xref linkend="extend-extensions-style"/>  (for extension authors), and
+      <xref linkend="sql-createfunction"/> (for authors
       of <literal>SECURITY DEFINER</literal> functions).
       (CVE-2018-1058)
      </para>
@@ -884,7 +884,7 @@
   <para>
    This release contains a variety of fixes from 9.3.20.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -896,7 +896,7 @@
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.18,
-    see <xref linkend="release-9-3-18">.
+    see <xref linkend="release-9-3-18"/>.
    </para>
   </sect2>
 
@@ -1206,7 +1206,7 @@
   <para>
    This release contains a variety of fixes from 9.3.19.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -1218,7 +1218,7 @@
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.18,
-    see <xref linkend="release-9-3-18">.
+    see <xref linkend="release-9-3-18"/>.
    </para>
 
   </sect2>
@@ -1440,7 +1440,7 @@
   <para>
    This release contains a small number of fixes from 9.3.18.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -1452,7 +1452,7 @@
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.18,
-    see <xref linkend="release-9-3-18">.
+    see <xref linkend="release-9-3-18"/>.
    </para>
 
   </sect2>
@@ -1611,7 +1611,7 @@ CREATE OR REPLACE VIEW table_privileges AS
   <para>
    This release contains a variety of fixes from 9.3.17.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -1628,7 +1628,7 @@ CREATE OR REPLACE VIEW table_privileges AS
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.16,
-    see <xref linkend="release-9-3-16">.
+    see <xref linkend="release-9-3-16"/>.
    </para>
 
   </sect2>
@@ -1820,7 +1820,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
     <listitem>
      <para>
-      Fix code for setting <xref linkend="guc-tcp-keepalives-idle"> on
+      Fix code for setting <xref linkend="guc-tcp-keepalives-idle"/> on
       Solaris (Tom Lane)
      </para>
     </listitem>
@@ -2073,7 +2073,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
     <listitem>
      <para>
       Fix <application>pg_upgrade</application> to ensure that the ending WAL record
-      does not have <xref linkend="guc-wal-level"> = <literal>minimum</literal>
+      does not have <xref linkend="guc-wal-level"/> = <literal>minimum</literal>
       (Bruce Momjian)
      </para>
 
@@ -2130,7 +2130,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
     <listitem>
      <para>
-      In MSVC builds, handle the case where the <application>openssl</application>
+      In MSVC builds, handle the case where the <application>OpenSSL</application>
       library is not within a <filename>VC</filename> subdirectory (Andrew Dunstan)
      </para>
     </listitem>
@@ -2170,7 +2170,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
   <para>
    This release contains a variety of fixes from 9.3.16.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -2187,7 +2187,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.16,
-    see <xref linkend="release-9-3-16">.
+    see <xref linkend="release-9-3-16"/>.
    </para>
 
   </sect2>
@@ -2222,7 +2222,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
       By itself, this patch will only fix the behavior in newly initdb'd
       databases.  If you wish to apply this change in an existing database,
       follow the corrected procedure shown in the changelog entry for
-      CVE-2017-7547, in <xref linkend="release-9-3-18">.
+      CVE-2017-7547, in <xref linkend="release-9-3-18"/>.
      </para>
     </listitem>
 
@@ -2567,7 +2567,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
       will use the current and historical DST transition dates of
       the <literal>US/Eastern</literal> zone.  If you don't want that, remove
       the <filename>posixrules</filename> file, or replace it with a copy of some
-      other zone file (see <xref linkend="datatype-timezones">).  Note that
+      other zone file (see <xref linkend="datatype-timezones"/>).  Note that
       due to caching, you may need to restart the server to get such changes
       to take effect.
      </para>
@@ -2589,7 +2589,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
   <para>
    This release contains a variety of fixes from 9.3.15.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -2607,7 +2607,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.15,
-    see <xref linkend="release-9-3-15">.
+    see <xref linkend="release-9-3-15"/>.
    </para>
 
   </sect2>
@@ -2642,7 +2642,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
      </para>
 
      <para>
-      Previously, this was skipped when <xref linkend="guc-wal-level">
+      Previously, this was skipped when <xref linkend="guc-wal-level"/>
       = <literal>minimal</literal>, but actually it's necessary even in that case
       to ensure that the unlogged table is properly reset to empty after a
       crash.
@@ -2703,7 +2703,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
      <para>
       Previously, non-default settings
-      of <xref linkend="guc-default-tablespace"> could result in broken
+      of <xref linkend="guc-default-tablespace"/> could result in broken
       indexes.
      </para>
     </listitem>
@@ -3037,7 +3037,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
   <para>
    This release contains a variety of fixes from 9.3.14.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -3055,7 +3055,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.9,
-    see <xref linkend="release-9-3-9">.
+    see <xref linkend="release-9-3-9"/>.
    </para>
 
   </sect2>
@@ -3131,7 +3131,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
     <listitem>
      <para>
       Fix <command>EXPLAIN</command> to emit valid XML when
-      <xref linkend="guc-track-io-timing"> is on (Markus Winand)
+      <xref linkend="guc-track-io-timing"/> is on (Markus Winand)
      </para>
 
      <para>
@@ -3366,7 +3366,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
   <para>
    This release contains a variety of fixes from 9.3.13.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -3378,7 +3378,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.9,
-    see <xref linkend="release-9-3-9">.
+    see <xref linkend="release-9-3-9"/>.
    </para>
 
   </sect2>
@@ -3856,7 +3856,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
   <para>
    This release contains a variety of fixes from 9.3.12.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -3868,7 +3868,7 @@ UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.9,
-    see <xref linkend="release-9-3-9">.
+    see <xref linkend="release-9-3-9"/>.
    </para>
 
   </sect2>
@@ -4086,7 +4086,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
   <para>
    This release contains a variety of fixes from 9.3.11.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -4098,7 +4098,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.9,
-    see <xref linkend="release-9-3-9">.
+    see <xref linkend="release-9-3-9"/>.
    </para>
 
   </sect2>
@@ -4305,7 +4305,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
   <para>
    This release contains a variety of fixes from 9.3.10.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -4317,7 +4317,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.9,
-    see <xref linkend="release-9-3-9">.
+    see <xref linkend="release-9-3-9"/>.
    </para>
 
   </sect2>
@@ -4928,7 +4928,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
   <para>
    This release contains a variety of fixes from 9.3.9.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -4940,7 +4940,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.9,
-    see <xref linkend="release-9-3-9">.
+    see <xref linkend="release-9-3-9"/>.
    </para>
 
   </sect2>
@@ -5557,7 +5557,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
   <para>
    This release contains a small number of fixes from 9.3.8.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -5575,7 +5575,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.7,
-    see <xref linkend="release-9-3-7">.
+    see <xref linkend="release-9-3-7"/>.
    </para>
 
   </sect2>
@@ -5632,10 +5632,10 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
          Otherwise, for each table that has
          <structname>pg_class</structname>.<structfield>relminmxid</structfield> equal to 1,
          <command>VACUUM</command> that table with
-         both <xref linkend="guc-vacuum-multixact-freeze-min-age">
-         and <xref linkend="guc-vacuum-multixact-freeze-table-age"> set to
+         both <xref linkend="guc-vacuum-multixact-freeze-min-age"/>
+         and <xref linkend="guc-vacuum-multixact-freeze-table-age"/> set to
          zero.  (You can use the vacuum cost delay parameters described
-         in <xref linkend="runtime-config-resource-vacuum-cost"> to reduce
+         in <xref linkend="runtime-config-resource-vacuum-cost"/> to reduce
          the performance consequences for concurrent sessions.)  You must
          use <productname>PostgreSQL</productname> 9.3.5 or later to perform this step.
         </para>
@@ -5706,7 +5706,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
   <para>
    This release contains a small number of fixes from 9.3.7.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -5718,7 +5718,7 @@ Branch: REL9_2_STABLE [37f30b251] 2016-04-18 13:19:52 -0400
 
    <para>
     However, if you are upgrading from a version earlier than 9.3.7,
-    see <xref linkend="release-9-3-7">.
+    see <xref linkend="release-9-3-7"/>.
    </para>
 
   </sect2>
@@ -5814,7 +5814,7 @@ Branch: REL9_0_STABLE [4dddf8552] 2015-05-21 20:41:55 -0400
   <para>
    This release contains a variety of fixes from 9.3.6.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -5832,7 +5832,7 @@ Branch: REL9_0_STABLE [4dddf8552] 2015-05-21 20:41:55 -0400
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.6,
-    see <xref linkend="release-9-3-6">.
+    see <xref linkend="release-9-3-6"/>.
    </para>
 
   </sect2>
@@ -6404,7 +6404,7 @@ Branch: REL9_0_STABLE [4dddf8552] 2015-05-21 20:41:55 -0400
   <para>
    This release contains a variety of fixes from 9.3.5.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -6425,7 +6425,7 @@ Branch: REL9_0_STABLE [4dddf8552] 2015-05-21 20:41:55 -0400
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.5,
-    see <xref linkend="release-9-3-5">.
+    see <xref linkend="release-9-3-5"/>.
    </para>
 
   </sect2>
@@ -8289,7 +8289,7 @@ Branch: REL9_0_STABLE [b6391f587] 2014-10-04 14:18:43 -0400
   <para>
    This release contains a variety of fixes from 9.3.4.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -8309,7 +8309,7 @@ Branch: REL9_0_STABLE [b6391f587] 2014-10-04 14:18:43 -0400
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.4,
-    see <xref linkend="release-9-3-4">.
+    see <xref linkend="release-9-3-4"/>.
    </para>
 
   </sect2>
@@ -8771,7 +8771,7 @@ Branch: REL9_1_STABLE [dd1a5b09b] 2014-06-24 13:30:41 +0300
     <listitem>
      <para>
       Prevent foreign tables from being created with OIDS
-      when <xref linkend="guc-default-with-oids"> is true
+      when <xref linkend="guc-default-with-oids"/> is true
       (Etsuro Fujita)
      </para>
     </listitem>
@@ -9053,7 +9053,7 @@ Branch: REL8_4_STABLE [30e434bdf] 2014-04-05 12:41:40 -0400
     <listitem>
      <para>
       On Windows, allow new sessions to absorb values of PGC_BACKEND
-      parameters (such as <xref linkend="guc-log-connections">) from the
+      parameters (such as <xref linkend="guc-log-connections"/>) from the
       configuration file (Amit Kapila)
      </para>
 
@@ -9409,7 +9409,7 @@ Branch: REL8_4_STABLE [c51da696b] 2014-07-19 15:01:45 -0400
   <para>
    This release contains a variety of fixes from 9.3.3.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -9428,7 +9428,7 @@ Branch: REL8_4_STABLE [c51da696b] 2014-07-19 15:01:45 -0400
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.3,
-    see <xref linkend="release-9-3-3">.
+    see <xref linkend="release-9-3-3"/>.
    </para>
 
   </sect2>
@@ -9674,7 +9674,7 @@ Branch: REL9_3_STABLE [dcd1131c8] 2014-03-06 21:40:50 +0200
       <application>walsender</application> failed to send ping messages to the client
       if it was constantly busy sending WAL data; but it expected to see
       ping responses despite that, and would therefore disconnect
-      once <xref linkend="guc-wal-sender-timeout"> elapsed.
+      once <xref linkend="guc-wal-sender-timeout"/> elapsed.
      </para>
     </listitem>
 
@@ -9730,7 +9730,7 @@ Branch: REL9_3_STABLE [5a7e75849] 2014-02-20 10:46:54 +0200
 
     <listitem>
      <para>
-      Add read-only <xref linkend="guc-data-checksums"> parameter to
+      Add read-only <xref linkend="guc-data-checksums"/> parameter to
       display whether page checksums are enabled (Heikki Linnakangas)
      </para>
 
@@ -9871,7 +9871,7 @@ Branch: REL8_4_STABLE [6e6c2c2e1] 2014-03-15 13:36:57 -0400
   <para>
    This release contains a variety of fixes from 9.3.2.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -9900,7 +9900,7 @@ Branch: REL8_4_STABLE [6e6c2c2e1] 2014-03-15 13:36:57 -0400
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.2,
-    see <xref linkend="release-9-3-2">.
+    see <xref linkend="release-9-3-2"/>.
    </para>
 
   </sect2>
@@ -10179,9 +10179,9 @@ Branch: REL9_3_STABLE [fb47de2be] 2014-02-13 19:30:30 -0300
       freezing parameters were used for multixact IDs too; but since
       the consumption rates of transaction IDs and multixact IDs can be
       quite different, this did not work very well.  Introduce new settings
-      <xref linkend="guc-vacuum-multixact-freeze-min-age">,
-      <xref linkend="guc-vacuum-multixact-freeze-table-age">, and
-      <xref linkend="guc-autovacuum-multixact-freeze-max-age">
+      <xref linkend="guc-vacuum-multixact-freeze-min-age"/>,
+      <xref linkend="guc-vacuum-multixact-freeze-table-age"/>, and
+      <xref linkend="guc-autovacuum-multixact-freeze-max-age"/>
       to control when to freeze multixacts.
      </para>
     </listitem>
@@ -11333,7 +11333,7 @@ Branch: REL8_4_STABLE [c0c2d62ac] 2014-02-14 21:59:56 -0500
   <para>
    This release contains a variety of fixes from 9.3.1.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>
@@ -11351,7 +11351,7 @@ Branch: REL8_4_STABLE [c0c2d62ac] 2014-02-14 21:59:56 -0500
 
    <para>
     Also, if you are upgrading from a version earlier than 9.3.1,
-    see <xref linkend="release-9-3-1">.
+    see <xref linkend="release-9-3-1"/>.
    </para>
 
   </sect2>
@@ -11812,7 +11812,7 @@ SELECT ... FROM tab1 x CROSS JOIN (tab2 x CROSS JOIN tab3 y) z
   <para>
    This release contains a variety of fixes from 9.3.0.
    For information about new features in the 9.3 major release, see
-   <xref linkend="release-9-3">.
+   <xref linkend="release-9-3"/>.
   </para>
 
   <sect2>

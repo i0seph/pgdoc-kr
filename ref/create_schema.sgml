@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_schema.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATESCHEMA">
+<refentry id="sql-createschema">
  <indexterm zone="sql-createschema">
   <primary>CREATE SCHEMA</primary>
  </indexterm>
@@ -21,14 +21,14 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE SCHEMA <replaceable class="parameter">스키마이름</replaceable> [ AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable> ] [ <replaceable class="parameter">스키마요소</replaceable> [ ... ] ]
-CREATE SCHEMA AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable> [ <replaceable class="parameter">스키마요소</replaceable> [ ... ] ]
-CREATE SCHEMA IF NOT EXISTS <replaceable class="parameter">스키마이름</replaceable> [ AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable> ]
-CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">롤명세</replaceable>
+CREATE SCHEMA <replaceable class="parameter">스키마이름</replaceable> [ AUTHORIZATION <replaceable class="parameter">롤명세</replaceable> ] [ <replaceable class="parameter">스키마요소</replaceable> [ ... ] ]
+CREATE SCHEMA AUTHORIZATION <replaceable class="parameter">롤명세</replaceable> [ <replaceable class="parameter">스키마요소</replaceable> [ ... ] ]
+CREATE SCHEMA IF NOT EXISTS <replaceable class="parameter">스키마이름</replaceable> [ AUTHORIZATION <replaceable class="parameter">롤명세</replaceable> ]
+CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="parameter">롤명세</replaceable>
 
-<phrase><replaceable class="PARAMETER">롤명세</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">롤명세</replaceable> 자리에는:</phrase>
 
-    <replaceable class="PARAMETER">사용자이름</replaceable>
+    <replaceable class="parameter">사용자이름</replaceable>
   | CURRENT_USER
   | SESSION_USER
 </synopsis>
@@ -53,7 +53,7 @@ CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">롤명�
    사이에 점(.)을 찍어 그 개체를 식별한다.  또한 스키마 이름을 
    생략하면, 해당 개체는 search_path 환경 설정값으로 지정한 스키마들 가운데
    차례대로 찾고, 처음 발견 된 것을 작업 개체로 판단한다.
-   이런 개체를 만드는 각종 <literal>CREATE</> 명령에서도
+   이런 개체를 만드는 각종 <literal>CREATE</literal> 명령에서도
    그 이름 앞에 스키마 이름을 지정할 수 있으며, 
    스키마 이름을 생략하면, search_path 값 제일 앞에 있는 스키마 안에 
    해당 개체를 만든다.  이 기본 스키마를 현재 스키마라고 하며, 
@@ -65,7 +65,7 @@ CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">롤명�
    그 스키마를 만들면서, 그 스키마 안에 포함될 개체들을 함께 만들 수 
    있는 하위 명령도 포함할 수 있다.  이 하위 명령은 
    스키마를 만들고 난 다음 분리되어 따로 실행할 수 있는 명령들로 
-   구성된다.  이 때 <literal>AUTHORIZATION</>  옵션이 있으면, 
+   구성된다.  이 때 <literal>AUTHORIZATION</literal>  옵션이 있으면, 
    소속 개별 개체들도 같은 소유주로 지정한다.
    그 소속 개별 개체들의 각각의 소유주를 다르게 지정하려면, 하위 명령을
    분리해서 작업하거나, 만든 뒤 소유주 변경 작업으로 진행하면 된다.
@@ -108,9 +108,9 @@ CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">롤명�
        <para>
         새 스키마를 만들면서 그 스키마 소속 하위 개체들도 함께 만든다.
         현재, <command>CREATE
-        TABLE</>, <command>CREATE VIEW</>, <command>CREATE
-        INDEX</>, <command>CREATE SEQUENCE</>, <command>CREATE
-        TRIGGER</> 및 <command>GRANT</> 명령만 하위 명령으로 사용할 수 있다.
+        TABLE</command>, <command>CREATE VIEW</command>, <command>CREATE
+        INDEX</command>, <command>CREATE SEQUENCE</command>, <command>CREATE
+        TRIGGER</command> 및 <command>GRANT</command> 명령만 하위 명령으로 사용할 수 있다.
         그 외 개체들에 대해서는 스키마를 만든 뒤 따로 만들어야 한다.
        </para>
       </listitem>
@@ -122,7 +122,7 @@ CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">롤명�
        <para>
         해당 이름의 스키마가 이미 있으면, 알림 메시지만 보이고, 
         무시한다.  이 옵션을 사용하면, 
-        <replaceable class="parameter">스키마요소</> 하위
+        <replaceable class="parameter">스키마요소</replaceable> 하위
         명령은 사용할 수 없다.
        </para>
       </listitem>
@@ -135,7 +135,7 @@ CREATE SCHEMA IF NOT EXISTS AUTHORIZATION <replaceable class="PARAMETER">롤명�
 
   <para>
    스키마를 만드려면, 해당 데이터베이스에 대해서
-   <literal>CREATE</> 권한이 있는 사용자여야 한다.
+   <literal>CREATE</literal> 권한이 있는 사용자여야 한다.
    (슈퍼유저는 이 제약 무시하고 만들 수 있다.)
   </para>
  </refsect1>
@@ -151,15 +151,15 @@ CREATE SCHEMA myschema;
   </para>
 
   <para>
-   <literal>joe</> 사용자를 소유주로 하는 같은 이름의 스키마 만들기:
+   <literal>joe</literal> 사용자를 소유주로 하는 같은 이름의 스키마 만들기:
 <programlisting>
 CREATE SCHEMA AUTHORIZATION joe;
 </programlisting>
   </para>
 
   <para>
-   <literal>test</> 이름의 스키마가 없으면, 이 이름의 스키마를 만들면서
-   소유주를 <literal>joe</>로 지정.
+   <literal>test</literal> 이름의 스키마가 없으면, 이 이름의 스키마를 만들면서
+   소유주를 <literal>joe</literal>로 지정.
    이미 있으면, 무시. (소유주가 누구인지는 상관하지 않고 무시함)
 <programlisting>
 CREATE SCHEMA IF NOT EXISTS test AUTHORIZATION joe;
@@ -194,7 +194,7 @@ CREATE VIEW hollywood.winners AS
   <para>
    SQL 표준에서는 <productname>PostgreSQL</productname> 에서 제공하고
    있는 하위 명령과 함께, 
-   <literal>DEFAULT CHARACTER SET</> 구문도 허용한다.
+   <literal>DEFAULT CHARACTER SET</literal> 구문도 허용한다.
   </para>
 
   <para>
@@ -210,7 +210,7 @@ CREATE VIEW hollywood.winners AS
    <productname>PostgreSQL</productname>에서는 스키마의 소유주와
    그 소속 개체들의 소유주가 각기 다를 수 있다.
    이 경우는 해당 스키마에 대해서 어떤 사용자가 
-   <literal>CREATE</> 권한이 있거나, 슈퍼유저면 가능하다.
+   <literal>CREATE</literal> 권한이 있거나, 슈퍼유저면 가능하다.
   </para>
 
   <para>
@@ -223,8 +223,8 @@ CREATE VIEW hollywood.winners AS
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterschema"></member>
-   <member><xref linkend="sql-dropschema"></member>
+   <member><xref linkend="sql-alterschema"/></member>
+   <member><xref linkend="sql-dropschema"/></member>
  </simplelist>
  </refsect1>
 

@@ -63,7 +63,7 @@ DROP ACCESS METHOD [ IF EXISTS ] <replaceable class="parameter">이름</replacea
     <listitem>
      <para>
       이 접근 방법을 사용하고 있는 모든 개체들(연산자 클래스,
-      연산자 가족, 인덱스 등)을 같이 지운다. (<xref linkend="ddl-depend">
+      연산자 가족, 인덱스 등)을 같이 지운다. (<xref linkend="ddl-depend"/>
       참조)
      </para>
     </listitem>
@@ -85,7 +85,7 @@ DROP ACCESS METHOD [ IF EXISTS ] <replaceable class="parameter">이름</replacea
   <title>예제</title>
 
   <para>
-   <literal>heptree</> 접근 방법을 삭제하려면:
+   <literal>heptree</literal> 접근 방법을 삭제하려면:
 <programlisting>
 DROP ACCESS METHOD heptree;
 </programlisting></para>
@@ -96,7 +96,7 @@ DROP ACCESS METHOD heptree;
 
   <para>
    <command>DROP ACCESS METHOD</command> 명령은
-   <productname>PostgreSQL</> 확장 명령어다.
+   <productname>PostgreSQL</productname> 확장 명령어다.
   </para>
  </refsect1>
 
@@ -104,7 +104,7 @@ DROP ACCESS METHOD heptree;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-create-access-method"></member>
+   <member><xref linkend="sql-create-access-method"/></member>
   </simplelist>
  </refsect1>
 

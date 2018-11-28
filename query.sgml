@@ -12,7 +12,7 @@
     대한 모든 것을 설명하기에는 그 지면이 부족할 뿐 아니라, 처음 접하는
     사람들에게 오히려 복잡함만 초래하기에 여기서는 그 대략적인 사용법에
     대해서만 언급합니다. <acronym>SQL</acronym> 언어에 대한 도서로는 <xref
-    linkend="MELT93">, <xref linkend="DATE97"> 등이 있습니다.  관심 있으신
+    linkend="melt93"/>, <xref linkend="date97"/> 등이 있습니다.  관심 있으신
     분은 읽어 보시길 바랍니다.  물론
     <productname>PostgreSQL</productname>에서 사용하고 있는 <acronym>SQL</acronym>
     언어는 고유 확장된 부분이 있음을 감안하셔야합니다.
@@ -29,7 +29,7 @@
     이 자습서에서 사용되는 예제 자료는 <productname>PostgreSQL</productname> 배포 소스의
     <filename>src/tutorial/</filename> 디렉터리 안에 있습니다.  (바이너리 배포판에는
     이 자습서가 포함되지 않습니다.)  일단
-    시작부터 하려면, 해당 디렉터리로 이동해서 <application>make</> 명령을 실행하십시오:
+    시작부터 하려면, 해당 디렉터리로 이동해서 <application>make</application> 명령을 실행하십시오:
 
 <screen>
 <prompt>$</prompt> <userinput>cd <replaceable>....</replaceable>/src/tutorial</userinput>
@@ -51,9 +51,9 @@
 </screen>
 
     <literal>\i</literal>  명령은 지정한 파일의 내용을
-    실행하는 <application>psql</> 내장 명령어입니다.  - 물론 basics.sql
+    실행하는 <application>psql</application> 내장 명령어입니다.  - 물론 basics.sql
     파일안에는 <productname>PostgreSQL</productname> 서버에서
-    실행될 SQL 명령들이 있겠지요.  <application>psql</> 프로그램을
+    실행될 SQL 명령들이 있겠지요.  <application>psql</application> 프로그램을
     실행할 때, <literal>-s</literal> 옵션을 사용하면, 이 SQL 명령들을 하나씩 확인하면서
     실행할 수 있습니다.  <filename>basics.sql</filename> 파일안에는 앞으로 이 자습서에서
     사용될 각종 테이블들과 그 자료들을 만드는 명령들이 들어있습니다.
@@ -173,8 +173,8 @@ CREATE TABLE weather (
     <productname>PostgreSQL</productname>에서는
     표준 <acronym>SQL</acronym> 자료형인 <type>int</type>,
     <type>smallint</type>, <type>real</type>, <type>double
-    precision</type>, <type>char(<replaceable>N</>)</type>,
-    <type>varchar(<replaceable>N</>)</type>, <type>date</type>,
+    precision</type>, <type>char(<replaceable>N</replaceable>)</type>,
+    <type>varchar(<replaceable>N</replaceable>)</type>, <type>date</type>,
     <type>time</type>, <type>timestamp</type>, 
     <type>interval</type>형을 사용할 수 있으며, 
     또한 일반적인 기타 자료형들과 지리 정보를 담기 위해서
@@ -234,7 +234,7 @@ INSERT INTO weather VALUES ('San Francisco', 46, 50, 0.25, '1994-11-27');
     각 칼럼의 실재 자료들은 그 테이블을 만들 때 지정한
     자료형과 완벽하게 일치해야한다는 것을 명심해야합니다.  특히
     숫자가 아닌 자료일 경우는 윗 예제처럼 작은
-    따옴표(<literal>'</>)로 둘러쌓야합니다.  날짜형(<type>date</type>)
+    따옴표(<literal>'</literal>)로 둘러쌓야합니다.  날짜형(<type>date</type>)
     자료를 입력해야할 경우는 그 값이 정확하게
     날짜표현이어야합니다.  (주, <productname>PostgreSQL</productname>에서는 날짜형처리가
     비교적 엄격한 편입니다.  날짜가 아닌 표현에 대해서는 그
@@ -295,7 +295,7 @@ COPY weather FROM '/home/user/weather.txt';
     이때 지정한 파일은 서버가 가동 중인 호스트에
     있어야 합니다. 접속한 서버가 원격호스트 경우라면 윗 파일을 
     원격호스트에서 찾을 것입니다.  <command>COPY</command>
-    명령에 대한 자세한 설명은 <xref linkend="sql-copy"> 설명서에
+    명령에 대한 자세한 설명은 <xref linkend="sql-copy"/> 설명서에
     있습니다.
    </para>
   </sect1>
@@ -371,12 +371,12 @@ SELECT city, (temp_hi+temp_lo)/2 AS temp_avg, date FROM weather;
    </para>
 
    <para>
-    쿼리 문장은 <literal>WHERE</> 절을 사용해서, 
-    검색 결과의 조건을 지정할 수 있습니다.  <literal>WHERE</> 절에
+    쿼리 문장은 <literal>WHERE</literal> 절을 사용해서, 
+    검색 결과의 조건을 지정할 수 있습니다.  <literal>WHERE</literal> 절에
     사용할 조건은 논리 조건(참이냐 거짓이냐)
     들의 집합으로 구성됩니다.  일반적으로 논리 조건은 
     불리언 연산자(<literal>AND</literal>, <literal>OR</literal>,
-    <literal>NOT</literal>)를 이용해서, <literal>WHERE</> 절 전체의
+    <literal>NOT</literal>)를 이용해서, <literal>WHERE</literal> 절 전체의
     조건을 구성합니다.  다음 예제는 San Francisco에서 
     비온 날을 찾는 구문입니다:
 
@@ -563,8 +563,8 @@ SELECT city, temp_lo, temp_hi, prcp, date, location
     있다면, 윗 구문처럼 사용하면, 서버는 어떤 테이블에서
     그 칼럼을 참조해야 하는 지를 몰라 오류를 냅니다.  그래서, 일반적으로
     join 구문을 작성할 때는 다음과 같이 칼럼 이름 앞에 테이블 이름을
-    함께 지정해서 사용합니다(이것을 <firstterm>지정자</>
-    <firstterm>qualify</>라고 합니다):
+    함께 지정해서 사용합니다(이것을 <firstterm>지정자</firstterm>
+    <firstterm>qualify</firstterm>라고 합니다):
 
 <programlisting>
 SELECT weather.city, weather.temp_lo, weather.temp_hi,
@@ -653,8 +653,8 @@ SELECT W1.city, W1.temp_lo AS low, W1.temp_hi AS high,
 (2 rows)
 </programlisting>
 
-    self join 방법은 <literal>W1</>, 
-    <literal>W2</> 처럼 같은 테이블에 대해서 서로 다른 별칭을 
+    self join 방법은 <literal>W1</literal>, 
+    <literal>W2</literal> 처럼 같은 테이블에 대해서 서로 다른 별칭을 
     사용해서 조인 쿼리를 작성합니다.  이런 테이블 별칭은 
     self join 뿐만 아니라, 일반적인 조인 쿼리에서도 아래와
     같이 사용할 수 있습니다:
@@ -788,7 +788,7 @@ SELECT city, max(temp_lo)
 <programlisting>
 SELECT city, max(temp_lo)
     FROM weather
-    WHERE city LIKE 'S%'            -- <co id="co.tutorial-agg-like">
+    WHERE city LIKE 'S%'            -- <co id="co.tutorial-agg-like"/>
     GROUP BY city
     HAVING max(temp_lo) &lt; 40;
 </programlisting>
@@ -796,7 +796,7 @@ SELECT city, max(temp_lo)
     <callout arearefs="co.tutorial-agg-like">
      <para>
       <literal>LIKE</literal> 연산자는 문자열 패턴 매칭 관련 연산자인데, 
-      자세한 것은 <xref linkend="functions-matching">을 참조하세요.
+      자세한 것은 <xref linkend="functions-matching"/>을 참조하세요.
      </para>
     </callout>
    </calloutlist>
@@ -902,7 +902,7 @@ DELETE FROM <replaceable>tablename</replaceable>;
 </synopsis>
 
     윗 쿼리는 삭제 작업에서 삭제 대상을 지정하지 않았기 때문에 
-    해당 테이블의 <emphasis>전체</> 자료가 삭제 대상이 됩니다.
+    해당 테이블의 <emphasis>전체</emphasis> 자료가 삭제 대상이 됩니다.
     처리 결과는 당연히 그 해당 테이블에는 아무런 자료도 없게 되겠지요.  이때,
     그 지워여야할 자료가 아주 많이 있다면, 시간이 꽤 걸릴것이고
     그 동안 서버는 클라이언트에게 아무런 응답도 보내지 않습니다.

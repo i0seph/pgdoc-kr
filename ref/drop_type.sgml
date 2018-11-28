@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_type.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPTYPE">
+<refentry id="sql-droptype">
  <indexterm zone="sql-droptype">
   <primary>DROP TYPE</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP TYPE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP TYPE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -48,7 +48,7 @@ DROP TYPE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, .
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">name</replaceable></term>
+    <term><replaceable class="parameter">name</replaceable></term>
     <listitem>
      <para>
           삭제하려는 (스키마 이름을 포함 할 수도 있는) 자료형 이름.
@@ -63,7 +63,7 @@ DROP TYPE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, .
           해당 자료형과 의존성 관계가 있는 모든 객체들(테이블 칼럼, 
           함수, 연산자 등)도 함께 삭제한다.
       물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -80,7 +80,7 @@ DROP TYPE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, .
   </variablelist>
  </refsect1>
 
- <refsect1 id="SQL-DROPTYPE-examples">
+ <refsect1 id="sql-droptype-examples">
   <title>예제</title>
 
   <para>
@@ -90,12 +90,12 @@ DROP TYPE box;
 </programlisting></para>
  </refsect1>
 
- <refsect1 id="SQL-DROPTYPE-compatibility">
+ <refsect1 id="sql-droptype-compatibility">
   <title>호환성</title>
 
   <para>
-   표준 SQL에서도 이 명령을 지원하지만, <literal>IF EXISTS</> 같은
-   <productname>PostgreSQL</> 확장 옵션이 없고, 
+   표준 SQL에서도 이 명령을 지원하지만, <literal>IF EXISTS</literal> 같은
+   <productname>PostgreSQL</productname> 확장 옵션이 없고, 
    <command>CREATE TYPE</command> 명령 자체가 
    표준 SQL과 <productname>PostgreSQL</productname>과 
    서로 메카니즘이 다르기 때문에, 이 명령 또한 내부적으로는 
@@ -103,12 +103,12 @@ DROP TYPE box;
   </para>
  </refsect1>
 
- <refsect1 id="SQL-DROPTYPE-see-also">
+ <refsect1 id="sql-droptype-see-also">
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-altertype"></member>
-   <member><xref linkend="sql-createtype"></member>
+   <member><xref linkend="sql-altertype"/></member>
+   <member><xref linkend="sql-createtype"/></member>
   </simplelist>
  </refsect1>
 

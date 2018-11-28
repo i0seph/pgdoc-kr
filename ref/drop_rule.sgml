@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_rule.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPRULE">
+<refentry id="sql-droprule">
  <indexterm zone="sql-droprule">
   <primary>DROP RULE</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP RULE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> ON <replaceable class="PARAMETER">테이블이름</replaceable> [ CASCADE | RESTRICT ]
+DROP RULE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -71,7 +71,7 @@ DROP RULE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> ON <
      <para>
       지정한 룰과 의존성 관계가 있는 모든 객체들도 함께 삭제한다.
       물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -111,8 +111,8 @@ DROP RULE newrule ON mytable;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createrule"></member>
-   <member><xref linkend="sql-alterrule"></member>
+   <member><xref linkend="sql-createrule"/></member>
+   <member><xref linkend="sql-alterrule"/></member>
   </simplelist>
  </refsect1>
 

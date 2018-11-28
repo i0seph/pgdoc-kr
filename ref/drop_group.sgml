@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_group.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPGROUP">
+<refentry id="sql-dropgroup">
  <indexterm zone="sql-dropgroup">
   <primary>DROP GROUP</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP GROUP [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...]
+DROP GROUP [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...]
 </synopsis>
  </refsynopsisdiv>
 
@@ -30,7 +30,7 @@ DROP GROUP [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, 
 
   <para>
    <command>DROP GROUP</command> 명령은 이제
-   <xref linkend="sql-droprole"> 명령의 별칭이다.
+   <xref linkend="sql-droprole"/> 명령의 별칭이다.
   </para>
  </refsect1>
 
@@ -46,7 +46,7 @@ DROP GROUP [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, 
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-droprole"></member>
+   <member><xref linkend="sql-droprole"/></member>
   </simplelist>
  </refsect1>
 

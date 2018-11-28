@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_function.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERFUNCTION">
+<refentry id="sql-alterfunction">
  <indexterm zone="sql-alterfunction">
   <primary>ALTER FUNCTION</primary>
  </indexterm>
@@ -22,7 +22,7 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
-    <replaceable class="PARAMETER">작업</replaceable> [ ... ] [ RESTRICT ]
+    <replaceable class="parameter">작업</replaceable> [ ... ] [ RESTRICT ]
 ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
     RENAME TO <replaceable>새이름</replaceable>
 ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
@@ -32,7 +32,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
 ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
     DEPENDS ON EXTENSION <replaceable>확장모듈이름</replaceable>
 
-<phrase><replaceable class="PARAMETER">작업</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">작업</replaceable> 자리에는:</phrase>
 
     CALLED ON NULL INPUT | RETURNS NULL ON NULL INPUT | STRICT
     IMMUTABLE | STABLE | VOLATILE | [ NOT ] LEAKPROOF
@@ -55,11 +55,11 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
   </para>
 
   <para>
-   <command>ALTER FUNCTION</> 명령은 해당 함수 소유주가 실행할 수 있다.
-   스키마를 바꾸는 경우, 새 스키마에 대한 <literal>CREATE</> 권한이 있어야 한다.
+   <command>ALTER FUNCTION</command> 명령은 해당 함수 소유주가 실행할 수 있다.
+   스키마를 바꾸는 경우, 새 스키마에 대한 <literal>CREATE</literal> 권한이 있어야 한다.
    소유주를 바꾸는 경우, 현재 소유주는 직간접적으로 새 소유주의
    구성원이어야 하며, 새 소유주는 해당 스키마에 대해서
-   <literal>CREATE</> 권한이 있어야 한다. (새 사용자가
+   <literal>CREATE</literal> 권한이 있어야 한다. (새 사용자가
    그 함수를 지우거나, 새로 만들 수 있어야 하기 때문이다.
    슈퍼유저는 이런 제한 없이 작업할 수 있다.)
   </para>
@@ -85,13 +85,13 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
 
     <listitem>
      <para>
-      사용할 수 모드값은 <literal>IN</>, <literal>OUT</>,
-      <literal>INOUT</>, <literal>VARIADIC</>.
-      생략하면 <literal>IN</>으로 간주한다.
+      사용할 수 모드값은 <literal>IN</literal>, <literal>OUT</literal>,
+      <literal>INOUT</literal>, <literal>VARIADIC</literal>.
+      생략하면 <literal>IN</literal>으로 간주한다.
       <command>ALTER FUNCTION</command> 명령에서 해당 함수를 식별할 
-      때 <literal>OUT</> 인자를 고려하지 않고, 단지 입력 인자만
-      고려한다.  그래서, <literal>IN</>, <literal>INOUT</>,
-      <literal>VARIADIC</> 인자만 지정해도 된다.
+      때 <literal>OUT</literal> 인자를 고려하지 않고, 단지 입력 인자만
+      고려한다.  그래서, <literal>IN</literal>, <literal>INOUT</literal>,
+      <literal>VARIADIC</literal> 인자만 지정해도 된다.
      </para>
     </listitem>
    </varlistentry>
@@ -167,7 +167,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
        <literal>RETURNS NULL ON NULL INPUT</literal>
        또는 <literal>STRICT</literal>: 입력 인자값이 null 이면 함수
        본문을 실행하지 않고 무조건 null 값을 반환함.
-       <xref linkend="sql-createfunction"> 참조.
+       <xref linkend="sql-createfunction"/> 참조.
       </para>
      </listitem>
    </varlistentry>
@@ -180,7 +180,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
      <listitem>
       <para>
        함수 휘발성 속성 지정.
-       <xref linkend="sql-createfunction"> 참조.
+       <xref linkend="sql-createfunction"/> 참조.
       </para>
     </listitem>
    </varlistentry>
@@ -195,7 +195,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
       정의자(만든이, DEFINER)로 할지
       지정함.  <literal>EXTERNAL</literal> 키워드는 
       SQL 호환성 때문에 있음. 무시됨.  
-      <xref linkend="sql-createfunction"> 참조.
+      <xref linkend="sql-createfunction"/> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -206,7 +206,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
     <listitem>
      <para>
       병렬 처리 속성 지정.
-      <xref linkend="sql-createfunction"> 참조.
+      <xref linkend="sql-createfunction"/> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -216,7 +216,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
     <listitem>
      <para>
       leakproof 지정.
-      <xref linkend="sql-createfunction"> 참조.
+      <xref linkend="sql-createfunction"/> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -227,7 +227,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
      <listitem>
       <para>
        쿼리 최적화기가 사용할 실행 비용 추정값.
-       <xref linkend="sql-createfunction"> 참조.
+       <xref linkend="sql-createfunction"/> 참조.
       </para>
      </listitem>
    </varlistentry>
@@ -238,7 +238,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
      <listitem>
       <para>
        집합 반환 함수에서 반환될 자료수 추정값. 쿼리 최적화기가 이 값을 참조함.
-       <xref linkend="sql-createfunction"> 참조.
+       <xref linkend="sql-createfunction"/> 참조.
       </para>
      </listitem>
    </varlistentry>
@@ -253,15 +253,15 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
         지정하거나, <literal>RESET</literal> 구문을 쓰면, 해당 설정 값을
         지우고, <literal>RESET ALL</literal> 구문을 쓰면, 해당 함수에
         따로 지정된 모든 설정값을 지운다.
-        <literal>SET FROM CURRENT</> 구문은 
-        <command>ALTER FUNCTION</> 명령을 실행하는 그 세션의 현재 
+        <literal>SET FROM CURRENT</literal> 구문은 
+        <command>ALTER FUNCTION</command> 명령을 실행하는 그 세션의 현재 
         설정값을 지정한다.
        </para>
 
        <para>
         사용할 수 있는 매개 변수 이름과 그 값에 대한 자세한 설명은
-        <xref linkend="sql-set"> 명령 설명서와
-        <xref linkend="runtime-config">에서 다룬다.
+        <xref linkend="sql-set"/> 명령 설명서와
+        <xref linkend="runtime-config"/>에서 다룬다.
        </para>
       </listitem>
      </varlistentry>
@@ -317,7 +317,7 @@ ALTER FUNCTION check_password(text) SET search_path = admin, pg_temp;
   </para>
 
   <para>
-   이미 지정된 <varname>search_path</> 값 지우기:
+   이미 지정된 <varname>search_path</varname> 값 지우기:
 <programlisting>
 ALTER FUNCTION check_password(text) RESET search_path;
 </programlisting>
@@ -329,12 +329,12 @@ ALTER FUNCTION check_password(text) RESET search_path;
   <title>호환성</title>
 
   <para>
-   <command>ALTER FUNCTION</> 구문은 부분적으로 표준 SQL 구문을 
+   <command>ALTER FUNCTION</command> 구문은 부분적으로 표준 SQL 구문을 
    준수한다.  표준 구문에서도 많은 속성 변경이 가능하지만,
    함수 이름 바꾸기, 정의자 보안, 환경 설정 매개 변수 값 지정,
    소유주, 스키마 바꾸기, 함수 휘발성 지정 같은 기능은 없다.
-   표준 SQL에서는 <literal>RESTRICT</> 키워드가 필수지만,
-   <productname>PostgreSQL</>에서는 선택 사항이다.
+   표준 SQL에서는 <literal>RESTRICT</literal> 키워드가 필수지만,
+   <productname>PostgreSQL</productname>에서는 선택 사항이다.
   </para>
  </refsect1>
 
@@ -342,8 +342,10 @@ ALTER FUNCTION check_password(text) RESET search_path;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createfunction"></member>
-   <member><xref linkend="sql-dropfunction"></member>
+   <member><xref linkend="sql-createfunction"/></member>
+   <member><xref linkend="sql-dropfunction"/></member>
+   <member><xref linkend="sql-alterprocedure"/></member>
+   <member><xref linkend="sql-alterroutine"/></member>
   </simplelist>
  </refsect1>
 </refentry>

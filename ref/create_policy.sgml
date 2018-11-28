@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_policy.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEPOLICY">
+<refentry id="sql-createpolicy">
  <indexterm zone="sql-createpolicy">
   <primary>CREATE POLICY</primary>
  </indexterm>
@@ -78,7 +78,7 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
    하나의 명령으로 여러 정책을 한번에 정의할 수 있다.
    아래에서 자세히 설명한다.
    정책 종류와 특정 명령 사이 관계는
-   <xref linkend="sql-createpolicy-summary"> 에서 요약하고 있다.
+   <xref linkend="sql-createpolicy-summary"/> 에서 요약하고 있다.
   </para>
 
   <para>
@@ -92,7 +92,7 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
 
   <para>
    아무런 정책도 정의된 것이 없는 로우 단위 보안 기능이 활성화된 테이블이
-   있다면, 그 테이블의 기본 보안 정책은 <quote>모두 금지</>다.
+   있다면, 그 테이블의 기본 보안 정책은 <quote>모두 금지</quote>다.
    조회할 수도, 자료를 조작할 수도 없다.
   </para>
  </refsect1>
@@ -185,10 +185,10 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
       이 조건식에 집계 함수나 원도우 함수는 사용할 수 없다.
       해당 테이블의 로우 수준 보안 속성이 활성화 되어 있다면, 
       작업 쿼리에 이 조건식이 포함되어 수행된다.
-      작업이 <command>SELECT</> 인 경우,
+      작업이 <command>SELECT</command> 인 경우,
       이 식 계산 결과가 true 면 보이고, false 또는 null 이면 
       보이지 않는다.
-      한편, <command>UPDATE</> 또는 <command>DELETE</> 이면
+      한편, <command>UPDATE</command> 또는 <command>DELETE</command> 이면
       true면 자료 조작을 하고, false 또는 null 이면 자료 조작을
       하지 않는다.  오류로 처리하지 않고, 그냥 무시한다.
      </para>
@@ -221,8 +221,8 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
 
    <variablelist>
 
-     <varlistentry id="SQL-CREATEPOLICY-ALL">
-      <term><literal>ALL</></term>
+     <varlistentry id="sql-createpolicy-all">
+      <term><literal>ALL</literal></term>
       <listitem>
        <para>
          <literal>ALL</literal>은 모든 명령을 뜻한다.
@@ -249,8 +249,8 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
       </listitem>
      </varlistentry>
 
-     <varlistentry id="SQL-CREATEPOLICY-SELECT">
-      <term><literal>SELECT</></term>
+     <varlistentry id="sql-createpolicy-select">
+      <term><literal>SELECT</literal></term>
       <listitem>
        <para>
          <literal>SELECT</literal>는 <literal>SELECT</literal> 쿼리
@@ -267,8 +267,8 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
       </listitem>
      </varlistentry>
 
-     <varlistentry id="SQL-CREATEPOLICY-INSERT">
-      <term><literal>INSERT</></term>
+     <varlistentry id="sql-createpolicy-insert">
+      <term><literal>INSERT</literal></term>
       <listitem>
        <para>
          <literal>INSERT</literal>는 <literal>INSERT</literal> 명령 작업시
@@ -290,8 +290,8 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
       </listitem>
      </varlistentry>
 
-     <varlistentry id="SQL-CREATEPOLICY-UPDATE">
-      <term><literal>UPDATE</></term>
+     <varlistentry id="sql-createpolicy-update">
+      <term><literal>UPDATE</literal></term>
       <listitem>
        <para>
          <literal>UPDATE</literal>는
@@ -334,8 +334,8 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
       </listitem>
      </varlistentry>
 
-     <varlistentry id="SQL-CREATEPOLICY-DELETE">
-      <term><literal>DELETE</></term>
+     <varlistentry id="sql-createpolicy-delete">
+      <term><literal>DELETE</literal></term>
       <listitem>
        <para>
          <literal>DELETE</literal>는 <literal>DELETE</literal> 명령 작업 시
@@ -367,9 +367,9 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
    <table id="sql-createpolicy-summary">
     <title>명령 종류에 따른 정책 반영</title>
     <tgroup cols="6">
-     <colspec colnum="4" colname="update-using">
-     <colspec colnum="5" colname="update-check">
-     <spanspec namest="update-using" nameend="update-check" spanname="update">
+     <colspec colnum="4" colname="update-using"/>
+     <colspec colnum="5" colname="update-check"/>
+     <spanspec namest="update-using" nameend="update-check" spanname="update"/>
      <thead>
       <row>
        <entry morerows="1">명령</entry>
@@ -430,7 +430,7 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
       <row>
        <entry><command>UPDATE</command></entry>
        <entry>
-        기존 &amp; 새 로우 <footnoteref linkend="rls-select-priv">
+        기존 &amp; 새 로우 <footnoteref linkend="rls-select-priv"/>
        </entry>
        <entry>&mdash;</entry>
        <entry>기존 로우</entry>
@@ -440,7 +440,7 @@ CREATE POLICY <replaceable class="parameter">이름</replaceable> ON <replaceabl
       <row>
        <entry><command>DELETE</command></entry>
        <entry>
-        기존 로우 <footnoteref linkend="rls-select-priv">
+        기존 로우 <footnoteref linkend="rls-select-priv"/>
        </entry>
        <entry>&mdash;</entry>
        <entry>&mdash;</entry>
@@ -523,8 +523,7 @@ AND
   OR
   ...
 )
-</programlisting>
-   </para>
+</programlisting></para>
 
   </refsect2>
  </refsect1>
@@ -585,7 +584,7 @@ AND
   </para>
 
   <para>
-   추가 정보와 연습용 예제는 <xref linkend="ddl-rowsecurity">에서 다룬다.
+   추가 정보와 연습용 예제는 <xref linkend="ddl-rowsecurity"/>에서 다룬다.
   </para>
 
  </refsect1>
@@ -603,9 +602,9 @@ AND
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterpolicy"></member>
-   <member><xref linkend="sql-droppolicy"></member>
-   <member><xref linkend="sql-altertable"></member>
+   <member><xref linkend="sql-alterpolicy"/></member>
+   <member><xref linkend="sql-droppolicy"/></member>
+   <member><xref linkend="sql-altertable"/></member>
   </simplelist>
  </refsect1>
 

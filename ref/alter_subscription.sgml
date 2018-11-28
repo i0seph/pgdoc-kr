@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_subscription.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERSUBSCRIPTION">
+<refentry id="sql-altersubscription">
  <indexterm zone="sql-altersubscription">
   <primary>ALTER SUBSCRIPTION</primary>
  </indexterm>
@@ -21,14 +21,14 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> CONNECTION '<replaceable>접속정보</replaceable>'
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> SET PUBLICATION <replaceable class="PARAMETER">발행이름</replaceable> [, ...] [ WITH ( <replaceable class="PARAMETER">발행옵션</replaceable> [= <replaceable class="PARAMETER">값</replaceable>] [, ... ] ) ]
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> REFRESH PUBLICATION [ WITH ( <replaceable class="PARAMETER">새로고침옵션</replaceable> [= <replaceable class="PARAMETER">값</replaceable>] [, ... ] ) ]
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> ENABLE
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> DISABLE
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> SET ( <replaceable class="parameter">구독매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> CONNECTION '<replaceable>접속정보</replaceable>'
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> SET PUBLICATION <replaceable class="parameter">발행이름</replaceable> [, ...] [ WITH ( <replaceable class="parameter">발행옵션</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] ) ]
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> REFRESH PUBLICATION [ WITH ( <replaceable class="parameter">새로고침옵션</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] ) ]
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> ENABLE
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> DISABLE
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> SET ( <replaceable class="parameter">구독매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -37,12 +37,12 @@ ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> RENAME TO
 
   <para>
    <command>ALTER SUBSCRIPTION</command> 명령은
-   <xref linkend="sql-createsubscription"> 명령으로 한 구독을 만들 때 
+   <xref linkend="sql-createsubscription"/> 명령으로 한 구독을 만들 때 
    지정한 여러 속성들을 바꾼다.
   </para>
 
   <para>
-   <command>ALTER SUBSCRIPTION</> 명령은 해당 구독 소유주가 실행할 수 있다.
+   <command>ALTER SUBSCRIPTION</command> 명령은 해당 구독 소유주가 실행할 수 있다.
    소유주를 바꾸는 경우, 기존 소유주는 직간접적으로 새 소유주의
    소속원이어야 한다.  새 소유주는 슈퍼유저여야 한다.
    (현재, 모든 구독의 소유주는 슈퍼유저여야 한다. 이 권한 문제는 
@@ -67,7 +67,7 @@ ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> RENAME TO
     <term><literal>CONNECTION '<replaceable class="parameter">접속정보</replaceable>'</literal></term>
     <listitem>
      <para>
-      <xref linkend="SQL-CREATESUBSCRIPTION"> 명령으로 지정한 
+      <xref linkend="sql-createsubscription"/> 명령으로 지정한 
       접속 정보를 바꾼다.  자세한 접속 정보 설명은 이 명령 설명서에서 다룬다.
      </para>
     </listitem>
@@ -78,7 +78,7 @@ ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> RENAME TO
     <listitem>
      <para>
       구독하는 발행 목록을 바꾼다.
-      <xref linkend="SQL-CREATESUBSCRIPTION"> 명령 설명서에서 
+      <xref linkend="sql-createsubscription"/> 명령 설명서에서 
       보다 자세히 다룬다.
       기본적으로 <literal>REFRESH PUBLICATION</literal> 작업과 같은 일을 한다.
      </para>
@@ -161,7 +161,7 @@ ALTER SUBSCRIPTION <replaceable class="PARAMETER">이름</replaceable> RENAME TO
     <term><literal>SET ( <replaceable class="parameter">구독매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
-      <xref linkend="SQL-CREATESUBSCRIPTION"> 명령으로 지정한
+      <xref linkend="sql-createsubscription"/> 명령으로 지정한
       구독 매개 변수 값을 바꾼다.  자세한 설명은 이 설명서에서 다룬다.
       사용할 수 있는 옵션은 <literal>slot_name</literal>,
       <literal>synchronous_commit</literal>이 있다.
@@ -210,7 +210,7 @@ ALTER SUBSCRIPTION mysub DISABLE;
   <title>호환성</title>
 
   <para>
-   <command>ALTER SUBSCRIPTION</command> 구문은 <productname>PostgreSQL</>
+   <command>ALTER SUBSCRIPTION</command> 구문은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -219,10 +219,10 @@ ALTER SUBSCRIPTION mysub DISABLE;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createsubscription"></member>
-   <member><xref linkend="sql-dropsubscription"></member>
-   <member><xref linkend="sql-createpublication"></member>
-   <member><xref linkend="sql-alterpublication"></member>
+   <member><xref linkend="sql-createsubscription"/></member>
+   <member><xref linkend="sql-dropsubscription"/></member>
+   <member><xref linkend="sql-createpublication"/></member>
+   <member><xref linkend="sql-alterpublication"/></member>
   </simplelist>
  </refsect1>
 </refentry>

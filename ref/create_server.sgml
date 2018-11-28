@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_server.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATESERVER">
+<refentry id="sql-createserver">
  <indexterm zone="sql-createserver">
   <primary>CREATE SERVER</primary>
  </indexterm>
@@ -21,9 +21,9 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">서버이름</replaceable> [ TYPE '<replaceable class="parameter">서버종류</replaceable>' ] [ VERSION '<replaceable class="parameter">서버버전</replaceable>' ]
+CREATE SERVER [ IF NOT EXISTS ] <replaceable class="parameter">서버이름</replaceable> [ TYPE '<replaceable class="parameter">서버종류</replaceable>' ] [ VERSION '<replaceable class="parameter">서버버전</replaceable>' ]
     FOREIGN DATA WRAPPER <replaceable class="parameter">fdw이름</replaceable>
-    [ OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] ) ]
+    [ OPTIONS ( <replaceable class="parameter">옵션</replaceable> '<replaceable class="parameter">값</replaceable>' [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -48,7 +48,7 @@ CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">서버이름</repla
 
   <para>
    외부 서버를 만드려면 이 명령을 실행하는 사용자가 먼저 해당 외부 자료
-   싸개에 대해서 <literal>USAGE</> 권한이 있어야 한다.
+   싸개에 대해서 <literal>USAGE</literal> 권한이 있어야 한다.
   </para>
  </refsect1>
 
@@ -57,7 +57,7 @@ CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">서버이름</repla
 
   <variablelist>
   <varlistentry>
-    <term><literal>IF NOT EXISTS</></term>
+    <term><literal>IF NOT EXISTS</literal></term>
     <listitem>
      <para>
       같은 이름의 외부 서버가 이미 있으면, 알림 메시지만 보이고, 
@@ -104,7 +104,7 @@ CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">서버이름</repla
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( <replaceable class="parameter">옵션</replaceable> '<replaceable class="parameter">값</replaceable>' [, ... ] )</literal></term>
     <listitem>
      <para>
       해당 외부 서버 전용 옵션들.
@@ -120,8 +120,8 @@ CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">서버이름</repla
   <title>참고</title>
 
   <para>
-   <xref linkend="dblink"> 모듈을 사용한다면,
-   <xref linkend="contrib-dblink-connect">  함수에서 지정한 
+   <xref linkend="dblink"/> 모듈을 사용한다면,
+   <xref linkend="contrib-dblink-connect"/>  함수에서 지정한 
    인자를 이 외부 서버 이름으로 사용할 수 있다.
    이 방법으로 외부 서버를 사용하려면, 해당 서버에 대해서
    그 사용자에게 <literal>USAGE</literal> 권한을 부여해야 한다.
@@ -132,12 +132,12 @@ CREATE SERVER [IF NOT EXISTS] <replaceable class="parameter">서버이름</repla
   <title>예제</title>
 
   <para>
-   <literal>postgres_fdw</> 외부 자료 싸개를 사용하는
-   <literal>myserver</> 이름의 외부 서버 만들기:
+   <literal>postgres_fdw</literal> 외부 자료 싸개를 사용하는
+   <literal>myserver</literal> 이름의 외부 서버 만들기:
 <programlisting>
 CREATE SERVER myserver FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host 'foo', dbname 'foodb', port '5432');
 </programlisting>
-   이 부분은 <xref linkend="postgres-fdw">에서 자세히 다룬다.
+   이 부분은 <xref linkend="postgres-fdw"/>에서 자세히 다룬다.
   </para>
  </refsect1>
 
@@ -154,11 +154,11 @@ CREATE SERVER myserver FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host 'foo', db
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterserver"></member>
-   <member><xref linkend="sql-dropserver"></member>
-   <member><xref linkend="sql-createforeigndatawrapper"></member>
-   <member><xref linkend="sql-createforeigntable"></member>
-   <member><xref linkend="sql-createusermapping"></member>
+   <member><xref linkend="sql-alterserver"/></member>
+   <member><xref linkend="sql-dropserver"/></member>
+   <member><xref linkend="sql-createforeigndatawrapper"/></member>
+   <member><xref linkend="sql-createforeigntable"/></member>
+   <member><xref linkend="sql-createusermapping"/></member>
   </simplelist>
  </refsect1>
 

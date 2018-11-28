@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_publication.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPPUBLICATION">
+<refentry id="sql-droppublication">
  <indexterm zone="sql-droppublication">
   <primary>DROP PUBLICATION</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP PUBLICATION [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP PUBLICATION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -89,7 +89,7 @@ DROP PUBLICATION mypublication;
   <title>호환성</title>
 
   <para>
-   <command>DROP PUBLICATION</command> 명령은 <productname>PostgreSQL</>
+   <command>DROP PUBLICATION</command> 명령은 <productname>PostgreSQL</productname>
    확장 명령어이다.
   </para>
  </refsect1>
@@ -98,8 +98,8 @@ DROP PUBLICATION mypublication;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createpublication"></member>
-   <member><xref linkend="sql-alterpublication"></member>
+   <member><xref linkend="sql-createpublication"/></member>
+   <member><xref linkend="sql-alterpublication"/></member>
   </simplelist>
  </refsect1>
 </refentry>

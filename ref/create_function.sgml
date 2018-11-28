@@ -2,7 +2,7 @@
 doc/src/sgml/ref/create_function.sgml
 -->
 
-<refentry id="SQL-CREATEFUNCTION">
+<refentry id="sql-createfunction">
  <indexterm zone="sql-createfunction">
   <primary>CREATE FUNCTION</primary>
  </indexterm>
@@ -37,7 +37,6 @@ CREATE [ OR REPLACE ] FUNCTION
     | AS '<replaceable class="parameter">정의</replaceable>'
     | AS '<replaceable class="parameter">오브젝트파일</replaceable>', '<replaceable class="parameter">링크_심벌</replaceable>'
   } ...
-    [ WITH ( <replaceable class="parameter">속성</replaceable> [, ...] ) ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -56,9 +55,9 @@ CREATE [ OR REPLACE ] FUNCTION
    함수 이름에 스키마 이름을 포함하면, 해당 스키마 안에 함수가 만들어진다.
    지정하지 않으면 현재 스키마 안에 만든다.
    특정 스키마 안에, 함수 이름과 그 함수가 사용하는 입력 인자 자료형이
-   모두 일치하는 다른 함수는 만들 수 없다.  하지만 이름은 같은데
-   입력 인자 자료형이 다른 함수는 만들 수 있다. (이것은 함수
-   <firstterm>오버로드</>라고 한다.)
+   모두 일치하는 다른 함수는 만들 수 없다. (프로시져도 마찬가지다.)
+   하지만 이름은 같은데 입력 인자 자료형이 다른 함수는 만들 수
+   있다. (이것은 함수 <firstterm>오버로드</firstterm>라고 한다.)
   </para>
 
   <para>
@@ -68,12 +67,12 @@ CREATE [ OR REPLACE ] FUNCTION
    바꾼다. (입력 인자가 바뀌면 오버로드된 새로운 함수가 만들어진다 - 옮긴이)
    또한, 함수 이름과 입력 인자 자료형이 같은데, 반환 자료형을 바꿔
    실행하면 오류로 처리한다.  반환 자료형을 바꿀 때는 
-   그 함수를 지우고, 새로 만들어야 한다. (<literal>OUT</>
+   그 함수를 지우고, 새로 만들어야 한다. (<literal>OUT</literal>
    인자를 쓰는 경우도 이것이 반환 자료형이기 때문에 이 정책을 그대로 따른다.)
   </para>
 
   <para>
-   <command>CREATE OR REPLACE FUNCTION</> 명령을 이용해서 함수를 바꾸는
+   <command>CREATE OR REPLACE FUNCTION</command> 명령을 이용해서 함수를 바꾸는
    경우, 그 함수의 소요주와 접근 권한은 바뀌지 않는다.
    그외 모든 함수 속성 변경 작업은 이 명령으로 수행할 수 있다.
    함수를 바꾸려면, 해당 함수의 소유주이거나 그 소유주의 소속원이어야 한다.
@@ -86,7 +85,7 @@ CREATE [ OR REPLACE ] FUNCTION
    단지 함수 속성이나, 함수의 본문 내용을 바꾸고자 한다면,
    <command>CREATE OR REPLACE FUNCTION</command> 명령을
    사용해서 이런 의존 관계 개체들의 삭제 작업 없이 함수를 바꿀 수 있다.
-   또한, <command>ALTER FUNCTION</> 명령은 해당 함수의 외부 속성들
+   또한, <command>ALTER FUNCTION</command> 명령은 해당 함수의 외부 속성들
    바꾸는데 사용 한다.
   </para>
 
@@ -120,12 +119,12 @@ CREATE [ OR REPLACE ] FUNCTION
 
      <listitem>
       <para>
-       사용할 수 있는 모드값: <literal>IN</>, <literal>OUT</>,
-       <literal>INOUT</>, 또는 <literal>VARIADIC</>.
-       생략하면 기본값인 <literal>IN</>으로 간주한다.
-       <literal>OUT</>  <literal>VARIADIC</> 형은 한번만 사용할 수 있다.
-       또한, <literal>OUT</> , <literal>INOUT</> 인자는
-       <literal>RETURNS TABLE</> 구문과 함께 사용할 수 없다.
+       사용할 수 있는 모드값: <literal>IN</literal>, <literal>OUT</literal>,
+       <literal>INOUT</literal>, 또는 <literal>VARIADIC</literal>.
+       생략하면 기본값인 <literal>IN</literal>으로 간주한다.
+       <literal>OUT</literal>  <literal>VARIADIC</literal> 형은 한번만 사용할 수 있다.
+       또한, <literal>OUT</literal> , <literal>INOUT</literal> 인자는
+       <literal>RETURNS TABLE</literal> 구문과 함께 사용할 수 없다.
       </para>
      </listitem>
     </varlistentry>
@@ -141,7 +140,7 @@ CREATE [ OR REPLACE ] FUNCTION
        단순히 함수 문서화 작업에 도움을 줄 뿐이다.  물론
        함수를 호출 할 때 명령문의 가독성을 높이기 위해서, 
        입력 인자 이름과 그 값을 함께 지정해서 쓰기도 한다(<xref
-       linkend="sql-syntax-calling-funcs"> 참조).
+       linkend="sql-syntax-calling-funcs"/> 참조).
        (이렇게 함수 이름을 사용할 수 없는
        언어에서는 그 인자값을 사용하기 위해 별도의 변수 선언, 변수 값 할당
        같은 부가 작업을 함수 본문에 추가해서 보통 진행한다. - 옮긴이)
@@ -163,8 +162,8 @@ CREATE [ OR REPLACE ] FUNCTION
        사용하는 자료형을 뜻하는 참조 자료형을 사용할 수 있다.
       </para>
       <para>
-       사용하는 언어에 따라 어떤 경우는 <type>cstring</> 같은
-       <quote>의사-자료형</> <quote>pseudo-type</>도 사용할 수 있다.
+       사용하는 언어에 따라 어떤 경우는 <type>cstring</type> 같은
+       <quote>의사-자료형</quote> <quote>pseudo-type</quote>도 사용할 수 있다.
        의사 자료형은 그 진짜 인자 자료형이 불완전한 지정이거나,
        (SQL 수준에서 임의로 어떤 자료형으로 바뀔 수 있는),
        보통의 SQL 자료형이 아닌 경우를 뜻한다.
@@ -189,7 +188,7 @@ CREATE [ OR REPLACE ] FUNCTION
        이 표현식으로 지정한 기본값은 함수를 호출 할 때, 
        해당 인자를 아에 지정하지 않았을 때, 자동으로 사용할 인자값이 된다.
        즉, 이 표현식의 계산 결과는 해당 인자 자료형과 같아야 한다.
-       입력 인자 (<literal>INOUT</> 인자 포함)만 기본값을 사용할 수 있다.
+       입력 인자 (<literal>INOUT</literal> 인자 포함)만 기본값을 사용할 수 있다.
        모든 입력 인자는 이 기본값 표현식을 구문을 이용해서 기본값을 
        지정할 수 있다.
       </para>
@@ -204,16 +203,16 @@ CREATE [ OR REPLACE ] FUNCTION
        함수 반환값의 자료형 이름(스키마 이름 포함).
        이 자료형으로 기본 자료형, 복합 자료형, 도메인, 테이블 칼럼의
        참조 자료형을 사용할 수 있다.
-       사용하는 언어에 따라  <type>cstring</> 같은 <quote>의사-자료형</>도
+       사용하는 언어에 따라  <type>cstring</type> 같은 <quote>의사-자료형</quote>도
        사용할 수 있다.  반환값이 없는 함수를 만드려면, 
-       이 반환 자료형을 <type>void</>로 지정한다.
+       이 반환 자료형을 <type>void</type>로 지정한다.
       </para>
       <para>
-       <literal>OUT</> 또는 <literal>INOUT</> 인자를 지정했다면,
-       <literal>RETURNS</> 절은 생략할 수 있다.  둘 다 있다면,
+       <literal>OUT</literal> 또는 <literal>INOUT</literal> 인자를 지정했다면,
+       <literal>RETURNS</literal> 절은 생략할 수 있다.  둘 다 있다면,
        출력 인자의 자료형과 이 반환 자료형이 같아야 한다.
        반환 자료형이
-       <literal>RECORD</> 형이라면,  각 개별 출력 인자의 자료형은
+       <literal>RECORD</literal> 형이라면,  각 개별 출력 인자의 자료형은
        그 출력 결과의 각 칼럼 자료형과 같아야 한다.
       </para>
       <para>
@@ -236,11 +235,11 @@ CREATE [ OR REPLACE ] FUNCTION
 
      <listitem>
       <para>
-       <literal>RETURNS TABLE</> 구문에서 사용하는
+       <literal>RETURNS TABLE</literal> 구문에서 사용하는
        반환 테이블의 칼럼 이름.
-       <literal>RETURNS TABLE</> 반환은 <literal>RETURNS SETOF</>
+       <literal>RETURNS TABLE</literal> 반환은 <literal>RETURNS SETOF</literal>
        옵션을 사용하지 않아도, 집합을 반환한다.
-       또한 <literal>OUT</> 인자에 이름을 함께 사용하는 출력 자료형
+       또한 <literal>OUT</literal> 인자에 이름을 함께 사용하는 출력 자료형
        지정보다 편하게 다중 칼럼 출력 자료형을 지정할 수 있다.
       </para>
      </listitem>
@@ -251,7 +250,7 @@ CREATE [ OR REPLACE ] FUNCTION
 
      <listitem>
       <para>
-       <literal>RETURNS TABLE</> 구문에서 사용하는
+       <literal>RETURNS TABLE</literal> 구문에서 사용하는
        반환 테이블의 칼럼 자료형.
       </para>
      </listitem>
@@ -282,7 +281,7 @@ CREATE [ OR REPLACE ] FUNCTION
        해당 함수에서 사용할 transform 목록. 
        transform은 SQL 자료형과 프로시져 언어에서 사용하는
        고유 자료형 사이 전환을 담당한다.
-       <xref linkend="sql-createtransform"> 명령 설명서 참조.
+       <xref linkend="sql-createtransform"/> 명령 설명서 참조.
        일반적으로 프로시져 언어는 내장 자료형에 대한 하드 코딩된 
        정보를 구현해서 제공한다. 그래서, 그 언어가 다루지 못하는
        자료형이 아니면, 이 구문은 필요가 없다.  프로시져 언어가
@@ -299,9 +298,9 @@ CREATE [ OR REPLACE ] FUNCTION
 
      <listitem>
       <para><literal>WINDOW</literal> 옵션은 이 함수가
-       <firstterm>윈도우 함수</>로 사용함을 지정한다.
+       <firstterm>윈도우 함수</firstterm>로 사용함을 지정한다.
        C 언어로 구현한 함수에서 사용된다.
-       <literal>WINDOW</> 속성은 CREATE OR REPLACE 작업으로는 변경될 수 없다.
+       <literal>WINDOW</literal> 속성은 CREATE OR REPLACE 작업으로는 변경될 수 없다.
       </para>
      </listitem>
     </varlistentry>
@@ -340,8 +339,8 @@ CREATE [ OR REPLACE ] FUNCTION
        이 옵션은 해당 함수가 자료 조회용 작업이나, 
        매개 변수 값(예, timezone) 조회를 하는 등, 이런 작업을 하는 
        함수에 사용한다.  (자료 조작 뒤에 실행 되는
-       <literal>AFTER</> 트리거용 함수에 이 옵션을 지정하면 위험하다.)
-       <function>current_timestamp</> 계열 값을 사용하는 경우도 
+       <literal>AFTER</literal> 트리거용 함수에 이 옵션을 지정하면 위험하다.)
+       <function>current_timestamp</function> 계열 값을 사용하는 경우도 
        사용할 수 있다. 이 계열 값들은 한 트랜잭션 내에서 그 값이 
        바뀌지 않기 때문이다.
       </para>
@@ -351,15 +350,15 @@ CREATE [ OR REPLACE ] FUNCTION
        예상값 추정을 못하는 경우로 처리한다.
        이런 이유로 기본으로 제공하는 내장 SQL 함수 중에는 
        이 속성이 있는 함수가 상대적으로 적다.
-       <literal>random()</>, <literal>currval()</>, <literal>timeofday()</>
+       <literal>random()</literal>, <literal>currval()</literal>, <literal>timeofday()</literal>
        이런 종류의 함수들이다.  그러나, 그 반환값이 일정할지라도,
        예측하지 못하는 부작용이 생길 수 있는 함수들은 이 휘발성 함수로
        지정하는 것이 안전하다.  그래야 최적화 계산에서 빠지게 된다.
-       대표적인 함수가 <literal>setval()</> 함수다.
+       대표적인 함수가 <literal>setval()</literal> 함수다.
       </para>
 
       <para>
-       이 속성들에 대한 자세한 설명은 <xref linkend="xfunc-volatility">에서
+       이 속성들에 대한 자세한 설명은 <xref linkend="xfunc-volatility"/>에서
        다룬다.
       </para>
      </listitem>
@@ -391,7 +390,7 @@ CREATE [ OR REPLACE ] FUNCTION
        자료 보호 뷰나, 테이블에서 어떤 인자도 전달하지 않는
        함수는 보안 조건 전에 실행 될 수 있도록 
        이 옵션을 사용하지 말아야 한다.
-       <xref linkend="sql-createview"> 명령 설명서와 <xref linkend="rules-privileges"> 참조.
+       <xref linkend="sql-createview"/> 명령 설명서와 <xref linkend="rules-privileges"/> 참조.
        이 옵션은 슈퍼유저만 지정할 수 있다.
       </para>
      </listitem>
@@ -453,10 +452,10 @@ CREATE [ OR REPLACE ] FUNCTION
      <para>
       데이터베이스 상태를 변경하거나,
       서브 트랜잭션 같은 것을 사용해서 트랜잭션에 변경 사항을 만들거나,
-      시쿼스를 사용하거나, <literal>setval</> 같이 값을 고정하거나 하는
+      시쿼스를 사용하거나, <literal>setval</literal> 같이 값을 고정하거나 하는
       함수는 <literal>UNSAFE</literal>로 지정해야 한다.
       임시 테이블을 사용하거나, 클라이언트 접속 상태를 조회하거나,
-      커서, 미리 준비된 구문, <literal>setseed</> 같이 
+      커서, 미리 준비된 구문, <literal>setseed</literal> 같이 
       하나의 작업에서는 일관성을 유지해야 하는 일을 하는 함수는
       <literal>RESTRICTED</literal>로 지정해야 한다.
       일반적으로,
@@ -471,17 +470,17 @@ CREATE [ OR REPLACE ] FUNCTION
       하지만 그 오동작 결과가 다른 언어로 만든 함수들 보다는 
       더 나쁘지는 않다.
       그 함수가 하는 일을 정확히 몰라 오동작이 우려되면, 
-      기본값인 <literal>UNSAFE</> 옵션을 사용하는 것이 안전하다.
+      기본값인 <literal>UNSAFE</literal> 옵션을 사용하는 것이 안전하다.
      </para>
     </listitem>
    </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">실행비용</replaceable></term>
+     <term><literal>COST</literal> <replaceable class="parameter">실행비용</replaceable></term>
 
      <listitem>
       <para>
-       해당 함수의 <xref linkend="guc-cpu-operator-cost"> 값.
+       해당 함수의 <xref linkend="guc-cpu-operator-cost"/> 값.
        이 값은 양수여야 하며, 실행계획기가 이 값을 사용한다.
        해당 함수가 다중 로우를 반환한다면, 이 비용은 한 로우를 반환하는데
        드는 비용이다.  이 옵션을 사용하지 않으면,
@@ -493,7 +492,7 @@ CREATE [ OR REPLACE ] FUNCTION
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="parameter">반환로우수</replaceable></term>
+     <term><literal>ROWS</literal> <replaceable class="parameter">반환로우수</replaceable></term>
 
      <listitem>
       <para>
@@ -510,32 +509,32 @@ CREATE [ OR REPLACE ] FUNCTION
      <term><replaceable>값</replaceable></term>
      <listitem>
       <para>
-       <literal>SET</> 옵션은 해당 함수가 실행 될 때 
+       <literal>SET</literal> 옵션은 해당 함수가 실행 될 때 
        사용할 환경 설정 매개 변수를 설정한다.
        기존 환경 설정 매개 변수값은 따로 보관해 두고, 
        함수가 실행 될 때는 이 설정 값을 사용하고, 함수 실행이 끝나면
        설정값을 자동으로 사용한다.
-       <literal>SET FROM CURRENT</> 옵션은
-       <command>CREATE FUNCTION</> 명령을 실행할 때 그 세션이
+       <literal>SET FROM CURRENT</literal> 옵션은
+       <command>CREATE FUNCTION</command> 명령을 실행할 때 그 세션이
        사용하고 있는 해당 환경 설정 매개 변수의 값을 지정한다.
       </para>
 
       <para>
-       <literal>SET</> 옵션을 추가해서 함수를 만들면, 
+       <literal>SET</literal> 옵션을 추가해서 함수를 만들면, 
        내부적으로 그 함수 본문이 실행 되기 전에, 
-       <command>SET LOCAL</> 명령이 먼저 실행 되는 것과 
+       <command>SET LOCAL</command> 명령이 먼저 실행 되는 것과 
        같은 기능을 한다: 이것은 함수 실행 전 설정 값은 보관하고, 
        지정한 매개 변수 값으로 지정한 값을 사용하고, 함수가 끝날 때
        이전 값으로 다시 설정 한다.
-       반면, 함수 본문 내, <literal>LOCAL</> 옵션이 없는 <command>SET</>
+       반면, 함수 본문 내, <literal>LOCAL</literal> 옵션이 없는 <command>SET</command>
        명령을 사용하면 그 설정값은 함수가 실패로 끝나지 않는 한,
        해당 세션이 종료되기 전까지 유지된다.
       </para>
 
       <para>
        여기서 사용할 수 있는 매개 변수 이름과 값에 대한 설명은
-       <xref linkend="sql-set"> 명령 설명서와 
-       See <xref linkend="sql-set">에서 보다 자세히 다룬다.
+       <xref linkend="sql-set"/> 명령 설명서와 
+       See <xref linkend="sql-set"/>에서 보다 자세히 다룬다.
       </para>
      </listitem>
     </varlistentry>
@@ -554,7 +553,7 @@ CREATE [ OR REPLACE ] FUNCTION
       <para>
        함수 정의 문자열을 지정할 때는 일반 작은 따옴표 인용법 보다,
        때로는 달러 인용법이 유용하게 쓰인다(<xref
-       linkend="sql-syntax-dollar-quoting"> 참조).
+       linkend="sql-syntax-dollar-quoting"/> 참조).
        달러 인용법을 사용하지 않으면, 
        이 함수 정의 안에 작은 따옴표는 모두 두 개로 표기해야 하기 때문이다.
       </para>
@@ -574,7 +573,7 @@ CREATE [ OR REPLACE ] FUNCTION
        <replaceable
        class="parameter">오브젝트파일</replaceable>은 컴파일된 C 함수를
        포함하고 있는 공유 라이브러리 파일 이름이다.  이 함수를 서버로
-       불러오려면, <xref linkend="SQL-LOAD"> 명령을 사용한다.
+       불러오려면, <xref linkend="sql-load"/> 명령을 사용한다.
        <replaceable class="parameter">링크_심벌</replaceable>은
        그 라이브러리 파일에 있는 C 함수 이름이다.
        링크 심벌이 빠지면, SQL 함수 이름과 같은 함수로 간주한다.
@@ -595,44 +594,10 @@ CREATE [ OR REPLACE ] FUNCTION
      </listitem>
     </varlistentry>
 
-    <varlistentry>
-     <term><replaceable class="parameter">속성</replaceable></term>
-
-     <listitem>
-      <para>
-       옛 버전과의 호환성 때문에 아직 남아있는 옵션이다.
-       다음 두 가지 속성값을 지정할 수 있다:
-
-      <variablelist>
-       <varlistentry>
-        <term><literal>isStrict</></term>
-        <listitem>
-         <para>
-          <literal>STRICT</literal> 또는 <literal>RETURNS NULL ON NULL INPUT</literal> 옵션과 같다.
-         </para>
-        </listitem>
-       </varlistentry>
-
-       <varlistentry>
-        <term><literal>isCachable</></term>
-        <listitem>
-         <para>
-          <literal>IMMUTABLE</literal> 옵션과 같다.
-         </para>
-        </listitem>
-       </varlistentry>
-
-      </variablelist>
-
-      속성 이름은 대소문자 구분을 하지 않는다.
-     </para>
-    </listitem>
-   </varlistentry>
-
    </variablelist>
 
    <para>
-    함수 만들기에 대한 자세한 내용은 <xref linkend="xfunc">에서 
+    함수 만들기에 대한 자세한 내용은 <xref linkend="xfunc"/>에서 
     다룬다.
    </para>
 
@@ -651,12 +616,12 @@ CREATE [ OR REPLACE ] FUNCTION
     보안 사고를 예방해야 한다.
     다중 사용자 환경에서 의도하지 않게, 
     같은 이름의 악의적인 코드가 숨겨진 다른 함수를 
-    호출할 가능성이 있기 때문이다.  <xref linkend="typeconv-func"> 참조.
+    호출할 가능성이 있기 때문이다.  <xref linkend="typeconv-func"/> 참조.
    </para>
 
    <para>
     같은 함수인지를 확인 하는 기준은 함수 이름과 입력 인자 자료형이다.
-    <literal>OUT</> 인자는 무시한다.
+    <literal>OUT</literal> 인자는 무시한다.
     즉 다음 두 함수는 이미 해당 함수가 있는지 확인하는 작업에서 
     같은 함수로 취급한다:
 <programlisting>
@@ -672,7 +637,7 @@ CREATE FUNCTION foo(int, out text) ...
 CREATE FUNCTION foo(int) ...
 CREATE FUNCTION foo(int, int default 42) ...
 </programlisting>
-    예를 들어 <literal>foo(10)</> 형태로 호출한다면, 어느 
+    예를 들어 <literal>foo(10)</literal> 형태로 호출한다면, 어느 
     함수를 사용해야 할지 몰라 오류로 처리한다.
    </para>
 
@@ -685,17 +650,17 @@ CREATE FUNCTION foo(int, int default 42) ...
     함수 인자나, 반환 값의 자료형을 지정할 때,
     전체 <acronym>SQL</acronym> 자료형 문법을 허용한다.
     하지만, 
-    <command>CREATE FUNCTION</> 작업에서는
+    <command>CREATE FUNCTION</command> 작업에서는
     자료형 변환자는 무시한다. (예, <type>numeric</type>
     자료형의 정밀도 지정)
     예를 들면
-    <literal>CREATE FUNCTION foo (varchar(10)) ...</>
+    <literal>CREATE FUNCTION foo (varchar(10)) ...</literal>
     구문과
-    <literal>CREATE FUNCTION foo (varchar) ...</> 구문은 동일하게 처리한다.
+    <literal>CREATE FUNCTION foo (varchar) ...</literal> 구문은 동일하게 처리한다.
    </para>
 
    <para>
-    <command>CREATE OR REPLACE FUNCTION</> 구문으로
+    <command>CREATE OR REPLACE FUNCTION</command> 구문으로
     함수 정의를 바꿀 때, 이미 지정한 인자 이름은 바꿀 수 없고, 
     인자 이름이 없었던 인자에 새 이름을 지정하는 것은 가능하다.
     둘 이상의 출력 인자를 쓰는 경우 그 인자 이름을 바꿀 수 없다.
@@ -706,7 +671,7 @@ CREATE FUNCTION foo(int, int default 42) ...
    </para>
 
    <para>
-    <literal>STRICT</> 옵션이 있는데 인자를 <literal>VARIADIC</> 형으로
+    <literal>STRICT</literal> 옵션이 있는데 인자를 <literal>VARIADIC</literal> 형으로
     지정했다면, 그 가변 배열 그 자체가 null이 아닌지 검사한다.
     즉, 그 배열 요소 중 하나가 null이어도 그 함수는 호출 될 수 있다.
    </para>
@@ -718,7 +683,7 @@ CREATE FUNCTION foo(int, int default 42) ...
 
   <para>
    여기서는 처음 함수를 만들어 보는 사용자를 위해 여러 예제를 소개한다.
-   <xref linkend="xfunc">에서는 좀더 자세한 내용가 예제도 있다.
+   <xref linkend="xfunc"/>에서는 좀더 자세한 내용가 예제도 있다.
    다음은 두 정수를 더하는 예제:
 <programlisting>
 CREATE FUNCTION add(integer, integer) RETURNS integer
@@ -761,7 +726,7 @@ CREATE FUNCTION dup(int) RETURNS dup_result
 
 SELECT * FROM dup(42);
 </programlisting>
-   <literal>TABLE</> 반환 자료형 처리:
+   <literal>TABLE</literal> 반환 자료형 처리:
 <programlisting>
 CREATE FUNCTION dup(int) RETURNS TABLE(f1 int, f2 text)
     AS $$ SELECT $1, CAST($1 AS text) || ' is text' $$
@@ -769,8 +734,8 @@ CREATE FUNCTION dup(int) RETURNS TABLE(f1 int, f2 text)
 
 SELECT * FROM dup(42);
 </programlisting>
-   <literal>TABLE</> 반환 처리는 위 함수들과 약간 다르다.
-   이것은 레코드 <emphasis>집합</>을 반환하는 것이고, 
+   <literal>TABLE</literal> 반환 처리는 위 함수들과 약간 다르다.
+   이것은 레코드 <emphasis>집합</emphasis>을 반환하는 것이고, 
    다른 함수들은 그냥 하나의 레코드만 반환한다.
   </para>
  </refsect1>
@@ -779,8 +744,8 @@ SELECT * FROM dup(42);
   <title><literal>SECURITY DEFINER</literal> 함수를 안전하게 만드는 방법</title>
 
   <indexterm>
-   <primary><varname>search_path</varname> 환경 변수 매개 변수</>
-   <secondary>함수 보안</>
+   <primary><varname>search_path</varname> 환경 변수 매개 변수</primary>
+   <secondary>함수 보안</secondary>
   </indexterm>
 
    <para>
@@ -789,7 +754,7 @@ SELECT * FROM dup(42);
     권한으로 실행되는 함수이기 때문에, 잘못 사용되면, 
     권한 침해 사고가 발생할 수 있어 조심해야 한다.
     보안을 위해, 신뢰할 수 없는 사용자도 쓰기 가능한 
-    스키마들은 <xref linkend="guc-search-path"> 설정값으로 
+    스키마들은 <xref linkend="guc-search-path"/> 설정값으로 
     사용하지 말아야 한다.
     악의적인 사용자가
     개체 만들기(예, 테이블, 함수, 연산자)를 해서, 
@@ -802,10 +767,10 @@ SELECT * FROM dup(42);
     여기서 특별히 중요한 것은 임시 테이블 스키마다.
     이 스키마는 특별히 지정하지 않으면, 가장 먼저 개체 찾기 작업에
     사용되며, 보통 모두가 쓰기 가능한 권한으로 지정되어있다.
-    이 임시 스키마(<literal>pg_temp</><indexterm>
-    <primary>pg_temp</>
-    <secondary>함수 보안</>
-    </>)를 <varname>search_path</> 값 맨 뒤에 강제로 지정해서 
+    이 임시 스키마(<literal>pg_temp</literal><indexterm>
+    <primary>pg_temp</primary>
+    <secondary>함수 보안</secondary>
+    </indexterm>)를 <varname>search_path</varname> 값 맨 뒤에 강제로 지정해서 
     보안 취약점을 해결할 수 있다.
     다음이 사용 예다:
 
@@ -825,32 +790,32 @@ $$  LANGUAGE plpgsql
     -- search_path 안전하게 지정: 신뢰하는 스키마들, 다음에 'pg_temp'.
     SET search_path = admin, pg_temp;
 </programlisting>
-    이 함수는 <literal>admin.pwds</> 테이블을 사용한다는 가정에서
+    이 함수는 <literal>admin.pwds</literal> 테이블을 사용한다는 가정에서
     작성 되었다.  그런데
-    <literal>SET</> 설정이 없거나, <literal>SET</> 설정에 
-    단지 <literal>admin</> 만 지정했다면, 
-    <literal>pwds</> 이름의 임시 테이블을 만들면, 
+    <literal>SET</literal> 설정이 없거나, <literal>SET</literal> 설정에 
+    단지 <literal>admin</literal> 만 지정했다면, 
+    <literal>pwds</literal> 이름의 임시 테이블을 만들면, 
     그 함수는 새로 만들어진 임시 테이블을 대상으로 작업하게 된다.
    </para>
 
    <para>
-    8.3 이전 버전에서는 <literal>SET</> 옵션이 없어서, 
+    8.3 이전 버전에서는 <literal>SET</literal> 옵션이 없어서, 
     이런 설정을 하려면, 
-    함수 본문 안에, 기존 <varname>search_path</> 값 구해서 
+    함수 본문 안에, 기존 <varname>search_path</varname> 값 구해서 
     따로 보관하고, 새 값을 지정하고, 작업이 끝나면, 다시 
     기존 값으로 바꾸는 번거로운 작업을 해야 했었다.
-    <literal>SET</> 옵션이 생겨 한결 쉬워졌다.
+    <literal>SET</literal> 옵션이 생겨 한결 쉬워졌다.
    </para>
 
    <para>
     또 하나 기억해야 할 것은,
-    함수를 새로 만들면, 모두(<literal>PUBLIC</>)가 그 함수를
+    함수를 새로 만들면, 모두(<literal>PUBLIC</literal>)가 그 함수를
     실행할 수 있게 실행 권한이 부여된다는 점이다.(이게 기본값이다)
-    (<xref linkend="sql-grant"> 명령 설명서 참조)
+    (<xref linkend="sql-grant"/> 명령 설명서 참조)
     즉, 특정 사용자만 그 함수를 사용하도록 제한하려면, 
     (SECURITY DEFINER 함수는 그럴 필요가 종종 있다 - 옮긴이)
     함수를 만든 뒤 반드시 권한 조정 작업을 해야한다.
-    그 첫번째 작업은 <literal>PUBLIC</> 대상으로 실행권한을 
+    그 첫번째 작업은 <literal>PUBLIC</literal> 대상으로 실행권한을 
     박탈하는 일이다.
     이런 보안 위험성을 피하려면, 
     다음과 같이 함수 만드는 작업과 권한 조정 작업을 하나의
@@ -871,7 +836,7 @@ COMMIT;
   <title>호환성</title>
 
   <para>
-   <command>CREATE FUNCTION</command> 구문은 SQL:1999 그 뒤 규약에 있다.
+   <command>CREATE FUNCTION</command> 구문은 SQL 표준을 따른다.
    <productname>PostgreSQL</productname>의 구문은 표준과 문법이 비슷하지만,
    모두 호환되지는 않는다.  함수 속성들과 프로시져 언어 지정하는 부분은 
    PostgreSQL 확장 기능이다.
@@ -897,11 +862,11 @@ COMMIT;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterfunction"></member>
-   <member><xref linkend="sql-dropfunction"></member>
-   <member><xref linkend="sql-grant"></member>
-   <member><xref linkend="sql-load"></member>
-   <member><xref linkend="sql-revoke"></member>
+   <member><xref linkend="sql-alterfunction"/></member>
+   <member><xref linkend="sql-dropfunction"/></member>
+   <member><xref linkend="sql-grant"/></member>
+   <member><xref linkend="sql-load"/></member>
+   <member><xref linkend="sql-revoke"/></member>
   </simplelist>
  </refsect1>
 

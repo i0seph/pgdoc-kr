@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_opclass.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEOPCLASS">
+<refentry id="sql-createopclass">
  <indexterm zone="sql-createopclass">
   <primary>CREATE OPERATOR CLASS</primary>
  </indexterm>
@@ -38,7 +38,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
    연산자 클래스란 한 인덱스에서 특정 자료형이 어떻게 사용되는지 정의한
    연산자와 함수들의 모음입니다.
    연산자 클래스에서는 특정 자료형과 특정 색인 방법에서 사용할 수 있는 
-   연산자와 그 <quote>전략</> 정보를 지정한다.
+   연산자와 그 <quote>전략</quote> 정보를 지정한다.
    또한 한 인덱스 칼럼용으로 선택된 연산자 클래스를 이용해서 
    그 색인 방법의 인덱스를 처리할 때 지원할 함수들을 지정한다.
    여기서 지정하는 모든 연산자와 함수는 해당 연산자 클래스를 만들기
@@ -67,16 +67,16 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
   </para>
 
   <para>
-   연관된 연산자 클래스는 <firstterm>연산자 가족</>으로 묶을 수 있다.
+   연관된 연산자 클래스는 <firstterm>연산자 가족</firstterm>으로 묶을 수 있다.
    이미 있는 연산자 가족에 해당 연산자 클래스를 포함하려면,
    <command>CREATE OPERATOR CLASS</command> 명령에서
-   <literal>FAMILY</> 옵션을 이용한다.
+   <literal>FAMILY</literal> 옵션을 이용한다.
    이 옵션을 사용하지 않으면, 해당 연산자 클래스 이름과 같은
    연산자 가족안에 포함된다.  (해당 연산자 가족이 없으면 만든다.)
   </para>
 
   <para>
-   보다 자세한 내용은 <xref linkend="xindex">에서 다룬다.
+   보다 자세한 내용은 <xref linkend="xindex"/>에서 다룬다.
   </para>
  </refsect1>
 
@@ -94,7 +94,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
    </varlistentry>
 
    <varlistentry>
-    <term><literal>DEFAULT</></term>
+    <term><literal>DEFAULT</literal></term>
     <listitem>
      <para>
       이 옵션을 사용하면, 해당 자료형의 기본 연산자 클래스로 지정한다.
@@ -155,14 +155,14 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
     <term><replaceable class="parameter">연산자자료형</replaceable></term>
     <listitem>
      <para>
-      <literal>OPERATOR</> 옵션에서는
+      <literal>OPERATOR</literal> 옵션에서는
       해당 연산자가 사용하는 자료형으로, 단항 연산자인 경우, 
-      필요 없는 부분에는 <literal>NONE</>.  일반적으로 해당 연산자가
+      필요 없는 부분에는 <literal>NONE</literal>.  일반적으로 해당 연산자가
       연산자 클래스의 대상 자료형과 같은 경우라면 이 연산자 자료형은 생략한다.
      </para>
 
      <para>
-      <literal>FUNCTION</> 옵션에서는 
+      <literal>FUNCTION</literal> 옵션에서는 
       해당 함수가 사용하는 자료형이다.  
       보통, B-tree 비교 함수나, 해시 함수이 경우는 해당 연산자 클래스
       대상 자료형과 다르게 사용된다. 이 때 지정한다.
@@ -184,8 +184,8 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
      </para>
 
      <para>
-      <literal>FOR SEARCH</>, <literal>FOR ORDER BY</> 둘 다 사용하지 않으면,
-      <literal>FOR SEARCH</> 옵션으로 간주한다.
+      <literal>FOR SEARCH</literal>, <literal>FOR ORDER BY</literal> 둘 다 사용하지 않으면,
+      <literal>FOR SEARCH</literal> 옵션으로 간주한다.
      </para>
     </listitem>
    </varlistentry>
@@ -195,7 +195,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
     <listitem>
      <para>
       해당 연산자 클래스와 관련된 색인 방법의 해당 함수에 대한 
-      지원 프로시져 번호.
+      지원 함수 번호.
      </para>
     </listitem>
    </varlistentry>
@@ -204,7 +204,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
     <term><replaceable class="parameter">함수이름</replaceable></term>
     <listitem>
      <para>
-      해당 연산자 클래스용 색인 방법 지원 프로시져로 쓸 함수 이름
+      해당 연산자 클래스용 색인 방법 지원 함수로 쓸 함수 이름
       (스키마 이름 포함).
      </para>
     </listitem>
@@ -227,12 +227,12 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
       해당 연산자 클래스 대상 자료형과 같지만,
       몇 색인 방법(현재, GiST, GIN, BRIN)은 다른 자료형도 허용한다.
       이렇게 연산자 클래스 대상 자료형과 같은 경우는
-      <literal>STORAGE</> 옵션을 사용하지 말아야하며, 다른 경우만
+      <literal>STORAGE</literal> 옵션을 사용하지 말아야하며, 다른 경우만
       지정해야 한다.
-      연산자 클래스의 <replaceable class="parameter">자료형</>으로
-      <type>anyarray</> 형을 지정했다면, 
-      <replaceable class="parameter">저장자료형</>으로
-      <type>anyelement</> 형을 지정해서, 그 배열의 한 요소임을 지정할 
+      연산자 클래스의 <replaceable class="parameter">자료형</replaceable>으로
+      <type>anyarray</type> 형을 지정했다면, 
+      <replaceable class="parameter">저장자료형</replaceable>으로
+      <type>anyelement</type> 형을 지정해서, 그 배열의 한 요소임을 지정할 
       수 있다.
      </para>
     </listitem>
@@ -240,7 +240,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
   </variablelist>
 
   <para>
-   <literal>OPERATOR</>, <literal>FUNCTION</>, 및 <literal>STORAGE</>
+   <literal>OPERATOR</literal>, <literal>FUNCTION</literal>, 및 <literal>STORAGE</literal>
    절은 그 순서에 상관 없이 사용할 수 있다.
   </para>
  </refsect1>
@@ -264,7 +264,7 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
 
   <para>
    <productname>PostgreSQL</productname> 8.4 이전 버전에서는
-   <literal>OPERATOR</> 구문에서 <literal>RECHECK</> 옵션을  사용할 수 있었으나,
+   <literal>OPERATOR</literal> 구문에서 <literal>RECHECK</literal> 옵션을  사용할 수 있었으나,
    지금은 빠졌다. 이제는 인덱스 연산자는 그것을 사용할 때마다 
    항상 확인하기 때문이다.
    This allows efficient handling of
@@ -276,9 +276,9 @@ CREATE OPERATOR CLASS <replaceable class="parameter">이름</replaceable> [ DEFA
   <title>예제</title>
 
   <para>
-   다음은 <literal>_int4</> (<type>int4</type> 배열) 자료형을 위한
+   다음은 <literal>_int4</literal> (<type>int4</type> 배열) 자료형을 위한
    GiST 인덱스 연산자 클래스를 정의한 예제다.  이 부분의 전체 예제는
-   <xref linkend="intarray"> 확장 모듈에서 다룬다.
+   <xref linkend="intarray"/> 확장 모듈에서 다룬다.
   </para>
 
 <programlisting>
@@ -313,10 +313,10 @@ CREATE OPERATOR CLASS gist__int_ops
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alteropclass"></member>
-   <member><xref linkend="sql-dropopclass"></member>
-   <member><xref linkend="sql-createopfamily"></member>
-   <member><xref linkend="sql-alteropfamily"></member>
+   <member><xref linkend="sql-alteropclass"/></member>
+   <member><xref linkend="sql-dropopclass"/></member>
+   <member><xref linkend="sql-createopfamily"/></member>
+   <member><xref linkend="sql-alteropfamily"/></member>
   </simplelist>
  </refsect1>
 </refentry>

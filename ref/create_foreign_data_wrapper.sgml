@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_foreign_data_wrapper.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEFOREIGNDATAWRAPPER">
+<refentry id="sql-createforeigndatawrapper">
  <indexterm zone="sql-createforeigndatawrapper">
   <primary>CREATE FOREIGN DATA WRAPPER</primary>
  </indexterm>
@@ -24,7 +24,7 @@ PostgreSQL documentation
 CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable>
     [ HANDLER <replaceable class="parameter">핸들러함수</replaceable> | NO HANDLER ]
     [ VALIDATOR <replaceable class="parameter">유효성검사함수</replaceable> | NO VALIDATOR ]
-    [ OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] ) ]
+    [ OPTIONS ( <replaceable class="parameter">옵션</replaceable> '<replaceable class="parameter">값</replaceable>' [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -102,7 +102,7 @@ CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( <replaceable class="PARAMETER">옵션</replaceable> '<replaceable class="PARAMETER">값</replaceable>' [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( <replaceable class="parameter">옵션</replaceable> '<replaceable class="parameter">값</replaceable>' [, ... ] )</literal></term>
     <listitem>
      <para>
       새 외부 자료 싸개에서 사용할 옵션을 지정한다.
@@ -119,7 +119,7 @@ CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable>
   <title>참고</title>
 
   <para>
-   <productname>PostgreSQL</> 외부 자료 처리 기능은 여전히 개발 중이다.
+   <productname>PostgreSQL</productname> 외부 자료 처리 기능은 여전히 개발 중이다.
    쿼리 최적화 부분은 대부분 싸개가 모두 미흡하다.
    그래서, 앞으로 성능 관련 부분은 많이 개선될 가능성이 있다.
   </para>
@@ -129,15 +129,15 @@ CREATE FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable>
   <title>예제</title>
 
   <para>
-   <literal>dummy</> 이름의 쓸모 없는 외부 자료 싸개 만들기:
+   <literal>dummy</literal> 이름의 쓸모 없는 외부 자료 싸개 만들기:
 <programlisting>
 CREATE FOREIGN DATA WRAPPER dummy;
 </programlisting>
   </para>
 
   <para>
-   <literal>file_fdw_handler</> 핸들러 함수를 이용하는 
-   <literal>file</> 외부 자료 싸개 만들기:
+   <literal>file_fdw_handler</literal> 핸들러 함수를 이용하는 
+   <literal>file</literal> 외부 자료 싸개 만들기:
 <programlisting>
 CREATE FOREIGN DATA WRAPPER file HANDLER file_fdw_handler;
 </programlisting>
@@ -159,7 +159,7 @@ CREATE FOREIGN DATA WRAPPER mywrapper
    9075-9 (SQL/MED) 구문은 준수한다. 단 <literal>HANDLER</literal>
    <literal>VALIDATOR</literal> 옵션은 확장 기능이고,
    <literal>LIBRARY</literal>, <literal>LANGUAGE</literal> 옵션은
-   <productname>PostgreSQL</>에서 아직 지원하지 않는다.
+   <productname>PostgreSQL</productname>에서 아직 지원하지 않는다.
   </para>
 
   <para>
@@ -171,11 +171,11 @@ CREATE FOREIGN DATA WRAPPER mywrapper
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterforeigndatawrapper"></member>
-   <member><xref linkend="sql-dropforeigndatawrapper"></member>
-   <member><xref linkend="sql-createserver"></member>
-   <member><xref linkend="sql-createusermapping"></member>
-   <member><xref linkend="sql-createforeigntable"></member>
+   <member><xref linkend="sql-alterforeigndatawrapper"/></member>
+   <member><xref linkend="sql-dropforeigndatawrapper"/></member>
+   <member><xref linkend="sql-createserver"/></member>
+   <member><xref linkend="sql-createusermapping"/></member>
+   <member><xref linkend="sql-createforeigntable"/></member>
   </simplelist>
  </refsect1>
 

@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_language.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATELANGUAGE">
+<refentry id="sql-createlanguage">
  <indexterm zone="sql-createlanguage">
   <primary>CREATE LANGUAGE</primary>
  </indexterm>
@@ -41,13 +41,13 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
   <note>
    <para>
     <productname>PostgreSQL</productname> 9.1 이후부터 
-    대부분의 프로시져 언어는 <quote>확장 모듈</>로 관리되기 
+    대부분의 프로시져 언어는 <quote>확장 모듈</quote>로 관리되기 
     때문에, <command>CREATE LANGUAGE</command> 명령을 직접 
-    사용하기 보다는 <xref linkend="sql-createextension"> 명령으로
+    사용하기 보다는 <xref linkend="sql-createextension"/> 명령으로
     등록한다.  이렇기 때문에, <command>CREATE LANGUAGE</command>
     명령은 그 확장 모듈 설치 스크립트 안에서만 사용되어야 한다.
     한편, 이미 확장 모듈로 설치하지 않은 언어가 있다면,
-    <literal>CREATE EXTENSION <replaceable>langname</> FROM
+    <literal>CREATE EXTENSION <replaceable>langname</replaceable> FROM
     unpackaged</literal> 명령으로 확장 모듈로 변환해서 
     사용하는 것이 향후 업그레이드를 위해서 좋다.
    </para>
@@ -57,20 +57,20 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
    <command>CREATE LANGUAGE</command> 명령의 내부 작업은
    해당 언어로 작성된 함수 본문을 처리하는 핸들러 함수와 
    해당 언어 이름의 연결 작업이다.  언어 핸들러에 대한
-   자세한 설명은 <xref linkend="plhandler">에서 다룬다.
+   자세한 설명은 <xref linkend="plhandler"/>에서 다룬다.
   </para>
 
   <para>
    사용법은 두 가지 방식이 있는데, 
    첫번째 문법은 <link linkend="catalog-pg-pltemplate"><structname>pg_pltemplate</structname></link> 시스템 카탈로그에 미리 정의된 언어를 등록할 때
    사용한다.  그냥 언어 이름만 지정하면 된다. 두번째 문법은
-   <structname>pg_pltemplate</> 시스템 카탈로그에 정의되지 않은
+   <structname>pg_pltemplate</structname> 시스템 카탈로그에 정의되지 않은
    언어를 등록할 때 쓰는 방법인데, 예전 방식이다.
   </para>
 
   <para>
    이 명령에서 해당 언어 관련 여러 옵션을 함께 사용했다 하더라도, 
-   <structname>pg_pltemplate</> 카탈로그에 등록되어 있는 언어라면, 
+   <structname>pg_pltemplate</structname> 카탈로그에 등록되어 있는 언어라면, 
    카탈로그 정보를 이용해서 언어를 등록한다.
    이렇게 하는 이유는 오래된 버전의 덤프 파일을 새 버전에서 복원할 때
    보다 안전하게 복원하기 위함이다.
@@ -80,11 +80,11 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
    통상, 새 언어 등록은 <productname>PostgreSQL</productname> 슈퍼유저
    권한이 있어야 가능하다.  한편, 
    <structname>pg_pltemplate</structname> 카탈로그에서
-   <structfield>tmpldbacreate</> 칼럼값이 true인 언어에 대해서는
+   <structfield>tmpldbacreate</structfield> 칼럼값이 true인 언어에 대해서는
    데이터베이스 소유주도 자신의 데이터베이스 내에서는 그 언어를
    등록할 수 있다.
    데이터베이스 소유주가 등록할 수 있는 언어는 신뢰할 수 있는
-   (<structfield>tmpltrusted</> 칼럼값이 true인) 것이여야 한다.
+   (<structfield>tmpltrusted</structfield> 칼럼값이 true인) 것이여야 한다.
    물론 슈퍼유저는 <structname>pg_pltemplate</structname> 내용을 
    바꿀 수 있다.
    해당 언어를 등록한 사용자가 그 언어의 소유주가 되며, 
@@ -98,12 +98,12 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
    내에 정의된 정보로 바꾼다.
    이때, 소유주, 접근 권한은 바뀌지 않는다.
    기존에 있는 그 언어용 함수들은 여전히 유효한 것으로 간주한다.
-   추가로 <literal>REPLACE</>인 경우에도, 그 접근권한은 새로 등록할 때와 같다.
+   추가로 <literal>REPLACE</literal>인 경우에도, 그 접근권한은 새로 등록할 때와 같다.
    슈퍼유저이거나, 해당 언어의 소유주여야 한다.
-   <literal>REPLACE</> 구문은 주로 해당 언어가 이미 있어도 
+   <literal>REPLACE</literal> 구문은 주로 해당 언어가 이미 있어도 
    이 작업을 오류로 처리하지 않게 하려고 사용한다.
    <structname>pg_pltemplate</structname> 안에 등록된 언어라면,
-   특별한 경우를 제외하고는  <literal>REPLACE</> 작업으로
+   특별한 경우를 제외하고는  <literal>REPLACE</literal> 작업으로
    변경되는 것은 없다. 물론 앞에서 설명한 대로 기존 언어가
    <structname>pg_pltemplate</structname>에서 정의된 정보와 다른 경우는
    등록 정보가 변경 된다.
@@ -173,13 +173,13 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
 
      <listitem>
       <para><replaceable class="parameter">인라인핸들러</replaceable>는
-       <xref linkend="sql-do"> 명령에서 사용하는 코드 블럭을 처리할 때
+       <xref linkend="sql-do"/> 명령에서 사용하는 코드 블럭을 처리할 때
        사용하는 함수 이름이다.
        <replaceable class="parameter">인라인핸들러</replaceable> 함수를
-       지정하지 않으면, <xref linkend="sql-do"> 명령에서 해당 언어를
+       지정하지 않으면, <xref linkend="sql-do"/> 명령에서 해당 언어를
        사용할 수 없게 된다.
        이 함수의 입력 인자는 <type>internal</type> 형 하나를 사용하며,
-       반환 값은 <type>void</>다.  핸들러의 반환값은 무시된다.
+       반환 값은 <type>void</type>다.  핸들러의 반환값은 무시된다.
       </para>
      </listitem>
     </varlistentry>
@@ -194,7 +194,7 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
        하지 않는다.
        이 유효성 검사 함수의 입력 인자는 만들어지는 함수의 
        OID를 넘겨 받는  <type>oid</type> 형 인자 하나이고, 
-       반환은 <type>void</> 다.
+       반환은 <type>void</type> 다.
       </para>
 
       <para>
@@ -210,8 +210,8 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
    </variablelist>
 
   <para>
-   <literal>TRUSTED</> 옵션과 지원 함수들은 
-   그 언어가 <structname>pg_pltemplate</> 내에 미리 정의된 것이라면, 
+   <literal>TRUSTED</literal> 옵션과 지원 함수들은 
+   그 언어가 <structname>pg_pltemplate</structname> 내에 미리 정의된 것이라면, 
    무시된다.
   </para>
  </refsect1>
@@ -220,14 +220,14 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
   <title>참고</title>
 
   <para>
-   프로시져 언어를 지울 때는 <xref linkend="sql-droplanguage"> 명령을 
+   프로시져 언어를 지울 때는 <xref linkend="sql-droplanguage"/> 명령을 
    사용한다.
   </para>
 
   <para>
    현재 설치된 언어의 등록 정보는 
    <classname>pg_language</classname> 시스템 카탈로그에 보관된다(<xref
-   linkend="catalog-pg-language"> 참조).
+   linkend="catalog-pg-language"/> 참조).
    또한 <application>psql</application>에서
    <command>\dL</command> 명령어로 설치된 언어를 살펴볼 수도 있다.
   </para>
@@ -236,7 +236,7 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
    해당 언어용 함수를 만들 때는 사용자가 그 언어에 대해
    <literal>USAGE</literal> 권한이 있어야 한다.
    신뢰할 수 있는 trusted 언어는 기본적으로
-   <literal>USAGE</> 권한이 <literal>PUBLIC</>(모든 사용자)에게 
+   <literal>USAGE</literal> 권한이 <literal>PUBLIC</literal>(모든 사용자)에게 
    부여된다.
    이 권한은 필요 하다면 도로 거둘 revoke 수 있다.
   </para>
@@ -249,22 +249,22 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
   </para>
 
   <para>
-   <structname>pg_pltemplate</> 카탈로그에 미리 정의된 언어가 아닌 경우,
+   <structname>pg_pltemplate</structname> 카탈로그에 미리 정의된 언어가 아닌 경우,
    그 언어를 등록할 때 필요한 호출 핸들러 함수, 인라인 핸들러 함수(필요하다면),
    유효성 검사 함수(필요하다면)는 먼저 그 데이터베이스에 있어야 한다.
-   반면, <structname>pg_pltemplate</> 카탈로그에 정의된 언어를 
+   반면, <structname>pg_pltemplate</structname> 카탈로그에 정의된 언어를 
    등록(설치)하는 경우는 그 관련 함수들을 따로 만들어(설치) 둘 필요는 없다.
    해당 데이터베이스에 없으면 자동으로 만든다.
    (그 언어용 공유 라이브러리를 사용할 수 없는 경우, - 설치가 잘못된 경우
-   <command>CREATE LANGUAGE</> 명령은 실패한다.) 
+   <command>CREATE LANGUAGE</command> 명령은 실패한다.) 
   </para>
 
   <para>
    <productname>PostgreSQL</productname> 7.3 이전 버전에서는
-   핸들러 함수의 반환 자료형이 <type>language_handler</>가 아니라, 
-   <type>opaque</>였다.
+   핸들러 함수의 반환 자료형이 <type>language_handler</type>가 아니라, 
+   <type>opaque</type>였다.
    오래된 버전의 덤프 파일의 호환성을 위해서, 
-   이 경우도 허용하기는 하지만, <type>language_handler</>
+   이 경우도 허용하기는 하지만, <type>language_handler</type>
    형으로 바꾸라는 알림 메시지를 보여준다.
   </para>
  </refsect1>
@@ -280,7 +280,7 @@ CREATE LANGUAGE plperl;
   </para>
 
   <para>
-   <structname>pg_pltemplate</> 카탈로그에 없는 언어인 경우는 다음과
+   <structname>pg_pltemplate</structname> 카탈로그에 없는 언어인 경우는 다음과
    같은 방식으로 등록한다:
 <programlisting>
 CREATE FUNCTION plsample_call_handler() RETURNS language_handler
@@ -304,11 +304,11 @@ CREATE LANGUAGE plsample
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterlanguage"></member>
-   <member><xref linkend="sql-createfunction"></member>
-   <member><xref linkend="sql-droplanguage"></member>
-   <member><xref linkend="sql-grant"></member>
-   <member><xref linkend="sql-revoke"></member>
+   <member><xref linkend="sql-alterlanguage"/></member>
+   <member><xref linkend="sql-createfunction"/></member>
+   <member><xref linkend="sql-droplanguage"/></member>
+   <member><xref linkend="sql-grant"/></member>
+   <member><xref linkend="sql-revoke"/></member>
   </simplelist>
  </refsect1>
 </refentry>

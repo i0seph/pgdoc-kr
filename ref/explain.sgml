@@ -3,7 +3,7 @@ doc/src/sgml/ref/explain.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-EXPLAIN">
+<refentry id="sql-explain">
  <indexterm zone="sql-explain">
   <primary>EXPLAIN</primary>
  </indexterm>
@@ -161,14 +161,14 @@ ROLLBACK;
       버퍼 사용량을 포함한다. 공유 블록 히트, 읽기, 변경(dirtied), 쓰기 회수를 
       포함하며, 
       로컬 블록과, 임시 블록에 대한 그것들도 포함한다. 
-      <emphasis>히트</>는 이미 해당 데이터 블록이 공유 버퍼에 있어
+      <emphasis>히트</emphasis>는 이미 해당 데이터 블록이 공유 버퍼에 있어
       그것을 읽은 것을 의미한다.  공유 블록에는 일반 테이블과 인덱스의 자료가
       들어있는 것이며, 로컬 블록에는 임시 테이블, 인덱스 자료가 들어있다.
       임시 블록에는 정렬 작업에 사용되었던 자료, 해시, 구체화한 뷰
       (materialize view) 작업의 실행 계획 세부 단위 자료와 이 비슷한 
       하나의 쿼리에서 만들어졌다 사라지는 자료들이 들어있다.
-      <emphasis>dirtied</> 블록수는 해당 쿼리가 실행 되어, 변경 작업을 
-      한 블록의 수이며 <emphasis>written</> 블록수는 해당 쿼리가 실행
+      <emphasis>dirtied</emphasis> 블록수는 해당 쿼리가 실행 되어, 변경 작업을 
+      한 블록의 수이며 <emphasis>written</emphasis> 블록수는 해당 쿼리가 실행
       되어 그 세션이 직접 공유 버퍼에 있는 변경된 블록을
       디스크로 기록한 수를 뜻한다.
       블록수는 그 노드 작업 이하 모든 하위 노드에서 작업한 블록수의 
@@ -229,9 +229,9 @@ ROLLBACK;
     <listitem>
      <para>
       각 옵션의 값으로 불리언 자료형을 사용하는데, 
-      <literal>TRUE</literal>, <literal>ON</>, <literal>1</literal>
+      <literal>TRUE</literal>, <literal>ON</literal>, <literal>1</literal>
       은 그 옵션의 기능을 사용하는 것이며, 
-      <literal>FALSE</literal>, <literal>OFF</>, <literal>0</literal>
+      <literal>FALSE</literal>, <literal>OFF</literal>, <literal>0</literal>
       은 그 옵션의 기능을 사용하지 않는 것이다.
       또한 옵션을 지정하면서 그냥 옵션 이름만 지정할 수도 있는데, 
       이 때는 그 옵션 값으로 <literal>TRUE</literal>를 지정한 것으로 간주한다.
@@ -244,9 +244,9 @@ ROLLBACK;
     <listitem>
      <para>
       실행계획을 살펴볼 
-      <command>SELECT</>, <command>INSERT</>, <command>UPDATE</>,
-      <command>DELETE</>, <command>VALUES</>, <command>EXECUTE</>,
-      <command>DECLARE</>, 또는 <command>CREATE TABLE AS</command>
+      <command>SELECT</command>, <command>INSERT</command>, <command>UPDATE</command>,
+      <command>DELETE</command>, <command>VALUES</command>, <command>EXECUTE</command>,
+      <command>DECLARE</command>, 또는 <command>CREATE TABLE AS</command>
       구문을 지정한다.
      </para>
     </listitem>
@@ -261,7 +261,7 @@ ROLLBACK;
     <replaceable class="parameter">쿼리문</replaceable>에 대한 
     실행 계획을 사람이 읽을 수 있도록 글 형태로 출력하며,
     추가로 실행 통계 정보도 포함하기도 한다. 
-    <xref linkend="using-explain">에서는 이 명령을 사용하는 방법,
+    <xref linkend="using-explain"/>에서는 이 명령을 사용하는 방법,
     출력 결과를 읽고 쿼리를 튜닝하는 방법등에 대해서 소개하고 있다.
    </para>
  </refsect1>
@@ -279,7 +279,7 @@ ROLLBACK;
    <link linkend="autovacuum">autovacuum daemon</link>이 자동으로 처리한다.
    하지만, 그 대상 테이블의 내용이 최근에 상당히 바뀌었고, 
    autovacuum 데몬이 아직 그 변경 사항을 반영하지 않고 있다면, 
-   사용자가 직접 <xref linkend="sql-analyze"> 명령으로 통계 정보를 
+   사용자가 직접 <xref linkend="sql-analyze"/> 명령으로 통계 정보를 
    갱신할 필요가 있다.
   </para>
 
@@ -450,7 +450,7 @@ EXPLAIN ANALYZE EXECUTE query(100, 200);
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-analyze"></member>
+   <member><xref linkend="sql-analyze"/></member>
   </simplelist>
  </refsect1>
 </refentry>

@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_group.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERGROUP">
+<refentry id="sql-altergroup">
  <indexterm zone="sql-altergroup">
   <primary>ALTER GROUP</primary>
  </indexterm>
@@ -21,16 +21,16 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER GROUP <replaceable class="PARAMETER">롤명세</replaceable> ADD USER <replaceable class="PARAMETER">사용자이름</replaceable> [, ... ]
-ALTER GROUP <replaceable class="PARAMETER">롤명세</replaceable> DROP USER <replaceable class="PARAMETER">사용자이름</replaceable> [, ... ]
+ALTER GROUP <replaceable class="parameter">롤명세</replaceable> ADD USER <replaceable class="parameter">사용자이름</replaceable> [, ... ]
+ALTER GROUP <replaceable class="parameter">롤명세</replaceable> DROP USER <replaceable class="parameter">사용자이름</replaceable> [, ... ]
 
-<phrase><replaceable class="PARAMETER">롤명세</replaceable> 입력값:</phrase>
+<phrase><replaceable class="parameter">롤명세</replaceable> 입력값:</phrase>
 
-    <replaceable class="PARAMETER">롤이름</replaceable>
+    <replaceable class="parameter">롤이름</replaceable>
   | CURRENT_USER
   | SESSION_USER
 
-ALTER GROUP <replaceable class="PARAMETER">그룹이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER GROUP <replaceable class="parameter">그룹이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -46,16 +46,16 @@ ALTER GROUP <replaceable class="PARAMETER">그룹이름</replaceable> RENAME TO 
 
   <para>
    위 구문 가운데 처음 두 구문은 그룹에 사용자를 추가/삭제하는 명령이다.
-   (이 작업은 <quote>사용자</> 또는 <quote>그룹</> 이라는 역할, 즉 롤을 
-   관리하는 작업이다.)  이 작업은 지정한 롤을 <quote>그룹</> 이라는
-   자격을 부여하거나 박탈하는 것과 같다.  그래서, <xref linkend="SQL-GRANT"> 
-   또는 <xref linkend="SQL-REVOKE"> 명령을 이용하는 것이 
+   (이 작업은 <quote>사용자</quote> 또는 <quote>그룹</quote> 이라는 역할, 즉 롤을 
+   관리하는 작업이다.)  이 작업은 지정한 롤을 <quote>그룹</quote> 이라는
+   자격을 부여하거나 박탈하는 것과 같다.  그래서, <xref linkend="sql-grant"/> 
+   또는 <xref linkend="sql-revoke"/> 명령을 이용하는 것이 
    의미론적으로 맞다.
   </para>
 
   <para>
    세번째 구문은 그룹 이름을 바꾸는 명령이다.  이 작업은
-   <xref linkend="sql-alterrole"> 구문에서 지원한다.
+   <xref linkend="sql-alterrole"/> 구문에서 지원한다.
   </para>
  </refsect1>
 
@@ -64,7 +64,7 @@ ALTER GROUP <replaceable class="PARAMETER">그룹이름</replaceable> RENAME TO 
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="PARAMETER">그룹이름</replaceable></term>
+    <term><replaceable class="parameter">그룹이름</replaceable></term>
     <listitem>
      <para>
       작업 대상 롤(그룹) 이름.
@@ -73,11 +73,11 @@ ALTER GROUP <replaceable class="PARAMETER">그룹이름</replaceable> RENAME TO 
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">사용자이름</replaceable></term>
+    <term><replaceable class="parameter">사용자이름</replaceable></term>
     <listitem>
      <para>
       해당 그룹 소속으로 추가하거나 그룹에서 뺄 사용자(롤) 이름.
-      이 사용자는 이미 있어야한다.  <command>ALTER GROUP</>
+      이 사용자는 이미 있어야한다.  <command>ALTER GROUP</command>
       명령으로 사용자를 만들거나 지울 수 없다.
      </para>
     </listitem>
@@ -122,9 +122,9 @@ ALTER GROUP workers DROP USER beth;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-grant"></member>
-   <member><xref linkend="sql-revoke"></member>
-   <member><xref linkend="sql-alterrole"></member>
+   <member><xref linkend="sql-grant"/></member>
+   <member><xref linkend="sql-revoke"/></member>
+   <member><xref linkend="sql-alterrole"/></member>
   </simplelist>
  </refsect1>
 

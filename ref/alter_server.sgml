@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_server.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERSERVER">
+<refentry id="sql-alterserver">
  <indexterm zone="sql-alterserver">
   <primary>ALTER SERVER</primary>
  </indexterm>
@@ -22,9 +22,9 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 ALTER SERVER <replaceable class="parameter">이름</replaceable> [ VERSION '<replaceable class="parameter">새버전</replaceable>' ]
-    [ OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">옵션</replaceable> ['<replaceable class="PARAMETER">값</replaceable>'] [, ... ] ) ]
-ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+    [ OPTIONS ( [ ADD | SET | DROP ] <replaceable class="parameter">옵션</replaceable> ['<replaceable class="parameter">값</replaceable>'] [, ... ] ) ]
+ALTER SERVER <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER SERVER <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -41,7 +41,7 @@ ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <repl
   <para>
    이 작업은 해당 서버의 소유주가 할 수 있다.  덧붙여, 소유주를 바꿀 때에는
    현재 소유주가 새 소유주 소속이어야 하고, 새 소유주는
-   해당 외부 서버 자료 싸개를 쓰기 위해 <literal>USAGE</> 권한이
+   해당 외부 서버 자료 싸개를 쓰기 위해 <literal>USAGE</literal> 권한이
    있어야 한다.  (슈퍼유저가 작업할 경우는 자동으로 이런 권한 
    처리는 한다.)
   </para>
@@ -70,11 +70,11 @@ ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <repl
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">옵션</replaceable> ['<replaceable class="PARAMETER">값</replaceable>'] [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="parameter">옵션</replaceable> ['<replaceable class="parameter">값</replaceable>'] [, ... ] )</literal></term>
     <listitem>
      <para>
-      서버 옵션 바꾸기.  <literal>ADD</>, <literal>SET</>, <literal>DROP</>
-      은 해당 작업 형태이며, 생략하면, <literal>ADD</>로 간주한다.  
+      서버 옵션 바꾸기.  <literal>ADD</literal>, <literal>SET</literal>, <literal>DROP</literal>
+      은 해당 작업 형태이며, 생략하면, <literal>ADD</literal>로 간주한다.  
       옵션 이름은 고유해야하며, 이 옵션 이름과 값에 대한 
       유효성 검사는 외부 서버 자료 싸개에서 맡는다.
      </para>
@@ -82,7 +82,7 @@ ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <repl
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
       해당 외부 서버의 소유주가 새 사용자 이름.
@@ -105,14 +105,14 @@ ALTER SERVER <replaceable class="PARAMETER">이름</replaceable> RENAME TO <repl
   <title>예제</title>
 
   <para>
-   <literal>foo</> 외부 서버의 접속 정보 바꾸기:
+   <literal>foo</literal> 외부 서버의 접속 정보 바꾸기:
 <programlisting>
 ALTER SERVER foo OPTIONS (host 'foo', dbname 'foodb');
 </programlisting>
   </para>
 
   <para>
-   <literal>foo</> 외부 서버의 버전과 <literal>host</> 옵션 값 바꾸기:
+   <literal>foo</literal> 외부 서버의 버전과 <literal>host</literal> 옵션 값 바꾸기:
 <programlisting>
 ALTER SERVER foo VERSION '8.4' OPTIONS (SET host 'baz');
 </programlisting></para>
@@ -132,8 +132,8 @@ ALTER SERVER foo VERSION '8.4' OPTIONS (SET host 'baz');
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createserver"></member>
-   <member><xref linkend="sql-dropserver"></member>
+   <member><xref linkend="sql-createserver"/></member>
+   <member><xref linkend="sql-dropserver"/></member>
   </simplelist>
  </refsect1>
 

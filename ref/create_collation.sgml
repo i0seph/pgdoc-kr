@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/ref/create_collation.sgml -->
 
-<refentry id="SQL-CREATECOLLATION">
+<refentry id="sql-createcollation">
  <indexterm zone="sql-createcollation">
   <primary>CREATE COLLATION</primary>
  </indexterm>
@@ -117,7 +117,7 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>이름</replaceable> FROM <repla
       <para>
        해당 문자 정렬 규칙과 관련된 로케일 서비스용 제공자를 지정한다.
        사용할 수 있는 값:
-       <literal>icu</literal>,<indexterm><primary>ICU</></>
+       <literal>icu</literal>,<indexterm><primary>ICU</primary></indexterm>
        <literal>libc</literal>.
        <literal>libc</literal>가 기본값이다.
        OS와 서버 빌드 옵션에 따라 이것을 선택할 수 있다.
@@ -138,7 +138,7 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>이름</replaceable> FROM <repla
       </para>
 
       <para>
-       이 버전에 대해서는 <xref linkend="sql-altercollation"> 명령
+       이 버전에 대해서는 <xref linkend="sql-altercollation"/> 명령
        설명서에서 소개한다.
       </para>
      </listitem>
@@ -169,13 +169,13 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>이름</replaceable> FROM <repla
 
   <para>
    문자 정령 규칙을 만드는 방법에 대해서는
-   <xref linkend="collation-create">에서 자세히 소개하고 있다.
+   <xref linkend="collation-create"/>에서 자세히 소개하고 있다.
   </para>
 
   <para>
    특정 <literal>libc</literal> 문자 정렬 규칙 제공자를 사용할 때는,
    그 로케일이 현재 데이터베이스에서 수용 가능해야한다.
-   이 정확한 규칙은 <xref linkend="sql-createdatabase">에서 다루고 있다.
+   이 정확한 규칙은 <xref linkend="sql-createdatabase"/>에서 다루고 있다.
   </para>
  </refsect1>
 
@@ -225,8 +225,8 @@ CREATE COLLATION german FROM "de_DE";
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-altercollation"></member>
-   <member><xref linkend="sql-dropcollation"></member>
+   <member><xref linkend="sql-altercollation"/></member>
+   <member><xref linkend="sql-dropcollation"/></member>
   </simplelist>
  </refsect1>
 

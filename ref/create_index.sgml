@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_index.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEINDEX">
+<refentry id="sql-createindex">
  <indexterm zone="sql-createindex">
   <primary>CREATE INDEX</primary>
  </indexterm>
@@ -21,9 +21,10 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class="parameter">이름</replaceable> ] ON <replaceable class="parameter">테이블이름</replaceable> [ USING <replaceable class="parameter">색인방법</replaceable> ]
+CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class="parameter">이름</replaceable> ] ON [ ONLY ] <replaceable class="parameter">테이블이름</replaceable> [ USING <replaceable class="parameter">색인방법</replaceable> ]
     ( { <replaceable class="parameter">칼럼이름</replaceable> | ( <replaceable class="parameter">표현식</replaceable> ) } [ COLLATE <replaceable class="parameter">문자정렬규칙</replaceable> ] [ <replaceable class="parameter">연산자클래스</replaceable> ] [ ASC | DESC ] [ NULLS { FIRST | LAST } ] [, ...] )
-    [ WITH ( <replaceable class="PARAMETER">저장_매개변수</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] ) ]
+    [ INCLUDE ( <replaceable class="parameter">칼럼이름</replaceable> [, ...] ) ]
+    [ WITH ( <replaceable class="parameter">저장_매개변수</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] ) ]
     [ TABLESPACE <replaceable class="parameter">테이블스페이스이름</replaceable> ]
     [ WHERE <replaceable class="parameter">조건절</replaceable> ]
 </synopsis>
@@ -53,8 +54,8 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    조회 쿼리에서 어떤 계산식에 의한 결과를 빠르게 찾는데 
    도움을 준다.  예를 들어, 대소문자를 구분하지 않고, 
    무조건 대문자로 어떤 자료를 찾으려고 할때, 
-   인덱스 필드로 <literal>upper(col)</> 계산식을 사용해서 
-   인덱스를 만들고, 조회 쿼리에서 <literal>WHERE upper(col) = 'JIM'</>
+   인덱스 필드로 <literal>upper(col)</literal> 계산식을 사용해서 
+   인덱스를 만들고, 조회 쿼리에서 <literal>WHERE upper(col) = 'JIM'</literal>
    구문을 사용하면, 그 인덱스를 사용할 수 있다.
   </para>
 
@@ -78,7 +79,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
     또 다른 사용법으로, <literal>UNIQUE</literal> 인덱스를 만들 수 없는
     자료인데, <literal>WHERE</literal> 조건절을 이용해서, 
     유일성을 보장하는 인덱스로 만들어 사용하는 것이다. 이 부분은
-    <xref linkend="indexes-partial">에서 자세히 다룬다.
+    <xref linkend="indexes-partial"/>에서 자세히 다룬다.
   </para>
 
   <para>
@@ -92,11 +93,11 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
   </para>
 
   <para>
-   인덱스를 만들 때 사용하는 함수나 연산자는 반드시 <quote>immutable</>
+   인덱스를 만들 때 사용하는 함수나 연산자는 반드시 <quote>immutable</quote>
    속성이 있어야 하는 것이여야 한다.
    이 속성은 입력에 대한 출력값이 항상 같다는 것을 뜻한다(어떤
    테이블을 참조하거나, 현재 시간을 출력하는 작업은 이런 경우가 
-   아니다).  이렇게 <quote>immutable</> 속성이 있어야
+   아니다).  이렇게 <quote>immutable</quote> 속성이 있어야
    인덱스 역할을 제대로 하기 때문이다.  사용자 정의 함수를 사용해서
    인덱스 필드로 사용하거나,  <literal>WHERE</literal> 조건절에서
    사용하려고 한다면, 반드시 이 점을 기억해야 한다.
@@ -115,6 +116,11 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
         해당 필드 값은 해당 테이블에 유일하게 있어야 함을 뜻한다.
         같은 자료를 입력 하거나, 이미 있는 값으로 바꾸려고 하면 오류로 처리한다.
        </para>
+
+       <para>
+        하위 파티션 테이블에 유니크 인덱스를 적용할 때는 추가 제한이 있다.
+        <xref linkend="sql-createtable" /> 참조.
+       </para>
       </listitem>
      </varlistentry>
 
@@ -122,13 +128,13 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
       <term><literal>CONCURRENTLY</literal></term>
       <listitem>
        <para>
-        이 옵션을 사용하면, <productname>PostgreSQL</> 서버는
+        이 옵션을 사용하면, <productname>PostgreSQL</productname> 서버는
         해당 테이블의 insert, update, delete 작업을 허용하면서
         인덱스를 만든다.  일반적 인덱스 만들기는 해당 테이블을 읽기 전용으로
         잠근다.
         이 옵션을 사용할 때는 여러 제약 조건들이 있다.
-        이 옵션을 사용하려면  <xref linkend="SQL-CREATEINDEX-CONCURRENTLY"
-        endterm="SQL-CREATEINDEX-CONCURRENTLY-title"> 설명서를
+        이 옵션을 사용하려면  <xref linkend="sql-createindex-concurrently"
+        endterm="sql-createindex-concurrently-title"/> 설명서를
         꼭 읽고 사용해야 한다.
        </para>
       </listitem>
@@ -146,15 +152,71 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
      </varlistentry>
 
      <varlistentry>
+      <term><literal>INCLUDE</literal></term>
+      <listitem>
+       <para>
+        The optional <literal>INCLUDE</literal> clause specifies a
+        list of columns which will be included in the index
+        as <firstterm>non-key</firstterm> columns.  A non-key column cannot
+        be used in an index scan search qualification, and it is disregarded
+        for purposes of any uniqueness or exclusion constraint enforced by
+        the index.  However, an index-only scan can return the contents of
+        non-key columns without having to visit the index's table, since
+        they are available directly from the index entry.  Thus, addition of
+        non-key columns allows index-only scans to be used for queries that
+        otherwise could not use them.
+       </para>
+
+       <para>
+        It's wise to be conservative about adding non-key columns to an
+        index, especially wide columns.  If an index tuple exceeds the
+        maximum size allowed for the index type, data insertion will fail.
+        In any case, non-key columns duplicate data from the index's table
+        and bloat the size of the index, thus potentially slowing searches.
+       </para>
+
+       <para>
+        Columns listed in the <literal>INCLUDE</literal> clause don't need
+        appropriate operator classes; the clause can include
+        columns whose data types don't have operator classes defined for
+        a given access method.
+       </para>
+
+       <para>
+        Expressions are not supported as included columns since they cannot be
+        used in index-only scans.
+       </para>
+
+       <para>
+        Currently, only the B-tree index access method supports this feature.
+        In B-tree indexes, the values of columns listed in the
+        <literal>INCLUDE</literal> clause are included in leaf tuples which
+        correspond to heap tuples, but are not included in upper-level
+        index entries used for tree navigation.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
       <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
         새로 만들 인덱스 이름.
         이 이름에는 스키마 이름을 지정하지 않는다.  인덱스의 소속 스키마는
         항상 그 테이블의 스키마와 같기 때문이다.
-        이 이름을 생략하는 경우, <productname>PostgreSQL</>에서는
+        이 이름을 생략하는 경우, <productname>PostgreSQL</productname>에서는
         해당 테이블과 해당 칼럼 이름의 조함으로 이 인덱스 이름을 
         자동으로 만들어 사용한다.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>ONLY</literal></term>
+      <listitem>
+       <para>
+        Indicates not to recurse creating indexes on partitions, if the
+        table is partitioned.  The default is to recurse.
        </para>
       </listitem>
      </varlistentry>
@@ -174,8 +236,8 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
        <para>
         해당 인덱스의 색인 방법을 지정한다. 사용할 수 있는 값:
         <literal>btree</literal>, <literal>hash</literal>,
-        <literal>gist</literal>, <literal>spgist</>, <literal>gin</>, 
-        <literal>brin</>.
+        <literal>gist</literal>, <literal>spgist</literal>, <literal>gin</literal>, 
+        <literal>brin</literal>.
         <literal>btree</literal>가 기본값이다.
        </para>
       </listitem>
@@ -225,7 +287,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
      </varlistentry>
 
      <varlistentry>
-      <term><literal>ASC</></term>
+      <term><literal>ASC</literal></term>
       <listitem>
        <para>
         오름 차순 정렬 (기본값).
@@ -234,7 +296,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
      </varlistentry>
 
      <varlistentry>
-      <term><literal>DESC</></term>
+      <term><literal>DESC</literal></term>
       <listitem>
        <para>
         내림 차순 정렬.
@@ -243,19 +305,19 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
      </varlistentry>
 
      <varlistentry>
-      <term><literal>NULLS FIRST</></term>
+      <term><literal>NULLS FIRST</literal></term>
       <listitem>
        <para>
-        null 값 먼저 정렬. <literal>DESC</> 인덱스인 경우는 기본값.
+        null 값 먼저 정렬. <literal>DESC</literal> 인덱스인 경우는 기본값.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>NULLS LAST</></term>
+      <term><literal>NULLS LAST</literal></term>
       <listitem>
        <para>
-        null 값 나중에 정렬. <literal>DESC</> 옵션을 지정하지 않은
+        null 값 나중에 정렬. <literal>DESC</literal> 옵션을 지정하지 않은
         인덱스인 경우는 기본값.
        </para>
       </listitem>
@@ -266,7 +328,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
       <listitem>
        <para>
         색인 방법에서 사용하는 저장 매개 변수 이름.
-        <xref linkend="sql-createindex-storage-parameters" endterm="sql-createindex-storage-parameters-title"> 참조.
+        <xref linkend="sql-createindex-storage-parameters" endterm="sql-createindex-storage-parameters-title"/> 참조.
        </para>
       </listitem>
      </varlistentry>
@@ -276,9 +338,9 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
       <listitem>
        <para>
         이 인덱스가 저장될 테이블스페이스 이름.  지정하지 않으면,
-        <xref linkend="guc-default-tablespace"> 설정값의 테이블스페이스가
+        <xref linkend="guc-default-tablespace"/> 설정값의 테이블스페이스가
         사용되며, 임시 테이블의 인덱스라면, 
-        <xref linkend="guc-temp-tablespaces"> 설정값의 테이블스페이스가
+        <xref linkend="guc-temp-tablespaces"/> 설정값의 테이블스페이스가
         사용된다.
        </para>
       </listitem>
@@ -295,20 +357,54 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
 
     </variablelist>
 
-  <refsect2 id="SQL-CREATEINDEX-storage-parameters">
-   <title id="SQL-CREATEINDEX-storage-parameters-title">인덱스 저장 매개 변수</title>
+  <refsect2 id="sql-createindex-storage-parameters">
+   <title id="sql-createindex-storage-parameters-title">인덱스 저장 매개 변수</title>
 
    <para>
-    <literal>WITH</> 옵션을 이용해서, 
+    <literal>WITH</literal> 옵션을 이용해서, 
     인덱스용 <firstterm>저장 매개 변수</firstterm> 값을 지정할 수 있다.
     각 색인 방법은 그들만의 고유 매개 변수도 있다.
-    다음은 B-tree, hash, GiST, SP-GiST 색인 방법에서 공통으로 사용할 수 있는 
+    다음은 모든 색인 방법에서 공통으로 사용할 수 있는 
     매개 변수다:
    </para>
 
    <variablelist>
    <varlistentry>
-    <term><literal>fillfactor</></term>
+    <term><literal>recheck_on_update</literal></term>
+    <listitem>
+     <para>
+       Specifies whether to recheck a functional index value to see whether
+       we can use a HOT update or not. The default value is on for functional
+       indexes with an total expression cost less than 1000, otherwise off.
+       You might decide to turn this off if you knew that a function used in
+       an index is unlikely to return the same value when one of the input
+       columns is updated and so the recheck is not worth the additional cost
+       of executing the function.
+     </para>
+
+     <para>
+       Functional indexes are used frequently for the case where the function
+       returns a subset of the argument. Examples of this would be accessing
+       part of a string with <literal>SUBSTR()</literal> or accessing a single
+       field in a JSON document using an expression such as
+       <literal>(bookinfo-&gt;&gt;'isbn')</literal>. In this example, the JSON
+       document might be updated frequently, yet it is uncommon for the ISBN
+       field for a book to change so we would keep the parameter set to on
+       for that index. A more frequently changing field might have an index
+       with this parameter turned off, while very frequently changing fields
+       might be better to avoid indexing at all under high load.
+     </para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+
+   <para>
+     The B-tree, hash, GiST and SP-GiST index methods all accept this parameter:
+   </para>
+
+   <variablelist>
+   <varlistentry>
+    <term><literal>fillfactor</literal></term>
     <listitem>
      <para>
       fillfactor 변수는 인덱스 페이지에 얼마만큼의 자료를 보관할 것인지를
@@ -331,21 +427,36 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </variablelist>
 
    <para>
+    B-tree indexes additionally accept this parameter:
+   </para>
+
+   <variablelist>
+   <varlistentry>
+    <term><literal>vacuum_cleanup_index_scale_factor</literal></term>
+    <listitem>
+    <para>
+      Per-index value for <xref linkend="guc-vacuum-cleanup-index-scale-factor"/>.
+    </para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+
+   <para>
     GiST 인덱스에서는 추가적으로 다음 매개 변수를 사용할 수 있다:
    </para>
 
    <variablelist>
    <varlistentry>
-    <term><literal>buffering</></term>
+    <term><literal>buffering</literal></term>
     <listitem>
     <para>
      인덱스를 만들 때, 
-     <xref linkend="gist-buffering-build">에서 설명하고 있는 
+     <xref linkend="gist-buffering-build"/>에서 설명하고 있는 
      버퍼링 빌드 방법을 사용할지를 지정한다.
-     <literal>OFF</>면 사용 하지 않고, <literal>ON</>이면 사용한다,
-     <literal>AUTO</>면 사용하고 있지 않다가, 인덱스 크기가
-     <xref linkend="guc-effective-cache-size"> 값보다 커지만
-     활성화 된다. 기본값은 <literal>AUTO</>.
+     <literal>OFF</literal>면 사용 하지 않고, <literal>ON</literal>이면 사용한다,
+     <literal>AUTO</literal>면 사용하고 있지 않다가, 인덱스 크기가
+     <xref linkend="guc-effective-cache-size"/> 값보다 커지만
+     활성화 된다. 기본값은 <literal>AUTO</literal>.
     </para>
     </listitem>
    </varlistentry>
@@ -357,25 +468,25 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
 
    <variablelist>
    <varlistentry>
-    <term><literal>fastupdate</></term>
+    <term><literal>fastupdate</literal></term>
     <listitem>
     <para>
-     <xref linkend="gin-fast-update">에서 설명하고 있는 
+     <xref linkend="gin-fast-update"/>에서 설명하고 있는 
      자동 업데이트 기능을 사용할 것인지를 지정한다.
-     값은 불리언형으로 <literal>ON</>이면 활성화, <literal>OFF</>면
+     값은 불리언형으로 <literal>ON</literal>이면 활성화, <literal>OFF</literal>면
      비활성화한다.
-     (이 값은 <xref linkend="config-setting">에서 설명하는 것 처럼
+     (이 값은 <xref linkend="config-setting"/>에서 설명하는 것 처럼
       허용 가능한 다른 값으로 지정해도 된다.)
-     기본값은 <literal>ON</>.
+     기본값은 <literal>ON</literal>.
     </para>
 
     <note>
      <para>
-      <command>ALTER INDEX</> 명령으로 <literal>fastupdate</> 설정값을 
+      <command>ALTER INDEX</command> 명령으로 <literal>fastupdate</literal> 설정값을 
       off로 하면 그 작업 뒤 발생하는 인덱스 작업은 적용되지만, 
       기존 이미 인덱스 작업된 자료에 대해서는 반영하지 않는다.
       해당 인덱스 전체를 대상으로 재반영하려면,
-      <command>VACUUM</> 명령이나, <function>gin_clean_pending_list</>
+      <command>VACUUM</command> 명령이나, <function>gin_clean_pending_list</function>
       함수를 호출 해서 반영해야 한다.
      </para>
     </note>
@@ -384,10 +495,10 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </variablelist>
    <variablelist>
    <varlistentry>
-    <term><literal>gin_pending_list_limit</></term>
+    <term><literal>gin_pending_list_limit</literal></term>
     <listitem>
     <para>
-     해당 인덱스 개별 <xref linkend="guc-gin-pending-list-limit"> 매개 변수값
+     해당 인덱스 개별 <xref linkend="guc-gin-pending-list-limit"/> 매개 변수값
      지정.  단위는 킬로바이트다.
     </para>
     </listitem>
@@ -395,23 +506,23 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </variablelist>
 
    <para>
-    <acronym>BRIN</> 인덱스에서 다음 매개 변수들을 사용할 수 있다:
+    <acronym>BRIN</acronym> 인덱스에서 다음 매개 변수들을 사용할 수 있다:
    </para>
 
    <variablelist>
    <varlistentry>
-    <term><literal>pages_per_range</></term>
+    <term><literal>pages_per_range</literal></term>
     <listitem>
     <para>
-     하나의 <acronym>BRIN</> 인덱스 페이지에서 다루는 
-     테이블 블럭 수(<xref linkend="brin-intro"> 참조).
-     기본값은 <literal>128</>.
+     하나의 <acronym>BRIN</acronym> 인덱스 페이지에서 다루는 
+     테이블 블럭 수(<xref linkend="brin-intro"/> 참조).
+     기본값은 <literal>128</literal>.
     </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>autosummarize</></term>
+    <term><literal>autosummarize</literal></term>
     <listitem>
     <para>
      다음 페이지 대상으로 insert 작업이 있으면,
@@ -422,17 +533,17 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </variablelist>
   </refsect2>
 
-  <refsect2 id="SQL-CREATEINDEX-CONCURRENTLY">
-   <title id="SQL-CREATEINDEX-CONCURRENTLY-title">테이블을 잠그지 않는 인덱스 만들기</title>
+  <refsect2 id="sql-createindex-concurrently">
+   <title id="sql-createindex-concurrently-title">테이블을 잠그지 않는 인덱스 만들기</title>
 
-   <indexterm zone="SQL-CREATEINDEX-CONCURRENTLY">
+   <indexterm zone="sql-createindex-concurrently">
    <primary>index</primary>
    <secondary>테이블을 잠그지 않고 만들기</secondary>
    </indexterm>
 
    <para>
     인덱스를 만드는 작업은 데이터베이스 일반적인 작업을 방해할 수 있다.
-    <productname>PostgreSQL</>에서는 인덱스를 만드는 중에는
+    <productname>PostgreSQL</productname>에서는 인덱스를 만드는 중에는
     그 테이블에 대해서 쓰기가 금지 된다.
     이것이 기본 특성이다.  물론 읽기 작업은 가능하지만, 
     insert, update, delete 작업은 그 인덱스가 다 만들어지기 전까지 
@@ -443,11 +554,11 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </para>
 
    <para>
-    이런 문제를 해결하기 위해, <productname>PostgreSQL</>에서는
+    이런 문제를 해결하기 위해, <productname>PostgreSQL</productname>에서는
     테이블을 잠그지 않고, 인덱스를 만들 수 있는 방법을 제공한다.
-    <command>CREATE INDEX</> 명령에서 <literal>CONCURRENTLY</> 옵션을 
+    <command>CREATE INDEX</command> 명령에서 <literal>CONCURRENTLY</literal> 옵션을 
     사용하는 것이다.
-    이 옵션을 사용하면, <productname>PostgreSQL</> 서버는
+    이 옵션을 사용하면, <productname>PostgreSQL</productname> 서버는
     해당 테이블에 대해서 두 번 탐색한다.  또한, 이 인덱스 작업을 시작하기
     전 수행된 자료 조작 트랜잭션들이 모두 종료 될 때까지 기다렸다가
     작업을 진행한다. (명령을 실행하고, 다른 세션에서 이 명령으로
@@ -469,9 +580,9 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
     해당 테이블 대상 변경 작업용 모든 트랜잭션이 종료되기를 기다린다.
     두번째 테이블 탐색 후에,  인덱스 만들기 작업은, 
     이 테이블 탐색이 끝나기 전에 만들어진 모든 스냅샷 트랜잭션
-    (<xref linkend="mvcc"> 참고)이 종료 되기를 기다린다.
+    (<xref linkend="mvcc"/> 참고)이 종료 되기를 기다린다.
     모든 작업이 완료되면, 해당 인덱스를 사용 가능한 인덱스로 표시하고,
-    <command>CREATE INDEX</> 명령을 종료한다.
+    <command>CREATE INDEX</command> 명령을 종료한다.
     하지만, 그 인덱스가 즉시 쿼리에서 사용되지 않을 수도 있다:
     최악의 경우는 해당 테이블을 사용하는 트랜잭션이 제때에 종료되지 않아, 
     아에 해당 인덱스를 사용하지 못하는 상황이 발생할 수도 있다.
@@ -481,11 +592,11 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
     인덱스 만들기 작업 중 교착상태 deadlock나 유니크 제약 조건 위반 같은 
     문제가 발생하면, 그 작업은 중지된다. 하지만, 
     이 때 해당 인덱스를 없애는 것이 아니라, 
-    <quote>INVALID</> 인덱스로 남겨둔다.  이 인덱스는 불완적한 것이기 
+    <quote>INVALID</quote> 인덱스로 남겨둔다.  이 인덱스는 불완적한 것이기 
     때문에 쿼리에서 사용되지는 않지만, 인덱스 변경 작업은 계속 되어
-    불필요한 비용이 발생한다.  <application>psql</>에서
-    이런 잘못된 인덱스를 확인하는 방법은 <command>\d</> 명령 결과에서
-    인덱스 설명에 <literal>INVALID</>가 있는지 확인하는 것이다.
+    불필요한 비용이 발생한다.  <application>psql</application>에서
+    이런 잘못된 인덱스를 확인하는 방법은 <command>\d</command> 명령 결과에서
+    인덱스 설명에 <literal>INVALID</literal>가 있는지 확인하는 것이다.
 
 <programlisting>
 postgres=# \d tab
@@ -498,9 +609,9 @@ Indexes:
 </programlisting>
 
     이런 경우 복구 방법은 해당 인덱스를 지우고, 
-    다시 <command>CREATE INDEX CONCURRENTLY</> 명령을 실행하는 것이다.
-    (다른 방법은 <command>REINDEX</> 명령을 사용하는 것인데, 
-    <command>REINDEX</> 명령은 테이블을 잠그기 때문에 잘 판단 해야 한다.)
+    다시 <command>CREATE INDEX CONCURRENTLY</command> 명령을 실행하는 것이다.
+    (다른 방법은 <command>REINDEX</command> 명령을 사용하는 것인데, 
+    <command>REINDEX</command> 명령은 테이블을 잠그기 때문에 잘 판단 해야 한다.)
    </para>
 
    <para>
@@ -511,7 +622,7 @@ Indexes:
     아니면, 아에 인덱스를 만들기 작업 실패로 처리하기 전에, 
     다른 쿼리에서 유니크 제약 조건 위반 오류가 발생할 수 있다.
     또한, 이 실패가 두번째 탐색 작업 중에 발생하면, 
-    이 <quote>잘못된</> 인덱스 때문에, 향후 계속 해서 
+    이 <quote>잘못된</quote> 인덱스 때문에, 향후 계속 해서 
     유니크 제약 조건 위반 문제가 발생할 수도 있다.
    </para>
 
@@ -539,7 +650,7 @@ Indexes:
 
   <para>
    어떤 경우는 인덱스를 사용하고, 어떤 경우는 인덱스를 사용하지 않는지,
-   이런 개별 상황에 대한 자세한 설명은 <xref linkend="indexes">에서
+   이런 개별 상황에 대한 자세한 설명은 <xref linkend="indexes"/>에서
    자세히 다룬다.
   </para>
 
@@ -566,25 +677,47 @@ Indexes:
    이 경우 실행 계획기에는 상황에 맞게 해당 인덱스를 선택해서 
    작업한다.
    연산자 클래스에 대한 자세한 정보는
-   <xref linkend="indexes-opclass">과 <xref
-   linkend="xindex">에서 다룬다.
+   <xref linkend="indexes-opclass"/>과 <xref
+   linkend="xindex"/>에서 다룬다.
+  </para>
+
+  <para>
+   When <literal>CREATE INDEX</literal> is invoked on a partitioned
+   table, the default behavior is to recurse to all partitions to ensure
+   they all have matching indexes.
+   Each partition is first checked to determine whether an equivalent
+   index already exists, and if so, that index will become attached as a
+   partition index to the index being created, which will become its
+   parent index.
+   If no matching index exists, a new index will be created and
+   automatically attached; the name of the new index in each partition
+   will be determined as if no index name had been specified in the
+   command.
+   If the <literal>ONLY</literal> option is specified, no recursion
+   is done, and the index is marked invalid.
+   (<command>ALTER INDEX ... ATTACH PARTITION</command> marks the index
+   valid, once all partitions acquire matching indexes.)  Note, however,
+   that any partition that is created in the future using
+   <command>CREATE TABLE ... PARTITION OF</command> will automatically
+   have a matching index, regardless of whether <literal>ONLY</literal> is
+   specified.
   </para>
 
   <para>
    현재 B-tree 색인 방법을 사용하는 경우에만
-   <literal>ASC</>, <literal>DESC</>, <literal>NULLS
-   FIRST</>, <literal>NULLS LAST</> 옵션을 사용할 수 있다.
+   <literal>ASC</literal>, <literal>DESC</literal>, <literal>NULLS
+   FIRST</literal>, <literal>NULLS LAST</literal> 옵션을 사용할 수 있다.
    실행 계획에 따라 인덱스 순방향, 역방향 검색이 모두 가능하기 
-   때문에, 단일 칼럼 인덱스에서는 <literal>DESC</> 옵션을 사용할 
+   때문에, 단일 칼럼 인덱스에서는 <literal>DESC</literal> 옵션을 사용할 
    필요는 없다 &mdash; 이 경우는 이미 그 옵션이 없어도 잘 사용할 수 있다.
    이 옵션은 <literal>SELECT ... ORDER BY x ASC, y
-   DESC</> 형태의 쿼리와 같이 다중 칼럼을 사용하고, 그 정렬 방법이 
-   다른 경우에 쓰인다.  <literal>NULLS</> 옵션은 null 값 자료 출력 위치를
+   DESC</literal> 형태의 쿼리와 같이 다중 칼럼을 사용하고, 그 정렬 방법이 
+   다른 경우에 쓰인다.  <literal>NULLS</literal> 옵션은 null 값 자료 출력 위치를
    변경 해야 하는 경우에 사용된다.
   </para>
 
   <para>
-   대부분의 색인 방법은 <xref linkend="guc-maintenance-work-mem">
+   대부분의 색인 방법은 <xref linkend="guc-maintenance-work-mem"/>
    설정값에 따라 인덱스 만드는 속도가 달라진다.
    이 설정값이 크면 그 만큼 인덱스 만드는 속도가 빨라 진다.
    물론 너무 크게 지정해서 시스템 스왑 메모리를 사용한다면, 
@@ -592,14 +725,72 @@ Indexes:
   </para>
 
   <para>
-   인덱스를 지울 때는 <xref linkend="sql-dropindex"> 명령을 이용한다.
+   <productname>PostgreSQL</productname> can build indexes while
+   leveraging multiple CPUs in order to process the table rows faster.
+   This feature is known as <firstterm>parallel index
+   build</firstterm>.  For index methods that support building indexes
+   in parallel (currently, only B-tree),
+   <varname>maintenance_work_mem</varname> specifies the maximum
+   amount of memory that can be used by each index build operation as
+   a whole, regardless of how many worker processes were started.
+   Generally, a cost model automatically determines how many worker
+   processes should be requested, if any.
+  </para>
+
+  <para>
+   Parallel index builds may benefit from increasing
+   <varname>maintenance_work_mem</varname> where an equivalent serial
+   index build will see little or no benefit.  Note that
+   <varname>maintenance_work_mem</varname> may influence the number of
+   worker processes requested, since parallel workers must have at
+   least a <literal>32MB</literal> share of the total
+   <varname>maintenance_work_mem</varname> budget.  There must also be
+   a remaining <literal>32MB</literal> share for the leader process.
+   Increasing <xref linkend="guc-max-parallel-workers-maintenance"/>
+   may allow more workers to be used, which will reduce the time
+   needed for index creation, so long as the index build is not
+   already I/O bound.  Of course, there should also be sufficient
+   CPU capacity that would otherwise lie idle.
+  </para>
+
+  <para>
+   Setting a value for <literal>parallel_workers</literal> via <xref
+   linkend="sql-altertable"/> directly controls how many parallel
+   worker processes will be requested by a <command>CREATE
+   INDEX</command> against the table.  This bypasses the cost model
+   completely, and prevents <varname>maintenance_work_mem</varname>
+   from affecting how many parallel workers are requested.  Setting
+   <literal>parallel_workers</literal> to 0 via <command>ALTER
+   TABLE</command> will disable parallel index builds on the table in
+   all cases.
+  </para>
+ 
+  <tip>
+   <para>
+    You might want to reset <literal>parallel_workers</literal> after
+    setting it as part of tuning an index build.  This avoids
+    inadvertent changes to query plans, since
+    <literal>parallel_workers</literal> affects
+    <emphasis>all</emphasis> parallel table scans.
+   </para>
+  </tip>
+
+  <para>
+   While <command>CREATE INDEX</command> with the
+   <literal>CONCURRENTLY</literal> option supports parallel builds
+   without special restrictions, only the first table scan is actually
+   performed in parallel.
+  </para>
+
+  <para>
+   인덱스를 지울 때는 <xref linkend="sql-dropindex"/> 명령을 이용한다.
   </para>
 
   <para>
    이전 <productname>PostgreSQL</productname>에서는 R-tree 인덱스도
    있었으나, GiST 인덱스가 더 좋아 이제는 사용하지 않는다.
-   <literal>USING rtree</> 옵션을 사용하면, <command>CREATE INDEX</>
-   명령은 자동으로 <literal>USING gist</> 바꿔 명령이 실행된다.
+   <literal>USING rtree</literal> 옵션을 사용하면, <command>CREATE INDEX</command>
+   명령은 자동으로 <literal>USING gist</literal> 바꿔 명령이 실행된다.
   </para>
  </refsect1>
 
@@ -608,21 +799,30 @@ Indexes:
 
   <para>
    <literal>films</literal> 테이블 <literal>title</literal> 칼럼
-   대상 B-tree 인덱스를 만드는 경우:
+   대상 유니크 B-tree 인덱스를 만드는 경우:
 <programlisting>
 CREATE UNIQUE INDEX title_idx ON films (title);
 </programlisting>
   </para>
 
   <para>
-   대소문자 구분 없이 검색하기 위해 <literal>lower(title)</>
+   To create a unique B-tree index on the column <literal>title</literal>
+   with included columns <literal>director</literal>
+   and <literal>rating</literal> in the table <literal>films</literal>:
+<programlisting>
+CREATE UNIQUE INDEX title_idx ON films (title) INCLUDE (director, rating);
+</programlisting>
+  </para>
+
+  <para>
+   대소문자 구분 없이 검색하기 위해 <literal>lower(title)</literal>
    표현식으로 인덱스를 만드는 경우:
 <programlisting>
 CREATE INDEX ON films ((lower(title)));
 </programlisting>
    (이 때 인덱스 이름을 지정하지 않았기 때문에, 서버에서
    자동으로 그 이름을 짓는다.   윗 경우라면 
-   <literal>films_lower_idx</> 형식의 이름이 사용된다.)
+   <literal>films_lower_idx</literal> 형식의 이름이 사용된다.)
   </para>
 
   <para>
@@ -647,7 +847,7 @@ CREATE UNIQUE INDEX title_idx ON films (title) WITH (fillfactor = 70);
   </para>
 
   <para>
-   fastupdate 기능을 끄고, <acronym>GIN</> 색인 방법으로 인덱스를 만드는 경우:
+   fastupdate 기능을 끄고, <acronym>GIN</acronym> 색인 방법으로 인덱스를 만드는 경우:
 <programlisting>
 CREATE INDEX gin_idx ON documents_table USING GIN (locations) WITH (fastupdate = off);
 </programlisting>
@@ -693,8 +893,8 @@ CREATE INDEX CONCURRENTLY sales_quantity_index ON sales_table (quantity);
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterindex"></member>
-   <member><xref linkend="sql-dropindex"></member>
+   <member><xref linkend="sql-alterindex"/></member>
+   <member><xref linkend="sql-dropindex"/></member>
   </simplelist>
  </refsect1>
 </refentry>

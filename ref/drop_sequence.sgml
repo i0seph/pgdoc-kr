@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_sequence.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPSEQUENCE">
+<refentry id="sql-dropsequence">
  <indexterm zone="sql-dropsequence">
   <primary>DROP SEQUENCE</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP SEQUENCE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -49,7 +49,7 @@ DROP SEQUENCE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> 
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">name</replaceable></term>
+    <term><replaceable class="parameter">name</replaceable></term>
     <listitem>
      <para>
       삭제하려는 (스키마 이름이 포함 될 수도 있는) 시퀀스 이름.
@@ -63,7 +63,7 @@ DROP SEQUENCE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> 
      <para>
       해당 시퀀스와 의존성 관계가 있는 모든 객체들로 함께 삭제 한다.
       물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -97,8 +97,8 @@ DROP SEQUENCE serial;
   <para>
    <command>DROP SEQUENCE</command> 명령은 표준 <acronym>SQL</acronym>
    구문이며,  표준 구문은 하나의 명령에는 하나의 시퀀스만 
-   삭제 할 수 있다.  <literal>IF EXISTS</> 옵션은 
-   <productname>PostgreSQL</> 확장 기능이다.
+   삭제 할 수 있다.  <literal>IF EXISTS</literal> 옵션은 
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
@@ -106,8 +106,8 @@ DROP SEQUENCE serial;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createsequence"></member>
-   <member><xref linkend="sql-altersequence"></member>
+   <member><xref linkend="sql-createsequence"/></member>
+   <member><xref linkend="sql-altersequence"/></member>
   </simplelist>
  </refsect1>
 

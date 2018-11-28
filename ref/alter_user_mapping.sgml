@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_user_mapping.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERUSERMAPPING">
+<refentry id="sql-alterusermapping">
  <indexterm zone="sql-alterusermapping">
   <primary>ALTER USER MAPPING</primary>
  </indexterm>
@@ -23,7 +23,7 @@ PostgreSQL documentation
 <synopsis>
 ALTER USER MAPPING FOR { <replaceable class="parameter">사용자이름</replaceable> | USER | CURRENT_USER | SESSION_USER | PUBLIC }
     SERVER <replaceable class="parameter">서버이름</replaceable>
-    OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">옵션</replaceable> ['<replaceable class="PARAMETER">값</replaceable>'] [, ... ] )
+    OPTIONS ( [ ADD | SET | DROP ] <replaceable class="parameter">옵션</replaceable> ['<replaceable class="parameter">값</replaceable>'] [, ... ] )
 </synopsis>
  </refsynopsisdiv>
 
@@ -36,7 +36,7 @@ ALTER USER MAPPING FOR { <replaceable class="parameter">사용자이름</replace
 
   <para>
    해당 외부 서버 소유주가 해당 서버 모든 사용자 맵핑을 바꿀 수 있다.
-   또한 한 사용자에게 그 서버에 대한  <literal>USAGE</>  권한이 있다면,
+   또한 한 사용자에게 그 서버에 대한  <literal>USAGE</literal>  권한이 있다면,
    그 사용자는 사용자 맵핑을 바꿀 수 있다. 
   </para>
  </refsect1>
@@ -49,9 +49,9 @@ ALTER USER MAPPING FOR { <replaceable class="parameter">사용자이름</replace
     <term><replaceable class="parameter">사용자이름</replaceable></term>
     <listitem>
      <para>
-      작업 대상 맵핑된 사용자 이름.  <literal>CURRENT_USER</> 또는
-      <literal>USER</>는 현재 접속한 사용자를 뜻한다.
-      <literal>PUBLIC</>은 이 서버에 등록된 모든 사용자를 뜻한다.
+      작업 대상 맵핑된 사용자 이름.  <literal>CURRENT_USER</literal> 또는
+      <literal>USER</literal>는 현재 접속한 사용자를 뜻한다.
+      <literal>PUBLIC</literal>은 이 서버에 등록된 모든 사용자를 뜻한다.
      </para>
     </listitem>
    </varlistentry>
@@ -66,13 +66,13 @@ ALTER USER MAPPING FOR { <replaceable class="parameter">사용자이름</replace
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">옵션</replaceable> ['<replaceable class="PARAMETER">값</replaceable>'] [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="parameter">옵션</replaceable> ['<replaceable class="parameter">값</replaceable>'] [, ... ] )</literal></term>
     <listitem>
      <para>
       해당 사용자 맵핑용 옵션 값을 바꾼다.  새 옵션이 이미 지정된 옵션을 
-      덮어쓴다.  <literal>ADD</>, <literal>SET</>, <literal>DROP</>
+      덮어쓴다.  <literal>ADD</literal>, <literal>SET</literal>, <literal>DROP</literal>
       으로 해당 옵션 값 처리 방법을 지정한다. 이 처리 방법을 지정하지
-      않으면, <literal>ADD</>로 간주한다.  옵션 이름은 유일해야하며, 
+      않으면, <literal>ADD</literal>로 간주한다.  옵션 이름은 유일해야하며, 
       옵션 유효성 검사는 외부 서버 자료 싸개에서 맡는다.
      </para>
     </listitem>
@@ -84,7 +84,7 @@ ALTER USER MAPPING FOR { <replaceable class="parameter">사용자이름</replace
   <title>예제</title>
 
   <para>
-   외부 서버 <literal>foo</>, <literal>bob</> 사용자 맵핑에서 비밀번호
+   외부 서버 <literal>foo</literal>, <literal>bob</literal> 사용자 맵핑에서 비밀번호
    바꾸는 명령:
 <programlisting>
 ALTER USER MAPPING FOR bob SERVER foo OPTIONS (SET password 'public');
@@ -110,8 +110,8 @@ ALTER USER MAPPING FOR bob SERVER foo OPTIONS (SET password 'public');
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createusermapping"></member>
-   <member><xref linkend="sql-dropusermapping"></member>
+   <member><xref linkend="sql-createusermapping"/></member>
+   <member><xref linkend="sql-dropusermapping"/></member>
   </simplelist>
  </refsect1>
 

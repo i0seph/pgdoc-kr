@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_type.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERTYPE">
+<refentry id="sql-altertype">
  <indexterm zone="sql-altertype">
   <primary>ALTER TYPE</primary>
  </indexterm>
@@ -21,19 +21,19 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> <replaceable class="PARAMETER">작업</replaceable> [, ... ]
-ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME ATTRIBUTE <replaceable class="PARAMETER">속성이름</replaceable> TO <replaceable class="PARAMETER">새속성이름</replaceable> [ CASCADE | RESTRICT ]
-ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
-ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> SET SCHEMA <replaceable class="PARAMETER">새스키마</replaceable>
-ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> ADD VALUE [ IF NOT EXISTS ] <replaceable class="PARAMETER">새나열값</replaceable> [ { BEFORE | AFTER } <replaceable class="PARAMETER">인근나열값</replaceable> ]
-ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <replaceable class="PARAMETER">기존나열값</replaceable> TO <replaceable class="PARAMETER">새나열값</replaceable>
+ALTER TYPE <replaceable class="parameter">이름</replaceable> <replaceable class="parameter">작업</replaceable> [, ... ]
+ALTER TYPE <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER TYPE <replaceable class="parameter">이름</replaceable> RENAME ATTRIBUTE <replaceable class="parameter">속성이름</replaceable> TO <replaceable class="parameter">새속성이름</replaceable> [ CASCADE | RESTRICT ]
+ALTER TYPE <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
+ALTER TYPE <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
+ALTER TYPE <replaceable class="parameter">이름</replaceable> ADD VALUE [ IF NOT EXISTS ] <replaceable class="parameter">새나열값</replaceable> [ { BEFORE | AFTER } <replaceable class="parameter">인근나열값</replaceable> ]
+ALTER TYPE <replaceable class="parameter">이름</replaceable> RENAME VALUE <replaceable class="parameter">기존나열값</replaceable> TO <replaceable class="parameter">새나열값</replaceable>
 
-<phrase><replaceable class="PARAMETER">작업</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">작업</replaceable> 자리에는:</phrase>
 
-    ADD ATTRIBUTE <replaceable class="PARAMETER">속성이름</replaceable> <replaceable class="PARAMETER">자료형</replaceable> [ COLLATE <replaceable class="PARAMETER">문자정렬규칙</replaceable> ] [ CASCADE | RESTRICT ]
-    DROP ATTRIBUTE [ IF EXISTS ] <replaceable class="PARAMETER">속성이름</replaceable> [ CASCADE | RESTRICT ]
-    ALTER ATTRIBUTE <replaceable class="PARAMETER">속성이름</replaceable> [ SET DATA ] TYPE <replaceable class="PARAMETER">자료형</replaceable> [ COLLATE <replaceable class="PARAMETER">문자정렬규칙</replaceable> ] [ CASCADE | RESTRICT ]
+    ADD ATTRIBUTE <replaceable class="parameter">속성이름</replaceable> <replaceable class="parameter">자료형</replaceable> [ COLLATE <replaceable class="parameter">문자정렬규칙</replaceable> ] [ CASCADE | RESTRICT ]
+    DROP ATTRIBUTE [ IF EXISTS ] <replaceable class="parameter">속성이름</replaceable> [ CASCADE | RESTRICT ]
+    ALTER ATTRIBUTE <replaceable class="parameter">속성이름</replaceable> [ SET DATA ] TYPE <replaceable class="parameter">자료형</replaceable> [ COLLATE <replaceable class="parameter">문자정렬규칙</replaceable> ] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -50,7 +50,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
     <listitem>
      <para>
       복합 자료형에서 새 속성을 추가한다. 문법은 
-      <xref linkend="SQL-CREATETYPE"> 명령 설명서에 있는 것과 같다.
+      <xref linkend="sql-createtype"/> 명령 설명서에 있는 것과 같다.
      </para>
     </listitem>
    </varlistentry>
@@ -138,7 +138,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
   </para>
 
   <para>
-   <command>ALTER TYPE</> 명령은 해당 자료형 소유주가 실행할 수 있다.
+   <command>ALTER TYPE</command> 명령은 해당 자료형 소유주가 실행할 수 있다.
    스키마를 바꾸는 경우, 해당 소유주는 새 스키마에 대해서
    <literal>CREATE</literal> 권한이 있어야 한다.
    소유주는 바꾸는 경우, 기존 소유주는 직간접적으로
@@ -157,7 +157,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
    <para>
     <variablelist>
      <varlistentry>
-      <term><replaceable class="PARAMETER">이름</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
         작업 대상 자료형 이름(스키마 이름 포함).
@@ -166,7 +166,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새이름</replaceable></term>
+      <term><replaceable class="parameter">새이름</replaceable></term>
       <listitem>
        <para>
         바뀔 새 자료형 이름.
@@ -175,7 +175,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새소유주</replaceable></term>
+      <term><replaceable class="parameter">새소유주</replaceable></term>
       <listitem>
        <para>
         해당 자료형의 바뀔 새 소유주 이름.
@@ -184,7 +184,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새스키마</replaceable></term>
+      <term><replaceable class="parameter">새스키마</replaceable></term>
       <listitem>
        <para>
         해당 자료형의 바뀔 새 스키마 이름.
@@ -193,7 +193,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">속성이름</replaceable></term>
+      <term><replaceable class="parameter">속성이름</replaceable></term>
       <listitem>
        <para>
         해당 자료형에 추가, 삭제, 변경할 속성 이름.
@@ -202,7 +202,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새속성이름</replaceable></term>
+      <term><replaceable class="parameter">새속성이름</replaceable></term>
       <listitem>
        <para>
         바뀔 새 속성 이름.
@@ -211,7 +211,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">자료형</replaceable></term>
+      <term><replaceable class="parameter">자료형</replaceable></term>
       <listitem>
        <para>
         추가, 변경할 속성 자료형 이름.
@@ -220,7 +220,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새나열값</replaceable></term>
+      <term><replaceable class="parameter">새나열값</replaceable></term>
       <listitem>
        <para>
         나열형 자료에서 새로 추가할 나열값.
@@ -230,7 +230,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">인근나열값</replaceable></term>
+      <term><replaceable class="parameter">인근나열값</replaceable></term>
       <listitem>
        <para>
         추가할 나열값을 기존 목록에서 끼워 넣고자 할 때, 기준이 되는
@@ -241,7 +241,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">기존나열값</replaceable></term>
+      <term><replaceable class="parameter">기존나열값</replaceable></term>
       <listitem>
        <para>
         나열형에서 값을 바꿀 기존 나열값.
@@ -278,7 +278,7 @@ ALTER TYPE <replaceable class="PARAMETER">이름</replaceable> RENAME VALUE <rep
   <title>참고</title>
 
   <para>
-   <command>ALTER TYPE ... ADD VALUE</> (새 나열값 추가 작업)
+   <command>ALTER TYPE ... ADD VALUE</command> (새 나열값 추가 작업)
    구문은 트랜잭션 작업 중에는 사용할 수 없다.
   </para>
 
@@ -350,12 +350,12 @@ ALTER TYPE colors RENAME VALUE 'purple' TO 'mauve';
   </para>
  </refsect1>
 
- <refsect1 id="SQL-ALTERTYPE-see-also">
+ <refsect1 id="sql-altertype-see-also">
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createtype"></member>
-   <member><xref linkend="sql-droptype"></member>
+   <member><xref linkend="sql-createtype"/></member>
+   <member><xref linkend="sql-droptype"/></member>
   </simplelist>
  </refsect1>
 </refentry>

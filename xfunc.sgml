@@ -16,24 +16,24 @@
     <listitem>
      <para>
       쿼리 언어 함수 (<acronym>SQL</acronym>로 만든 함수)
-      (<xref linkend="xfunc-sql">)
+      (<xref linkend="xfunc-sql"/>)
      </para>
     </listitem>
     <listitem>
      <para>
-      프로시져 언어 함수 (<application>PL/pgSQL</>이나
-      <application>PL/Tcl</> 로 만든 함수)
-      (<xref linkend="xfunc-pl">)
+      프로시져 언어 함수 (<application>PL/pgSQL</application>이나
+      <application>PL/Tcl</application> 로 만든 함수)
+      (<xref linkend="xfunc-pl"/>)
      </para>
     </listitem>
     <listitem>
      <para>
-      내장 함수 (<xref linkend="xfunc-internal">)
+      내장 함수 (<xref linkend="xfunc-internal"/>)
      </para>
     </listitem>
     <listitem>
      <para>
-      C-언어 함수 (<xref linkend="xfunc-c">)
+      C-언어 함수 (<xref linkend="xfunc-c"/>)
      </para>
     </listitem>
    </itemizedlist>
@@ -61,13 +61,46 @@
 
   <para>
    이 장에 이어서,  여기서 다루고 있는 부분을
-   좀 더 빠르게 이해하려면 <xref linkend="sql-createfunction"> 명령의
+   좀 더 빠르게 이해하려면 <xref linkend="sql-createfunction"/> 명령의
    설명을 살펴보는 것도 좋다.
    여기서 다루는 몇몇 예제들은 <productname>PostgreSQL</productname>
-   소스 디렉터리 안 <filename>src/tutorial</> 안 
+   소스 디렉터리 안 <filename>src/tutorial</filename> 안 
    <filename>funcs.sql</filename>, <filename>funcs.c</filename>
    파일에서 찾을 수 있다.
   </para>
+  </sect1>
+
+  <sect1 id="xproc">
+   <title>User-defined Procedures</title>
+
+  <indexterm zone="xproc">
+   <primary>procedure</primary>
+   <secondary>user-defined</secondary>
+  </indexterm>
+
+   <para>
+    A procedure is a database object similar to a function.  The difference is
+    that a procedure does not return a value, so there is no return type
+    declaration.  While a function is called as part of a query or DML
+    command, a procedure is called explicitly using
+    the <xref linkend="sql-call"/> statement.
+   </para>
+
+   <para>
+    The explanations on how to define user-defined functions in the rest of
+    this chapter apply to procedures as well, except that
+    the <xref linkend="sql-createprocedure"/> command is used instead, there is
+    no return type, and some other features such as strictness don't apply.
+   </para>
+
+   <para>
+    Collectively, functions and procedures are also known
+    as <firstterm>routines</firstterm><indexterm><primary>routine</primary></indexterm>.
+    There are commands such as <xref linkend="sql-alterroutine"/>
+    and <xref linkend="sql-droproutine"/> that can operate on functions and
+    procedures without having to know which kind it is.  Note, however, that
+    there is no <literal>CREATE ROUTINE</literal> command.
+   </para>
   </sect1>
 
   <sect1 id="xfunc-sql">
@@ -84,7 +117,7 @@
     그 구문들 가운데 마지막 실행 된 구문의 결과를 반환 한다.
     (집합을 반환하지 않는) 단순 SQL 함수는 마지막 쿼리의 
     결과 가운데 첫 로우를 반환한다.
-    (<quote>첫번째 로우</quote>는 <literal>ORDER BY</>
+    (<quote>첫번째 로우</quote>는 <literal>ORDER BY</literal>
     구문을 사용하지 않는 이상 항상 같은 로우를 반환하지 않을 수도 
     있음에 주의해야 한다.)
     실행 된 마지막 쿼리의 결과값이 없는 경우는 null을 
@@ -94,8 +127,8 @@
    <para>
     또 달리, SQL 함수가 집합(다중 로우)을 반환 하도록 지정할 수도 있다.
     이렇게 하려면, 함수 만들기 구문의 반환값을 지정할 때,
-    <literal>SETOF <replaceable>임의자료형</></literal> 구문을 
-    사용하거나, <literal>RETURNS TABLE(<replaceable>칼럼들</>)</literal>
+    <literal>SETOF <replaceable>임의자료형</replaceable></literal> 구문을 
+    사용하거나, <literal>RETURNS TABLE(<replaceable>칼럼들</replaceable>)</literal>
     구문을 사용한다.  이런 형태의 함수인 경우는 그 마지막 실행되는 
     쿼리의 모든 결과를 반환한다.  보다 자세한 내용은 아래에서 다룬다.
    </para>
@@ -104,10 +137,10 @@
     SQL 함수의 내용은 세미콜론으로 구분되는 
     SQL 구문들로 구성되어야 한다. 마지막 SQL 구문 뒤에는 
     세미콜론을 써도 되고 안 써도 된다.  
-    함수 반환값으로 <type>void</>를 지정하지 않았다면,  
-    함수 내용의 마지막 쿼리는 <command>SELECT</> 명령이어야 하고,
-    <command>INSERT</>, <command>UPDATE</>, <command>DELETE</>
-    명령이라면, <literal>RETURNING</> 구문이 있어야 한다.
+    함수 반환값으로 <type>void</type>를 지정하지 않았다면,  
+    함수 내용의 마지막 쿼리는 <command>SELECT</command> 명령이어야 하고,
+    <command>INSERT</command>, <command>UPDATE</command>, <command>DELETE</command>
+    명령이라면, <literal>RETURNING</literal> 구문이 있어야 한다.
    </para>
 
     <para>
@@ -117,17 +150,17 @@
      <command>UPDATE</command>, 및 <command>DELETE</command> 쿼리들)
      도 함수 내용으로 사용할 수 있으며, 또한 다른 쿼리들도 
      사용할 수 있다. (여기서 기억해야 할 것은 
-     트랜잭션을 제어야하는 <command>COMMIT</>, <command>SAVEPOINT</>
-     같은 명령과, <literal>VACUUM</> 명령은 <acronym>SQL</acronym>
+     트랜잭션을 제어야하는 <command>COMMIT</command>, <command>SAVEPOINT</command>
+     같은 명령과, <literal>VACUUM</literal> 명령은 <acronym>SQL</acronym>
      함수 안에서는 사용할 수 없다.)
      반면, 함수 내용의 마지막에 오는 명령은
      <command>SELECT</command> 명령이나, 
-     함수의 반환 자료형과 일치하는 <literal>RETURNING</> 구문을 
+     함수의 반환 자료형과 일치하는 <literal>RETURNING</literal> 구문을 
      포함하는 어떤 명령이어야 한다.
      부가적으로, 만일 어떤 작업을 수행하는데, 특별히 반환해야할 
-     자료형이 없다면, 함수를 정의할 때 반환값으로 <type>void</>를
+     자료형이 없다면, 함수를 정의할 때 반환값으로 <type>void</type>를
      지정한다.
-     다음 예제는 <literal>emp</> 테이블에서 
+     다음 예제는 <literal>emp</literal> 테이블에서 
      판매액이 음수인 로우를 지우는 함수를 만들고 실행한 것이다:
 
 <screen>
@@ -149,24 +182,24 @@ SELECT clean_emp();
      <para>
       함수 내용으로 지정된 각 명령은 그 명령이 실행 되는 시점에 
       구문 분석을 한다.  함수의 내용으로 시스템 카탈로그 정보를 변경하는 
-      작업 (예, <command>CREATE TABLE</>)이 있다면, 
+      작업 (예, <command>CREATE TABLE</command>)이 있다면, 
       이 작업의 최종 반영은 해당 함수 내용이 모두 정상적으로 진행 되었을 때
       이루워진다.  예를 들어, 
       <literal>CREATE TABLE foo (...); INSERT INTO foo VALUES(...);</literal>
-      이런 형태로 함수가 만들어졌다면, <command>INSERT</> 작업을 할 때, 
-      <structname>foo</> 테이블이 없다며 오류를 낼 것이다.  이런 형태의
-      함수를 원한다면, <application>PL/pgSQL</> 함수로 작성하는 것이 좋다.
+      이런 형태로 함수가 만들어졌다면, <command>INSERT</command> 작업을 할 때, 
+      <structname>foo</structname> 테이블이 없다며 오류를 낼 것이다.  이런 형태의
+      함수를 원한다면, <application>PL/pgSQL</application> 함수로 작성하는 것이 좋다.
      </para>
    </note>
 
    <para>
     <command>CREATE FUNCTION</command> 명령에서 함수 내용은 하나의 
     문자열로 정의한다. 즉, 그 문자열 안에 어떤 문자열 정의가 필요하다면,
-    그것을 위해 문자열 지정 문자(<literal>'</> 작은 따옴표)를 하나 더 써야 한다. 
-    (<xref linkend="sql-syntax-strings"> 참고)
+    그것을 위해 문자열 지정 문자(<literal>'</literal> 작은 따옴표)를 하나 더 써야 한다. 
+    (<xref linkend="sql-syntax-strings"/> 참고)
     일반적으로 이런 번거로움을 피하기 위해서, 달러 문자를 이용한 
     문자열 표기 규칙을 사용한다(이것에 대한 자세한 이야기는 <xref
-    linkend="sql-syntax-dollar-quoting">을 참고).
+    linkend="sql-syntax-dollar-quoting"/>을 참고).
    </para>
 
    <sect2 id="xfunc-sql-function-arguments">
@@ -186,7 +219,7 @@ SELECT clean_emp();
      함수 인자로 이름을 사용하려면, 그냥 함수 내용 안에서 그 이름을 적당한
      위치에서 사용하면 된다.  만일 그 이름이 칼럼 이름과 똑 같다면, 
      해당 칼럼 값이 먼저 사용된다.  그래도 같은 이름을 사용하고 싶다면, 
-     <literal><replaceable>함수이름</>.<replaceable>인자이름</></literal>
+     <literal><replaceable>함수이름</replaceable>.<replaceable>인자이름</replaceable></literal>
      형태로 함수 이름을 먼저 지정해서 인자 이름을 지정할 수 있고, 
      이 경우도 해당 함수와 테이블 이름이 같다면, 해당 테이블의 해당 칼럼 값이
      사용된다.  이런 경우에도 꼭 함수 인자를 해당 이름으로 사용해야 한다면, 
@@ -194,16 +227,16 @@ SELECT clean_emp();
     </para>
 
     <para>
-     오래된 번호 기반 함수 인자 사용법은 <literal>$<replaceable>n</></>
-     형태다: <literal>$1</>은 그 함수의 첫번째 인자를 뜻하며, 
-     <literal>$2</>는 두번째 인자를 뜻한다.  이런 함수 인자 참조는 
+     오래된 번호 기반 함수 인자 사용법은 <literal>$<replaceable>n</replaceable></literal>
+     형태다: <literal>$1</literal>은 그 함수의 첫번째 인자를 뜻하며, 
+     <literal>$2</literal>는 두번째 인자를 뜻한다.  이런 함수 인자 참조는 
      그 함수 인자를 이름 기반으로 지정했을 때도 그대로 사용할 수 있다.
     </para>
 
     <para>
      인자가 복합 자료형이라면, 함수 내용에서
-     <literal><replaceable>argname</>.<replaceable>fieldname</></literal>
-     또는 <literal>$1.<replaceable>fieldname</></literal>
+     <literal><replaceable>argname</replaceable>.<replaceable>fieldname</replaceable></literal>
+     또는 <literal>$1.<replaceable>fieldname</replaceable></literal>
      형태로 사용한다. 물론 
      인자 이름에서 충돌이 생긴다면, 함수 이름을 함께 사용해서 그 충돌을
      피한다.
@@ -225,7 +258,7 @@ INSERT INTO $1 VALUES (42);
      <para>
       이름 기반 함수 인자 사용은 <productname>PostgreSQL</productname> 9.2
       버전부터 제공한다.  그 이전 버전에서는 
-      <literal>$<replaceable>n</></> 형태의 번호 기반 인자만 사용할 수 있다.
+      <literal>$<replaceable>n</replaceable></literal> 형태의 번호 기반 인자만 사용할 수 있다.
      </para>
     </note>
    </sect2>
@@ -256,10 +289,10 @@ SELECT one();
     </para>
 
     <para>
-     윗 예제와 같이 함수 내용에서 반환값에 대한 칼럼 별칭(<literal>result</>)을 
+     윗 예제와 같이 함수 내용에서 반환값에 대한 칼럼 별칭(<literal>result</literal>)을 
      사용할 수는 있지만, 함수 실행 결과에서는 그 이름이 보이지 않는 점을
-     기억해야 한다.  결국 <literal>result</> 대신에, 
-     <literal>one</> 이라는 함수 이름이 칼럼 이름으로 사용된다.
+     기억해야 한다.  결국 <literal>result</literal> 대신에, 
+     <literal>one</literal> 이라는 함수 이름이 칼럼 이름으로 사용된다.
     </para>
 
     <para>
@@ -316,11 +349,11 @@ SELECT tf1(17, 100.0);
     </para>
 
     <para>
-     이 예제를 보면, 함수의 첫번째 인자인 <literal>accountno</> 인자 이름이
-     <literal>bank</> 테이블의 칼럼 이름으로도 사용하고 있다면,
-     충돌이 일어난다.  <command>UPDATE</>
+     이 예제를 보면, 함수의 첫번째 인자인 <literal>accountno</literal> 인자 이름이
+     <literal>bank</literal> 테이블의 칼럼 이름으로도 사용하고 있다면,
+     충돌이 일어난다.  <command>UPDATE</command>
      명령에서 인자 값을 전달하기 위해서는 
-     <literal>bank.accountno</>, <literal>tf1.accountno</> 같이 
+     <literal>bank.accountno</literal>, <literal>tf1.accountno</literal> 같이 
      각각 구분해서 사용해서 사용해야 한다.
     </para>
 
@@ -338,7 +371,7 @@ $$ LANGUAGE SQL;
 </programlisting>
 
      윗 함수는 다시 아래와 같이
-     <literal>RETURNING</> 구문을 이용해서 보다 깔끔하게 만들 수도 있다:
+     <literal>RETURNING</literal> 구문을 이용해서 보다 깔끔하게 만들 수도 있다:
 
 <programlisting>
 CREATE FUNCTION tf1 (accountno integer, debit numeric) RETURNS numeric AS $$
@@ -346,6 +379,31 @@ CREATE FUNCTION tf1 (accountno integer, debit numeric) RETURNS numeric AS $$
         SET balance = balance - debit
         WHERE accountno = tf1.accountno
     RETURNING balance;
+$$ LANGUAGE SQL;
+</programlisting>
+    </para>
+
+    <para>
+     A <acronym>SQL</acronym> function must return exactly its declared
+     result type.  This may require inserting an explicit cast.
+     For example, suppose we wanted the
+     previous <function>add_em</function> function to return
+     type <type>float8</type> instead.  This won't work:
+
+<programlisting>
+CREATE FUNCTION add_em(integer, integer) RETURNS float8 AS $$
+    SELECT $1 + $2;
+$$ LANGUAGE SQL;
+</programlisting>
+
+     even though in other contexts <productname>PostgreSQL</productname>
+     would be willing to insert an implicit cast to
+     convert <type>integer</type> to <type>float8</type>.
+     We need to write it as
+
+<programlisting>
+CREATE FUNCTION add_em(integer, integer) RETURNS float8 AS $$
+    SELECT ($1 + $2)::float8;
 $$ LANGUAGE SQL;
 </programlisting>
     </para>
@@ -391,7 +449,7 @@ SELECT name, double_salary(emp.*) AS dream
      함수에서 해당 로우의 개별 칼럼을 사용하려면,
      <literal>$1.salary</literal> 형태로 사용한다.
      또한 이 함수를 사용할 때, 입력 인자는 
-     <command>SELECT</> 명령에서 <replaceable>테이블이름</><literal>.*</>
+     <command>SELECT</command> 명령에서 <replaceable>테이블이름</replaceable><literal>.*</literal>
      문자를 사용해서 해당 로우 전체를 지정한다. 
      물론 위 예제와 같은 경우라면, 아래와 같이 참조하는 
      테이블 이름만을 인자로 사용할 수 있다.
@@ -402,12 +460,12 @@ SELECT name, double_salary(emp) AS dream
 </screen>
      하지만 이 방식은 읽는데 혼란을 초래해 그리 권장하지는 않는다.
      (테이블 로우의 복합 자료형 값을 표시하는 두가지 방법에 대한
-     자세한 설명은 <xref linkend="rowtypes-usage">에 있다.)
+     자세한 설명은 <xref linkend="rowtypes-usage"/>에 있다.)
     </para>
 
     <para>
      가끔 즉석에서 복합 자료형 형태의 인자를 만들어서 함수의
-     인자로 사용할 때도 있다.  이럴 때는 <literal>ROW</> 구문을
+     인자로 사용할 때도 있다.  이럴 때는 <literal>ROW</literal> 구문을
      이용한다.  아래 예제가 그 사용법이다:
 <screen>
 SELECT name, double_salary(ROW(name, salary*1.1, age, cubicle)) AS dream
@@ -447,13 +505,16 @@ $$ LANGUAGE SQL;
       </listitem>
       <listitem>
        <para>
-        각 칼럼의 자료형이 완벽하게 일치해야 한다.
-        그렇지 않으면 아래와 같은 오류가 발생한다.
+        We must ensure each expression's type matches the corresponding
+        column of the composite type, inserting a cast if necessary.
+        Otherwise we'll get errors like this:
 <screen>
 <computeroutput>
 ERROR:  function declared to return emp returns varchar instead of text at column 1
 </computeroutput>
 </screen>
+        As with the base-type case, the function will not insert any casts
+        automatically.
        </para>
       </listitem>
      </itemizedlist>
@@ -468,10 +529,15 @@ CREATE FUNCTION new_emp() RETURNS emp AS $$
 $$ LANGUAGE SQL;
 </programlisting>
 
-     <command>SELECT</> 명령으로 즉석으로 반환할 자료형에 맞춰 
+     <command>SELECT</command> 명령으로 즉석으로 반환할 자료형에 맞춰 
      한 번에 만든다.  하지만, 실무에서는 그리 좋은 방법은 아니지만,
      로우 전체를 또 다시 다른 함수로 넘겨주는 형태로 사용할 때는
      유용하게 쓰이기도 한다.
+     Another example is that if we are trying to write a function that
+     returns a domain over composite, rather than a plain composite type,
+     it is always necessary to write it as returning a single column,
+     since there is no other way to produce a value that is exactly of
+     the domain type.
     </para>
 
     <para>
@@ -496,7 +562,7 @@ SELECT * FROM new_emp();
 </screen>
 
      두 번째 사용법에 대해서는 <xref
-     linkend="xfunc-sql-table-functions">에서 자세히 다룬다.
+     linkend="xfunc-sql-table-functions"/>에서 자세히 다룬다.
     </para>
 
     <para>
@@ -534,7 +600,7 @@ SELECT name(new_emp());
  None
 </screen>
 
-     <xref linkend="rowtypes-usage">에서 설명하고 있는 것처럼,
+     <xref linkend="rowtypes-usage"/>에서 설명하고 있는 것처럼,
      필드 지정방식이나, 함수 지정 방식은 같다.
     </para>
 
@@ -557,7 +623,7 @@ SELECT getname(new_emp());
    </sect2>
 
    <sect2 id="xfunc-output-parameters">
-    <title><acronym>SQL</> 함수에서 출력 매개 변수 사용하기</title>
+    <title><acronym>SQL</acronym> 함수에서 출력 매개 변수 사용하기</title>
 
    <indexterm>
     <primary>함수</primary>
@@ -565,7 +631,7 @@ SELECT getname(new_emp());
    </indexterm>
 
     <para>
-     함수의 반환값을 <firstterm>출력 매개 변수</>로 지정할 수도 있다.
+     함수의 반환값을 <firstterm>출력 매개 변수</firstterm>로 지정할 수도 있다.
      다음은 그 예제다:
 
 <screen>
@@ -580,8 +646,8 @@ SELECT add_em(3,7);
 (1 row)
 </screen>
 
-     이 함수는 <xref linkend="xfunc-sql-base-functions">에서 소개한
-     <literal>add_em</> 함수와 똑 같은 함수다.
+     이 함수는 <xref linkend="xfunc-sql-base-functions"/>에서 소개한
+     <literal>add_em</literal> 함수와 똑 같은 함수다.
      이렇게 사용하는 이유는 여러 칼럼을 한 번에 반환하려고 할 때 
      편하다. 예를 들어,
 
@@ -629,16 +695,16 @@ DROP FUNCTION sum_n_product (int, int);
     </para>
 
     <para>
-     함수 매개 변수 종류는 <literal>IN</> (기본값), <literal>OUT</>,
-     <literal>INOUT</>, <literal>VARIADIC</> 네 종류다.
-     <literal>INOUT</> 매개 변수는 입출력이 같은 이름과 같은 자료형 임을
-     뜻하고, <literal>VARIADIC</> 매개 변수는 여러 인자를 하나의 인자로
+     함수 매개 변수 종류는 <literal>IN</literal> (기본값), <literal>OUT</literal>,
+     <literal>INOUT</literal>, <literal>VARIADIC</literal> 네 종류다.
+     <literal>INOUT</literal> 매개 변수는 입출력이 같은 이름과 같은 자료형 임을
+     뜻하고, <literal>VARIADIC</literal> 매개 변수는 여러 인자를 하나의 인자로
      입력하겠다는 것을 뜻한다.  이 부분에 대해서는 다음 절에서 자세히 소개한다.
     </para>
    </sect2>
 
    <sect2 id="xfunc-sql-variadic-functions">
-    <title><acronym>SQL</> 함수에서 여러 인자를 입력하기</title>
+    <title><acronym>SQL</acronym> 함수에서 여러 인자를 입력하기</title>
 
     <indexterm>
      <primary>함수</primary>
@@ -652,10 +718,10 @@ DROP FUNCTION sum_n_product (int, int);
     <para>
      <acronym>SQL</acronym> 함수는 인자의 개수가 가변적인 함수를 
      만들 수 있고, 인자 수가 가변적인 인자는 그 모든 인자가 
-     같은 자료형이어야 하며, 모든 인자가 <quote>선택적</>일 수
+     같은 자료형이어야 하며, 모든 인자가 <quote>선택적</quote>일 수
      있다.  이 인자는 통상 인자들 가운데, 맨 뒤에 오고, 
      배열형이어야 하고, 인자를 지정할 때, 앞에
-     <literal>VARIADIC</> 예약어를 사용한다.  사용 예:
+     <literal>VARIADIC</literal> 예약어를 사용한다.  사용 예:
 
 <screen>
 CREATE FUNCTION mleast(VARIADIC arr numeric[]) RETURNS numeric AS $$
@@ -669,7 +735,7 @@ SELECT mleast(10, -1, 5, 4.4);
 (1 row)
 </screen>
 
-     위와 같이 <literal>VARIADIC</> 예약어로 지정한 인자 수가 가변적인
+     위와 같이 <literal>VARIADIC</literal> 예약어로 지정한 인자 수가 가변적인
      인자는 개별 인자처럼 입력하고, 내부적으로는 일차원 배열형으로 처리된다.
      만일 아래와 같이 사용했다면, 오류를 낸다:
 
@@ -686,12 +752,12 @@ SELECT mleast(ARRAY[10, -1, 5, 4.4]);    -- 작동 안함
 
     <para>
      가끔 해당 인자가 이미 배열형으로 구성이 된 경우라면, 그것을 다시 
-     개별 인자로 분리하지 않고 그냥 앞에 <literal>VARIADIC</> 예약어를
+     개별 인자로 분리하지 않고 그냥 앞에 <literal>VARIADIC</literal> 예약어를
      지정해서 이런 인자수가 가변적인 함수의 인자로 바로 수 있다.
      Also,
      this is the only secure way to call a variadic function found in a schema
      that permits untrusted users to create objects; see
-     <xref linkend="typeconv-func">.  You can do this by
+     <xref linkend="typeconv-func"/>.  You can do this by
      specifying <literal>VARIADIC</literal> in the call:
 
 
@@ -700,19 +766,19 @@ SELECT mleast(VARIADIC ARRAY[10, -1, 5, 4.4]);
 </screen>
 
      이렇게 하면, 이 예약어에 따라 배열의 요소를 각각 함수의 인자로 변환해서
-     넘겨주며, <literal>VARIADIC</> 인자는 함수의 맨 마지막 인자로 사용
+     넘겨주며, <literal>VARIADIC</literal> 인자는 함수의 맨 마지막 인자로 사용
      되어야 한다.
     </para>
 
     <para>
-     <literal>VARIADIC</> 인자를 쓰는 경우 빈 배열을 넘기고 싶다면, 
+     <literal>VARIADIC</literal> 인자를 쓰는 경우 빈 배열을 넘기고 싶다면, 
      다음과 같이 빈 배열을 만들어 넘겨야 한다.
 
 <screen>
 SELECT mleast(VARIADIC ARRAY[]::numeric[]);
 </screen>
 
-     단순히 <literal>SELECT mleast()</> 형태로 사용한다면, 
+     단순히 <literal>SELECT mleast()</literal> 형태로 사용한다면, 
      인자가 없는 같은 이름의 또 다른 함수가 없다면, 오류를 낸다. 
      (만일 어떤 함수의 두 번째 인자가 이런 형태라고 하더라도, 
      두 번째 인자는 지정해 주어야 한다. - 인자 개수가 가변인 것이지
@@ -721,7 +787,7 @@ SELECT mleast(VARIADIC ARRAY[]::numeric[]);
 
     <para>
      이런 처리 방식은 인자 이름 기반 호출 방식(<xref
-     linkend="sql-syntax-calling-funcs"> 참조)에도 
+     linkend="sql-syntax-calling-funcs"/> 참조)에도 
      그대로 적용된다. 
      바른 사용법 예:
 
@@ -739,7 +805,7 @@ SELECT mleast(arr =&gt; ARRAY[10, -1, 5, 4.4]);
    </sect2>
 
    <sect2 id="xfunc-sql-parameter-defaults">
-    <title><acronym>SQL</> 함수의 인자 기본값 지정</title>
+    <title><acronym>SQL</acronym> 함수의 인자 기본값 지정</title>
 
     <indexterm>
      <primary>함수</primary>
@@ -759,7 +825,7 @@ SELECT mleast(arr =&gt; ARRAY[10, -1, 5, 4.4]);
      Whether or not you use it,
      this capability creates a need for precautions when calling functions in
      databases where some users mistrust other users; see
-     <xref linkend="typeconv-func">.
+     <xref linkend="typeconv-func"/>.
     </para>
 
     <para>
@@ -802,7 +868,7 @@ ERROR:  function foo() does not exist
     <title><acronym>SQL</acronym> 함수에서 테이블 사용</title>
 
     <para>
-     모든 SQL 함수는 <literal>FROM</>절에서도 사용할 수 있지만, 
+     모든 SQL 함수는 <literal>FROM</literal>절에서도 사용할 수 있지만, 
      특히 이 특성은 반환되는 자료형이 복합 자료형인 경우 유용하다.
      함수가 기본 자료형을 반환 한다면, 하나의 칼럼을 가진 테이블을 
      조회 한 것과 같은 형식으로 처리되며, 복합 자료형을 반환한다면,
@@ -835,7 +901,7 @@ SELECT *, upper(fooname) FROM getfoo(1) AS t1;
     </para>
 
     <para>
-     주의 해야 할 부분은 윗 예제처럼 함수를 만들 때, <literal>SETOF</>
+     주의 해야 할 부분은 윗 예제처럼 함수를 만들 때, <literal>SETOF</literal>
      예약어를 사용하지 않았다면, 하나의 로우만 반환한다.
      이것에 대한 설명은 아래에서 자세히 다룬다.
     </para>
@@ -851,15 +917,15 @@ SELECT *, upper(fooname) FROM getfoo(1) AS t1;
 
     <para>
      SQL 함수를 만들 때, 그 반환값을 지정하는 부분에서, 
-     <literal>SETOF <replaceable>어떤자료형</></literal> 형태로
+     <literal>SETOF <replaceable>어떤자료형</replaceable></literal> 형태로
      만들면, 함수 내용에 있는 쿼리 결과가 여러 로우인 경우
      해당 되는 그 모든 로우를 반환한다.
     </para>
 
     <para>
-     이런 함수는 <literal>FROM</>절에서 호출해서 사용한다.
+     이런 함수는 <literal>FROM</literal>절에서 호출해서 사용한다.
      이렇게 하면, 함수의 반환값이 마치 테이블인 것 처럼 다룰 수 있게 된다.
-     예를 들어, 앞에서 소개한  <literal>foo</> 함수를 조금 고쳐
+     예를 들어, 앞에서 소개한  <literal>foo</literal> 함수를 조금 고쳐
      테이블을 반환할 수 있도록 만들고, 그것을 사용하는 방법을 소개한다:
 
 <programlisting>
@@ -905,9 +971,9 @@ SELECT * FROM sum_n_product_with_tab(10);
 </programlisting>
 
      함수의 반환값이 단일 로우가 아닌, 다중 로우 형태가 되도록 하려면,
-     그 함수의 반환값을 정의할 때, <literal>RETURNS SETOF record</>
+     그 함수의 반환값을 정의할 때, <literal>RETURNS SETOF record</literal>
      형태로 함수를 만든다는 것이 핵심이다.
-     윗 예제에서 단일 칼럼만 반환하려면, <type>record</> 자료형 대신에, 
+     윗 예제에서 단일 칼럼만 반환하려면, <type>record</type> 자료형 대신에, 
      그 칼럼의 자료형을 지정하면 된다.
     </para>
 
@@ -916,8 +982,8 @@ SELECT * FROM sum_n_product_with_tab(10);
      쿼리 결과를 만들어 내는데 흔하게 사용된다.
      이 때, 여러 번 호출 때의 함수 인자가 또 다른 집합이 되어
      하나의 쿼리로 여러 작업을 한 번에 할 수 있는 효과를 낸다.
-     <xref linkend="queries-lateral">에서 설명하고
-     있는 <literal>LATERAL</> 예약어를 사용하는 것이 
+     <xref linkend="queries-lateral"/>에서 설명하고
+     있는 <literal>LATERAL</literal> 예약어를 사용하는 것이 
      권장하는 방법이다.
      다음 예제는 집합 반환 함수를 사용해서 계층형 구조를 표현하는 것이다:
 
@@ -990,16 +1056,16 @@ SELECT name, listchildren(name) FROM nodes;
 (5 rows)
 </screen>
 
-     이 예제에서 주의 깊게 살펴 볼 부분은 <literal>Child2</>, <literal>Child3</>
+     이 예제에서 주의 깊게 살펴 볼 부분은 <literal>Child2</literal>, <literal>Child3</literal>
      로우가 보이지 않는 것이다.  왜냐하면, <function>listchildren</function> 함수의
      인자로 이 값이 입력되었을 때 반환값이 없기 때문이다. 
-     이는 <literal>LATERAL</> 예약어를 사용하는 구문에서도 마찬가지다.
+     이는 <literal>LATERAL</literal> 예약어를 사용하는 구문에서도 마찬가지다.
     </para>
 
     <para>
-     <productname>PostgreSQL</>'s behavior for a set-returning function in a
+     <productname>PostgreSQL</productname>'s behavior for a set-returning function in a
      query's select list is almost exactly the same as if the set-returning
-     function had been written in a <literal>LATERAL FROM</>-clause item
+     function had been written in a <literal>LATERAL FROM</literal>-clause item
      instead.  For example,
 <programlisting>
 SELECT x, generate_series(1,5) AS g FROM tab;
@@ -1009,20 +1075,20 @@ SELECT x, generate_series(1,5) AS g FROM tab;
 SELECT x, g FROM tab, LATERAL generate_series(1,5) AS g;
 </programlisting>
      It would be exactly the same, except that in this specific example,
-     the planner could choose to put <structname>g</> on the outside of the
-     nestloop join, since <structname>g</> has no actual lateral dependency
-     on <structname>tab</>.  That would result in a different output row
+     the planner could choose to put <structname>g</structname> on the outside of the
+     nestloop join, since <structname>g</structname> has no actual lateral dependency
+     on <structname>tab</structname>.  That would result in a different output row
      order.  Set-returning functions in the select list are always evaluated
      as though they are on the inside of a nestloop join with the rest of
-     the <literal>FROM</> clause, so that the function(s) are run to
-     completion before the next row from the <literal>FROM</> clause is
+     the <literal>FROM</literal> clause, so that the function(s) are run to
+     completion before the next row from the <literal>FROM</literal> clause is
      considered.
     </para>
 
     <para>
      If there is more than one set-returning function in the query's select
      list, the behavior is similar to what you get from putting the functions
-     into a single <literal>LATERAL ROWS FROM( ... )</> <literal>FROM</>-clause
+     into a single <literal>LATERAL ROWS FROM( ... )</literal> <literal>FROM</literal>-clause
      item.  For each row from the underlying query, there is an output row
      using the first result from each function, then an output row using the
      second result, and so on.  If some of the set-returning functions
@@ -1030,50 +1096,50 @@ SELECT x, g FROM tab, LATERAL generate_series(1,5) AS g;
      missing data, so that the total number of rows emitted for one
      underlying row is the same as for the set-returning function that
      produced the most outputs.  Thus the set-returning functions
-     run <quote>in lockstep</> until they are all exhausted, and then
+     run <quote>in lockstep</quote> until they are all exhausted, and then
      execution continues with the next underlying row.
     </para>
 
     <para>
      Set-returning functions can be nested in a select list, although that is
-     not allowed in <literal>FROM</>-clause items.  In such cases, each level
+     not allowed in <literal>FROM</literal>-clause items.  In such cases, each level
      of nesting is treated separately, as though it were
-     a separate <literal>LATERAL ROWS FROM( ... )</> item.  For example, in
+     a separate <literal>LATERAL ROWS FROM( ... )</literal> item.  For example, in
 <programlisting>
 SELECT srf1(srf2(x), srf3(y)), srf4(srf5(z)) FROM tab;
 </programlisting>
-     the set-returning functions <function>srf2</>, <function>srf3</>,
-     and <function>srf5</> would be run in lockstep for each row
-     of <structname>tab</>, and then <function>srf1</> and <function>srf4</>
+     the set-returning functions <function>srf2</function>, <function>srf3</function>,
+     and <function>srf5</function> would be run in lockstep for each row
+     of <structname>tab</structname>, and then <function>srf1</function> and <function>srf4</function>
      would be applied in lockstep to each row produced by the lower
      functions.
     </para>
 
     <para>
      Set-returning functions cannot be used within conditional-evaluation
-     constructs, such as <literal>CASE</> or <literal>COALESCE</>.  For
+     constructs, such as <literal>CASE</literal> or <literal>COALESCE</literal>.  For
      example, consider
 <programlisting>
 SELECT x, CASE WHEN x &gt; 0 THEN generate_series(1, 5) ELSE 0 END FROM tab;
 </programlisting>
      It might seem that this should produce five repetitions of input rows
-     that have <literal>x &gt; 0</>, and a single repetition of those that do
-     not; but actually, because <function>generate_series(1, 5)</> would be
-     run in an implicit <literal>LATERAL FROM</> item before
-     the <literal>CASE</> expression is ever evaluated, it would produce five
+     that have <literal>x &gt; 0</literal>, and a single repetition of those that do
+     not; but actually, because <function>generate_series(1, 5)</function> would be
+     run in an implicit <literal>LATERAL FROM</literal> item before
+     the <literal>CASE</literal> expression is ever evaluated, it would produce five
      repetitions of every input row.  To reduce confusion, such cases produce
      a parse-time error instead.
     </para>
 
     <note>
      <para>
-      함수 내용 가운데, 마지막 명령이 <literal>RETURNING</> 구문이 있는
-      <command>INSERT</>, <command>UPDATE</>, <command>DELETE</> 명령인 경우,
+      함수 내용 가운데, 마지막 명령이 <literal>RETURNING</literal> 구문이 있는
+      <command>INSERT</command>, <command>UPDATE</command>, <command>DELETE</command> 명령인 경우,
       그 구문에 오류가 없을 경우, 무조건 해당 자료 변경 작업은 진행을 완료
-      한다. 그 함수가 <literal>SETOF</> 예약어를 이용한 자료 반환이 아니어도,
+      한다. 그 함수가 <literal>SETOF</literal> 예약어를 이용한 자료 반환이 아니어도,
       또 반환 로우가 모두 출력되지 않았다 하더라도, 변경 작업은 완료 된다.
-      <literal>SETOF</> 없는 함수인 경우는
-       <literal>RETURNING</> 작업으로 출력해야 할 부가적인 로우는 
+      <literal>SETOF</literal> 없는 함수인 경우는
+       <literal>RETURNING</literal> 작업으로 출력해야 할 부가적인 로우는 
       내부적으로 무시되고, 마지막 로우만 리턴하겠지만,  테이블 변경 작업은
       모두 수행한다. (그리고, 그 함수가 반환 작업을 하기 전에 그 작업은 
       완료된다.)
@@ -1082,7 +1148,7 @@ SELECT x, CASE WHEN x &gt; 0 THEN generate_series(1, 5) ELSE 0 END FROM tab;
 
     <note>
      <para>
-      Before <productname>PostgreSQL</> 10, putting more than one
+      Before <productname>PostgreSQL</productname> 10, putting more than one
       set-returning function in the same select list did not behave very
       sensibly unless they always produced equal numbers of rows.  Otherwise,
       what you got was a number of output rows equal to the least common
@@ -1091,10 +1157,10 @@ SELECT x, CASE WHEN x &gt; 0 THEN generate_series(1, 5) ELSE 0 END FROM tab;
       described above; instead, a set-returning function could have at most
       one set-returning argument, and each nest of set-returning functions
       was run independently.  Also, conditional execution (set-returning
-      functions inside <literal>CASE</> etc) was previously allowed,
+      functions inside <literal>CASE</literal> etc) was previously allowed,
       complicating things even more.
-      Use of the <literal>LATERAL</> syntax is recommended when writing
-      queries that need to work in older <productname>PostgreSQL</> versions,
+      Use of the <literal>LATERAL</literal> syntax is recommended when writing
+      queries that need to work in older <productname>PostgreSQL</productname> versions,
       because that will give consistent results across different versions.
       If you have a query that is relying on conditional execution of a
       set-returning function, you may be able to fix it by moving the
@@ -1117,13 +1183,13 @@ END$$ LANGUAGE plpgsql;
 SELECT x, case_generate_series(y &gt; 0, 1, z, 5) FROM tab;
 </programlisting>
       This formulation will work the same in all versions
-      of <productname>PostgreSQL</>.
+      of <productname>PostgreSQL</productname>.
      </para>
     </note>
    </sect2>
 
    <sect2 id="xfunc-sql-functions-returning-table">
-    <title><acronym>SQL</acronym> 함수에서 <literal>테이블</> 반환하기</title>
+    <title><acronym>SQL</acronym> 함수에서 <literal>테이블</literal> 반환하기</title>
 
     <indexterm>
      <primary>함수</primary>
@@ -1132,9 +1198,9 @@ SELECT x, case_generate_series(y &gt; 0, 1, z, 5) FROM tab;
 
     <para>
      함수가 집합을 반환하도록 작성하는 방법 가운데 또 다른 방법은
-     <literal>RETURNS TABLE(<replaceable>칼럼들</>)</literal> 구문을 사용하는 것이다.
-     이 방법은 하나 이상의 <literal>OUT</> 인자를 지정하고, 
-     <literal>SETOF record</> 구문을 쓰는 방법과 똑같은 결과를 반환한다.
+     <literal>RETURNS TABLE(<replaceable>칼럼들</replaceable>)</literal> 구문을 사용하는 것이다.
+     이 방법은 하나 이상의 <literal>OUT</literal> 인자를 지정하고, 
+     <literal>SETOF record</literal> 구문을 쓰는 방법과 똑같은 결과를 반환한다.
      이 구문은 최근 SQL 표준을 준수하기 위해서 만들어졌다. 그래서
      기존 방식으로 작성된 구문을 이 구문으로 바꾸는 것이
      쿼리 호환성을 높이는 방법이 될 것이다.
@@ -1150,9 +1216,9 @@ RETURNS TABLE(sum int, product int) AS $$
 $$ LANGUAGE SQL;
 </programlisting>
 
-     이 <literal>RETURNS TABLE</> 구문을 사용하면,
-     <literal>OUT</>, <literal>INOUT</> 인자는 사용할 수 없다 &mdash; 즉,
-     출력에 관련된 모든 칼럼 정의는 <literal>TABLE</> 다음에 오는
+     이 <literal>RETURNS TABLE</literal> 구문을 사용하면,
+     <literal>OUT</literal>, <literal>INOUT</literal> 인자는 사용할 수 없다 &mdash; 즉,
+     출력에 관련된 모든 칼럼 정의는 <literal>TABLE</literal> 다음에 오는
      칼럼 목록에서 정의해야 한다.
     </para>
    </sect2>
@@ -1165,7 +1231,7 @@ $$ LANGUAGE SQL;
      <type>anyarray</type>, <type>anynonarray</type>,
      <type>anyenum</type>, <type>anyrange</type> 자료형을 
      함수 인자로 사용하거나, 반환 자료형으로 사용할 수 있다.  이것의
-     자세한 설명은 <xref linkend="extend-types-polymorphic">에서 
+     자세한 설명은 <xref linkend="extend-types-polymorphic"/>에서 
      다룬다.  다음은 두 개의 인자를 입력 받아, 그것을 각 요소로
      하는 배열을 반환하는 <function>make_array</function> 함수를 
      만들고 사용한 예다:
@@ -1269,36 +1335,36 @@ SELECT concat_values('|', 1, 4, 2);
     <title>자국어 정렬과 관계된 <acronym>SQL</acronym> 함수</title>
 
     <indexterm>
-     <primary>collation</>
-     <secondary>SQL 함수</>
+     <primary>collation</primary>
+     <secondary>SQL 함수</secondary>
     </indexterm>
 
     <para>
      SQL 함수에서 하나 이상의 자국어 정렬이 가능한 매개 변수를 사용할 경우,
      자국어 기반 문자열 정렬은 각 개별 인자에서 지정한 자국어 정렬 방법에 
-     따른다 (<xref linkend="collation"> 참조).
+     따른다 (<xref linkend="collation"/> 참조).
      자국어 정렬이 바르게 지정되면,
      (예를 들어, 각각의 정렬 기준이 서로 충돌하지 않는다면,)
      모든 자국어 정렬이 가능한 매개 변수 값들은 그 정렬 기준이 암묵적으로
      적용된다.  이 기능은 함수 내에 자국어 정렬과 관계된 작업이 있어 날 때
      모두 적용된다.  앞에서 만들었던 
-     <function>anyleast</> 함수를 가지고 이 부분에 대한 예제를 살펴보면:
+     <function>anyleast</function> 함수를 가지고 이 부분에 대한 예제를 살펴보면:
 <programlisting>
 SELECT anyleast('abc'::text, 'ABC');
 </programlisting>
-     윗 결과는 데이터베이스 기본 lc_collate 값에 따라 다르다.  <literal>C</>
-     로케일인 경우는 <literal>ABC</>를 보여주지만, 대부분의 다른 
-     로케일에서는 <literal>abc</>를 보여준다.  인자에 대한 자국어 정렬 
-     기준을 강제로 지정하려면, <literal>COLLATE</> 절을 다음과 같이
+     윗 결과는 데이터베이스 기본 lc_collate 값에 따라 다르다.  <literal>C</literal>
+     로케일인 경우는 <literal>ABC</literal>를 보여주지만, 대부분의 다른 
+     로케일에서는 <literal>abc</literal>를 보여준다.  인자에 대한 자국어 정렬 
+     기준을 강제로 지정하려면, <literal>COLLATE</literal> 절을 다음과 같이
      추가 한다:
 <programlisting>
 SELECT anyleast('abc'::text, 'ABC' COLLATE "C");
 </programlisting>
      다른 방법으로, 이 자국어 정렬 방식을 함수 내용 안에, 
-     <literal>COLLATE</> 절을 포함 해서 입력 인자 쪽에서 
+     <literal>COLLATE</literal> 절을 포함 해서 입력 인자 쪽에서 
      개별적으로 지정하는 번거로움을 피할 수도 있다.
-     아래 예제는 <function>anyleast</> 함수에서 입력 받은 자료를 
-     함수 내부에서 강제로 <literal>en_US</> 문자 정렬로 사용하는 경우다:
+     아래 예제는 <function>anyleast</function> 함수에서 입력 받은 자료를 
+     함수 내부에서 강제로 <literal>en_US</literal> 문자 정렬로 사용하는 경우다:
 <programlisting>
 CREATE FUNCTION anyleast (VARIADIC anyarray) RETURNS anyelement AS $$
     SELECT min($1[i] COLLATE "en_US") FROM generate_subscripts($1, 1) g(i);
@@ -1336,7 +1402,7 @@ $$ LANGUAGE SQL;
     function names can be <firstterm>overloaded</firstterm>.  Whether or not
     you use it, this capability entails security precautions when calling
     functions in databases where some users mistrust other users; see
-    <xref linkend="typeconv-func">.  When a query is executed, the server
+    <xref linkend="typeconv-func"/>.  When a query is executed, the server
     will determine which function to call from the data types and the number
     of the provided arguments.  Overloading can also be used to simulate
     functions with a variable number of arguments, up to a finite maximum
@@ -1354,28 +1420,28 @@ CREATE FUNCTION test(smallint, double precision) RETURNS ...
     it is not immediately clear which function would be called with
     some trivial input like <literal>test(1, 1.5)</literal>.  The
     currently implemented resolution rules are described in
-    <xref linkend="typeconv">, but it is unwise to design a system that subtly
+    <xref linkend="typeconv"/>, but it is unwise to design a system that subtly
     relies on this behavior.
    </para>
 
    <para>
     A function that takes a single argument of a composite type should
     generally not have the same name as any attribute (field) of that type.
-    Recall that <literal><replaceable>attribute</>(<replaceable>table</>)</literal> is considered equivalent
-    to <literal><replaceable>table</>.<replaceable>attribute</></literal>.  In the case that there is an
+    Recall that <literal><replaceable>attribute</replaceable>(<replaceable>table</replaceable>)</literal> is considered equivalent
+    to <literal><replaceable>table</replaceable>.<replaceable>attribute</replaceable></literal>.  In the case that there is an
     ambiguity between a function on a composite type and an attribute of
     the composite type, the attribute will always be used.  It is possible
     to override that choice by schema-qualifying the function name
-    (that is, <literal><replaceable>schema</>.<replaceable>func</>(<replaceable>table</>)</literal>) but it's better to
+    (that is, <literal><replaceable>schema</replaceable>.<replaceable>func</replaceable>(<replaceable>table</replaceable>)</literal>) but it's better to
     avoid the problem by not choosing conflicting names.
    </para>
 
    <para>
     Another possible conflict is between variadic and non-variadic functions.
-    For instance, it is possible to create both <literal>foo(numeric)</> and
-    <literal>foo(VARIADIC numeric[])</>.  In this case it is unclear which one
+    For instance, it is possible to create both <literal>foo(numeric)</literal> and
+    <literal>foo(VARIADIC numeric[])</literal>.  In this case it is unclear which one
     should be matched to a call providing a single numeric argument, such as
-    <literal>foo(10.1)</>.  The rule is that the function appearing
+    <literal>foo(10.1)</literal>.  The rule is that the function appearing
     earlier in the search path is used, or if the two functions are in the
     same schema, the non-variadic one is preferred.
    </para>
@@ -1388,15 +1454,15 @@ CREATE FUNCTION test(smallint, double precision) RETURNS ...
     rule is violated, the behavior is not portable.  You might get a
     run-time linker error, or one of the functions will get called
     (usually the internal one).  The alternative form of the
-    <literal>AS</> clause for the SQL <command>CREATE
+    <literal>AS</literal> clause for the SQL <command>CREATE
     FUNCTION</command> command decouples the SQL function name from
     the function name in the C source code.  For instance:
 <programlisting>
 CREATE FUNCTION test(int) RETURNS int
-    AS '<replaceable>filename</>', 'test_1arg'
+    AS '<replaceable>filename</replaceable>', 'test_1arg'
     LANGUAGE C;
 CREATE FUNCTION test(int, int) RETURNS int
-    AS '<replaceable>filename</>', 'test_2arg'
+    AS '<replaceable>filename</replaceable>', 'test_2arg'
     LANGUAGE C;
 </programlisting>
     The names of the C functions here reflect one of many possible conventions.
@@ -1421,19 +1487,19 @@ CREATE FUNCTION test(int, int) RETURNS int
    </indexterm>
 
    <para>
-    모든 함수는 <firstterm>휘발성</>이라는 속성에 따라 
-    <literal>VOLATILE</>, <literal>STABLE</>, <literal>IMMUTABLE</> 함수로 
+    모든 함수는 <firstterm>휘발성</firstterm>이라는 속성에 따라 
+    <literal>VOLATILE</literal>, <literal>STABLE</literal>, <literal>IMMUTABLE</literal> 함수로 
     구분 된다.
-    <xref linkend="sql-createfunction"> 명령으로 함수를 만들 때,
+    <xref linkend="sql-createfunction"/> 명령으로 함수를 만들 때,
     이 속성을 따로 지정하지 않으면, 기본값으로
-    <literal>VOLATILE</> 속성이 지정된다.
+    <literal>VOLATILE</literal> 속성이 지정된다.
     이 휘발성 속성은 쿼리 최적화기에서 그 함수를 어떻게 처리할 것인가에 대한
     약속이다.
 
    <itemizedlist>
     <listitem>
      <para>
-      <literal>VOLATILE</> 함수는 데이터베이스 조작 작업을 포함하는
+      <literal>VOLATILE</literal> 함수는 데이터베이스 조작 작업을 포함하는
       대부분의 함수다.
       이런 함수는 같은 매개 변수값에 대해서 다른 결과값을 반환할 수 있다.
       쿼리 최적화기는 이 함수에 대해서는 어떠한 관여도 하지 않는다.
@@ -1443,26 +1509,26 @@ CREATE FUNCTION test(int, int) RETURNS int
     </listitem>
     <listitem>
      <para>
-      <literal>STABLE</> 함수는 데이터베이스를 조작하는 작업이 없는
+      <literal>STABLE</literal> 함수는 데이터베이스를 조작하는 작업이 없는
       같은 매개 변수값에 항상 같은 결과값을 반환하는 함수다.
       한 쿼리 안에서 이 함수가 사용되면, 쿼리 최적화기는 
       여러 로우 안에서 사용되더라도 한 번 사용하는 것 처럼 그 비용을
       계산 한다.
       특히, 이 함수는 인덱스 검색에서 사용될 수 있다.
-      (<literal>VOLATILE</> 함수는 반환값이 다를 수 있기 때문에, 
+      (<literal>VOLATILE</literal> 함수는 반환값이 다를 수 있기 때문에, 
       쿼리 최적화기는 그 값과 비교되는 칼럼에 대한 인덱스 사용여부를
       결정 할 수 없어 인덱스 검색을 하지 않는다.)
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>IMMUTABLE</> 함수는 <literal>STABLE</> 함수와 같으나, 
+      <literal>IMMUTABLE</literal> 함수는 <literal>STABLE</literal> 함수와 같으나, 
       쿼리 최적화기는 이 형태의 함수인 경우 그 반환값을 미리 계산 해서 
       상수로 변경한 다음 처리한다. 예를 들어, 
-      <literal>SELECT ... WHERE x = 2 + 2</> 구문은 최적화기가
-      <literal>SELECT ... WHERE x = 4</> 형태로 바꾼다. 왜냐하면,
+      <literal>SELECT ... WHERE x = 2 + 2</literal> 구문은 최적화기가
+      <literal>SELECT ... WHERE x = 4</literal> 형태로 바꾼다. 왜냐하면,
       정수에 대한 더하기 연산자가 사용하는 함수가 바로 
-      <literal>IMMUTABLE</> 함수이기 때문이다.
+      <literal>IMMUTABLE</literal> 함수이기 때문이다.
      </para>
     </listitem>
    </itemizedlist>
@@ -1475,45 +1541,45 @@ CREATE FUNCTION test(int, int) RETURNS int
 
    <para>
     의도되지 않은 결과를 초래할 수 있는 함수라고 생각되면 
-    그 함수는 <emphasis>반드시</> <literal>VOLATILE</> 함수로
+    그 함수는 <emphasis>반드시</emphasis> <literal>VOLATILE</literal> 함수로
     만드는 것이 좋다. 그렇게 해야 최적화기가 실행 계획을 만들 때
     의도되지 않은 엉뚱한 결과를 만들지 않는다.
     물론 그 함수의 내용이 명확하고 다른 부작용도 없다고 확신해도,
-    <literal>random()</>, <literal>currval()</>, <literal>timeofday()</>
+    <literal>random()</literal>, <literal>currval()</literal>, <literal>timeofday()</literal>
     이런 함수 같이 변환값이 항상 다른 함수를 사용하는 경우라면,
-    <literal>VOLATILE</> 함수로 만들어야 한다.
+    <literal>VOLATILE</literal> 함수로 만들어야 한다.
    </para>
 
    <para>
-    다른 중요한 예로, <function>current_timestamp</> 계열 함수를 
-    사용한다면, <literal>STABLE</> 함수로 만들어도 괜찮다. 왜냐하면, 
+    다른 중요한 예로, <function>current_timestamp</function> 계열 함수를 
+    사용한다면, <literal>STABLE</literal> 함수로 만들어도 괜찮다. 왜냐하면, 
     이 계열 함수들은 하나의 트랜잭션 내에서는 
     항상 같은 값을 반환하기 때문이다.
    </para>
 
    <para>
-    일반적인 대화형 쿼리에서는 <literal>STABLE</> 함수나, 
-    <literal>IMMUTABLE</> 함수 사이 차이가 별로 없다.
+    일반적인 대화형 쿼리에서는 <literal>STABLE</literal> 함수나, 
+    <literal>IMMUTABLE</literal> 함수 사이 차이가 별로 없다.
     어차피 그 쿼리가 실행 될 때 둘 다, 한 번은 그 함수 처리를 위한 
     비용 계산을 하기 때문이다.
     가장 큰 차이점은 그 실행 계획이 저장되거나 재사용될 경우다.
-    <literal>IMMUTABLE</> 함수로 만들어,
+    <literal>IMMUTABLE</literal> 함수로 만들어,
     그 함수의 반환값이 상수화 되어 실행 계획이 작성되고, 
     그 상수값이 그대로 재사용된다면, 의도하지 않게 나쁜 실행 계획이 
     될 수도 있다. 미리 준비된 구문 prepared statement 을 사용하는 경우나, 
-    <application>PL/pgSQL</> 같이 그 실행 계획이 미리 저장되는 
+    <application>PL/pgSQL</application> 같이 그 실행 계획이 미리 저장되는 
     프로시져 언어로 작성된 함수에서 이런 위험이 있을 수 있다.
    </para>
 
    <para>
     SQL이나 표준 프로시져 언어로 작성된 함수에서 주의해야 할 두번째 사항은
     그 함수가 사용되는 쿼리가 반환하는 자료의 가시성 부분이다. 
-    <literal>VOLATILE</> 함수는 항상 상황에 맞는 결과를 반환하지만,
-    <literal>STABLE</>, <literal>IMMUTABLE</> 함수는 그렇지 않다.
-    이 처리 방식은 MVCC (<xref linkend="mvcc"> 참조) 스냅샷 작동방식을
+    <literal>VOLATILE</literal> 함수는 항상 상황에 맞는 결과를 반환하지만,
+    <literal>STABLE</literal>, <literal>IMMUTABLE</literal> 함수는 그렇지 않다.
+    이 처리 방식은 MVCC (<xref linkend="mvcc"/> 참조) 스냅샷 작동방식을
     사용해서 구현되었다.
-    <literal>STABLE</>, <literal>IMMUTABLE</> 함수는 
-    처음 쿼리가 호출 될 때 스냅샷을 찍고, <literal>VOLATILE</> 함수는
+    <literal>STABLE</literal>, <literal>IMMUTABLE</literal> 함수는 
+    처음 쿼리가 호출 될 때 스냅샷을 찍고, <literal>VOLATILE</literal> 함수는
     해당 쿼리에서 사용될 때 마다 스냅샷을 찍는다.
    </para>
 
@@ -1527,41 +1593,41 @@ CREATE FUNCTION test(int, int) RETURNS int
 
    <para>
     이런 스냅샷 처리 방식 때문에, 
-    <literal>STABLE</> 함수에서는 
+    <literal>STABLE</literal> 함수에서는 
     그 해당 자료가 다른 세션에 의해 변경 되었다 하더라도
-    안전한 <command>SELECT</> 작업을 할 수 있다.
+    안전한 <command>SELECT</command> 작업을 할 수 있다.
     <productname>PostgreSQL</productname>의 
-    <literal>STABLE</> 함수 안에서 사용되는 명령들은
+    <literal>STABLE</literal> 함수 안에서 사용되는 명령들은
     스냅샷 처리를 하여, 그 세션이 보아야 할 자료만 각각 볼 수 있다.
    </para>
 
    <para>
-    또한 이 스냅샷 처리 방식의 <command>SELECT</> 작업은
-    <literal>IMMUTABLE</> 함수에서도 그대로 적용된다.
-    하지만, 그 결과는 <literal>STABLE</> 함수와 달리
+    또한 이 스냅샷 처리 방식의 <command>SELECT</command> 작업은
+    <literal>IMMUTABLE</literal> 함수에서도 그대로 적용된다.
+    하지만, 그 결과는 <literal>STABLE</literal> 함수와 달리
     의도되지 않은 것일 수 있다. 왜냐하면, 
     해당 테이블의 자료가 다른 세션에 의해 바뀔 수 있기 때문이다.
     그럼에도 불구하고, <productname>PostgreSQL</productname> 이런 문제점에
-    대해서 사용자 몫으로 남겨둔다. <literal>IMMUTABLE</> 함수에서도
-    <command>SELECT</> 작업을 할 수는 있다.
+    대해서 사용자 몫으로 남겨둔다. <literal>IMMUTABLE</literal> 함수에서도
+    <command>SELECT</command> 작업을 할 수는 있다.
    </para>
 
    <para>
-    일반적인 오류는 <literal>IMMUTABLE</> 함수의 반환값이
+    일반적인 오류는 <literal>IMMUTABLE</literal> 함수의 반환값이
     서버 환경 설정 매개 변수값에 영향을 받는 경우다.
-    예를 들어, 시간을 처리하는 함수는 <xref linkend="guc-timezone">
+    예를 들어, 시간을 처리하는 함수는 <xref linkend="guc-timezone"/>
     설정값에 의존적이다.
-    안전을 위해, 이런 함수들은 <literal>STABLE</> 함수로 만든다.
+    안전을 위해, 이런 함수들은 <literal>STABLE</literal> 함수로 만든다.
    </para>
 
    <note>
     <para>
      <productname>PostgreSQL</productname>에서는
-     자료 변경을 방지하기 위해, <literal>STABLE</> 또는
-     <literal>IMMUTABLE</> 함수인 경우 데이터베이스 처리 작업으로
-     <command>SELECT</> 명령만 허용한다.
-     (하지만 이처리가 완벽하지는 않다. <literal>VOLATILE</> 함수의 
-     내용 가운데, <literal>STABLE</>, <literal>IMMUTABLE</>
+     자료 변경을 방지하기 위해, <literal>STABLE</literal> 또는
+     <literal>IMMUTABLE</literal> 함수인 경우 데이터베이스 처리 작업으로
+     <command>SELECT</command> 명령만 허용한다.
+     (하지만 이처리가 완벽하지는 않다. <literal>VOLATILE</literal> 함수의 
+     내용 가운데, <literal>STABLE</literal>, <literal>IMMUTABLE</literal>
      함수를 사용하는 구문이 있고, 이런 함수들의 반환값이 데이터베이스가
      변경 된 부분에 대한 반영을 제대로 했는지를 모두
      꼼꼼하게 검사하지는 못했다.)
@@ -1576,11 +1642,11 @@ CREATE FUNCTION test(int, int) RETURNS int
     <productname>PostgreSQL</productname> allows user-defined functions
     to be written in other languages besides SQL and C.  These other
     languages are generically called <firstterm>procedural
-    languages</firstterm> (<acronym>PL</>s).
+    languages</firstterm> (<acronym>PL</acronym>s).
     Procedural languages aren't built into the
     <productname>PostgreSQL</productname> server; they are offered
     by loadable modules.
-    See <xref linkend="xplang"> and following chapters for more
+    See <xref linkend="xplang"/> and following chapters for more
     information.
    </para>
   </sect1>
@@ -1588,7 +1654,7 @@ CREATE FUNCTION test(int, int) RETURNS int
   <sect1 id="xfunc-internal">
    <title>Internal Functions</title>
 
-   <indexterm zone="xfunc-internal"><primary>function</><secondary>internal</></>
+   <indexterm zone="xfunc-internal"><primary>function</primary><secondary>internal</secondary></indexterm>
 
    <para>
     Internal functions are functions written in C that have been statically
@@ -1604,7 +1670,7 @@ CREATE FUNCTION test(int, int) RETURNS int
    <para>
     Normally, all internal functions present in the
     server are declared during the initialization of the database cluster
-    (see <xref linkend="creating-cluster">),
+    (see <xref linkend="creating-cluster"/>),
     but a user could use <command>CREATE FUNCTION</command>
     to create additional alias names for an internal function.
     Internal functions are declared in <command>CREATE FUNCTION</command>
@@ -1642,8 +1708,8 @@ CREATE FUNCTION square_root(double precision) RETURNS double precision
     be made compatible with C, such as C++).  Such functions are
     compiled into dynamically loadable objects (also called shared
     libraries) and are loaded by the server on demand.  The dynamic
-    loading feature is what distinguishes <quote>C language</> functions
-    from <quote>internal</> functions &mdash; the actual coding conventions
+    loading feature is what distinguishes <quote>C language</quote> functions
+    from <quote>internal</quote> functions &mdash; the actual coding conventions
     are essentially the same for both.  (Hence, the standard internal
     function library is a rich source of coding examples for user-defined
     C functions.)
@@ -1694,9 +1760,9 @@ CREATE FUNCTION square_root(double precision) RETURNS double precision
      <listitem>
       <para>
        If the name starts with the string <literal>$libdir</literal>,
-       that part is replaced by the <productname>PostgreSQL</> package
+       that part is replaced by the <productname>PostgreSQL</productname> package
         library directory
-       name, which is determined at build time.<indexterm><primary>$libdir</></>
+       name, which is determined at build time.<indexterm><primary>$libdir</primary></indexterm>
       </para>
      </listitem>
 
@@ -1704,7 +1770,7 @@ CREATE FUNCTION square_root(double precision) RETURNS double precision
       <para>
        If the name does not contain a directory part, the file is
        searched for in the path specified by the configuration variable
-       <xref linkend="guc-dynamic-library-path">.<indexterm><primary>dynamic_library_path</></>
+       <xref linkend="guc-dynamic-library-path"/>.<indexterm><primary>dynamic_library_path</primary></indexterm>
       </para>
      </listitem>
 
@@ -1753,7 +1819,7 @@ CREATE FUNCTION square_root(double precision) RETURNS double precision
      <productname>PostgreSQL</productname> will not compile a C function
      automatically.  The object file must be compiled before it is referenced
      in a <command>CREATE
-     FUNCTION</> command.  See <xref linkend="dfunc"> for additional
+     FUNCTION</command> command.  See <xref linkend="dfunc"/> for additional
      information.
     </para>
    </note>
@@ -1765,23 +1831,16 @@ CREATE FUNCTION square_root(double precision) RETURNS double precision
    <para>
     To ensure that a dynamically loaded object file is not loaded into an
     incompatible server, <productname>PostgreSQL</productname> checks that the
-    file contains a <quote>magic block</> with the appropriate contents.
+    file contains a <quote>magic block</quote> with the appropriate contents.
     This allows the server to detect obvious incompatibilities, such as code
     compiled for a different major version of
-    <productname>PostgreSQL</productname>.  A magic block is required as of
-    <productname>PostgreSQL</productname> 8.2.  To include a magic block,
+    <productname>PostgreSQL</productname>. To include a magic block,
     write this in one (and only one) of the module source files, after having
-    included the header <filename>fmgr.h</>:
+    included the header <filename>fmgr.h</filename>:
 
 <programlisting>
-#ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
-#endif
 </programlisting>
-
-    The <literal>#ifdef</> test can be omitted if the code doesn't
-    need to compile against pre-8.2 <productname>PostgreSQL</productname>
-    releases.
    </para>
 
    <para>
@@ -1808,12 +1867,12 @@ PG_MODULE_MAGIC;
    <para>
     Optionally, a dynamically loaded file can contain initialization and
     finalization functions.  If the file includes a function named
-    <function>_PG_init</>, that function will be called immediately after
+    <function>_PG_init</function>, that function will be called immediately after
     loading the file.  The function receives no parameters and should
     return void.  If the file includes a function named
-    <function>_PG_fini</>, that function will be called immediately before
+    <function>_PG_fini</function>, that function will be called immediately before
     unloading the file.  Likewise, the function receives no parameters and
-    should return void.  Note that <function>_PG_fini</> will only be called
+    should return void.  Note that <function>_PG_fini</function> will only be called
     during an unload of the file, not during process termination.
     (Presently, unloads are disabled and will never occur, but this may
     change in the future.)
@@ -1884,7 +1943,7 @@ typedef int int4;
      means <replaceable>XX</replaceable> <emphasis>bits</emphasis>.  Note
      therefore also that the C type <type>int8</type> is 1 byte in size.  The
      SQL type <type>int8</type> is called <type>int64</type> in C.  See also
-     <xref linkend="xfunc-c-type-table">.)
+     <xref linkend="xfunc-c-type-table"/>.)
     </para>
 
     <para>
@@ -1933,11 +1992,11 @@ typedef struct
 
     <warning>
      <para>
-      <emphasis>Never</> modify the contents of a pass-by-reference input
+      <emphasis>Never</emphasis> modify the contents of a pass-by-reference input
       value.  If you do so you are likely to corrupt on-disk data, since
       the pointer you are given might point directly into a disk buffer.
       The sole exception to this rule is explained in
-      <xref linkend="xaggr">.
+      <xref linkend="xaggr"/>.
      </para>
     </warning>
 
@@ -1952,7 +2011,7 @@ typedef struct {
 } text;
 </programlisting>
 
-     The <literal>[FLEXIBLE_ARRAY_MEMBER]</> notation means that the actual
+     The <literal>[FLEXIBLE_ARRAY_MEMBER]</literal> notation means that the actual
      length of the data part is not specified by this declaration.
     </para>
 
@@ -1960,7 +2019,7 @@ typedef struct {
      When manipulating
      variable-length types, we must  be  careful  to  allocate
      the  correct amount  of memory and set the length field correctly.
-     For example, if we wanted to  store  40  bytes  in  a <structname>text</>
+     For example, if we wanted to  store  40  bytes  in  a <structname>text</structname>
      structure, we might use a code fragment like this:
 
 <programlisting><![CDATA[
@@ -1975,17 +2034,17 @@ memcpy(destination->data, buffer, 40);
 ]]>
 </programlisting>
 
-     <literal>VARHDRSZ</> is the same as <literal>sizeof(int32)</>, but
-     it's considered good style to use the macro <literal>VARHDRSZ</>
+     <literal>VARHDRSZ</literal> is the same as <literal>sizeof(int32)</literal>, but
+     it's considered good style to use the macro <literal>VARHDRSZ</literal>
      to refer to the size of the overhead for a variable-length type.
-     Also, the length field <emphasis>must</> be set using the
-     <literal>SET_VARSIZE</> macro, not by simple assignment.
+     Also, the length field <emphasis>must</emphasis> be set using the
+     <literal>SET_VARSIZE</literal> macro, not by simple assignment.
     </para>
 
     <para>
-     <xref linkend="xfunc-c-type-table"> specifies which C type
+     <xref linkend="xfunc-c-type-table"/> specifies which C type
      corresponds to which SQL type when writing a C-language function
-     that uses a built-in type of <productname>PostgreSQL</>.
+     that uses a built-in type of <productname>PostgreSQL</productname>.
      The <quote>Defined In</quote> column gives the header file that
      needs to be included to get the type definition.  (The actual
      definition might be in a different file that is included by the
@@ -2193,8 +2252,8 @@ PG_FUNCTION_INFO_V1(funcname);
 </programlisting>
      must appear in the same source file.  (Conventionally, it's
      written just before the function itself.)  This macro call is not
-     needed for <literal>internal</>-language functions, since
-     <productname>PostgreSQL</> assumes that all internal functions
+     needed for <literal>internal</literal>-language functions, since
+     <productname>PostgreSQL</productname> assumes that all internal functions
      use the version-1 convention.  It is, however, required for
      dynamically-loaded functions.
     </para>
@@ -2225,9 +2284,7 @@ PG_FUNCTION_INFO_V1(funcname);
 #include "fmgr.h"
 #include "utils/geo_decls.h"
 
-#ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
-#endif
 
 /* by value */
 
@@ -2352,8 +2409,8 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
      directory of the shared library file (for instance the
      <productname>PostgreSQL</productname> tutorial directory, which
      contains the code for the examples used in this section).
-     (Better style would be to use just <literal>'funcs'</> in the
-     <literal>AS</> clause, after having added
+     (Better style would be to use just <literal>'funcs'</literal> in the
+     <literal>AS</literal> clause, after having added
      <replaceable>DIRECTORY</replaceable> to the search path.  In any
      case, we can omit the system-specific extension for a shared
      library, commonly <literal>.so</literal>.)
@@ -2370,16 +2427,16 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
 
     <para>
      At first glance, the version-1 coding conventions might appear to be just
-     pointless obscurantism, over using plain <literal>C</> calling
-     conventions.  They do however allow to deal with <literal>NULL</>able
+     pointless obscurantism, over using plain <literal>C</literal> calling
+     conventions.  They do however allow to deal with <literal>NULL</literal>able
      arguments/return values, and <quote>toasted</quote> (compressed or
      out-of-line) values.
     </para>
 
     <para>
-     The macro <function>PG_ARGISNULL(<replaceable>n</>)</function>
+     The macro <function>PG_ARGISNULL(<replaceable>n</replaceable>)</function>
      allows a function to test whether each input is null.  (Of course, doing
-     this is only necessary in functions not declared <quote>strict</>.)
+     this is only necessary in functions not declared <quote>strict</quote>.)
      As with the
      <function>PG_GETARG_<replaceable>xxx</replaceable>()</function> macros,
      the input arguments are counted beginning at zero.  Note that one
@@ -2414,16 +2471,16 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
     <literal>ALTER TABLE <replaceable>tablename</replaceable> ALTER
     COLUMN <replaceable>colname</replaceable> SET STORAGE
     <replaceable>storagetype</replaceable></literal>. <replaceable>storagetype</replaceable> is one of
-    <literal>plain</>, <literal>external</>, <literal>extended</literal>,
-     or <literal>main</>.)
+    <literal>plain</literal>, <literal>external</literal>, <literal>extended</literal>,
+     or <literal>main</literal>.)
     </para>
 
     <para>
      Finally, the version-1 function call conventions make it possible
-     to return set results (<xref linkend="xfunc-c-return-set">) and
-     implement trigger functions (<xref linkend="triggers">) and
+     to return set results (<xref linkend="xfunc-c-return-set"/>) and
+     implement trigger functions (<xref linkend="triggers"/>) and
      procedural-language call handlers (<xref
-     linkend="plhandler">).  For more details
+     linkend="plhandler"/>).  For more details
      see <filename>src/backend/utils/fmgr/README</filename> in the
      source distribution.
     </para>
@@ -2453,8 +2510,8 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
       <listitem>
        <para>
         Use <literal>pg_config
-        --includedir-server</literal><indexterm><primary>pg_config</><secondary>with user-defined C functions</></>
-        to find out where the <productname>PostgreSQL</> server header
+        --includedir-server</literal><indexterm><primary>pg_config</primary><secondary>with user-defined C functions</secondary></indexterm>
+        to find out where the <productname>PostgreSQL</productname> server header
         files are installed on your system (or the system that your
         users will be running on).
        </para>
@@ -2464,7 +2521,7 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
        <para>
         Compiling and linking your code so that it can be dynamically
         loaded into <productname>PostgreSQL</productname> always
-        requires special flags.  See <xref linkend="dfunc"> for a
+        requires special flags.  See <xref linkend="dfunc"/> for a
         detailed explanation of how to do it for your particular
         operating system.
        </para>
@@ -2472,8 +2529,8 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
 
       <listitem>
        <para>
-        Remember to define a <quote>magic block</> for your shared library,
-        as described in <xref linkend="xfunc-c-dynload">.
+        Remember to define a <quote>magic block</quote> for your shared library,
+        as described in <xref linkend="xfunc-c-dynload"/>.
        </para>
       </listitem>
 
@@ -2481,7 +2538,7 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
        <para>
         When allocating memory, use the
         <productname>PostgreSQL</productname> functions
-        <function>palloc</function><indexterm><primary>palloc</></> and <function>pfree</function><indexterm><primary>pfree</></>
+        <function>palloc</function><indexterm><primary>palloc</primary></indexterm> and <function>pfree</function><indexterm><primary>pfree</primary></indexterm>
         instead of the corresponding C library functions
         <function>malloc</function> and <function>free</function>.
         The memory allocated by <function>palloc</function> will be
@@ -2492,8 +2549,8 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
 
       <listitem>
        <para>
-        Always zero the bytes of your structures using <function>memset</>
-        (or allocate them with <function>palloc0</> in the first place).
+        Always zero the bytes of your structures using <function>memset</function>
+        (or allocate them with <function>palloc0</function> in the first place).
         Even if you assign to each field of your structure, there might be
         alignment padding (holes in the structure) that contain
         garbage values.  Without this, it's difficult to
@@ -2513,7 +2570,7 @@ CREATE FUNCTION concat_text(text, text) RETURNS text
         (<symbol>PG_FUNCTION_ARGS</symbol>, etc.)  are in
         <filename>fmgr.h</filename>, so you will need to include at
         least these two files.  For portability reasons it's best to
-        include <filename>postgres.h</filename> <emphasis>first</>,
+        include <filename>postgres.h</filename> <emphasis>first</emphasis>,
         before any other system or user header files.  Including
         <filename>postgres.h</filename> will also include
         <filename>elog.h</filename> and <filename>palloc.h</filename>
@@ -2559,15 +2616,13 @@ SELECT name, c_overpaid(emp, 1500) AS overpaid
 </programlisting>
 
      Using the version-1 calling conventions, we can define
-     <function>c_overpaid</> as:
+     <function>c_overpaid</function> as:
 
 <programlisting><![CDATA[
 #include "postgres.h"
 #include "executor/executor.h"  /* for GetAttributeByName() */
 
-#ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
-#endif
 
 PG_FUNCTION_INFO_V1(c_overpaid);
 
@@ -2621,7 +2676,7 @@ CREATE FUNCTION c_overpaid(emp, integer) RETURNS boolean
     LANGUAGE C STRICT;
 </programlisting>
 
-     Notice we have used <literal>STRICT</> so that we did not have to
+     Notice we have used <literal>STRICT</literal> so that we did not have to
      check whether the input arguments were NULL.
     </para>
    </sect2>
@@ -2641,87 +2696,87 @@ CREATE FUNCTION c_overpaid(emp, integer) RETURNS boolean
 
     <para>
      There are two ways you can build a composite data value (henceforth
-     a <quote>tuple</>): you can build it from an array of Datum values,
+     a <quote>tuple</quote>): you can build it from an array of Datum values,
      or from an array of C strings that can be passed to the input
      conversion functions of the tuple's column data types.  In either
-     case, you first need to obtain or construct a <structname>TupleDesc</>
+     case, you first need to obtain or construct a <structname>TupleDesc</structname>
      descriptor for the tuple structure.  When working with Datums, you
-     pass the <structname>TupleDesc</> to <function>BlessTupleDesc</>,
-     and then call <function>heap_form_tuple</> for each row.  When working
-     with C strings, you pass the <structname>TupleDesc</> to
-     <function>TupleDescGetAttInMetadata</>, and then call
-     <function>BuildTupleFromCStrings</> for each row.  In the case of a
+     pass the <structname>TupleDesc</structname> to <function>BlessTupleDesc</function>,
+     and then call <function>heap_form_tuple</function> for each row.  When working
+     with C strings, you pass the <structname>TupleDesc</structname> to
+     <function>TupleDescGetAttInMetadata</function>, and then call
+     <function>BuildTupleFromCStrings</function> for each row.  In the case of a
      function returning a set of tuples, the setup steps can all be done
      once during the first call of the function.
     </para>
 
     <para>
      Several helper functions are available for setting up the needed
-     <structname>TupleDesc</>.  The recommended way to do this in most
+     <structname>TupleDesc</structname>.  The recommended way to do this in most
      functions returning composite values is to call:
 <programlisting>
 TypeFuncClass get_call_result_type(FunctionCallInfo fcinfo,
                                    Oid *resultTypeId,
                                    TupleDesc *resultTupleDesc)
 </programlisting>
-     passing the same <literal>fcinfo</> struct passed to the calling function
+     passing the same <literal>fcinfo</literal> struct passed to the calling function
      itself.  (This of course requires that you use the version-1
-     calling conventions.)  <varname>resultTypeId</> can be specified
-     as <literal>NULL</> or as the address of a local variable to receive the
-     function's result type OID.  <varname>resultTupleDesc</> should be the
-     address of a local <structname>TupleDesc</> variable.  Check that the
-     result is <literal>TYPEFUNC_COMPOSITE</>; if so,
-     <varname>resultTupleDesc</> has been filled with the needed
-     <structname>TupleDesc</>.  (If it is not, you can report an error along
+     calling conventions.)  <varname>resultTypeId</varname> can be specified
+     as <literal>NULL</literal> or as the address of a local variable to receive the
+     function's result type OID.  <varname>resultTupleDesc</varname> should be the
+     address of a local <structname>TupleDesc</structname> variable.  Check that the
+     result is <literal>TYPEFUNC_COMPOSITE</literal>; if so,
+     <varname>resultTupleDesc</varname> has been filled with the needed
+     <structname>TupleDesc</structname>.  (If it is not, you can report an error along
      the lines of <quote>function returning record called in context that
      cannot accept type record</quote>.)
     </para>
 
     <tip>
      <para>
-      <function>get_call_result_type</> can resolve the actual type of a
+      <function>get_call_result_type</function> can resolve the actual type of a
       polymorphic function result; so it is useful in functions that return
       scalar polymorphic results, not only functions that return composites.
-      The <varname>resultTypeId</> output is primarily useful for functions
+      The <varname>resultTypeId</varname> output is primarily useful for functions
       returning polymorphic scalars.
      </para>
     </tip>
 
     <note>
      <para>
-      <function>get_call_result_type</> has a sibling
-      <function>get_expr_result_type</>, which can be used to resolve the
+      <function>get_call_result_type</function> has a sibling
+      <function>get_expr_result_type</function>, which can be used to resolve the
       expected output type for a function call represented by an expression
       tree.  This can be used when trying to determine the result type from
       outside the function itself.  There is also
-      <function>get_func_result_type</>, which can be used when only the
+      <function>get_func_result_type</function>, which can be used when only the
       function's OID is available.  However these functions are not able
-      to deal with functions declared to return <structname>record</>, and
-      <function>get_func_result_type</> cannot resolve polymorphic types,
-      so you should preferentially use <function>get_call_result_type</>.
+      to deal with functions declared to return <structname>record</structname>, and
+      <function>get_func_result_type</function> cannot resolve polymorphic types,
+      so you should preferentially use <function>get_call_result_type</function>.
      </para>
     </note>
 
     <para>
      Older, now-deprecated functions for obtaining
-     <structname>TupleDesc</>s are:
+     <structname>TupleDesc</structname>s are:
 <programlisting>
 TupleDesc RelationNameGetTupleDesc(const char *relname)
 </programlisting>
-     to get a <structname>TupleDesc</> for the row type of a named relation,
+     to get a <structname>TupleDesc</structname> for the row type of a named relation,
      and:
 <programlisting>
 TupleDesc TypeGetTupleDesc(Oid typeoid, List *colaliases)
 </programlisting>
-     to get a <structname>TupleDesc</> based on a type OID. This can
-     be used to get a <structname>TupleDesc</> for a base or
+     to get a <structname>TupleDesc</structname> based on a type OID. This can
+     be used to get a <structname>TupleDesc</structname> for a base or
      composite type.  It will not work for a function that returns
-     <structname>record</>, however, and it cannot resolve polymorphic
+     <structname>record</structname>, however, and it cannot resolve polymorphic
      types.
     </para>
 
     <para>
-     Once you have a <structname>TupleDesc</>, call:
+     Once you have a <structname>TupleDesc</structname>, call:
 <programlisting>
 TupleDesc BlessTupleDesc(TupleDesc tupdesc)
 </programlisting>
@@ -2731,8 +2786,8 @@ AttInMetadata *TupleDescGetAttInMetadata(TupleDesc tupdesc)
 </programlisting>
      if you plan to work with C strings.  If you are writing a function
      returning set, you can save the results of these functions in the
-     <structname>FuncCallContext</> structure &mdash; use the
-     <structfield>tuple_desc</> or <structfield>attinmeta</> field
+     <structname>FuncCallContext</structname> structure &mdash; use the
+     <structfield>tuple_desc</structfield> or <structfield>attinmeta</structfield> field
      respectively.
     </para>
 
@@ -2741,7 +2796,7 @@ AttInMetadata *TupleDescGetAttInMetadata(TupleDesc tupdesc)
 <programlisting>
 HeapTuple heap_form_tuple(TupleDesc tupdesc, Datum *values, bool *isnull)
 </programlisting>
-     to build a <structname>HeapTuple</> given user data in Datum form.
+     to build a <structname>HeapTuple</structname> given user data in Datum form.
     </para>
 
     <para>
@@ -2749,24 +2804,24 @@ HeapTuple heap_form_tuple(TupleDesc tupdesc, Datum *values, bool *isnull)
 <programlisting>
 HeapTuple BuildTupleFromCStrings(AttInMetadata *attinmeta, char **values)
 </programlisting>
-     to build a <structname>HeapTuple</> given user data
+     to build a <structname>HeapTuple</structname> given user data
      in C string form.  <parameter>values</parameter> is an array of C strings,
      one for each attribute of the return row. Each C string should be in
      the form expected by the input function of the attribute data
      type. In order to return a null value for one of the attributes,
-     the corresponding pointer in the <parameter>values</> array
-     should be set to <symbol>NULL</>.  This function will need to
+     the corresponding pointer in the <parameter>values</parameter> array
+     should be set to <symbol>NULL</symbol>.  This function will need to
      be called again for each row you return.
     </para>
 
     <para>
      Once you have built a tuple to return from your function, it
-     must be converted into a <type>Datum</>. Use:
+     must be converted into a <type>Datum</type>. Use:
 <programlisting>
 HeapTupleGetDatum(HeapTuple tuple)
 </programlisting>
-     to convert a <structname>HeapTuple</> into a valid Datum.  This
-     <type>Datum</> can be returned directly if you intend to return
+     to convert a <structname>HeapTuple</structname> into a valid Datum.  This
+     <type>Datum</type> can be returned directly if you intend to return
      just a single row, or it can be used as the current return value
      in a set-returning function.
     </para>
@@ -2789,13 +2844,13 @@ HeapTupleGetDatum(HeapTuple tuple)
     </para>
 
     <para>
-     A set-returning function (<acronym>SRF</>) is called
-     once for each item it returns.  The <acronym>SRF</> must
+     A set-returning function (<acronym>SRF</acronym>) is called
+     once for each item it returns.  The <acronym>SRF</acronym> must
      therefore save enough state to remember what it was doing and
      return the next item on each call.
-     The structure <structname>FuncCallContext</> is provided to help
-     control this process.  Within a function, <literal>fcinfo-&gt;flinfo-&gt;fn_extra</>
-     is used to hold a pointer to <structname>FuncCallContext</>
+     The structure <structname>FuncCallContext</structname> is provided to help
+     control this process.  Within a function, <literal>fcinfo-&gt;flinfo-&gt;fn_extra</literal>
+     is used to hold a pointer to <structname>FuncCallContext</structname>
      across calls.
 <programlisting>
 typedef struct FuncCallContext
@@ -2869,9 +2924,9 @@ typedef struct FuncCallContext
     </para>
 
     <para>
-     An <acronym>SRF</> uses several functions and macros that
-     automatically manipulate the <structname>FuncCallContext</>
-     structure (and expect to find it via <literal>fn_extra</>).  Use:
+     An <acronym>SRF</acronym> uses several functions and macros that
+     automatically manipulate the <structname>FuncCallContext</structname>
+     structure (and expect to find it via <literal>fn_extra</literal>).  Use:
 <programlisting>
 SRF_IS_FIRSTCALL()
 </programlisting>
@@ -2880,12 +2935,12 @@ SRF_IS_FIRSTCALL()
 <programlisting>
 SRF_FIRSTCALL_INIT()
 </programlisting>
-     to initialize the <structname>FuncCallContext</>. On every function call,
+     to initialize the <structname>FuncCallContext</structname>. On every function call,
      including the first, use:
 <programlisting>
 SRF_PERCALL_SETUP()
 </programlisting>
-     to properly set up for using the <structname>FuncCallContext</>
+     to properly set up for using the <structname>FuncCallContext</structname>
      and clearing any previously returned data left over from the
      previous pass.
     </para>
@@ -2895,27 +2950,27 @@ SRF_PERCALL_SETUP()
 <programlisting>
 SRF_RETURN_NEXT(funcctx, result)
 </programlisting>
-     to return it to the caller.  (<literal>result</> must be of type
-     <type>Datum</>, either a single value or a tuple prepared as
+     to return it to the caller.  (<literal>result</literal> must be of type
+     <type>Datum</type>, either a single value or a tuple prepared as
      described above.)  Finally, when your function is finished
      returning data, use:
 <programlisting>
 SRF_RETURN_DONE(funcctx)
 </programlisting>
-     to clean up and end the <acronym>SRF</>.
+     to clean up and end the <acronym>SRF</acronym>.
     </para>
 
     <para>
-     The memory context that is current when the <acronym>SRF</> is called is
+     The memory context that is current when the <acronym>SRF</acronym> is called is
      a transient context that will be cleared between calls.  This means
-     that you do not need to call <function>pfree</> on everything
-     you allocated using <function>palloc</>; it will go away anyway.  However, if you want to allocate
+     that you do not need to call <function>pfree</function> on everything
+     you allocated using <function>palloc</function>; it will go away anyway.  However, if you want to allocate
      any data structures to live across calls, you need to put them somewhere
      else.  The memory context referenced by
-     <structfield>multi_call_memory_ctx</> is a suitable location for any
-     data that needs to survive until the <acronym>SRF</> is finished running.  In most
+     <structfield>multi_call_memory_ctx</structfield> is a suitable location for any
+     data that needs to survive until the <acronym>SRF</acronym> is finished running.  In most
      cases, this means that you should switch into
-     <structfield>multi_call_memory_ctx</> while doing the first-call setup.
+     <structfield>multi_call_memory_ctx</structfield> while doing the first-call setup.
     </para>
 
     <warning>
@@ -2926,8 +2981,8 @@ SRF_RETURN_DONE(funcctx)
       <function>PG_GETARG_<replaceable>xxx</replaceable></function> macro)
       in the transient context then the detoasted copies will be freed on
       each cycle. Accordingly, if you keep references to such values in
-      your <structfield>user_fctx</>, you must either copy them into the
-      <structfield>multi_call_memory_ctx</> after detoasting, or ensure
+      your <structfield>user_fctx</structfield>, you must either copy them into the
+      <structfield>multi_call_memory_ctx</structfield> after detoasting, or ensure
       that you detoast the values only in that context.
      </para>
     </warning>
@@ -2981,7 +3036,7 @@ my_set_returning_function(PG_FUNCTION_ARGS)
     </para>
 
     <para>
-     A complete example of a simple <acronym>SRF</> returning a composite type
+     A complete example of a simple <acronym>SRF</acronym> returning a composite type
      looks like:
 <programlisting><![CDATA[
 PG_FUNCTION_INFO_V1(retcomposite);
@@ -3081,7 +3136,7 @@ CREATE TYPE __retcomposite AS (f1 integer, f2 integer, f3 integer);
 
 CREATE OR REPLACE FUNCTION retcomposite(integer, integer)
     RETURNS SETOF __retcomposite
-    AS '<replaceable>filename</>', 'retcomposite'
+    AS '<replaceable>filename</replaceable>', 'retcomposite'
     LANGUAGE C IMMUTABLE STRICT;
 </programlisting>
      A different way is to use OUT parameters:
@@ -3089,15 +3144,15 @@ CREATE OR REPLACE FUNCTION retcomposite(integer, integer)
 CREATE OR REPLACE FUNCTION retcomposite(IN integer, IN integer,
     OUT f1 integer, OUT f2 integer, OUT f3 integer)
     RETURNS SETOF record
-    AS '<replaceable>filename</>', 'retcomposite'
+    AS '<replaceable>filename</replaceable>', 'retcomposite'
     LANGUAGE C IMMUTABLE STRICT;
 </programlisting>
      Notice that in this method the output type of the function is formally
-     an anonymous <structname>record</> type.
+     an anonymous <structname>record</structname> type.
     </para>
 
     <para>
-     The directory <link linkend="tablefunc"><filename>contrib/tablefunc</filename></>
+     The directory <link linkend="tablefunc"><filename>contrib/tablefunc</filename></link>
      module in the source distribution contains more examples of
      set-returning functions.
     </para>
@@ -3111,24 +3166,24 @@ CREATE OR REPLACE FUNCTION retcomposite(IN integer, IN integer,
      return the polymorphic types
      <type>anyelement</type>, <type>anyarray</type>, <type>anynonarray</type>,
      <type>anyenum</type>, and <type>anyrange</type>.
-     See <xref linkend="extend-types-polymorphic"> for a more detailed explanation
+     See <xref linkend="extend-types-polymorphic"/> for a more detailed explanation
      of polymorphic functions. When function arguments or return types
      are defined as polymorphic types, the function author cannot know
      in advance what data type it will be called with, or
-     need to return. There are two routines provided in <filename>fmgr.h</>
+     need to return. There are two routines provided in <filename>fmgr.h</filename>
      to allow a version-1 C function to discover the actual data types
      of its arguments and the type it is expected to return. The routines are
-     called <literal>get_fn_expr_rettype(FmgrInfo *flinfo)</> and
-     <literal>get_fn_expr_argtype(FmgrInfo *flinfo, int argnum)</>.
+     called <literal>get_fn_expr_rettype(FmgrInfo *flinfo)</literal> and
+     <literal>get_fn_expr_argtype(FmgrInfo *flinfo, int argnum)</literal>.
      They return the result or argument type OID, or <symbol>InvalidOid</symbol> if the
      information is not available.
-     The structure <literal>flinfo</> is normally accessed as
-     <literal>fcinfo-&gt;flinfo</>. The parameter <literal>argnum</>
-     is zero based.  <function>get_call_result_type</> can also be used
-     as an alternative to <function>get_fn_expr_rettype</>.
-     There is also <function>get_fn_expr_variadic</>, which can be used to
+     The structure <literal>flinfo</literal> is normally accessed as
+     <literal>fcinfo-&gt;flinfo</literal>. The parameter <literal>argnum</literal>
+     is zero based.  <function>get_call_result_type</function> can also be used
+     as an alternative to <function>get_fn_expr_rettype</function>.
+     There is also <function>get_fn_expr_variadic</function>, which can be used to
      find out whether variadic arguments have been merged into an array.
-     This is primarily useful for <literal>VARIADIC "any"</> functions,
+     This is primarily useful for <literal>VARIADIC "any"</literal> functions,
      since such merging will always have occurred for variadic functions
      taking ordinary array types.
     </para>
@@ -3196,23 +3251,23 @@ CREATE FUNCTION make_array(anyelement) RETURNS anyarray
     <para>
      There is a variant of polymorphism that is only available to C-language
      functions: they can be declared to take parameters of type
-     <literal>"any"</>.  (Note that this type name must be double-quoted,
+     <literal>"any"</literal>.  (Note that this type name must be double-quoted,
      since it's also a SQL reserved word.)  This works like
-     <type>anyelement</> except that it does not constrain different
-     <literal>"any"</> arguments to be the same type, nor do they help
+     <type>anyelement</type> except that it does not constrain different
+     <literal>"any"</literal> arguments to be the same type, nor do they help
      determine the function's result type.  A C-language function can also
-     declare its final parameter to be <literal>VARIADIC "any"</>.  This will
+     declare its final parameter to be <literal>VARIADIC "any"</literal>.  This will
      match one or more actual arguments of any type (not necessarily the same
-     type).  These arguments will <emphasis>not</> be gathered into an array
+     type).  These arguments will <emphasis>not</emphasis> be gathered into an array
      as happens with normal variadic functions; they will just be passed to
-     the function separately.  The <function>PG_NARGS()</> macro and the
+     the function separately.  The <function>PG_NARGS()</function> macro and the
      methods described above must be used to determine the number of actual
      arguments and their types when using this feature.  Also, users of such
-     a function might wish to use the <literal>VARIADIC</> keyword in their
+     a function might wish to use the <literal>VARIADIC</literal> keyword in their
      function call, with the expectation that the function would treat the
      array elements as separate arguments.  The function itself must implement
-     that behavior if wanted, after using <function>get_fn_expr_variadic</> to
-     detect that the actual argument was marked with <literal>VARIADIC</>.
+     that behavior if wanted, after using <function>get_fn_expr_variadic</function> to
+     detect that the actual argument was marked with <literal>VARIADIC</literal>.
     </para>
    </sect2>
 
@@ -3222,22 +3277,22 @@ CREATE FUNCTION make_array(anyelement) RETURNS anyarray
     <para>
      Some function calls can be simplified during planning based on
      properties specific to the function.  For example,
-     <literal>int4mul(n, 1)</> could be simplified to just <literal>n</>.
+     <literal>int4mul(n, 1)</literal> could be simplified to just <literal>n</literal>.
      To define such function-specific optimizations, write a
-     <firstterm>transform function</> and place its OID in the
-     <structfield>protransform</> field of the primary function's
-     <structname>pg_proc</> entry.  The transform function must have the SQL
-     signature <literal>protransform(internal) RETURNS internal</>.  The
-     argument, actually <type>FuncExpr *</>, is a dummy node representing a
+     <firstterm>transform function</firstterm> and place its OID in the
+     <structfield>protransform</structfield> field of the primary function's
+     <structname>pg_proc</structname> entry.  The transform function must have the SQL
+     signature <literal>protransform(internal) RETURNS internal</literal>.  The
+     argument, actually <type>FuncExpr *</type>, is a dummy node representing a
      call to the primary function.  If the transform function's study of the
      expression tree proves that a simplified expression tree can substitute
      for all possible concrete calls represented thereby, build and return
-     that simplified expression.  Otherwise, return a <literal>NULL</>
-     pointer (<emphasis>not</> a SQL null).
+     that simplified expression.  Otherwise, return a <literal>NULL</literal>
+     pointer (<emphasis>not</emphasis> a SQL null).
     </para>
 
     <para>
-     We make no guarantee that <productname>PostgreSQL</> will never call the
+     We make no guarantee that <productname>PostgreSQL</productname> will never call the
      primary function in cases that the transform function could simplify.
      Ensure rigorous equivalence between the simplified expression and an
      actual call to the primary function.
@@ -3257,26 +3312,26 @@ CREATE FUNCTION make_array(anyelement) RETURNS anyarray
      Add-ins can reserve LWLocks and an allocation of shared memory on server
      startup.  The add-in's shared library must be preloaded by specifying
      it in
-     <xref linkend="guc-shared-preload-libraries"><indexterm><primary>shared_preload_libraries</></>.
+     <xref linkend="guc-shared-preload-libraries"/><indexterm><primary>shared_preload_libraries</primary></indexterm>.
      Shared memory is reserved by calling:
 <programlisting>
 void RequestAddinShmemSpace(int size)
 </programlisting>
-     from your <function>_PG_init</> function.
+     from your <function>_PG_init</function> function.
     </para>
     <para>
      LWLocks are reserved by calling:
 <programlisting>
 void RequestNamedLWLockTranche(const char *tranche_name, int num_lwlocks)
 </programlisting>
-     from <function>_PG_init</>.  This will ensure that an array of
-     <literal>num_lwlocks</> LWLocks is available under the name
-     <literal>tranche_name</>.  Use <function>GetNamedLWLockTranche</>
+     from <function>_PG_init</function>.  This will ensure that an array of
+     <literal>num_lwlocks</literal> LWLocks is available under the name
+     <literal>tranche_name</literal>.  Use <function>GetNamedLWLockTranche</function>
      to get a pointer to this array.
     </para>
     <para>
      To avoid possible race-conditions, each backend should use the LWLock
-     <function>AddinShmemInitLock</> when connecting to and initializing
+     <function>AddinShmemInitLock</function> when connecting to and initializing
      its allocation of shared memory, as shown here:
 <programlisting>
 static mystruct *ptr = NULL;
@@ -3299,10 +3354,10 @@ if (!ptr)
     </para>
    </sect2>
 
-   <sect2 id="extend-Cpp">
+   <sect2 id="extend-cpp">
     <title>Using C++ for Extensibility</title>
 
-    <indexterm zone="extend-Cpp">
+    <indexterm zone="extend-cpp">
      <primary>C++</primary>
     </indexterm>
 
@@ -3316,7 +3371,7 @@ if (!ptr)
        <para>
          All functions accessed by the backend must present a C interface
          to the backend;  these C functions can then call C++ functions.
-         For example, <literal>extern C</> linkage is required for
+         For example, <literal>extern C</literal> linkage is required for
          backend-accessed functions.  This is also necessary for any
          functions that are passed as pointers between the backend and
          C++ code.
@@ -3325,30 +3380,30 @@ if (!ptr)
       <listitem>
        <para>
         Free memory using the appropriate deallocation method.  For example,
-        most backend memory is allocated using <function>palloc()</>, so use
-        <function>pfree()</> to free it.  Using C++
-        <function>delete</> in such cases will fail.
+        most backend memory is allocated using <function>palloc()</function>, so use
+        <function>pfree()</function> to free it.  Using C++
+        <function>delete</function> in such cases will fail.
        </para>
       </listitem>
       <listitem>
        <para>
         Prevent exceptions from propagating into the C code (use a catch-all
-        block at the top level of all <literal>extern C</> functions).  This
+        block at the top level of all <literal>extern C</literal> functions).  This
         is necessary even if the C++ code does not explicitly throw any
         exceptions, because events like out-of-memory can still throw
         exceptions.  Any exceptions must be caught and appropriate errors
         passed back to the C interface.  If possible, compile C++ with
-        <option>-fno-exceptions</> to eliminate exceptions entirely; in such
+        <option>-fno-exceptions</option> to eliminate exceptions entirely; in such
         cases, you must check for failures in your C++ code, e.g.  check for
-        NULL returned by <function>new()</>.
+        NULL returned by <function>new()</function>.
        </para>
       </listitem>
       <listitem>
        <para>
         If calling backend functions from C++ code, be sure that the
         C++ call stack contains only plain old data structures
-        (<acronym>POD</>).  This is necessary because backend errors
-        generate a distant <function>longjmp()</> that does not properly
+        (<acronym>POD</acronym>).  This is necessary because backend errors
+        generate a distant <function>longjmp()</function> that does not properly
         unroll a C++ call stack with non-POD objects.
        </para>
       </listitem>
@@ -3357,7 +3412,7 @@ if (!ptr)
 
     <para>
      In summary, it is best to place C++ code behind a wall of
-     <literal>extern C</> functions that interface to the backend,
+     <literal>extern C</literal> functions that interface to the backend,
      and avoid exception, memory, and call stack leakage.
     </para>
    </sect2>

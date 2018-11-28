@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_server.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPSERVER">
+<refentry id="sql-dropserver">
  <indexterm zone="sql-dropserver">
   <primary>DROP SERVER</primary>
  </indexterm>
@@ -64,7 +64,7 @@ DROP SERVER [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [,
           사용자 맵핑 정보와 같이 해당 서버와 의존성 관계가 있는 
           모든 객체들도 함께 지운다.
       물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -85,7 +85,7 @@ DROP SERVER [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [,
   <title>예제</title>
 
   <para>
-   <literal>foo</> 외부 서버가 있다면, 지우고자 할 때:
+   <literal>foo</literal> 외부 서버가 있다면, 지우고자 할 때:
 <programlisting>
 DROP SERVER IF EXISTS foo;
 </programlisting></para>
@@ -96,8 +96,8 @@ DROP SERVER IF EXISTS foo;
 
   <para>
    <command>DROP SERVER</command> 명령은 ISO/IEC 9075-9
-      (SQL/MED) 에서 승인되었다.  <literal>IF EXISTS</>절은 
-          <productname>PostgreSQL</> 확장 기능이다.
+      (SQL/MED) 에서 승인되었다.  <literal>IF EXISTS</literal>절은 
+          <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
@@ -105,8 +105,8 @@ DROP SERVER IF EXISTS foo;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createserver"></member>
-   <member><xref linkend="sql-alterserver"></member>
+   <member><xref linkend="sql-createserver"/></member>
+   <member><xref linkend="sql-alterserver"/></member>
   </simplelist>
  </refsect1>
 

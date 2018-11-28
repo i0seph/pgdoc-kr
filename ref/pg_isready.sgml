@@ -44,8 +44,8 @@ PostgreSQL documentation
     <variablelist>
 
     <varlistentry>
-      <term><option>-d <replaceable class="parameter">디비이름</replaceable></></term>
-      <term><option>--dbname=<replaceable class="parameter">디비이름</replaceable></></term>
+      <term><option>-d <replaceable class="parameter">디비이름</replaceable></option></term>
+      <term><option>--dbname=<replaceable class="parameter">디비이름</replaceable></option></term>
       <listitem>
       <para>
        접속할 데이터베이스 이름
@@ -56,14 +56,14 @@ PostgreSQL documentation
        <literal>postgres://</literal> 문자열로 시작하면, 
        <parameter>conninfo</parameter> 문자열로 간주한다.
        이것에 대한 설명은  <xref
-       linkend="libpq-connstring">에서 다룬다.
+       linkend="libpq-connstring"/>에서 다룬다.
       </para>
       </listitem>
     </varlistentry>
 
      <varlistentry>
-       <term><option>-h <replaceable class="parameter">호스트이름</replaceable></></term>
-       <term><option>--host=<replaceable class="parameter">호스트이름</replaceable></></term>
+       <term><option>-h <replaceable class="parameter">호스트이름</replaceable></option></term>
+       <term><option>--host=<replaceable class="parameter">호스트이름</replaceable></option></term>
        <listitem>
        <para>
        접속한 서버의 호스트 이름이나, 호스트 IP 주소 또는
@@ -73,8 +73,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-       <term><option>-p <replaceable class="parameter">포트</replaceable></></term>
-       <term><option>--port=<replaceable class="parameter">포트</replaceable></></term>
+       <term><option>-p <replaceable class="parameter">포트</replaceable></option></term>
+       <term><option>--port=<replaceable class="parameter">포트</replaceable></option></term>
        <listitem>
        <para>
        접속할 포트 번호를 지정한다.  이 옵션이 없으면, 
@@ -95,8 +95,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-       <term><option>-t <replaceable class="parameter">초</replaceable></></term>
-       <term><option>--timeout=<replaceable class="parameter">초</replaceable></></term>
+       <term><option>-t <replaceable class="parameter">초</replaceable></option></term>
+       <term><option>--timeout=<replaceable class="parameter">초</replaceable></option></term>
        <listitem>
        <para>
         접속 시도 초단위 최대 시간.  지정한 시간안에 접속이 안되면,
@@ -107,8 +107,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-       <term><option>-U <replaceable class="parameter">사용자이름</replaceable></></term>
-       <term><option>--username=<replaceable class="parameter">사용자이름</replaceable></></term>
+       <term><option>-U <replaceable class="parameter">사용자이름</replaceable></option></term>
+       <term><option>--username=<replaceable class="parameter">사용자이름</replaceable></option></term>
        <listitem>
        <para>
        기본값 대신 해당 서버로 접속할 <replaceable
@@ -118,8 +118,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-V</></term>
-      <term><option>--version</></term>
+      <term><option>-V</option></term>
+      <term><option>--version</option></term>
        <listitem>
         <para>
          <application>pg_isready</application> 버전을 보여주고 마침.
@@ -128,8 +128,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-?</></term>
-      <term><option>--help</></term>
+      <term><option>-?</option></term>
+      <term><option>--help</option></term>
       <listitem>
        <para>
         <application>pg_isready</application> 명령에서 사용할 수 있는
@@ -157,9 +157,9 @@ PostgreSQL documentation
   <title>환경 변수</title>
 
   <para>
-   여러 <application>libpq</> 라이브러리를 사용하는 응용 프로그램과 
+   여러 <application>libpq</application> 라이브러리를 사용하는 응용 프로그램과 
    마찮가지로 <command>pg_isready</command> 명령도
-   그 환경 변수 그대로를 사용한다(<xref linkend="libpq-envars"> 참조).
+   그 환경 변수 그대로를 사용한다(<xref linkend="libpq-envars"/> 참조).
   </para>
  </refsect1>
 
@@ -167,7 +167,7 @@ PostgreSQL documentation
   <title>참고</title>
 
   <para>
-   <option>--dbname</>, <option>--username</> 옵션은
+   <option>--dbname</option>, <option>--username</option> 옵션은
    로그 파일에 불필요한 오류 메시지를 남기지 않기 위해 사용할 수는 있지만,
    반드시 사용해야할 옵션은 아니다.
   </para>

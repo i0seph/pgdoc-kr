@@ -29,21 +29,21 @@
    육군 연구소(<acronym>ARO</acronym>), 국립 과학 재단(<acronym>NSF</acronym>),
    ESL 주식회사의 후원을 받아서 진행되었다.
    <productname>POSTGRES</productname> 프로젝트는 1986년에 시작되었다.
-   그 시스템의 기초 개념은 <xref linkend="STON86"> 문서를 따랐으며,
-   기초 자료 구조의 정의는 <xref linkend="ROWE87"> 문서를 기반으로 했다.
-   그 당시 rule에 대한 설계는 <xref linkend="STON87a"> 문서에서 기술하고 있다.
+   그 시스템의 기초 개념은 <xref linkend="ston86"/> 문서를 따랐으며,
+   기초 자료 구조의 정의는 <xref linkend="rowe87"/> 문서를 기반으로 했다.
+   그 당시 rule에 대한 설계는 <xref linkend="ston87a"/> 문서에서 기술하고 있다.
    자료 저장 관리에 대한 이론적 근거와 구조설계에 대한 것은 <xref
-   linkend="STON87b"> 문서에서 자세히 기술하고 있다.
+   linkend="ston87b"/> 문서에서 자세히 기술하고 있다.
   </para>
 
   <para>
    <productname>POSTGRES</productname>는 여러번의 공식 배포본을
    내어놓으며 발전해 갔다. 첫번째 <quote>데모웨어</quote> 시스템은
    1987년에 작동되었으며, 1988년 <acronym>ACM-SIGMOD</acronym> 회견에서
-   시현되었다. <xref linkend="STON90a"> 문서에서 언급한 버전 1 시스템은
-   1989년 6월에 몇몇 외부관계자들에게 배포되었다. <xref linkend="STON89">
+   시현되었다. <xref linkend="ston90a"/> 문서에서 언급한 버전 1 시스템은
+   1989년 6월에 몇몇 외부관계자들에게 배포되었다. <xref linkend="ston89"/>
    문서에서 언급한 첫번째 rule 시스템의 비판적인 반응을 수용하여,
-   rule 시스템이 다시 설계 되었으며(<xref linkend="STON90b"> 문서 참조),
+   rule 시스템이 다시 설계 되었으며(<xref linkend="ston90b"/> 문서 참조),
    버전 2에서 새로운 rule 시스템을 도입해서, 1990년 6월에 발표되었다.
    이어, 1991년에 버전 3에서 다중 저장 관리자, 향상된 쿼리 실행기, 
    재작성된 rule 시스템을 지원하기 시작했다. <productname>Postgres95</productname>
@@ -58,9 +58,9 @@
    사용되었다. 
    또한 <productname>POSTGRES</productname>는 여러 대학교에서 교육용 도구로도
    사용되었다. 마침내, Illustra Information Technologies(뒷날 
-   <ulink url="http://www.informix.com/"><productname>Informix</productname></ulink> -
+   <ulink url="https://www.ibm.com/analytics/informix"><productname>Informix</productname></ulink> -
    현재, <ulink
-   url="http://www.ibm.com/">IBM</ulink>에서 소유권을 가지고 있는 - 
+   url="https://www.ibm.com/">IBM</ulink>에서 소유권을 가지고 있는 - 
    에 합병됨)에서 코드가 사용되고, 상업화 되었다. 그뒤, 1992년에 
    <ulink url="http://meteora.ucsd.edu/s2k/s2k_home.html">
    Sequoia 2000 scientific computing project</ulink>에서 기본 자료 관리자로 사용되었다.
@@ -117,7 +117,7 @@
     <listitem>
      <para>
       SQL 쿼리를 대화식으로 사용할 수 있도록 새로운 프로그램(<application>psql</application>)을 
-      제공했다. 이것으로 옛날 <application>monitor</> 프로그램에서
+      제공했다. 이것으로 옛날 <application>monitor</application> 프로그램에서
       하던 작업들의 대부분을 대체하게 되었다.
      </para>
     </listitem>
@@ -198,7 +198,7 @@
   </para>
 
   <para>
-   <productname>PostgreSQL</> 개발 변천사는 <xref linkend="release"> 문서에서
+   <productname>PostgreSQL</productname> 개발 변천사는 <xref linkend="release"/> 문서에서
    자세히 언급하고 있다.
   </para>
  </sect2>

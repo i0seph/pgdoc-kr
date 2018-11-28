@@ -10,7 +10,7 @@
   </indexterm>
 
    <para>
-    이 장에서는 <filename>recovery.conf</><indexterm><primary>recovery.conf</></>
+    이 장에서는 <filename>recovery.conf</filename><indexterm><primary>recovery.conf</primary></indexterm>
         파일의 설정 방법에 대해서 설명한다.
         여기서 설명하는 모든 것은 복구 작업에서만 적용되는 부분이다.
         모든 설정은 복구 작업이 진행 된 뒤에는 변경해도 반영되지 않는다. 
@@ -18,16 +18,16 @@
    </para>
 
    <para>
-     <filename>recovery.conf</> 파일에서 사용하는 구문은 
-     <literal>설정항목 = '설정값'</> 형태로 한 줄에 하나씩 나열된다. 
+     <filename>recovery.conf</filename> 파일에서 사용하는 구문은 
+     <literal>설정항목 = '설정값'</literal> 형태로 한 줄에 하나씩 나열된다. 
          줄에 해시 기호(<literal>#</literal>)가 있으면, 그 뒤부터는 
          주석처리 된다.
-         설정값 안에 작은 따옴표가 필요하면,  작은 따옴표 두 개(<literal>''</>)를 사용한다.
+         설정값 안에 작은 따옴표가 필요하면,  작은 따옴표 두 개(<literal>''</literal>)를 사용한다.
    </para>
 
    <para>
     미리 제공되는 샘플 파일은 데이터베이스 서버가 설치된 디렉터리
-        안에 있는 <filename>share/recovery.conf.sample</> 파일이다.
+        안에 있는 <filename>share/recovery.conf.sample</filename> 파일이다.
    </para>
 
   <sect1 id="archive-recovery-settings">
@@ -38,7 +38,7 @@
      <varlistentry id="restore-command" xreflabel="restore_command">
       <term><varname>restore_command</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>restore_command</> 복구 매개 변수</primary>
+        <primary><varname>restore_command</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -48,15 +48,15 @@
                 스트리밍 리플리케이션 대기 서버를 구축하는 경우라면, 이 설정이 꼭 필요한 것은 
                 아니지만, 마스터 서버와의 통신이 끊겨서 수동으로 트랜잭션 로그를 반영해야하는 
                 경우를 대비해서 설정해 두는 것이 좋다.
-                <literal>%f</> 예약어는 적용 할 WAL 파일 이름으로,
-                <literal>%p</> 예약어는 서버에서 사용할 WAL 파일 경로로 사용된다.
+                <literal>%f</literal> 예약어는 적용 할 WAL 파일 이름으로,
+                <literal>%p</literal> 예약어는 서버에서 사용할 WAL 파일 경로로 사용된다.
         (상대 경로를 사용하면, 서버를 실행하는 현재 디렉터리를 기준으로 
                 처리된다.)
-                <literal>%r</> 예약어는 마지막 실행 가능한 위치 정보를 나타내는 
+                <literal>%r</literal> 예약어는 마지막 실행 가능한 위치 정보를 나타내는 
                 이름으로 처리된다. 
-                <literal>%r</> 예약어는 warm-standby 설정에서만 사용된다.
-        (<xref linkend="warm-standby"> 참조).
-                <literal>%</> 문자를 사용하려면, <literal>%%</> 를 사용한다.
+                <literal>%r</literal> 예약어는 warm-standby 설정에서만 사용된다.
+        (<xref linkend="warm-standby"/> 참조).
+                <literal>%</literal> 문자를 사용하려면, <literal>%%</literal> 를 사용한다.
        </para>
 
        <para>
@@ -77,7 +77,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="archive-cleanup-command" xreflabel="archive_cleanup_command">
       <term><varname>archive_cleanup_command</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>archive_cleanup_command</> 복구 매개 변수</primary>
+        <primary><varname>archive_cleanup_command</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -91,11 +91,11 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
                 이 때 주의할 점은 대기 서버가 여러 대가 있을 경우, 
                 그 서버들이 같은 백업 WAL 파일을 사용할 경우,
                 이 명령이 실행되어 미처 반영되지 못한 파일이 지워지는 경우를 막아야한다.
-                <literal>%r</> 예약어는 최종 반영된 위치로 처리된다.
-                즉, <literal>%r</> 이름보다 이전 파일들은 지워도 되지만, 그 이후 파일들은 
+                <literal>%r</literal> 예약어는 최종 반영된 위치로 처리된다.
+                즉, <literal>%r</literal> 이름보다 이전 파일들은 지워도 되지만, 그 이후 파일들은 
                 지우지 말아야한다.
                 이 작업을 쉽게 하기 위해 이 설정값에는 일반적으로 
-            <xref linkend="pgarchivecleanup"> 확장 모듈로 설치되는 명령을 사용한다.
+            <xref linkend="pgarchivecleanup"/> 확장 모듈로 설치되는 명령을 사용한다.
                 (이 명령은 파일을 지우는 작업을 하기 때문에 단독 대기 서버 환경일 경우에만 
                 사용하는 것이 좋다.)
                 사용법은 다음과 같다:
@@ -103,8 +103,8 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         다중 대기 서버 환경이라면, 이 WAL 정리 작업은 좀 더 복잡해지는데, 
                 이 부분은 관리자에게 맡긴다.
                 이 설정값은 warm-standby 서버 구축 환경에서만 사용된다.
-        (<xref linkend="warm-standby"> 참조).
-                <literal>%</> 문자를 사용하려면, <literal>%%</>를 사용한다.
+        (<xref linkend="warm-standby"/> 참조).
+                <literal>%</literal> 문자를 사용하려면, <literal>%%</literal>를 사용한다.
        </para>
        <para>
             이 명령이 0 아닌 값을 리턴값으로 종료되면, 서버 로그에 WARNING으로 
@@ -116,7 +116,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-end-command" xreflabel="recovery_end_command">
       <term><varname>recovery_end_command</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_end_command</> 복구 매개 변수</primary>
+        <primary><varname>recovery_end_command</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -127,8 +127,8 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
                 대기 서버가 운영 서버로 바뀌는 시점이나, 
                 스트리밍 리플리케이션 서버에서 마스터 서버와의 스트리밍 통신이 끊겨, 
                 백업 파일을 다시 참조해서 모두 반영 했는 경우에 실행된다.
-        <literal>%r</> 예약어는 마지막 반영된 위치이다.
-                이것은 <xref linkend="archive-cleanup-command"> 명령에서 사용된다.
+        <literal>%r</literal> 예약어는 마지막 반영된 위치이다.
+                이것은 <xref linkend="archive-cleanup-command"/> 명령에서 사용된다.
        </para>
        <para>
             이 작업이 0 아닌 값으로 종료되면, 데이터베이스 서버 로그에 WARNING 레벨로
@@ -151,9 +151,9 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       기본값으로, 복구 작업은 WAL 로그 마지막까지 복구한다. 다음 설정들은
       이 기본 설정을 무시하고, 어느 특정 이전 시점에서 이 복구 작업을 
       멈추게 한다. 보통
-      <varname>recovery_target</>,
-      <varname>recovery_target_lsn</>, <varname>recovery_target_name</>,
-      <varname>recovery_target_time</>, <varname>recovery_target_xid</>
+      <varname>recovery_target</varname>,
+      <varname>recovery_target_lsn</varname>, <varname>recovery_target_name</varname>,
+      <varname>recovery_target_time</varname>, <varname>recovery_target_xid</varname>
       이런 설정 가운데 하나를 선택한다.
       이 설정들이 중복해서 사용되었다면, 설정 파일 맨 마지막에 지정한 값을
       사용한다.
@@ -163,7 +163,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-target" xreflabel="recovery_target">
       <term><varname>recovery_target</varname><literal> = 'immediate'</literal>
       <indexterm>
-        <primary><varname>recovery_target</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -171,7 +171,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         이 매개 변수는 일관적인 상태가 되자마자 복구가 종료되도록 한다. 온라인 백업에서 복구하는 경우, 백업이 끝난 시점을 가리킨다.
        </para>
        <para>
-        실질적으로, 이는 문자열 매개 변수지만 <literal>'immediate'</>
+        실질적으로, 이는 문자열 매개 변수지만 <literal>'immediate'</literal>
         가 쓸 수 있는 유일한 값이다.
        </para>
       </listitem>
@@ -181,13 +181,13 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_name</varname>
            (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_target_name</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target_name</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
             이 매개 변수는 특정 복구 위치를 이름으로 지정한다.
-                그 이름은 <function>pg_create_restore_point()</> 함수에서 
+                그 이름은 <function>pg_create_restore_point()</function> 함수에서 
                 지정한 이름이다. 
        </para>
       </listitem>
@@ -197,13 +197,13 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_time</varname>
            (<type>timestamp</type>)
       <indexterm>
-        <primary><varname>recovery_target_time</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target_time</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
             이 매개 변수는 특정 시점을 시간으로 지정한다.
-                또한 <xref linkend="recovery-target-inclusive"> 값에 영향을 받아서
+                또한 <xref linkend="recovery-target-inclusive"/> 값에 영향을 받아서
                 정확한 중지 위치가 결정되기도 한다.
        </para>
       </listitem>
@@ -212,7 +212,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-target-xid" xreflabel="recovery_target_xid">
       <term><varname>recovery_target_xid</varname> (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_target_xid</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target_xid</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
@@ -224,7 +224,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
                 않을 수 있음을 기억 해야한다.
                 복구되는 트랜잭션은 지정한 트랜잭션 이전에 커밋된 모든 트랜잭션들이다.
                 (선택적으로 지정한 트랜잭션도 포함될 수 있다.)
-                또한 <xref linkend="recovery-target-inclusive"> 값에 영향을 받아서
+                또한 <xref linkend="recovery-target-inclusive"/> 값에 영향을 받아서
                 정확한 중지 위치가 결정되기도 한다.
        </para>
       </listitem>
@@ -233,16 +233,16 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-target-lsn" xreflabel="recovery_target_lsn">
       <term><varname>recovery_target_lsn</varname> (<type>pg_lsn</type>)
       <indexterm>
-        <primary><varname>recovery_target_lsn</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target_lsn</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
         This parameter specifies the LSN of the write-ahead log location up
         to which recovery will proceed. The precise stopping point is also
-        influenced by <xref linkend="recovery-target-inclusive">. This
+        influenced by <xref linkend="recovery-target-inclusive"/>. This
         parameter is parsed using the system data type
-        <link linkend="datatype-pg-lsn"><type>pg_lsn</></link>.
+        <link linkend="datatype-pg-lsn"><type>pg_lsn</type></link>.
        </para>
       </listitem>
      </varlistentry>
@@ -258,18 +258,18 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_inclusive</varname>
         (<type>boolean</type>)
       <indexterm>
-        <primary><varname>recovery_target_inclusive</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target_inclusive</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
         위에서 지정한 지점을 포함해서 복구 할 것인지, 
         포함하지 않고 복구 할 것인지를 결정한다.
-        기본값은 <literal>true</>이다.
+        기본값은 <literal>true</literal>이다.
         <literal>false</literal>로 지정하면, 특정 지점(LSN, 트랜잭션 ID나, 시간) 전까지만
         복구를 하고 복구 작업을 중지한다.
-        이 값은 <xref linkend="recovery-target-lsn">, 
-        <xref linkend="recovery-target-time">, <xref linkend="recovery-target-xid">
+        이 값은 <xref linkend="recovery-target-lsn"/>, 
+        <xref linkend="recovery-target-time"/>, <xref linkend="recovery-target-xid"/>
         설정값의 작동에 영향을 준다.
        </para>
       </listitem>
@@ -280,20 +280,20 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
       <term><varname>recovery_target_timeline</varname>
         (<type>문자열</type>)
       <indexterm>
-        <primary><varname>recovery_target_timeline</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target_timeline</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
         복구할 특정 타임라인 번호를 지정한다.  기본값은 베이스 백업을 
         만들 때 사용한 그 타임라인 번호와 같다.  이 값으로 
-        <literal>latest</>를 지정하면, 사용할 수 있는 가장 마지막
+        <literal>latest</literal>를 지정하면, 사용할 수 있는 가장 마지막
         타임라인을 찾아 그것을 사용한다.  이 설정은 대기 서버를 구축할 때
         유용한다.  
         특정 타임라인 복구 번호를 지정하는 경우는
         시점 복구 뒤에 자료가 변경 되었는데, 다시 어느 특정 타임라인으로
         재복구 작업을 해야하는 복잡한 상황에서 일반적으로 사용한다.
-        자세한 이야기는 <xref linkend="backup-timelines">에서 설명한다.
+        자세한 이야기는 <xref linkend="backup-timelines"/>에서 설명한다.
        </para>
       </listitem>
      </varlistentry>
@@ -302,46 +302,46 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
                    xreflabel="recovery_target_action">
       <term><varname>recovery_target_action</varname> (<type>enum</type>)
       <indexterm>
-        <primary><varname>recovery_target_action</> 복구 매개 변수</primary>
+        <primary><varname>recovery_target_action</varname> 복구 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
          복구 작업이 끝나고 난 다음 대기 서버가 할 작업을 지정한다.
-         기본값은 <literal>pause</>이다. 이렇게 지정하면, 
-         대기 서버는 대기한다. <literal>promote</>로 지정하면,
+         기본값은 <literal>pause</literal>이다. 이렇게 지정하면, 
+         대기 서버는 대기한다. <literal>promote</literal>로 지정하면,
          대기 서버가 운영 서버 전환 작업을 이어 진행한다.
-         <literal>shutdown</>으로 지정하면, 서버는 복구 작업을 마치고
+         <literal>shutdown</literal>으로 지정하면, 서버는 복구 작업을 마치고
          중지 된다.
        </para>
        <para>
-          이 설정값으로 <literal>pause</>로 설정 했다면, 
+          이 설정값으로 <literal>pause</literal>로 설정 했다면, 
           복구 작업을 마지막까지 했을 때, 그 위치가 원하는 
           위치인지 확인 할 수 있는 쿼리를 실행할 수 있는지를 결정한다.
-          임시 중지 상태라면, <function>pg_wal_replay_resume()</> 함수를 
+          임시 중지 상태라면, <function>pg_wal_replay_resume()</function> 함수를 
           이용해서, 복구 작업을 이어서 다시 할 수 있다.(자세한 이야기는 
-          <xref linkend="functions-recovery-control-table">를 참조)
+          <xref linkend="functions-recovery-control-table"/>를 참조)
                 복구 작업을 하다가 원하는 마지막 위치에서 멈출 수 없으면, 
                 데이터베이스는 중지된다. 이 경우에는 복구 타켓을 마지막으로 
                 바꾸고, 서버를 재실행 해서 복구 작업을 계속 해야한다.
         (이 문단은 개념 정리가 안되고 있음. :()
        </para>
        <para>
-         이 설정값을 <literal>shutdown</>으로 설정하면, 원하는 복구 위치로 
+         이 설정값을 <literal>shutdown</literal>으로 설정하면, 원하는 복구 위치로 
          복구된 서버 하나를 마련하는데 유용하다. 이 서버는 WAL 레코드들을 
          여전히 재실행할 수 있는 상태이다. (물론 내부적으로 마지막 체크포인트
          위치 다음부터의 WAL 레코드를 필요로 한다.)
        </para>
        <para>
-         이 설정값을 <literal>shutdown</>으로 설정하면,
-         이 때 기억해야 할 부분은 서버 종료 될 때, <filename>recovery.conf</>
+         이 설정값을 <literal>shutdown</literal>으로 설정하면,
+         이 때 기억해야 할 부분은 서버 종료 될 때, <filename>recovery.conf</filename>
          파일의 이름을 바꾸지 않는다는 점이다.  운영 서버로 사용하기 위해서는
-         임의로 <filename>recovery.conf</> 파일을 삭제해야 할 필요가 있다.
+         임의로 <filename>recovery.conf</filename> 파일을 삭제해야 할 필요가 있다.
        </para>
        <para>
          이 설정은 복구 타겟을 지정하지 않으면 적용되지 않는다.
-         이 설정은 <xref linkend="guc-hot-standby"> 설정값이 비활성 상태라면,
-         <literal>pause</> 설정도 <literal>shutdown</> 작동 방식과 같이
+         이 설정은 <xref linkend="guc-hot-standby"/> 설정값이 비활성 상태라면,
+         <literal>pause</literal> 설정도 <literal>shutdown</literal> 작동 방식과 같이
          작동한다.
        </para>
       </listitem>
@@ -358,16 +358,16 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
        <varlistentry id="standby-mode" xreflabel="standby_mode">
         <term><varname>standby_mode</varname> (<type>boolean</type>)
         <indexterm>
-          <primary><varname>standby_mode</> 복구 매개 변수</primary>
+          <primary><varname>standby_mode</varname> 복구 매개 변수</primary>
         </indexterm></term>
         <listitem>
          <para>
-                  <productname>PostgreSQL</> 서버를 대기 전용(standby) 서버로 
-                  운영 하고자 할 때, 이 값을 <literal>on</>으로 설정한다.
+                  <productname>PostgreSQL</productname> 서버를 대기 전용(standby) 서버로 
+                  운영 하고자 할 때, 이 값을 <literal>on</literal>으로 설정한다.
                   이렇게 하면, 복구할 WAL 파일을 모두 서버에 적용하고 나서,
-                  <varname>primary_conninfo</> 접속 정보로 운영 서버로 접속해서, 
+                  <varname>primary_conninfo</varname> 접속 정보로 운영 서버로 접속해서, 
                   운영 서버에서 반영된 트랜잭션을 대기 서버에도 그대로 
-                  반영한다. 운영 서버와의 접속이 끊기면, 다시, <varname>restore_command</>
+                  반영한다. 운영 서버와의 접속이 끊기면, 다시, <varname>restore_command</varname>
                   설정에 지정한 명령을 이용해서, 다시 대기 서버 쪽에 있는 
                   WAL 파일들을 반영한다. 이런 작업을 반복해서, 
                   운영 서버의 대기 서버로 운영할 수 있다.
@@ -377,48 +377,48 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
        <varlistentry id="primary-conninfo" xreflabel="primary_conninfo">
         <term><varname>primary_conninfo</varname> (<type>문자열</type>)
         <indexterm>
-          <primary><varname>primary_conninfo</> 복구 매개 변수</primary>
+          <primary><varname>primary_conninfo</varname> 복구 매개 변수</primary>
         </indexterm></term>
         <listitem>
          <para>
                   운영 서버(primary server, master server)의 접속 정보. 
                   이 문자열에 대한 자세한 설명은
-                  <xref linkend="libpq-connstring">을 참조하라.
+                  <xref linkend="libpq-connstring"/>을 참조하라.
                   여기서 사용할 수 있는 접속 환경은 표준 접속 방식과 동일하므로, 
-                  접속에 관련된 모든 환경 변수들(<xref linkend="libpq-envars"> 참조)을 
+                  접속에 관련된 모든 환경 변수들(<xref linkend="libpq-envars"/> 참조)을 
                   그대로 사용할 수 있다. 사용 우선 순위도 동일하다. 환경 변수가 지정되어 있고, 
                   이 문자열에 지정되어 있지 않으면, 환경 변수 값을, 이 문자열로 지정했으면, 
                   환경 변수를 무시하고, 이 문자열 값을 사용한다.
          </para>
          <para>
-                  윗 <varname>standby_mode</varname> 설정값을 <literal>on</>으로 
+                  윗 <varname>standby_mode</varname> 설정값을 <literal>on</literal>으로 
                   설정했다면, 이 접속 정보 문자열에는  최소한 운영 서버의 호스트 이름(또는 주소)는 지정해야한다.
           포트가 기본값이라면, 생략해도 된다.
                   접속하려는 사용자가 계정은 운영 서버에 있어야하며, 해당 계정이 운영 서버로 접속해서 
                   복제 작업을 할 수 있는 권한이 있어야한다.  
-                  (<xref linkend="streaming-replication-authentication"> 참조)
+                  (<xref linkend="streaming-replication-authentication"/> 참조)
                   비밀번호 인증이 필요하다면, <varname>primary_conninfo</varname> 문자열에 지정하든가, 
-                  대기 서버의 <filename>~/.pgpass</> 파일에 데이터베이스 이름을 
-                  <literal>replication</>으로 지정하고, 비밀번호를 등록해서 사용한다.
+                  대기 서버의 <filename>~/.pgpass</filename> 파일에 데이터베이스 이름을 
+                  <literal>replication</literal>으로 지정하고, 비밀번호를 등록해서 사용한다.
           <varname>primary_conninfo</varname> 설정값에는 접속할 데이터베이스 이름은 지정하지 않는다.
          </para>
          <para>
-          <varname>standby_mode</> 설정값이 <literal>off</> 상태면, 이 설정은 무시된다.
+          <varname>standby_mode</varname> 설정값이 <literal>off</literal> 상태면, 이 설정은 무시된다.
          </para>
         </listitem>
        </varlistentry>
        <varlistentry id="trigger-file" xreflabel="trigger_file">
         <term><varname>trigger_file</varname> (<type>문자열</type>)
         <indexterm>
-          <primary><varname>trigger_file</> 복구 매개 변수</primary>
+          <primary><varname>trigger_file</varname> 복구 매개 변수</primary>
         </indexterm></term>
         <listitem>
          <para>
                   대기 상태가 끝났음을 알리는 파일 이름을 지정한다.
                   이 파일이 있으면, 대기 모드 상태를 끝내고, 독립 운영 서버로 실행환경을 바꾼다.
-                  이 파일 이름을 지정하지 않으면, <command>pg_ctl promote</> 명령으로 
+                  이 파일 이름을 지정하지 않으면, <command>pg_ctl promote</command> 명령으로 
                   대기 모드를 끝낼 수 있다.
-                  <varname>standby_mode</> 설정값이  <literal>off</> 상태면, 이 설정은 무시된다.
+                  <varname>standby_mode</varname> 설정값이  <literal>off</literal> 상태면, 이 설정은 무시된다.
          </para>
         </listitem>
        </varlistentry>
@@ -426,7 +426,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
      <varlistentry id="recovery-min-apply-delay" xreflabel="recovery_min_apply_delay">
       <term><varname>recovery_min_apply_delay</varname> (<type>integer</type>)
       <indexterm>
-        <primary><varname>recovery_min_apply_delay</> recovery parameter</primary>
+        <primary><varname>recovery_min_apply_delay</varname> recovery parameter</primary>
       </indexterm>
       </term>
       <listitem>
@@ -459,7 +459,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         This parameter is intended for use with streaming replication deployments;
         however, if the parameter is specified it will be honored in all cases.
 
-        <varname>hot_standby_feedback</> will be delayed by use of this feature
+        <varname>hot_standby_feedback</varname> will be delayed by use of this feature
         which could lead to bloat on the master; use both together with care.
 
         <warning>

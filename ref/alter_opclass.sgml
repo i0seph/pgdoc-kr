@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_opclass.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTEROPCLASS">
+<refentry id="sql-alteropclass">
  <indexterm zone="sql-alteropclass">
   <primary>ALTER OPERATOR CLASS</primary>
  </indexterm>
@@ -41,7 +41,7 @@ ALTER OPERATOR CLASS <replaceable>이름</replaceable> USING <replaceable class=
   </para>
 
   <para>
-   <command>ALTER OPERATOR CLASS</> 명령은 해당 연산자 클래스 소유주가
+   <command>ALTER OPERATOR CLASS</command> 명령은 해당 연산자 클래스 소유주가
    사용할 수 있다.  소유주를 바꿀 때는 명령을 실행하는 사용자가 
    새 소유주 소속이어야 하며, 새 소유주는 해당 스키마에 대해서
    <literal>CREATE</literal> 권한이 있어야 한다.  (새 소유주가 
@@ -113,9 +113,9 @@ ALTER OPERATOR CLASS <replaceable>이름</replaceable> USING <replaceable class=
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createopclass"></member>
-   <member><xref linkend="sql-dropopclass"></member>
-   <member><xref linkend="sql-alteropfamily"></member>
+   <member><xref linkend="sql-createopclass"/></member>
+   <member><xref linkend="sql-dropopclass"/></member>
+   <member><xref linkend="sql-alteropfamily"/></member>
   </simplelist>
  </refsect1>
 </refentry>

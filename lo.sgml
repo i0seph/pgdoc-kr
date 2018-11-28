@@ -8,9 +8,9 @@
  </indexterm>
 
  <para>
-  <filename>lo</> 모듈은 대형 객체(흔이 LO 또는 BLOB이라고 한다)를
-  관리하기 위한 제반 기능을 제공한다.  이 모듈에는 <type>lo</>
-  자료형과 <function>lo_manage</> 트리거 함수가 포함되어있다.
+  <filename>lo</filename> 모듈은 대형 객체(흔이 LO 또는 BLOB이라고 한다)를
+  관리하기 위한 제반 기능을 제공한다.  이 모듈에는 <type>lo</type>
+  자료형과 <function>lo_manage</function> 트리거 함수가 포함되어있다.
  </para>
 
  <sect2>
@@ -24,7 +24,7 @@
   </para>
 
   <para>
-   <productname>PostgreSQL</> 경우, 위와 같은 문제가 발생하지는
+   <productname>PostgreSQL</productname> 경우, 위와 같은 문제가 발생하지는
    않는다.  대형 객체는 자기 스스로 독립 객체로 존재하며,
    이 객체를 참조하는 테이블에서는 객체의 OID만 참조하는 방식이다.  즉,
    이런 방식은 같은 대형 객체 OID에 대해서 여러 테이블이 함께 
@@ -33,30 +33,30 @@
   </para>
 
   <para>
-   이 모듈은 <productname>PostgreSQL</> JDBC 또는 ODBC 드라이버를 사용해서
+   이 모듈은 <productname>PostgreSQL</productname> JDBC 또는 ODBC 드라이버를 사용해서
    응용프로그램을 쓸 때, 이런 대형 객체에 대해서 관련 자료가 변경되거나
    삭제 될 경우 그에 맞는 작업을 트리거로 진행할 수 있도록 한다.  그래서
    참조 관계를 잃은 디스크 공간만 차지하는 대형 객체가 없도록 한다.
   </para>
 
   <para>
-   The <filename>lo</> module allows fixing this by attaching a trigger
+   The <filename>lo</filename> module allows fixing this by attaching a trigger
    to tables that contain LO reference columns.  The trigger essentially just
-   does a <function>lo_unlink</> whenever you delete or modify a value
+   does a <function>lo_unlink</function> whenever you delete or modify a value
    referencing a large object.  When you use this trigger, you are assuming
    that there is only one database reference to any large object that is
    referenced in a trigger-controlled column!
   </para>
 
   <para>
-   The module also provides a data type <type>lo</>, which is really just
-   a domain of the <type>oid</> type.  This is useful for differentiating
+   The module also provides a data type <type>lo</type>, which is really just
+   a domain of the <type>oid</type> type.  This is useful for differentiating
    database columns that hold large object references from those that are
-   OIDs of other things.  You don't have to use the <type>lo</> type to
+   OIDs of other things.  You don't have to use the <type>lo</type> type to
    use the trigger, but it may be convenient to use it to keep track of which
    columns in your database represent large objects that you are managing with
    the trigger.  It is also rumored that the ODBC driver gets confused if you
-   don't use <type>lo</> for BLOB columns.
+   don't use <type>lo</type> for BLOB columns.
   </para>
  </sect2>
 
@@ -68,19 +68,19 @@
   </para>
 
 <programlisting>
-CREATE TABLE image (title TEXT, raster lo);
+CREATE TABLE image (title text, raster lo);
 
 CREATE TRIGGER t_raster BEFORE UPDATE OR DELETE ON image
-    FOR EACH ROW EXECUTE PROCEDURE lo_manage(raster);
+    FOR EACH ROW EXECUTE FUNCTION lo_manage(raster);
 </programlisting>
 
   <para>
    For each column that will contain unique references to large objects,
-   create a <literal>BEFORE UPDATE OR DELETE</> trigger, and give the column
+   create a <literal>BEFORE UPDATE OR DELETE</literal> trigger, and give the column
    name as the sole trigger argument.  You can also restrict the trigger
    to only execute on updates to the column by using <literal>BEFORE UPDATE
    OF</literal> <replaceable class="parameter">column_name</replaceable>.
-   If you need multiple <type>lo</>
+   If you need multiple <type>lo</type>
    columns in the same table, create a separate trigger for each one,
    remembering to give a different name to each trigger on the same table.
   </para>
@@ -92,24 +92,24 @@ CREATE TRIGGER t_raster BEFORE UPDATE OR DELETE ON image
   <itemizedlist>
    <listitem>
     <para>
-     <command>DROP TABLE</> 명령으로 대형 객체의 OID가 있는 테이블을
+     <command>DROP TABLE</command> 명령으로 대형 객체의 OID가 있는 테이블을
      삭제하는 경우 그 테이블의 트리거가 실행되지 않아, 
      참조 관계가 끊긴 채로 테이블이 삭제 된다.  이 문제를 피하려면
-     <command>DROP TABLE</> 작업 전에 
-     <command>DELETE FROM <replaceable>테이블명</></command>
+     <command>DROP TABLE</command> 작업 전에 
+     <command>DELETE FROM <replaceable>테이블명</replaceable></command>
      명령으로 자료를 삭제하면 될 것이다.
     </para>
 
     <para>
-     <command>TRUNCATE</> 작업도 해당 트리거가 실행되지 않는다.
+     <command>TRUNCATE</command> 작업도 해당 트리거가 실행되지 않는다.
     </para>
 
     <para>
      이미 위와 작업들을 해버렸고, 참조 관계가 끊겨 버린 쓸모 없는
      대형 객체가 있는 상황이라면, 그리고, 그 쓸모 없는 대형 객체를 
-     정리하고 싶다면, <xref linkend="vacuumlo"> 부가 확장 응용 
-     프로그램을 이용하면 된다.  <application>vacuumlo</> 명령을
-     사용할 때는 <function>lo_manage</> 트리거 기능을 잠깐 
+     정리하고 싶다면, <xref linkend="vacuumlo"/> 부가 확장 응용 
+     프로그램을 이용하면 된다.  <application>vacuumlo</application> 명령을
+     사용할 때는 <function>lo_manage</function> 트리거 기능을 잠깐 
      멈추어 놓는 것도 좋은 방법이다.
     </para>
    </listitem>

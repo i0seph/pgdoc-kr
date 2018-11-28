@@ -8,20 +8,11 @@
  </indexterm>
 
  <para>
-  <filename>intarray</> 모듈은 
+  <filename>intarray</filename> 모듈은 
   정수를 구성 요소로 하는 null 값이 없는 배열
   처리를 위한 유용한 함수와 연산자를 제공한다.
   또한 이 배열 자료형에 대한 인덱스 검색 기능도 제공한다.
  </para>
-
- <note>
- <para>
-  8.2 버전에서 모든 배열 자료형에 대한 부분 배열 검색에서
-  인덱스를 사용할 수 있도록 내장 연산자를 제공한다. (@&gt;, &lt;@, &&)
-  정수형 배열 조작을 위한 여러 함수를 쓰기 위해 이 모듈은 
-  아직 부가 모듈로 분리되어 있다 - 옮긴이
- </para>
- </note>
 
  <para>
   여기서 소개하는 모든 연산자는 그 대상 배열에 null 값이 있으면, 오류를 낸다.
@@ -34,16 +25,16 @@
  </para>
 
  <sect2>
-  <title><filename>intarray</> 함수와 연산자들</title>
+  <title><filename>intarray</filename> 함수와 연산자들</title>
 
   <para>
    <filename>intarray</filename> 모듈에서 제공하는 함수는
-   <xref linkend="intarray-func-table">에서, 연산자는
-   <xref linkend="intarray-op-table">에서 소개한다.
+   <xref linkend="intarray-func-table"/>에서, 연산자는
+   <xref linkend="intarray-op-table"/>에서 소개한다.
   </para>
 
   <table id="intarray-func-table">
-   <title><filename>intarray</> 함수들</title>
+   <title><filename>intarray</filename> 함수들</title>
 
    <tgroup cols="5">
     <thead>
@@ -68,7 +59,7 @@
      <row>
       <entry><function>sort(int[], text dir)</function><indexterm><primary>sort</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>배열 정렬 &mdash; <parameter>dir</>에는 <literal>asc</> 또는 <literal>desc</>만 허용</entry>
+      <entry>배열 정렬 &mdash; <parameter>dir</parameter>에는 <literal>asc</literal> 또는 <literal>desc</literal>만 허용</entry>
       <entry><literal>sort('{1,2,3}'::int[], 'desc')</literal></entry>
       <entry><literal>{3,2,1}</literal></entry>
      </row>
@@ -108,7 +99,7 @@
      <row>
       <entry><function>idx(int[], int item)</function><indexterm><primary>idx</primary></indexterm></entry>
       <entry><type>int</type></entry>
-      <entry>해당 <parameter>item</> 요소가 배열의 몇번째에 있는지 (0이면 없음)</entry>
+      <entry>해당 <parameter>item</parameter> 요소가 배열의 몇번째에 있는지 (0이면 없음)</entry>
       <entry><literal>idx(array[11,22,33,22,11], 22)</literal></entry>
       <entry><literal>2</literal></entry>
      </row>
@@ -116,7 +107,7 @@
      <row>
       <entry><function>subarray(int[], int start, int len)</function><indexterm><primary>subarray</primary></indexterm></entry>
       <entry><type>int[]</type></entry>
-      <entry>배열의 <parameter>start</> 시작 위치에서, <parameter>len</> 개수 만큼 부분 배열 추출</entry>
+      <entry>배열의 <parameter>start</parameter> 시작 위치에서, <parameter>len</parameter> 개수 만큼 부분 배열 추출</entry>
       <entry><literal>subarray('{1,2,3,2,1}'::int[], 2, 3)</literal></entry>
       <entry><literal>{2,3,2}</literal></entry>
      </row>
@@ -124,7 +115,7 @@
      <row>
       <entry><function>subarray(int[], int start)</function></entry>
       <entry><type>int[]</type></entry>
-      <entry>배열의 <parameter>start</> 번째부터 시작해서 끝까지 부분 배열 추출</entry>
+      <entry>배열의 <parameter>start</parameter> 번째부터 시작해서 끝까지 부분 배열 추출</entry>
       <entry><literal>subarray('{1,2,3,2,1}'::int[], 2)</literal></entry>
       <entry><literal>{2,3,2,1}</literal></entry>
      </row>
@@ -142,7 +133,7 @@
   </table>
 
   <table id="intarray-op-table">
-   <title><filename>intarray</> 연산자들</title>
+   <title><filename>intarray</filename> 연산자들</title>
 
    <tgroup cols="3">
     <thead>
@@ -157,17 +148,17 @@
      <row>
       <entry><literal>int[] &amp;&amp; int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>겹침 &mdash; 두 배열 요수 가운데 한 요소라도 같으면 <literal>true</></entry>
+      <entry>겹침 &mdash; 두 배열 요수 가운데 한 요소라도 같으면 <literal>true</literal></entry>
      </row>
      <row>
       <entry><literal>int[] @&gt; int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>포함함 &mdash; 왼쪽 배열이 오른쪽 배열을 포함하면 <literal>true</></entry>
+      <entry>포함함 &mdash; 왼쪽 배열이 오른쪽 배열을 포함하면 <literal>true</literal></entry>
      </row>
      <row>
       <entry><literal>int[] &lt;@ int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>포함됨 &mdash; 왼쪽 배열이 오른쪽 배열에 포함되면 <literal>true</></entry>
+      <entry>포함됨 &mdash; 왼쪽 배열이 오른쪽 배열에 포함되면 <literal>true</literal></entry>
      </row>
      <row>
       <entry><literal># int[]</literal></entry>
@@ -177,7 +168,7 @@
      <row>
       <entry><literal>int[] # int</literal></entry>
       <entry><type>int</type></entry>
-      <entry><function>idx</> 함수의 연산자</entry>
+      <entry><function>idx</function> 함수의 연산자</entry>
      </row>
      <row>
       <entry><literal>int[] + int</literal></entry>
@@ -217,27 +208,27 @@
      <row>
       <entry><literal>int[] @@ query_int</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>해당 query_int 조건에 맞으면 <literal>true</> (아래 참조)</entry>
+      <entry>해당 query_int 조건에 맞으면 <literal>true</literal> (아래 참조)</entry>
      </row>
      <row>
       <entry><literal>query_int ~~ int[]</literal></entry>
       <entry><type>boolean</type></entry>
-      <entry>윗 <literal>@@</> 연산자의 교환 연산자</entry>
+      <entry>윗 <literal>@@</literal> 연산자의 교환 연산자</entry>
      </row>
     </tbody>
    </tgroup>
   </table>
 
   <para>
-   (8.2 이전 버전에서는 <literal>@&gt;</> 연산자와 <literal>&lt;@</> 
-   연산자는 각각  <literal>@</>, <literal>~</> 로 사용했었다.
+   (8.2 이전 버전에서는 <literal>@&gt;</literal> 연산자와 <literal>&lt;@</literal> 
+   연산자는 각각  <literal>@</literal>, <literal>~</literal> 로 사용했었다.
    이 연산자들도 아직 사용할 수는 있지만, 범용 배열 연산자들이 정리되면서
    이 연산자(@,~)는 이제 더 이상 사용하지 않는다.  이 연산자들은 
    기본 지리정보 자료형에서 아직 사용하기에, 헷갈리지 않기 바란다!)
   </para>
 
   <para>
-   <literal>&amp;&amp;</>, <literal>@&gt;</>, <literal>&lt;@</> 연산자는
+   <literal>&amp;&amp;</literal>, <literal>@&gt;</literal>, <literal>&lt;@</literal> 연산자는
    범용 배열 자료형의 기본 연산자로 채택되어 그 사용법이 똑같다.
    다른 점은 이 모듈을 사용하면, 정수형 배열에서는 null 값이 없어야되고, 
    그 외 배열 자료형에서는 null 값이 있어도 된다.
@@ -246,12 +237,12 @@
   </para>
 
   <para>
-   <literal>@@</>,  <literal>~~</> 연산자는 
-   지정한 <firstterm>쿼리</> 조건에 만족하는가를 검사하는 연산자다.
-   이 쿼리는 문자열로 <type>query_int</> 구문을 사용해야 하면, 
-   사용할 수 있는 기호는  <literal>&amp;</>
-   (AND), <literal>|</> (OR), <literal>!</> (NOT) 이다. 
-   예를 들어 이 쿼리가  <literal>1&amp;(2|3)</>  이라면,
+   <literal>@@</literal>,  <literal>~~</literal> 연산자는 
+   지정한 <firstterm>쿼리</firstterm> 조건에 만족하는가를 검사하는 연산자다.
+   이 쿼리는 문자열로 <type>query_int</type> 구문을 사용해야 하면, 
+   사용할 수 있는 기호는  <literal>&amp;</literal>
+   (AND), <literal>|</literal> (OR), <literal>!</literal> (NOT) 이다. 
+   예를 들어 이 쿼리가  <literal>1&amp;(2|3)</literal>  이라면,
    해당 배열 요소들 가운데, 1은 반드시 있어야 하고, 
    2 또는 3도 반드시 있는 배열이면 이 연산자는 true를 반환한다.
   </para>
@@ -261,24 +252,24 @@
   <title>인덱스 지원</title>
 
   <para>
-   <filename>intarray</> 모듈은 <literal>&amp;&amp;</>, <literal>@&gt;</>,
-   <literal>&lt;@</>, <literal>@@</> 연산자를 사용할 경우
+   <filename>intarray</filename> 모듈은 <literal>&amp;&amp;</literal>, <literal>@&gt;</literal>,
+   <literal>&lt;@</literal>, <literal>@@</literal> 연산자를 사용할 경우
    인덱스를 사용해서 보다 빠르게 그 결과를 확인할 수 있도록
    연산자 클래스를 제공한다.
   </para>
 
   <para>
    GiST 색인 방법으로 다음 두 가지 연산자 클래스를 제공한다:
-   <literal>gist__int_ops</> (기본값) 클래스는
+   <literal>gist__int_ops</literal> (기본값) 클래스는
    4바이트 정수 최대값 만큼의 배열 요소가 있는 경우,
-   <literal>gist__intbig_ops</> 클래스는
+   <literal>gist__intbig_ops</literal> 클래스는
    8바이트 정수 최대값 만큼의 배열 요소가 있는 경우에 사용한다.
    이 색인 방법은 RD-tree 자료 구조에 대한 구현체이며, 
    내장된 압축이 별로 안되는 방법이다.
   </para>
 
   <note>
-  <para><literal>gist__int_ops</>, <literal>gist__intbig_ops</>
+  <para><literal>gist__int_ops</literal>, <literal>gist__intbig_ops</literal>
   연산자 클래스는 정수형 배열의 요소 개수에 따른 구분이지, 
   그 정수 자료형은 모두 int4 형이다. int8 형 배열에 대한 인덱스는
   PostgreSQL 기본 배열 인덱스를 이용하면 된다 - 옮긴이
@@ -286,7 +277,7 @@
   </note>
 
   <para>
-   GIN 연산자 클래스로 <literal>gin__int_ops</>
+   GIN 연산자 클래스로 <literal>gin__int_ops</literal>
    연산자 클래스도 제공한다.
   </para>
 
@@ -322,9 +313,9 @@ SELECT message.mid FROM message WHERE message.sections @@ '1&amp;2'::query_int;
   <title>성능 검사</title>
 
   <para>
-   소스 디렉터리 안  <filename>contrib/intarray/bench</>
+   소스 디렉터리 안  <filename>contrib/intarray/bench</filename>
    디렉터리에  이 모듈에 대한 성능 검사 관련 소스들이 포함되어 있다.
-   (<filename>DBD::Pg</> perl 모듈이 먼저 설치되어 있어야 한다)
+   (<filename>DBD::Pg</filename> perl 모듈이 먼저 설치되어 있어야 한다)
    사용법:
   </para>
 
@@ -337,7 +328,7 @@ sql -c "CREATE EXTENSION intarray" TEST
 </programlisting>
 
   <para>
-   <filename>bench.pl</> 스크립트는 다양한 옵션을 제공한다.
+   <filename>bench.pl</filename> 스크립트는 다양한 옵션을 제공한다.
    옵션 설명은 아무런 옵션 없이 실행하면 보여준다.
   </para>
  </sect2>

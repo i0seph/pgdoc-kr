@@ -3,7 +3,7 @@ doc/src/sgml/ref/commit.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-COMMIT">
+<refentry id="sql-commit">
  <indexterm zone="sql-commit">
   <primary>COMMIT</primary>
  </indexterm>
@@ -56,11 +56,11 @@ COMMIT [ WORK | TRANSACTION ]
 
   <para>
    트랜잭션 내 작업에 대해서 취소하려면 
-   <xref linkend="SQL-ROLLBACK"> 명령을 사용한다.
+   <xref linkend="sql-rollback"/> 명령을 사용한다.
   </para>
 
   <para>
-   트랜잭션 밖에서 <command>COMMIT</>  명령을 실행해도 
+   트랜잭션 밖에서 <command>COMMIT</command>  명령을 실행해도 
    아무런 영향을 주지는 않지만, 경고 메시지는 보여준다.
   </para>
  </refsect1>
@@ -89,8 +89,8 @@ COMMIT;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-begin"></member>
-   <member><xref linkend="sql-rollback"></member>
+   <member><xref linkend="sql-begin"/></member>
+   <member><xref linkend="sql-rollback"/></member>
   </simplelist>
  </refsect1>
 </refentry>

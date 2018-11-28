@@ -74,11 +74,11 @@ CREATE ACCESS METHOD <replaceable class="parameter">이름</replaceable>
       <replaceable class="parameter">핸들러함수</replaceable> 이름
       (스키마 이름 포함).
       이 핸들러 함수의 입력 인자는 하나만 있고, 그 자료형은
-      <type>internal</> 형이어야 하며, 접근 방법 종류가
+      <type>internal</type> 형이어야 하며, 접근 방법 종류가
       <literal>INDEX</literal>인 경우, 반환값은
       <type>index_am_handler</type> 자료형이어야 한다.
       이 함수는 C 언어로 구현 되어야 한다.
-      인덱스 접근 방법 API는 <xref linkend="indexam">에서 다룬다.
+      인덱스 접근 방법 API는 <xref linkend="indexam"/>에서 다룬다.
      </para>
     </listitem>
    </varlistentry>
@@ -89,8 +89,8 @@ CREATE ACCESS METHOD <replaceable class="parameter">이름</replaceable>
   <title>예제</title>
 
   <para>
-   <literal>heptree_handler</> 핸들러 함수를 사용하는
-   <literal>heptree</> 접근 방법을 만드는 예제:
+   <literal>heptree_handler</literal> 핸들러 함수를 사용하는
+   <literal>heptree</literal> 접근 방법을 만드는 예제:
 <programlisting>
 CREATE ACCESS METHOD heptree TYPE INDEX HANDLER heptree_handler;
 </programlisting></para>
@@ -101,7 +101,7 @@ CREATE ACCESS METHOD heptree TYPE INDEX HANDLER heptree_handler;
 
   <para>
    <command>CREATE ACCESS METHOD</command> 구문은
-   <productname>PostgreSQL</> 확장 기능이다.
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
@@ -109,9 +109,9 @@ CREATE ACCESS METHOD heptree TYPE INDEX HANDLER heptree_handler;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-drop-access-method"></member>
-   <member><xref linkend="sql-createopclass"></member>
-   <member><xref linkend="sql-createopfamily"></member>
+   <member><xref linkend="sql-drop-access-method"/></member>
+   <member><xref linkend="sql-createopclass"/></member>
+   <member><xref linkend="sql-createopfamily"/></member>
   </simplelist>
  </refsect1>
 

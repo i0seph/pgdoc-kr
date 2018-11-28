@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_system.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERSYSTEM">
+<refentry id="sql-altersystem">
  <indexterm zone="sql-altersystem">
   <primary>ALTER SYSTEM</primary>
  </indexterm>
@@ -21,9 +21,9 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER SYSTEM SET <replaceable class="PARAMETER">환경설정_매개변수</replaceable> { TO | = } { <replaceable class="PARAMETER">값</replaceable> | '<replaceable class="PARAMETER">값</replaceable>' | DEFAULT }
+ALTER SYSTEM SET <replaceable class="parameter">환경설정_매개변수</replaceable> { TO | = } { <replaceable class="parameter">값</replaceable> | '<replaceable class="parameter">값</replaceable>' | DEFAULT }
 
-ALTER SYSTEM RESET <replaceable class="PARAMETER">환경설정_매개변수</replaceable>
+ALTER SYSTEM RESET <replaceable class="parameter">환경설정_매개변수</replaceable>
 ALTER SYSTEM RESET ALL
 </synopsis>
  </refsynopsisdiv>
@@ -53,9 +53,9 @@ ALTER SYSTEM RESET ALL
    서버 환경 설정 다시 불러 오기(reload)나, 서버 다시 시작으로 적용된다.
    (개별 환경 설정 변수의 적용 시점은 제각각이다.  적용 시점을 
    데이터베이스 관리자는 알고 있어야 한다. - 옮긴이)
-   서버 환경 설정 다시 불러 오는 작업은 <function>pg_reload_conf()</>
-   SQL 함수를 호출하거나, <literal>pg_ctl reload</> 쉘 명령을 실행하거나,
-   메인 서버 프로세스에 <systemitem>SIGHUP</> 시그널을 보내면 된다.
+   서버 환경 설정 다시 불러 오는 작업은 <function>pg_reload_conf()</function>
+   SQL 함수를 호출하거나, <literal>pg_ctl reload</literal> 쉘 명령을 실행하거나,
+   메인 서버 프로세스에 <systemitem>SIGHUP</systemitem> 시그널을 보내면 된다.
   </para>
 
   <para>
@@ -74,7 +74,7 @@ ALTER SYSTEM RESET ALL
     <listitem>
      <para>
       설정하려는 환경 설정 매개 변수 이름.
-      사용할 수 있는 이름은 <xref linkend="runtime-config">에서 다룬다.
+      사용할 수 있는 이름은 <xref linkend="runtime-config"/>에서 다룬다.
      </para>
     </listitem>
    </varlistentry>
@@ -98,14 +98,14 @@ ALTER SYSTEM RESET ALL
   <title>참고</title>
 
   <para>
-   이 명령은 <xref linkend="guc-data-directory"> 설정 값을 바꿀 수 없고,
-   <filename>postgresql.conf</> 파일에서 다루지 않는 환경 설정
+   이 명령은 <xref linkend="guc-data-directory"/> 설정 값을 바꿀 수 없고,
+   <filename>postgresql.conf</filename> 파일에서 다루지 않는 환경 설정
    매개 변수 값은 바꿀 수 없다(예, 
-   <link linkend="runtime-config-preset">프리셋 옵션</>).
+   <link linkend="runtime-config-preset">프리셋 옵션</link>).
   </para>
 
   <para>
-   <xref linkend="config-setting">에서는 매개 변수 값을 바꾸는 다른 방법들도
+   <xref linkend="config-setting"/>에서는 매개 변수 값을 바꾸는 다른 방법들도
    소개한다.
   </para>
  </refsect1>
@@ -114,14 +114,14 @@ ALTER SYSTEM RESET ALL
   <title>예제</title>
 
   <para>
-   <literal>wal_level</> 설정:
+   <literal>wal_level</literal> 설정:
 <programlisting>
 ALTER SYSTEM SET wal_level = replica;
 </programlisting>
   </para>
 
   <para>
-   <filename>postgresql.conf</> 파일에 지정한 값으로 되돌리는 명령:
+   <filename>postgresql.conf</filename> 파일에 지정한 값으로 되돌리는 명령:
 <programlisting>
 ALTER SYSTEM RESET wal_level;
 </programlisting></para>
@@ -140,8 +140,8 @@ ALTER SYSTEM RESET wal_level;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="SQL-SET"></member>
-   <member><xref linkend="SQL-SHOW"></member>
+   <member><xref linkend="sql-set"/></member>
+   <member><xref linkend="sql-show"/></member>
   </simplelist>
  </refsect1>
 

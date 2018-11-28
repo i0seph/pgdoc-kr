@@ -24,11 +24,13 @@ non-ASCII characters            find using grep -P '[\x80-\xFF]'
         one page:      http://www.zipcon.net/~swhite/docs/computers/browsers/entities_page.html
         other lists:   http://www.zipcon.net/~swhite/docs/computers/browsers/entities.html
                        http://www.zipcon.net/~swhite/docs/computers/browsers/entities_page.html
-                       http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
+                       https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
 
-        we cannot use UTF8 because SGML Docbook does not support it
+        We cannot use UTF8 because back branches still use SGML Docbook,
+        which does not support it.  Also, rendering engines have to
+        support the referenced characters.
 
-        do not use numeric _UTF_ numeric character escapes (&#nnn;),
+        Do not use numeric _UTF_ numeric character escapes (&#nnn;),
         we can only use Latin1
 
         Example: Alvaro Herrera is &Aacute;lvaro Herrera
@@ -43,7 +45,7 @@ For new features, add links to the documentation sections.
  <title>출시 소식</title>
 
   <para>
-   여기서는 <productname>PostgreSQL</> 새 버전 출시에 대한 
+   여기서는 <productname>PostgreSQL</productname> 새 버전 출시에 대한 
    각 특징적인 변경 사항을 소개한다. 주요 기능과 새 버전으로 업그레이드할 때
    신경 써야 할 부분을 포함한다.  여기서는 
    몇몇 사용자들을 위한 개선 사항이나, 체감하지 않는 내부적인 변경 사항 등은 
@@ -56,9 +58,9 @@ For new features, add links to the documentation sections.
    각 배포판별 가장 완벽한 변경 사항을 살펴보는 방법은 
    <link linkend="git">Git</link> 로그를 살펴보는 것이다.
    <ulink
-   url="https://archives.postgresql.org/pgsql-committers/"><literal>pgsql-committers</literal>
+   url="https://www.postgresql.org/list/pgsql-committers/"><literal>pgsql-committers</literal>
    메일링 리스트</ulink>에서도 코드 변경 사항을 충실히 발표하고 있다.  웹 페이지로는
-   <ulink url="https://git.postgresql.org/gitweb?p=postgresql.git;a=summary">여기서</ulink>
+   <ulink url="https://git.postgresql.org/gitweb/?p=postgresql.git;a=summary">여기서</ulink>
    자세한 변경 사항을 살펴 볼 수 있다.
   </para>
 
@@ -73,6 +75,7 @@ For new features, add links to the documentation sections.
   The reason for splitting the release notes this way is so that appropriate
   subsets can easily be copied into back branches.
 -->
+&release-11;
 &release-10;
 &release-9.6;
 &release-9.5;

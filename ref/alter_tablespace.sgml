@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_tablespace.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERTABLESPACE">
+<refentry id="sql-altertablespace">
  <indexterm zone="sql-altertablespace">
   <primary>ALTER TABLESPACE</primary>
  </indexterm>
@@ -23,8 +23,8 @@ PostgreSQL documentation
 <synopsis>
 ALTER TABLESPACE <replaceable>이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 ALTER TABLESPACE <replaceable>이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER TABLESPACE <replaceable>이름</replaceable> SET ( <replaceable class="PARAMETER">tablespace_option</replaceable> = <replaceable class="PARAMETER">value</replaceable> [, ... ] )
-ALTER TABLESPACE <replaceable>이름</replaceable> RESET ( <replaceable class="PARAMETER">tablespace_option</replaceable> [, ... ] )
+ALTER TABLESPACE <replaceable>이름</replaceable> SET ( <replaceable class="parameter">tablespace_option</replaceable> = <replaceable class="parameter">value</replaceable> [, ... ] )
+ALTER TABLESPACE <replaceable>이름</replaceable> RESET ( <replaceable class="parameter">tablespace_option</replaceable> [, ... ] )
 </synopsis>
  </refsynopsisdiv>
 
@@ -37,7 +37,7 @@ ALTER TABLESPACE <replaceable>이름</replaceable> RESET ( <replaceable class="P
   </para>
 
   <para>
-   <command>ALTER TABLESPACE</> 명령은 해당 테이블스페이스의 소유주가 
+   <command>ALTER TABLESPACE</command> 명령은 해당 테이블스페이스의 소유주가 
    실행 할 수 있다.  소유주를 변경하려면, 새 소유주로 변경할 수 
    있는 권한이 있어야한다.
    (슈퍼유저는 자동으로 그 권한을 갖는다.)
@@ -82,14 +82,14 @@ ALTER TABLESPACE <replaceable>이름</replaceable> RESET ( <replaceable class="P
     <listitem>
      <para>
       A tablespace parameter to be set or reset.  Currently, the only
-      available parameters are <varname>seq_page_cost</>,
-      <varname>random_page_cost</> and <varname>effective_io_concurrency</>.
+      available parameters are <varname>seq_page_cost</varname>,
+      <varname>random_page_cost</varname> and <varname>effective_io_concurrency</varname>.
       Setting either value for a particular tablespace will override the
       planner's usual estimate of the cost of reading pages from tables in
       that tablespace, as established by the configuration parameters of the
-      same name (see <xref linkend="guc-seq-page-cost">,
-      <xref linkend="guc-random-page-cost">,
-      <xref linkend="guc-effective-io-concurrency">).  This may be useful if
+      same name (see <xref linkend="guc-seq-page-cost"/>,
+      <xref linkend="guc-random-page-cost"/>,
+      <xref linkend="guc-effective-io-concurrency"/>).  This may be useful if
       one tablespace is located on a disk which is faster or slower than the
       remainder of the I/O subsystem.
      </para>
@@ -127,8 +127,8 @@ ALTER TABLESPACE index_space OWNER TO mary;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createtablespace"></member>
-   <member><xref linkend="sql-droptablespace"></member>
+   <member><xref linkend="sql-createtablespace"/></member>
+   <member><xref linkend="sql-droptablespace"/></member>
   </simplelist>
  </refsect1>
 </refentry>

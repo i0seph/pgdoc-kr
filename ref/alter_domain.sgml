@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_domain.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERDOMAIN">
+<refentry id="sql-alterdomain">
  <indexterm zone="sql-alterdomain">
   <primary>ALTER DOMAIN</primary>
  </indexterm>
@@ -21,24 +21,24 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-    { SET DEFAULT <replaceable class="PARAMETER">표현식</replaceable> | DROP DEFAULT }
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+    { SET DEFAULT <replaceable class="parameter">표현식</replaceable> | DROP DEFAULT }
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
     { SET | DROP } NOT NULL
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-    ADD <replaceable class="PARAMETER">도메인_제약조건</replaceable> [ NOT VALID ]
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-    DROP CONSTRAINT [ IF EXISTS ] <replaceable class="PARAMETER">제약조건</replaceable> [ RESTRICT | CASCADE ]
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-     RENAME CONSTRAINT <replaceable class="PARAMETER">제약조건</replaceable> TO <replaceable class="PARAMETER">새제약조건</replaceable>
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-    VALIDATE CONSTRAINT <replaceable class="PARAMETER">제약조건</replaceable>
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-    OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-    RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
-ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
-    SET SCHEMA <replaceable class="PARAMETER">새스키마</replaceable>
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+    ADD <replaceable class="parameter">도메인_제약조건</replaceable> [ NOT VALID ]
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+    DROP CONSTRAINT [ IF EXISTS ] <replaceable class="parameter">제약조건</replaceable> [ RESTRICT | CASCADE ]
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+     RENAME CONSTRAINT <replaceable class="parameter">제약조건</replaceable> TO <replaceable class="parameter">새제약조건</replaceable>
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+    VALIDATE CONSTRAINT <replaceable class="parameter">제약조건</replaceable>
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+    OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+    RENAME TO <replaceable class="parameter">새이름</replaceable>
+ALTER DOMAIN <replaceable class="parameter">이름</replaceable>
+    SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -68,16 +68,16 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      <para>
       도메인 NULL 값 허용 여부 지정.
       해당 도메인이 NULL 값을 허용하지 않고자 할 때,
-      <literal>SET NOT NULL</> 구문으로 지정한다.
+      <literal>SET NOT NULL</literal> 구문으로 지정한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>ADD <replaceable class="PARAMETER">도메인_제약조건</replaceable> [ NOT VALID ]</literal></term>
+    <term><literal>ADD <replaceable class="parameter">도메인_제약조건</replaceable> [ NOT VALID ]</literal></term>
     <listitem>
      <para>
-      <xref linkend="SQL-CREATEDOMAIN"> 명령에서 사용하는 문법과 같은 형태로
+      <xref linkend="sql-createdomain"/> 명령에서 사용하는 문법과 같은 형태로
       해당 도메인에 새 제약 조건을 추가한다.
       이렇게 하나의 제약 조건이 추가되면, 그 도메인을 사용하는 모든 칼럼을
       대상으로 그 제약 조건에 유효한 값이다 모두 확인한다.  이 유효성
@@ -88,7 +88,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
       이 추가 작업 뒤에 발생하는 insert, update 작업에서는
       이 제약 조건이 <literal>NOT VALID</literal> 옵션을 사용해서 
       만들었다고 하더라도 유효성 검사를 항상 한다. 
-      <literal>NOT VALID</> 옵션은 <literal>CHECK</> 제약 조건에서만
+      <literal>NOT VALID</literal> 옵션은 <literal>CHECK</literal> 제약 조건에서만
       제 역할을 한다.
      </para>
     </listitem>
@@ -119,7 +119,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
     <term><literal>VALIDATE CONSTRAINT</literal></term>
     <listitem>
      <para>
-      <literal>NOT VALID</> 옵션으로 만든 제약 조건에 대해서,
+      <literal>NOT VALID</literal> 옵션으로 만든 제약 조건에 대해서,
       실재 모든 자료를 대상으로 그 유효성 검사를 한다.
      </para>
     </listitem>
@@ -155,7 +155,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
   </variablelist>
 
   <para>
-   <command>ALTER DOMAIN</> 명령은 해당 도메인 소유주만 사용할 수 있다.
+   <command>ALTER DOMAIN</command> 명령은 해당 도메인 소유주만 사용할 수 있다.
    스키마를 바꾸는 경우, 소유주는 새 스키마에 대해서
    <literal>CREATE</literal> 권한이 있어야 한다.
    소유주를 바꾸는 경우, 기존 소유주는 새 소유주의 소속원이어야 하며, 
@@ -172,7 +172,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
    <para>
     <variablelist>
      <varlistentry>
-      <term><replaceable class="PARAMETER">이름</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
         작업 대상 도메인 이름(스키마 포함).
@@ -181,7 +181,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">도메인_제약조건</replaceable></term>
+      <term><replaceable class="parameter">도메인_제약조건</replaceable></term>
       <listitem>
        <para>
         새 도메인 제약 조건.
@@ -190,7 +190,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">제약조건</replaceable></term>
+      <term><replaceable class="parameter">제약조건</replaceable></term>
       <listitem>
        <para>
         작업할 제약 조건 이름.
@@ -199,7 +199,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">NOT VALID</replaceable></term>
+      <term><literal>NOT VALID</literal></term>
       <listitem>
        <para>
         기존 자료에 대한 제약 조건 유효성 검사를 하지 않음.
@@ -213,7 +213,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
       <listitem>
        <para>
         해당 제약 조건을 지울 때, 그 제약 조건을 사용하는 
-        모든 개체들도 함께 삭제한다(<xref linkend="ddl-depend"> 참조).
+        모든 개체들도 함께 삭제한다(<xref linkend="ddl-depend"/> 참조).
        </para>
       </listitem>
      </varlistentry>
@@ -229,7 +229,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새이름</replaceable></term>
+      <term><replaceable class="parameter">새이름</replaceable></term>
       <listitem>
        <para>
         바뀔 새 도메인 이름.
@@ -238,7 +238,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새제약조건</replaceable></term>
+      <term><replaceable class="parameter">새제약조건</replaceable></term>
       <listitem>
        <para>
         바뀔 새 제약조건 이름.
@@ -247,7 +247,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새소유주</replaceable></term>
+      <term><replaceable class="parameter">새소유주</replaceable></term>
       <listitem>
        <para>
         해당 도메인의 바뀔 새 소유주 이름.
@@ -256,7 +256,7 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새스키마</replaceable></term>
+      <term><replaceable class="parameter">새스키마</replaceable></term>
       <listitem>
        <para>
         해당 도메인의 바뀔 새 스키마 이름.
@@ -272,10 +272,10 @@ ALTER DOMAIN <replaceable class="PARAMETER">이름</replaceable>
   <title>참고</title>
 
   <para>
-   현재, <command>ALTER DOMAIN ADD CONSTRAINT</>, <command>ALTER
-   DOMAIN VALIDATE CONSTRAINT</>, <command>ALTER DOMAIN SET NOT NULL</>
+   현재, <command>ALTER DOMAIN ADD CONSTRAINT</command>, <command>ALTER
+   DOMAIN VALIDATE CONSTRAINT</command>, <command>ALTER DOMAIN SET NOT NULL</command>
    명령은 그 도메인 구성이 복합 자료형인 경우 오류를 낸다.
-   이런 중첩된 칼럼들에서 사용되는 새 제약조건 검사는 
+   이런 중첩된 값들에서 사용되는 새 제약조건 검사는 
    앞으로 개선 되어야 하는 기능이다.
   </para>
 
@@ -323,24 +323,24 @@ ALTER DOMAIN zipcode SET SCHEMA customers;
 </programlisting></para>
  </refsect1>
 
- <refsect1 id="SQL-ALTERDOMAIN-compatibility">
+ <refsect1 id="sql-alterdomain-compatibility">
   <title>호환성</title>
 
   <para>
    <command>ALTER DOMAIN</command> 명령은 표준 <acronym>SQL</acronym>
-   구문을 따른다.  단, <literal>OWNER</>, <literal>RENAME</literal>, <literal>SET SCHEMA</>, <literal>VALIDATE CONSTRAINT</> 옵션은
+   구문을 따른다.  단, <literal>OWNER</literal>, <literal>RENAME</literal>, <literal>SET SCHEMA</literal>, <literal>VALIDATE CONSTRAINT</literal> 옵션은
    <productname>PostgreSQL</productname> 확장 기능이다.
-   또한 <literal>ADD CONSTRAINT</> 구문에서 <literal>NOT VALID</> 
+   또한 <literal>ADD CONSTRAINT</literal> 구문에서 <literal>NOT VALID</literal> 
    옵션도 <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
- <refsect1 id="SQL-ALTERDOMAIN-see-also">
+ <refsect1 id="sql-alterdomain-see-also">
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createdomain"></member>
-   <member><xref linkend="sql-dropdomain"></member>
+   <member><xref linkend="sql-createdomain"/></member>
+   <member><xref linkend="sql-dropdomain"/></member>
   </simplelist>
  </refsect1>
 

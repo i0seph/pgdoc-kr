@@ -22,7 +22,7 @@ PostgreSQL documentation
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>postgres</command>
-   <arg rep="repeat"><replaceable>옵션</></arg>
+   <arg rep="repeat"><replaceable>옵션</replaceable></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
@@ -50,9 +50,9 @@ PostgreSQL documentation
    <envar>PGDATA</envar> 환경 변수값으로 지정한다.  이 값은
    기본값이 없다.  일반적으로 <option>-D</option> 옵션이나, 
    <envar>PGDATA</envar> 환경 변수값으로 사용하는 위치는
-   <xref linkend="app-initdb"> 명령으로 만든 디렉터리 경로를
+   <xref linkend="app-initdb"/> 명령으로 만든 디렉터리 경로를
    사용한다.  Other possible file layouts are
-   discussed in <xref linkend="runtime-config-file-locations">.
+   discussed in <xref linkend="runtime-config-file-locations"/>.
   </para>
 
   <para>
@@ -66,7 +66,7 @@ PostgreSQL documentation
   <para>
    <command>postgres</command> 명령은 단일 사용자 모드로도 
    실행할 수 있다.  이렇게 사용하는 경우 중 가장 대표적인 것은
-   <xref linkend="app-initdb"> 작업 중에 일어난다.  또한,
+   <xref linkend="app-initdb"/> 작업 중에 일어난다.  또한,
    디버그 작업이나, 장애 복구 때 사용한다;  물론 단일 사용자
    모드에서 모든 상황의 문제점을 디버그 할 수 있는 것은 
    아님을 기억해야한다.  여러 사용자들이 함께 사용하면서 
@@ -88,13 +88,13 @@ PostgreSQL documentation
    <para>
     다음은 <command>postgres</command> 명령을 실행할 때 
     사용할 수 있는 명령행 옵션들에 대한 설명이다.  서버 실행 환경에
-    대한 자세한 설명은 <xref linkend="runtime-config">에서
+    대한 자세한 설명은 <xref linkend="runtime-config"/>에서
     다룬다.  여기서 설명하는 대부분 옵션들은 환경 설정 파일에
     저장해서 지정할 수 있다.  일부 (안전한) 옵션들은 
     응용프로그램 의존적인 설정인 경우 그 세션에만 적용할 수 있도록
     클라이언트가 접속할 때 적용할 수도 있다.
     예를 들어, <envar>PGOPTIONS</envar> 환경 변수 값으로 지정한 
-    옵션 값들은 <application>libpq</> 기반 응용 프로그램이 
+    옵션 값들은 <application>libpq</application> 기반 응용 프로그램이 
     실행 될 때 사용해서, 서버 연결 시 <command>postgres</command>
     명령행 옵션으로 사용된다.
    </para>
@@ -110,7 +110,7 @@ PostgreSQL documentation
         서버 프로세스들이 사용하는 공유 버퍼 수.
         이 값은 <application>initdb</application> 작업 때 
         자동으로 기본값이 결정된다.  
-        <xref linkend="guc-shared-buffers"> 환경 설정 매개 변수 값과 같다.
+        <xref linkend="guc-shared-buffers"/> 환경 설정 매개 변수 값과 같다.
        </para>
       </listitem>
      </varlistentry>
@@ -120,9 +120,9 @@ PostgreSQL documentation
       <listitem>
        <para>
         지정한 이름의 실시간 매개 변수 값 지정.  여기서 사용할 수 있는
-        매개 변수들은 <xref linkend="runtime-config">에서 설명하고 있다.
+        매개 변수들은 <xref linkend="runtime-config"/>에서 설명하고 있다.
         대부분의 옵션들은 이렇게 지정할 수 있는 설정의 간단한 방식의
-        옵션들이다.  <option>-c</> 옵션은 명령행에서 여러 번 사용할 수 있다.
+        옵션들이다.  <option>-c</option> 옵션은 명령행에서 여러 번 사용할 수 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -132,17 +132,17 @@ PostgreSQL documentation
       <listitem>
        <para>
         지정한 실시간 매개 변수 값을 출력하고, 프로그램을 종료한다.
-        (위 <option>-c</> 옵션 설명 참조)  이 옵션은 서버가 
-        실행 중일 때도 사용할 수 있으며, <filename>postgresql.conf</>
+        (위 <option>-c</option> 옵션 설명 참조)  이 옵션은 서버가 
+        실행 중일 때도 사용할 수 있으며, <filename>postgresql.conf</filename>
         파일에서 지정한 그 값을 보여준다.  서버 실행 시 명령행 옵션으로
         지정한 값은 보여주지 않는다.
        </para>
 
        <para>
-        이 옵션은 <xref linkend="app-pg-ctl"> 프로그램 같은 
+        이 옵션은 <xref linkend="app-pg-ctl"/> 프로그램 같은 
         서버 운영에 필요한 다른 프로그램이 서버 환경 설정 값을 조회할 때
         사용한다.  사용자가 현재 실행 중인 서버의 환경 설정 값들을 
-        조회하려면, <xref linkend="sql-show"> SQL 명령을 이용하거나, 
+        조회하려면, <xref linkend="sql-show"/> SQL 명령을 이용하거나, 
         <structname>pg_settings</structname> 뷰를 살펴보아야 한다.
        </para>
       </listitem>
@@ -165,7 +165,7 @@ PostgreSQL documentation
       <listitem>
        <para>
         데이터베이스 환경 설정 파일이 있는 디렉터리를 지정한다.  자세한 
-        설명은 <xref linkend="runtime-config-file-locations">에서 다룬다.
+        설명은 <xref linkend="runtime-config-file-locations"/>에서 다룬다.
        </para>
       </listitem>
      </varlistentry>
@@ -175,8 +175,8 @@ PostgreSQL documentation
       <listitem>
        <para>
         날짜 출력 양식을 <quote>European</quote>으로 바꾼다. 이는
-        <literal>DMY</> 순서다.  자세한 설명은
-        <xref linkend="datatype-datetime">에서 한다.
+        <literal>DMY</literal> 순서다.  자세한 설명은
+        <xref linkend="datatype-datetime"/>에서 한다.
        </para>
       </listitem>
      </varlistentry>
@@ -188,7 +188,7 @@ PostgreSQL documentation
         처리 성능을 높이기 위해 <function>fsync</function>
         작업을 안한다.  이 옵션을 사용하면, 
         서버가 비정상 종료될 경우 자료 손실이 있을 수 있다.
-        <xref linkend="guc-fsync"> 서버 환경 설정 매개 변수 값을
+        <xref linkend="guc-fsync"/> 서버 환경 설정 매개 변수 값을
         off로 지정하는 것과 같다.
         이 옵션을 사용하기 전에 반드시 문서를 꼼꼼히 읽어 부작용을 
         충분히 알고 있어야 한다!
@@ -203,13 +203,13 @@ PostgreSQL documentation
         <command>postgres</command> 서버의 TCP/IP 리슨용 
         호스트이름 또는 IP 주소를 지정한다.
         쉼표로 구분해서 여러개를 지정할 수 있으며, 
-        <literal>*</> 문자를 사용해서 사용 가능한 모든 
+        <literal>*</literal> 문자를 사용해서 사용 가능한 모든 
         인터페이스를 리슨용으로 지정할 수 있다.
         이 값을 지정하지 않고 이 옵션만 쓰면, 
         유닉스 도메인 소켓만 사용한다. (외부 TCP/IP 접속이 막힌다)
         서버 초기값은 <systemitem class="systemname">localhost</systemitem>
         접속만 허용한다.  이 옵션은
-        <xref linkend="guc-listen-addresses"> 환경 설정 매개 변수 값을 
+        <xref linkend="guc-listen-addresses"/> 환경 설정 매개 변수 값을 
         지정하는 것과 같다.
        </para>
       </listitem>
@@ -221,13 +221,13 @@ PostgreSQL documentation
        <para>
         이 옵션은 클라이언트가 원격 접속을 허용한다.  이 옵션을 
         사용하지 않으면, 로컬 접속만 허용한다.  이 옵션은
-        <option>-h</> 옵션을 사용하거나,
-        <filename>postgresql.conf</> 파일에서 
-        <varname>listen_addresses</> 값을 <literal>*</> 로 지정하는 
+        <option>-h</option> 옵션을 사용하거나,
+        <filename>postgresql.conf</filename> 파일에서 
+        <varname>listen_addresses</varname> 값을 <literal>*</literal> 로 지정하는 
         것과 같다.
        </para>
        <para>
-        이 옵션은 <option>-h</> 옵션에서 보다 다양하게 그 값을 지정할 
+        이 옵션은 <option>-h</option> 옵션에서 보다 다양하게 그 값을 지정할 
         수 있게 되어 이제는 쓰지 않는다.
        </para>
       </listitem>
@@ -243,7 +243,7 @@ PostgreSQL documentation
         허용하지 않고, TCP/IP 소켓 접속만 허용한다.
         <filename>/tmp</filename> 디렉터리가 기본값이다.
         기본값은 빌드 할 때 변경할 수 있다.
-        <xref linkend="guc-unix-socket-directories"> 환경 설정
+        <xref linkend="guc-unix-socket-directories"/> 환경 설정
         매개 변수 값을 지정하는 것과 같다.
        </para>
       </listitem>
@@ -256,7 +256,7 @@ PostgreSQL documentation
         <acronym>SSL</acronym> 접속을 활성화 한다.  물론
         서버가 <acronym>SSL</acronym> 접속을 사용할 수 있도록
         빌드되어야 사용할 수 있다.  <acronym>SSL</acronym>
-        접속 관련 정보는 <xref linkend="ssl-tcp">에서 자세히 다룬다.
+        접속 관련 정보는 <xref linkend="ssl-tcp"/>에서 자세히 다룬다.
        </para>
       </listitem>
      </varlistentry>
@@ -267,7 +267,7 @@ PostgreSQL documentation
        <para>
         클라이언트 최대 접속 수 지정.
         이 값은 <application>initdb</application> 작업 시 기본값이
-        정해 진다.  <xref linkend="guc-max-connections"> 환경 설정 
+        정해 진다.  <xref linkend="guc-max-connections"/> 환경 설정 
         매개 변수 값을 지정하는 것과 같다.
        </para>
       </listitem>
@@ -283,10 +283,10 @@ PostgreSQL documentation
        </para>
 
        <para>
-        <replaceable class="parameter">기타옵션</> 값이 여러 옵션을 
-        지정한다면, 그 옵션별로 공백 문자로 구분한다.  백슬래시(<literal>\</>)
-        문자가 값으로 쓸 경우는  <literal>\\</> 형태로 이스케이핑 해야한다.
-        <option>-o</> 옵션은 명령행에서 여러번 사용할 수 있다.
+        <replaceable class="parameter">기타옵션</replaceable> 값이 여러 옵션을 
+        지정한다면, 그 옵션별로 공백 문자로 구분한다.  백슬래시(<literal>\</literal>)
+        문자가 값으로 쓸 경우는  <literal>\\</literal> 형태로 이스케이핑 해야한다.
+        <option>-o</option> 옵션은 명령행에서 여러번 사용할 수 있다.
        </para>
 
        <para>
@@ -329,15 +329,15 @@ PostgreSQL documentation
         정렬 작업이나, 해시 작업을 할 때 필요한 세션 별로 내부적으로 
         사용하는 메모리 크기를 지정한다.  자세한 내용은
         <xref
-        linkend="runtime-config-resource-memory">에서 <varname>work_mem</>
+        linkend="runtime-config-resource-memory"/>에서 <varname>work_mem</varname>
         환경 설정 매개 변수 부분을 살펴보면 된다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-V</></term>
-      <term><option>--version</></term>
+      <term><option>-V</option></term>
+      <term><option>--version</option></term>
       <listitem>
        <para>
         <application>postgres</application> 버전을 보여주고 마친다.
@@ -349,7 +349,7 @@ PostgreSQL documentation
       <term><option>--<replaceable>name</replaceable>=<replaceable>value</replaceable></option></term>
       <listitem>
        <para>
-        지정한 이름의 실시간 매개 변수 값을 지정한다.  <option>-c</> 옵션의
+        지정한 이름의 실시간 매개 변수 값을 지정한다.  <option>-c</option> 옵션의
         단순한 사용법이다.
        </para>
       </listitem>
@@ -360,15 +360,15 @@ PostgreSQL documentation
       <listitem>
        <para>
         서버 내부 환경 설정 변수들에 대한 설명을 모두 보여 준다.  출력
-        양식은 <command>COPY</> 명령 출력 양식과 같이 탭 구문 문자로
+        양식은 <command>COPY</command> 명령 출력 양식과 같이 탭 구문 문자로
         칼럼을 구분한다.  이 옵션은 관리 도구에서 사용하려고 제공한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-?</></term>
-      <term><option>--help</></term>
+      <term><option>-?</option></term>
+      <term><option>--help</option></term>
       <listitem>
        <para>
         <application>postgres</application> 명령행 옵션들을 보여주고 마친다.
@@ -523,7 +523,7 @@ PostgreSQL documentation
     <para>
      다음 옵션들은 단일 사용자 모드로 서버를 실행할 때 사용한다
      (<xref linkend="app-postgres-single-user"
-     endterm="app-postgres-single-user-title"> 참조).
+     endterm="app-postgres-single-user-title"/> 참조).
     </para>
 
     <variablelist>
@@ -613,7 +613,7 @@ PostgreSQL documentation
 
     <listitem>
      <para>
-      <xref linkend="guc-datestyle"> 실시간 매개 변수값을 
+      <xref linkend="guc-datestyle"/> 실시간 매개 변수값을 
       지정한다.  (이 환경 변수 사용은 권장하지 않는다.)
      </para>
     </listitem>
@@ -637,13 +637,13 @@ PostgreSQL documentation
    <title>진단</title>
 
    <para>
-    서버가 <literal>semget</> 또는 <literal>shmget</> 시스템 호출을
+    서버가 <literal>semget</literal> 또는 <literal>shmget</literal> 시스템 호출을
     하다가 실패해서 실행이 안 된다는 실패 메시지를 볼 수도 있다.
     이 문제는 OS 공유 메모리와 세마포어 설정 값이 서버를 
     운영하는 적당하지 않기 때문에 발생한다.  이 부분에 대해서는
-    <xref linkend="kernel-resources">에서 자세히 다루고 있다.  OS 
+    <xref linkend="kernel-resources"/>에서 자세히 다루고 있다.  OS 
     커널 설정을 변경할 수 없는 상황이라면, <xref
-    linkend="guc-shared-buffers"> 값이나, <xref linkend="guc-max-connections">
+    linkend="guc-shared-buffers"/> 값이나, <xref linkend="guc-max-connections"/>
     값을 줄여서 서버를 실행하는 것도 한 방법이다.
    </para>
 
@@ -680,7 +680,7 @@ PostgreSQL documentation
   <title>참고</title>
 
   <para>
-   <xref linkend="app-pg-ctl"> 도구는 <command>postgres</command>
+   <xref linkend="app-pg-ctl"/> 도구는 <command>postgres</command>
    서버를 실행하거나 중지하는 손쉽고, 안전한 도구다.  일반적으로
    서버 관리는 이 명령어를 사용한다.
   </para>
@@ -718,8 +718,8 @@ PostgreSQL documentation
    세션 프로세스를 강제 종료 하려면, 그 프로세스로
    <literal>SIGTERM</literal> 시그널을 보내면 된다.
    같은 역할을 하는 SQL 명령어는
-   <function>pg_cancel_backend</>, <function>pg_terminate_backend</>
-   함수를 실행하면 된다.  (<xref linkend="functions-admin-signal"> 참조)
+   <function>pg_cancel_backend</function>, <function>pg_terminate_backend</function>
+   함수를 실행하면 된다.  (<xref linkend="functions-admin-signal"/> 참조)
   </para>
 
   <para>
@@ -736,9 +736,9 @@ PostgreSQL documentation
  <refsect1 id="app-postgres-bugs">
   <title>문제점</title>
   <para>
-   <option>--</> 옵션들은 <systemitem
-   class="osname">FreeBSD</>, <systemitem class="osname">OpenBSD</>에서는
-   사용할 수 없다.  <option>-c</> 옵션을 사용해야 한다.  이 문제는
+   <option>--</option> 옵션들은 <systemitem
+   class="osname">FreeBSD</systemitem>, <systemitem class="osname">OpenBSD</systemitem>에서는
+   사용할 수 없다.  <option>-c</option> 옵션을 사용해야 한다.  이 문제는
    해당 OS 의존적인 문제다.  향후 <productname>PostgreSQL</productname>
    에서는 이 문제를 해결할 수 없다면 피해갈 수 있는 방법을 제시할 것이다.
   </para>
@@ -750,15 +750,15 @@ PostgreSQL documentation
    <para>
     일반적인 단일 사용자 모드 실행 방법
 <screen>
-<userinput>postgres --single -D /usr/local/pgsql/data <replaceable>기타옵션들</> my_database</userinput>
+<userinput>postgres --single -D /usr/local/pgsql/data <replaceable>기타옵션들</replaceable> my_database</userinput>
 </screen>
-    <option>-D</> 옵션이나, <envar>PGDATA</> 환경 변수값으로 바른
+    <option>-D</option> 옵션이나, <envar>PGDATA</envar> 환경 변수값으로 바른
     데이터디렉터리를 지정하고 뒤에 사용할 데이터베이스 이름을 지정한다.
    </para>
 
    <para>
     단일 사용자 모드로 실행된 경우 사용자 명령어 입력은 줄 단위로 실행된다.
-    <application>psql</> 프로그램을 사용할 때처럼 유연하게, 세미콜론으로
+    <application>psql</application> 프로그램을 사용할 때처럼 유연하게, 세미콜론으로
     명령을 구분해서 실행하지 않는다.  명령을 여러 줄에 나눠
     입력 해야할 경우는 각 줄 마지막에 백슬래시 문자를 추가해서 
     줄을 바꾼다.  이렇게 하면 명령 해석을 할 때, 백슬래시+줄바꿈 문자는 
@@ -767,7 +767,7 @@ PostgreSQL documentation
    </para>
 
    <para>
-    <option>-j</> 옵션은 이런 부분을 감안해서, 세미콜론+줄바꿈문자+줄바꿈문자가
+    <option>-j</option> 옵션은 이런 부분을 감안해서, 세미콜론+줄바꿈문자+줄바꿈문자가
     있으면, 그것을 명령 입력 마무리로 간주한다.  이 때는
     백슬래시+줄바꿈문자 처리는 무시된다.  즉 명령 내 문자열 처리나, 
     주석 처리에서 그대로 반영된다.
@@ -780,8 +780,8 @@ PostgreSQL documentation
 
    <para>
     작업을 종료하려면, <acronym>EOF</acronym> 신호를 보낸다.
-    (일반적으로 <keycombo action="simul"><keycap>Control</><keycap>D</></>)
-    (Windows 경우는 <keycombo action="simul"><keycap>Control</><keycap>Z</></>)
+    (일반적으로 <keycombo action="simul"><keycap>Control</keycap><keycap>D</keycap></keycombo>)
+    (Windows 경우는 <keycombo action="simul"><keycap>Control</keycap><keycap>Z</keycap></keycombo>)
     명령 입력을 마무리한 상태(해당 명령을 서버가 처리하는 상태)에서
     <acronym>EOF</acronym> 신호는 서버 처리 뒤 종료되며, 
     명령 입력을 기다리는 상태 <acronym>EOF</acronym> 신호는 바로 종료한다.
@@ -810,7 +810,7 @@ PostgreSQL documentation
 <screen>
 <prompt>$</prompt> <userinput>postgres -p 1234</userinput>
 </screen>
-   이렇게 실행된 서버로 접속하려면, <application>psql</> 명령에서는
+   이렇게 실행된 서버로 접속하려면, <application>psql</application> 명령에서는
     -p 옵션을 사용해서 접속한다.
 <screen>
 <prompt>$</prompt> <userinput>psql -p 1234</userinput>
@@ -828,8 +828,8 @@ PostgreSQL documentation
 <prompt>$</prompt> <userinput>postgres -c work_mem=1234</userinput>
 <prompt>$</prompt> <userinput>postgres --work-mem=1234</userinput>
 </screen>
-   이 경우, <filename>postgresql.conf</> 파일에서 지정한
-   <varname>work_mem</> 설정값은 무시된다.  환경 설정 변수 이름으로
+   이 경우, <filename>postgresql.conf</filename> 파일에서 지정한
+   <varname>work_mem</varname> 설정값은 무시된다.  환경 설정 변수 이름으로
    사용되는 밑줄(_) 문자는 명령행에서는 중간줄(-) 문자로 바꿔 
    사용한다.  물론 -c 옵션을 사용하는 경우는 환경 설정 변수 이름 
    그대로 사용하면 된다.
@@ -840,8 +840,8 @@ PostgreSQL documentation
   <title>관련 항목</title>
 
   <para>
-   <xref linkend="app-initdb">,
-   <xref linkend="app-pg-ctl">
+   <xref linkend="app-initdb"/>,
+   <xref linkend="app-pg-ctl"/>
   </para>
  </refsect1>
 </refentry>

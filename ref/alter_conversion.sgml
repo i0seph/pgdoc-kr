@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_conversion.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERCONVERSION">
+<refentry id="sql-alterconversion">
  <indexterm zone="sql-alterconversion">
   <primary>ALTER CONVERSION</primary>
  </indexterm>
@@ -36,7 +36,7 @@ ALTER CONVERSION <replaceable>이름</replaceable> SET SCHEMA <replaceable>새�
   </para>
 
   <para>
-   <command>ALTER CONVERSION</> 명령은 해당 변환규칙의 소유주가 
+   <command>ALTER CONVERSION</command> 명령은 해당 변환규칙의 소유주가 
    사용할 수 있으며, 소유주(롤)를 바꿀 경우는 직간접적으로 
    기존 소유주가 새 소유주 소속이어야 하며, 또한
    그 변환규칙이 있는 스키마에 대해서 <literal>CREATE</literal>
@@ -119,8 +119,8 @@ ALTER CONVERSION iso_8859_1_to_utf8 OWNER TO joe;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createconversion"></member>
-   <member><xref linkend="sql-dropconversion"></member>
+   <member><xref linkend="sql-createconversion"/></member>
+   <member><xref linkend="sql-dropconversion"/></member>
   </simplelist>
  </refsect1>
 </refentry>

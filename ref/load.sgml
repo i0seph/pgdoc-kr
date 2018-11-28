@@ -2,7 +2,7 @@
 doc/src/sgml/ref/load.sgml
 -->
 
-<refentry id="SQL-LOAD">
+<refentry id="sql-load">
  <indexterm zone="sql-load">
   <primary>LOAD</primary>
  </indexterm>
@@ -20,7 +20,7 @@ doc/src/sgml/ref/load.sgml
 
  <refsynopsisdiv>
 <synopsis>
-LOAD '<replaceable class="PARAMETER">파일이름</replaceable>'
+LOAD '<replaceable class="parameter">파일이름</replaceable>'
 </synopsis>
  </refsynopsisdiv>
 
@@ -28,11 +28,11 @@ LOAD '<replaceable class="PARAMETER">파일이름</replaceable>'
   <title>설명</title>
 
   <para>
-   이 명령은 <productname>PostgreSQL</> 서버에서 사용할 수 있도록
+   이 명령은 <productname>PostgreSQL</productname> 서버에서 사용할 수 있도록
    한 공유 라이브러리 파일을 불러온다.  이미 해당 라이브러리가 
    사용할 수 있는 상태(이미 로드된 상태)라면 아무런 작업을 하지 
    않는다.  C 함수를 포함하는 공유 라이브러리 파일은
-   그 함수가 호출 되면 자동으로 로드된다.  따라서 <command>LOAD</>
+   그 함수가 호출 되면 자동으로 로드된다.  따라서 <command>LOAD</command>
    명령은 일반적인 함수 호출을 위해서 사용하기 보다는 
    서버 기능을 확장하기 위한 어떤 작업을 할 때 사용한다.
   </para>
@@ -40,21 +40,21 @@ LOAD '<replaceable class="PARAMETER">파일이름</replaceable>'
   <para>
    라이브러리 파일 이름은 일반적으로 그 파일 이름만 사용하며, 
    이 때 그 파일은 서버 라이브러리 탐색 경로(<xref
-   linkend="guc-dynamic-library-path"> 참조) 안에 있음으로 간주한다.
+   linkend="guc-dynamic-library-path"/> 참조) 안에 있음으로 간주한다.
    이렇지 않다면, 파일 이름으로 절대 경로로 전체 경로 이름을 모두
    지정해야 한다.  이 두 경우 모두, OS의 표준 공유 라이브러리는 
    생략해도 된다.  C 함수 관련 로딩에 대한 자세한 이야기는
-   <xref linkend="xfunc-c-dynload">에서 다룬다.
+   <xref linkend="xfunc-c-dynload"/>에서 다룬다.
   </para>
 
   <indexterm>
-   <primary><filename>$libdir/plugins</></primary>
+   <primary><filename>$libdir/plugins</filename></primary>
   </indexterm>
 
   <para>
-   일반 사용자가 <command>LOAD</> 명령을 사용하려면, 
-   <replaceable class="PARAMETER">파일이름</replaceable>으로
-   지정한 파일이 반드시 <filename>$libdir/plugins/</> 
+   일반 사용자가 <command>LOAD</command> 명령을 사용하려면, 
+   <replaceable class="parameter">파일이름</replaceable>으로
+   지정한 파일이 반드시 <filename>$libdir/plugins/</filename> 
    디렉터리 안에 있는 파일이어야만 한다. (데이터베이스 관리자는
    해당 서버를 안전하게 관리해야하는 책임이 있기 때문에, 
    이런 라이브러리 설치에 대한 관리를 해야하기 때문이다.)
@@ -75,7 +75,7 @@ LOAD '<replaceable class="PARAMETER">파일이름</replaceable>'
   <title>관련 항목</title>
 
   <para>
-   <xref linkend="sql-createfunction">
+   <xref linkend="sql-createfunction"/>
   </para>
  </refsect1>
 </refentry>

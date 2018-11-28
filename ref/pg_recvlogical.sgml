@@ -35,17 +35,17 @@ PostgreSQL documentation
 
   <para>
    이 명령은 복제용 연결을 사용한다.  이런 이유로 
-   <xref linkend="app-pgreceivewal">  명령어의 제약 사항과 같은 
+   <xref linkend="app-pgreceivewal"/>  명령어의 제약 사항과 같은 
    제약 사항이 있다. 더불어 논리 복제의 제약 사항도 있다.
-   (<xref linkend="logicaldecoding"> 참조)
+   (<xref linkend="logicaldecoding"/> 참조)
   </para>
  
   <para>
-   <command>pg_recvlogical</> has no equivalent to the logical decoding
+   <command>pg_recvlogical</command> has no equivalent to the logical decoding
    SQL interface's peek and get modes. It sends replay confirmations for
    data lazily as it receives it and on clean exit. To examine pending data on
     a slot without consuming it, use
-   <link linkend="functions-replication"><function>pg_logical_slot_peek_changes</></>.
+   <link linkend="functions-replication"><function>pg_logical_slot_peek_changes</function></link>.
   </para>
  </refsect1>
 
@@ -125,7 +125,7 @@ PostgreSQL documentation
        </para>
 
        <para>
-        If there's a record with LSN exactly equal to <replaceable>lsn</>,
+        If there's a record with LSN exactly equal to <replaceable>lsn</replaceable>,
         the record will be output.
        </para>
 
@@ -145,7 +145,7 @@ PostgreSQL documentation
       <listitem>
        <para>
         복제 내용을 해당 파일로 기록한다.  파일이름으로
-        <literal>-</> 문자를 지정하면, <systemitem>stdout</systemitem>
+        <literal>-</literal> 문자를 지정하면, <systemitem>stdout</systemitem>
         (표준출력)으로 보낸다.
        </para>
       </listitem>
@@ -183,8 +183,8 @@ PostgreSQL documentation
        <para>
         In <option>--start</option> mode, start replication from the given
         LSN.  For details on the effect of this, see the documentation
-        in <xref linkend="logicaldecoding">
-        and <xref linkend="protocol-replication">. Ignored in other modes.
+        in <xref linkend="logicaldecoding"/>
+        and <xref linkend="protocol-replication"/>. Ignored in other modes.
        </para>
       </listitem>
      </varlistentry>
@@ -227,7 +227,7 @@ PostgreSQL documentation
       <listitem>
        <para>
         슬롯을 만들 때 지정한 그 플러그인 이름을 지정한다.
-        자세한 설명은 <xref linkend="logicaldecoding">을 참조한다.
+        자세한 설명은 <xref linkend="logicaldecoding"/>을 참조한다.
         이 옵션은 이미 해당 슬롯이 만들어진 상황이라면 무시된다.
        </para>
       </listitem>
@@ -238,7 +238,7 @@ PostgreSQL documentation
       <term><option>--status-interval=<replaceable>간격_초</replaceable></option></term>
       <listitem>
        <para>
-        이 옵션은 <xref linkend="app-pgreceivewal"> 명령의 옵션과 같다.
+        이 옵션은 <xref linkend="app-pgreceivewal"/> 명령의 옵션과 같다.
         자세한 설명은 그 명령어 설명서를 참조한다.
        </para>
       </listitem>
@@ -259,8 +259,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-       <term><option>-v</></term>
-       <term><option>--verbose</></term>
+       <term><option>-v</option></term>
+       <term><option>--verbose</option></term>
        <listitem>
        <para>
         작업 상황을 보다 자세히 출력한다.
@@ -281,7 +281,7 @@ PostgreSQL documentation
         <para>
          The database to connect to.  See the description of the actions for
          what this means in detail.  This can be a <application>libpq</application> connection string;
-         see <xref linkend="LIBPQ-CONNSTRING"> for more information.  Defaults
+         see <xref linkend="libpq-connstring"/> for more information.  Defaults
          to user name.
         </para>
        </listitem>
@@ -355,7 +355,7 @@ PostgreSQL documentation
          for a password if the server demands password authentication.
          However, <application>pg_recvlogical</application> will waste a
          connection attempt finding out that the server wants a password.
-         In some cases it is worth typing <option>-W</> to avoid the extra
+         In some cases it is worth typing <option>-W</option> to avoid the extra
          connection attempt.
         </para>
       </listitem>
@@ -368,8 +368,8 @@ PostgreSQL documentation
 
     <variablelist>
      <varlistentry>
-       <term><option>-V</></term>
-       <term><option>--version</></term>
+       <term><option>-V</option></term>
+       <term><option>--version</option></term>
        <listitem>
        <para>
         Print the <application>pg_recvlogical</application> version and exit.
@@ -378,8 +378,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-?</></term>
-      <term><option>--help</></term>
+      <term><option>-?</option></term>
+      <term><option>--help</option></term>
        <listitem>
         <para>
          Show help about <application>pg_recvlogical</application> command line
@@ -395,18 +395,29 @@ PostgreSQL documentation
   <title>환경변수</title>
 
   <para>
-   이 명령어는 <application>libpq</> 라이브러리를 사용함으로
-   대부분의 <productname>PostgreSQL</> 응용 프로그램처럼
+   이 명령어는 <application>libpq</application> 라이브러리를 사용함으로
+   대부분의 <productname>PostgreSQL</productname> 응용 프로그램처럼
    해당 라이브러리에서 사용한 환경 변수를 그대로 사용할 수 있다.
-   (<xref linkend="libpq-envars"> 참조).
+   (<xref linkend="libpq-envars"/> 참조).
   </para>
+ </refsect1>
+
+ <refsect1>
+  <title>Notes</title>
+
+  <para>
+   <application>pg_recvlogical</application> will preserve group permissions on
+   the received WAL files if group permissions are enabled on the source
+   cluster.
+  </para>
+
  </refsect1>
 
  <refsect1>
   <title>예제</title>
 
   <para>
-   <xref linkend="logicaldecoding-example"> 참조
+   <xref linkend="logicaldecoding-example"/> 참조
   </para>
  </refsect1>
 
@@ -414,7 +425,7 @@ PostgreSQL documentation
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="app-pgreceivewal"></member>
+   <member><xref linkend="app-pgreceivewal"/></member>
   </simplelist>
  </refsect1>
 </refentry>

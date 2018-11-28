@@ -9,9 +9,9 @@
  </indexterm>
 
  <para>
-  <xref linkend="keywords-table">는 표준 SQL과 <productname>PostgreSQL</productname>
+  <xref linkend="keywords-table"/>는 표준 SQL과 <productname>PostgreSQL</productname>
   &version; 에서 정의한 모든 키워드 목록이다.  키워드에 대한 배경 지식은
-  <xref linkend="sql-syntax-identifiers">에서 소개한다.
+  <xref linkend="sql-syntax-identifiers"/>에서 소개한다.
   (지면 관계 상, 표준 SQL은 역사적인 SQL-92, 그리고 최신 두 버전만 
   언급한다.  이들과 그 사이 중간 표준 SQL들 차이는 적다.)
  </para>
@@ -44,7 +44,7 @@
  </para>
 
  <para>
-  In <xref linkend="keywords-table"> in the column for
+  In <xref linkend="keywords-table"/> in the column for
   <productname>PostgreSQL</productname> we classify as
   <quote>non-reserved</quote> those key words that are explicitly
   known to the parser but are allowed as column or table names.
@@ -68,7 +68,7 @@
 
  <para>
   It is important to understand before studying <xref
-  linkend="keywords-table"> that the fact that a key word is not
+  linkend="keywords-table"/> that the fact that a key word is not
   reserved in <productname>PostgreSQL</productname> does not mean that
   the feature related to the word is not implemented.  Conversely, the
   presence of a key word does not indicate the existence of a feature.
@@ -518,7 +518,7 @@
    </row>
    <row>
     <entry><token>CALL</token></entry>
-    <entry></entry>
+    <entry>non-reserved</entry>
     <entry>reserved</entry>
     <entry>reserved</entry>
     <entry></entry>
@@ -2058,7 +2058,7 @@
    </row>
    <row>
     <entry><token>GROUPS</token></entry>
-    <entry></entry>
+    <entry>non-reserved</entry>
     <entry>reserved</entry>
     <entry></entry>
     <entry></entry>
@@ -2195,6 +2195,13 @@
     <entry>reserved</entry>
     <entry>reserved</entry>
     <entry>reserved</entry>
+   </row>
+   <row>
+    <entry><token>INCLUDE</token></entry>
+    <entry>non-reserved</entry>
+    <entry></entry>
+    <entry></entry>
+    <entry></entry>
    </row>
    <row>
     <entry><token>INCLUDING</token></entry>
@@ -3199,7 +3206,7 @@
    </row>
    <row>
     <entry><token>OTHERS</token></entry>
-    <entry></entry>
+    <entry>non-reserved</entry>
     <entry>non-reserved</entry>
     <entry>non-reserved</entry>
     <entry></entry>
@@ -3569,6 +3576,13 @@
     <entry>reserved</entry>
    </row>
    <row>
+    <entry><token>PROCEDURES</token></entry>
+    <entry>non-reserved</entry>
+    <entry></entry>
+    <entry></entry>
+    <entry></entry>
+   </row>
+   <row>
     <entry><token>PROGRAM</token></entry>
     <entry>non-reserved</entry>
     <entry></entry>
@@ -3934,9 +3948,16 @@
    </row>
    <row>
     <entry><token>ROUTINE</token></entry>
+    <entry>non-reserved</entry>
+    <entry>non-reserved</entry>
+    <entry>non-reserved</entry>
     <entry></entry>
+   </row>
+   <row>
+    <entry><token>ROUTINES</token></entry>
     <entry>non-reserved</entry>
-    <entry>non-reserved</entry>
+    <entry></entry>
+    <entry></entry>
     <entry></entry>
    </row>
    <row>
@@ -4613,7 +4634,7 @@
    </row>
    <row>
     <entry><token>TIES</token></entry>
-    <entry></entry>
+    <entry>non-reserved</entry>
     <entry>non-reserved</entry>
     <entry>non-reserved</entry>
     <entry></entry>

@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_tsconfig.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERTSCONFIG">
+<refentry id="sql-altertsconfig">
  <indexterm zone="sql-altertsconfig">
   <primary>ALTER TEXT SEARCH CONFIGURATION</primary>
  </indexterm>
@@ -48,7 +48,7 @@ ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable> SET SCHEMA <re
   </para>
 
   <para>
-   <command>ALTER TEXT SEARCH CONFIGURATION</> 명령은 해당 환경 설정 소유주만
+   <command>ALTER TEXT SEARCH CONFIGURATION</command> 명령은 해당 환경 설정 소유주만
    사용할 수 있다.
   </para>
  </refsect1>
@@ -134,19 +134,19 @@ ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable> SET SCHEMA <re
  </variablelist>
 
   <para>
-   <literal>ADD MAPPING FOR</> 구문은 해당 환경 설정에서 
+   <literal>ADD MAPPING FOR</literal> 구문은 해당 환경 설정에서 
    지정한 토큰 처리용 사전을 사용하도록 추가한다.  이 때 이미 
    그 토큰에 대한 사전이 지정되어 있다면, 오류를 낸다.
-   <literal>ALTER MAPPING FOR</> 구문은 앞에서 설명한 것과 
+   <literal>ALTER MAPPING FOR</literal> 구문은 앞에서 설명한 것과 
    같은 일을 하는데, 해당 토큰에 대한 설정이 이미 있으면
    지우고 설정한다.
-   <literal>ALTER MAPPING REPLACE</> 구문은 해당 환경 설정에서 <replaceable
+   <literal>ALTER MAPPING REPLACE</literal> 구문은 해당 환경 설정에서 <replaceable
    class="parameter">옛사전</replaceable>으로 지정한 모든 설정을
    <replaceable class="parameter">새사전</replaceable>으로 바꾸며, 
-   특정 토큰 종류의 사전만 바꿀 때는 <literal>FOR</> 구문과 함께 
+   특정 토큰 종류의 사전만 바꿀 때는 <literal>FOR</literal> 구문과 함께 
    그 토큰 종류를 지정한다.
-   <literal>DROP MAPPING</> 구문은 해당 토큰 종류에 정의된 설정을 
-   지운다.  이 때 <literal>IF EXISTS</> 구문을 추가하면 해당 토큰 종류가 
+   <literal>DROP MAPPING</literal> 구문은 해당 토큰 종류에 정의된 설정을 
+   지운다.  이 때 <literal>IF EXISTS</literal> 구문을 추가하면 해당 토큰 종류가 
    없어도 오류가 생기지 않는다.
   </para>
 
@@ -156,9 +156,9 @@ ALTER TEXT SEARCH CONFIGURATION <replaceable>이름</replaceable> SET SCHEMA <re
   <title>예제</title>
 
   <para>
-   <literal>my_config</> 글 찾기 환경 설정에서
-   <literal>english</> 사전으로 지정한 모든 설정을
-   <literal>swedish</> 사전을 사용하도록 바꾼다:
+   <literal>my_config</literal> 글 찾기 환경 설정에서
+   <literal>english</literal> 사전으로 지정한 모든 설정을
+   <literal>swedish</literal> 사전을 사용하도록 바꾼다:
   </para>
 
 <programlisting>
@@ -180,8 +180,8 @@ ALTER TEXT SEARCH CONFIGURATION my_config
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createtsconfig"></member>
-   <member><xref linkend="sql-droptsconfig"></member>
+   <member><xref linkend="sql-createtsconfig"/></member>
+   <member><xref linkend="sql-droptsconfig"/></member>
   </simplelist>
  </refsect1>
 </refentry>

@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_role.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEROLE">
+<refentry id="sql-createrole">
  <indexterm zone="sql-createrole">
   <primary>CREATE ROLE</primary>
  </indexterm>
@@ -21,9 +21,9 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <replaceable class="PARAMETER">옵션</replaceable> [ ... ] ]
+CREATE ROLE <replaceable class="parameter">이름</replaceable> [ [ WITH ] <replaceable class="parameter">옵션</replaceable> [ ... ] ]
 
-<phrase><replaceable class="PARAMETER">옵션</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">옵션</replaceable> 자리에는:</phrase>
 
       SUPERUSER | NOSUPERUSER
     | CREATEDB | NOCREATEDB
@@ -32,15 +32,15 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
     | LOGIN | NOLOGIN
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
-    | CONNECTION LIMIT <replaceable class="PARAMETER">접속제한</replaceable>
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
-    | VALID UNTIL '<replaceable class="PARAMETER">타임스탬프</replaceable>'
-    | IN ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | IN GROUP <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | ADMIN <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | USER <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | SYSID <replaceable class="PARAMETER">uid</replaceable>
+    | CONNECTION LIMIT <replaceable class="parameter">접속제한</replaceable>
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>'
+    | VALID UNTIL '<replaceable class="parameter">타임스탬프</replaceable>'
+    | IN ROLE <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | IN GROUP <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | ROLE <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | ADMIN <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | USER <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | SYSID <replaceable class="parameter">uid</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -53,12 +53,12 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
    새 롤을 추가한다.  하나의 롤은
    데이터베이스 개체들을 소유할 수 있고, 
    데이터베이스 권한을 가질 수 있다.
-   롤은 그 사용 용도에 따라, <quote>사용자</>도 되고, 
-   <quote>그룹</>도 되고, 둘 다도 될 수 있다.
-   롤 관리는 <xref linkend="user-manag">에서,
-   롤 인증은 <xref linkend="client-authentication">에서 자세히
+   롤은 그 사용 용도에 따라, <quote>사용자</quote>도 되고, 
+   <quote>그룹</quote>도 되고, 둘 다도 될 수 있다.
+   롤 관리는 <xref linkend="user-manag"/>에서,
+   롤 인증은 <xref linkend="client-authentication"/>에서 자세히
    다룬다.
-   이 명령을 실행하려면, 사용자가 <literal>CREATEROLE</> 권한이 있거나
+   이 명령을 실행하려면, 사용자가 <literal>CREATEROLE</literal> 권한이 있거나
    슈퍼유저여야 한다.
   </para>
 
@@ -68,7 +68,7 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
   </para>
 
   <para>
-   롤을 <quote>역할</>로 옮길까 고민하다가 외래어 차용으로 결정했다. - 옮긴이
+   롤을 <quote>역할</quote>로 옮길까 고민하다가 외래어 차용으로 결정했다. - 옮긴이
   </para>
  </refsect1>
 
@@ -90,7 +90,7 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
       <term><literal>NOSUPERUSER</literal></term>
       <listitem>
        <para>
-        <quote>슈퍼유저</>로 지정할지 선택.
+        <quote>슈퍼유저</quote>로 지정할지 선택.
         슈퍼유저란 해당 데이터베이스 내 모든 접근 제한을 무시 하고, 
         작업할 수 있는 사용자를 뜻한다.
         슈퍼유저는 위험하다.  정말 해당 사용자가 슈퍼유저 권한이 있어야
@@ -102,8 +102,8 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
      </varlistentry>
 
      <varlistentry>
-      <term><literal>CREATEDB</></term>
-      <term><literal>NOCREATEDB</></term>
+      <term><literal>CREATEDB</literal></term>
+      <term><literal>NOCREATEDB</literal></term>
       <listitem>
        <para>
         데이터베이스를 만들 역할을 부여할 것인지 선택.
@@ -134,13 +134,13 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
       <listitem>
        <para>
         새 롤의 구성원(소속원)들에게도 자신의 권한을 
-        <quote>상속</>할 것인지를 지정한다.
+        <quote>상속</quote>할 것인지를 지정한다.
         <literal>INHERIT</literal> 옵션을 지정해서 만든 롤은
         그 롤의 구성원들이 특별히 권한 설정을 하지 않아도
         상위 롤의 권한을 그대로 물려받는다.
         <literal>NOINHERIT</literal> 속성의 롤의 구성원들은
         자신의 권한을 상위 롤로 권한으로 바꾸려면,
-        <command>SET ROLE</> 명령을 사용해야 한다.
+        <command>SET ROLE</command> 명령을 사용해야 한다.
         기본값은 <literal>INHERIT</literal>.
        </para>
       </listitem>
@@ -159,9 +159,9 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
         데이터베이스 접근 권한을 관리하는데 유용하게 사용되는데, 
         단어 의미로 볼 때 이는 사용자가 아니다.
         기본값은 <literal>NOLOGIN</literal>.
-        <command>CREATE ROLE</> 명령으로 롤을 만들 때는, 
+        <command>CREATE ROLE</command> 명령으로 롤을 만들 때는, 
         <literal>LOGIN</literal> 옵션이 기본값이다.
-        <xref linkend="sql-createuser"> 명령 설명서 참고.
+        <xref linkend="sql-createuser"/> 명령 설명서 참고.
        </para>
       </listitem>
      </varlistentry>
@@ -172,10 +172,10 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
       <listitem>
        <para>
         복제 역할을 하는 롤인지 결정한다.
-        <literal>REPLICATION</> 옵션을 사용하는 롤은
+        <literal>REPLICATION</literal> 옵션을 사용하는 롤은
         복제(물리, 논리 복제 모두)를 위해 서버에 접속할 수 있고, 
         복제 슬롯을 만들거나 지울 수 있다.  
-        <literal>REPLICATION</> 옵션을 사용하는 롤은
+        <literal>REPLICATION</literal> 옵션을 사용하는 롤은
         꽤 높은 권한을 가진다.  이렇기 때문에, 복제 용도로만
         사용하는 것이 안전한다.
         기본값은 <literal>NOREPLICATION</literal>.
@@ -216,7 +216,7 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
      </varlistentry>
 
      <varlistentry>
-      <term>[ <literal>ENCRYPTED</> ] <literal>PASSWORD</> <replaceable class="parameter">password</replaceable></term>
+      <term>[ <literal>ENCRYPTED</literal> ] <literal>PASSWORD</literal> <replaceable class="parameter">password</replaceable></term>
       <listitem>
        <para>
         해당 롤 비밀번호를 지정한다. 이 비밀번호는 로그인 인증에만
@@ -231,7 +231,7 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
        </para>
        <note>
          <para>
-           <productname>PostgreSQL</> 10 버전 이전 버전까지는
+           <productname>PostgreSQL</productname> 10 버전 이전 버전까지는
            빈 문자열 비밀번호와 null 비밀번호를 같이 인증 실패로 처리했지만,
            10 버전 이후부터는 이를 구분한다. (10 버전부터는 
            빈 문자열로 지정하면, 그것에 대한 암호화를 한다. - 옮긴이)
@@ -243,16 +243,16 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
        </note>
        <para>
         비밀번호는 항상 시스템 카탈로그에 암호화 해서 지정된다.
-        <literal>ENCRYPTED</> 옵션은 단지 하위 호환성 때문에 
+        <literal>ENCRYPTED</literal> 옵션은 단지 하위 호환성 때문에 
         지원하고 있을 뿐이다.  
-        암호화 방법은 <xref linkend="guc-password-encryption"> 
+        암호화 방법은 <xref linkend="guc-password-encryption"/> 
         환경 설정 매개 변수 값으로 지정한다.
         여기서 지정한 비밀번호 값이 이미, 
         MD5-암호화, SCRAM-암호화 형식으로 암호화된 문자열이라면, 
         (서버는 그것을 다시 암호화 전 비밀번호로 바꿔서, 
         서버에서 사용하는 비밀번호 암호화 방법으로 다시 암호화 할 수 
         없기 때문에)
-        <varname>password_encryption</> 설정값에 상관 없이, 
+        <varname>password_encryption</varname> 설정값에 상관 없이, 
         그대로 시스템 카탈로그에 저장된다. 
         이런 방식으로 덤프/복원 작업이 진행된다.
        </para>
@@ -272,29 +272,29 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
      </varlistentry>
 
      <varlistentry>
-      <term><literal>IN ROLE</> <replaceable class="parameter">롤이름</replaceable></term>
+      <term><literal>IN ROLE</literal> <replaceable class="parameter">롤이름</replaceable></term>
       <listitem>
        <para>
         <literal>IN ROLE</literal> 옵션은 새로 만들어지는 롤이
         여기서 지정한 롤의 구성으로 지정한다.
         (이 작업으로 새로 만드는 롤이 지정할 롤의 관리자 역할을 하는
         작업을 함께 하지는 못한다.  관리자 권한 설정 작업으로
-        <command>GRANT</> 명령을 이용해야 한다.)
+        <command>GRANT</command> 명령을 이용해야 한다.)
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>IN GROUP</> <replaceable class="parameter">롤이름</replaceable></term>
+      <term><literal>IN GROUP</literal> <replaceable class="parameter">롤이름</replaceable></term>
       <listitem>
        <para>
-        <literal>IN ROLE</> 옵션과 같은 옛날 구문.
+        <literal>IN ROLE</literal> 옵션과 같은 옛날 구문.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>ROLE</> <replaceable class="parameter">롤이름</replaceable></term>
+      <term><literal>ROLE</literal> <replaceable class="parameter">롤이름</replaceable></term>
       <listitem>
        <para>
         새로 만들 롤이 여기서 지정한 롤의 상위 그룹이 된다.
@@ -304,27 +304,27 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
      </varlistentry>
 
      <varlistentry>
-      <term><literal>ADMIN</> <replaceable class="parameter">롤이름</replaceable></term>
+      <term><literal>ADMIN</literal> <replaceable class="parameter">롤이름</replaceable></term>
       <listitem>
        <para>
         <literal>ROLE</literal> 옵션과 같으며, 
         다른 점은 이 옵션으로 사용하는 롤에 <literal>WITH ADMIN
-        OPTION</> 옵션을 추가한다.
+        OPTION</literal> 옵션을 추가한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>USER</> <replaceable class="parameter">롤이름</replaceable></term>
+      <term><literal>USER</literal> <replaceable class="parameter">롤이름</replaceable></term>
       <listitem>
        <para>
-        <literal>ROLE</> 옵션과 같은, 옛날 구문이다.
+        <literal>ROLE</literal> 옵션과 같은, 옛날 구문이다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>SYSID</> <replaceable class="parameter">uid</replaceable></term>
+      <term><literal>SYSID</literal> <replaceable class="parameter">uid</replaceable></term>
       <listitem>
        <para>
         <literal>SYSID</literal> 옵션은 무시된다. 하위 버전 호환성 때문에 있는 
@@ -339,66 +339,66 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
   <title>참고</title>
 
   <para>
-   롤 속성을 바꿀 때는 <xref linkend="SQL-ALTERROLE"> 명령으로,
-   롤 삭제는 <xref linkend="SQL-DROPROLE"> 명령으로 한다.
-   <command>CREATE ROLE</> 명령으로 지정한 모든 속성은
-   <command>ALTER ROLE</> 명령으로 나중에 변경할 수 있다.
+   롤 속성을 바꿀 때는 <xref linkend="sql-alterrole"/> 명령으로,
+   롤 삭제는 <xref linkend="sql-droprole"/> 명령으로 한다.
+   <command>CREATE ROLE</command> 명령으로 지정한 모든 속성은
+   <command>ALTER ROLE</command> 명령으로 나중에 변경할 수 있다.
   </para>
 
   <para>
    롤 구성원 관리 (추가 , 삭제) 작업은 
-   <xref linkend="SQL-GRANT">, <xref linkend="SQL-REVOKE"> 명령으로
+   <xref linkend="sql-grant"/>, <xref linkend="sql-revoke"/> 명령으로
    한다.
   </para>
 
   <para>
-   <literal>VALID UNTIL</> 옵션은 비밀번호를 지정할 때만 
+   <literal>VALID UNTIL</literal> 옵션은 비밀번호를 지정할 때만 
    유효한 옵션이다.  비밀번호 기반 인증 방법을 사용하지 않는다면, 
    이 옵션에서 지정한 비밀번호 만료 기한은 의미 없다.
   </para>
 
   <para>
-   <literal>INHERIT</> 속성은 해당 롤에 부여야 데이터베이스 개체들의
+   <literal>INHERIT</literal> 속성은 해당 롤에 부여야 데이터베이스 개체들의
    접근 권한을 해당 롤의 소속원들 개별적으로 특별히 접근 권한을 
    지정하지 않아도 그대로 적용됨을 의미한다.  이것은 
-   <command>CREATE ROLE</> 명령, 또는 <command>ALTER ROLE</> 명령으로
+   <command>CREATE ROLE</command> 명령, 또는 <command>ALTER ROLE</command> 명령으로
    지정하는 해당 롤의 속성이 상속되는 것을 의미하지는 않는다.
-   예를 들어 <literal>CREATEDB</>  권한이 있는 롤에 새로운 구성원을 추가
+   예를 들어 <literal>CREATEDB</literal>  권한이 있는 롤에 새로운 구성원을 추가
    한다고 해서, 그 새로운 구성원 롤에 자동으로 그 권한이 상속되어, 
    데이터베이스를 만들 수 있는 것은 아니다.  이런 롤 속성 권한을 획득하려면,
    데이터베이스를 만들기 전에,
-   <xref linkend="SQL-SET-ROLE"> 명령으로 롤을 바꿔야 한다.
+   <xref linkend="sql-set-role"/> 명령으로 롤을 바꿔야 한다.
   </para>
 
   <para>
-   <literal>INHERIT</> 속성이 기본값인 이유는 하위 호환성 때문이다.
+   <literal>INHERIT</literal> 속성이 기본값인 이유는 하위 호환성 때문이다.
    <productname>PostgreSQL</productname>는 어떤 구성원은 그 상위 그룹의
    권한을 따르도록 해 왔다.  반면, 표준 SQL 시각에서 보면
-   이런 그룹과 그 소속원 간의 권한 상속은 <literal>NOINHERIT</>
+   이런 그룹과 그 소속원 간의 권한 상속은 <literal>NOINHERIT</literal>
    옵션을 사용하는 것이 더 표준에 가깝다.
   </para>
 
   <para>
-   <literal>CREATEROLE</> 옵션은 주의해서 사용해야 한다.
-   <literal>CREATEROLE</> 옵션은 자동 상속되지는 않지만, 이 권한이 있는 
+   <literal>CREATEROLE</literal> 옵션은 주의해서 사용해야 한다.
+   <literal>CREATEROLE</literal> 옵션은 자동 상속되지는 않지만, 이 권한이 있는 
    롤은 다른 권한을 가진 특정 롤을 만들 수 있기 때문에, 
    의도하지 않은 권한 남용이 발생할 수 있다. 
-   예를 들어, <literal>CREATEROLE</>  권한이 있는 <quote>user</>가
-   새로운 롤을 만드면서 <literal>CREATEDB</> 권한을 부여했다면, 
+   예를 들어, <literal>CREATEROLE</literal>  권한이 있는 <quote>user</quote>가
+   새로운 롤을 만드면서 <literal>CREATEDB</literal> 권한을 부여했다면, 
    이 새로운 롤은 데이터베이스를 만들 수 있게 된다. 
-   즉, <literal>CREATEROLE</>  옵션을 사용한다는 것은
+   즉, <literal>CREATEROLE</literal>  옵션을 사용한다는 것은
    거의 슈퍼유저에 가까운 권한을 부여하는 것과 같기 때문에 주의해야 한다.
   </para>
 
   <para>
    <productname>PostgreSQL</productname>에서는 
    <command>CREATE ROLE</command> SQL 명령으로 할 수 있는 작업을
-   쉘 명령어로 할 수 있는 <xref linkend="APP-CREATEUSER"> 응용
+   쉘 명령어로 할 수 있는 <xref linkend="app-createuser"/> 응용
    프로그램을 제공한다. (내부적으로 이 SQL 명령이 사용된다.)
   </para>
 
   <para>
-   <literal>CONNECTION LIMIT</> 옵션에 지정한 접속 제한 수는 
+   <literal>CONNECTION LIMIT</literal> 옵션에 지정한 접속 제한 수는 
    대략적으로 계산된다.  가령 남은 연결이 하나 남았는데, 
    동시에 두 세션이 접속을 시도하면, 둘 다 접속 제한으로 접속하지 
    못할 수도 있다.  또한 슈퍼 유저 접속은 이 접속 제한 계산에 포함되지 않는다.
@@ -410,9 +410,9 @@ CREATE ROLE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
    서버 로그나, 클라이언트 작업 내역 파일에는 그 평문 암호 
    그대로 노출 될 수 있기 때문이다.  
    <xref
-   linkend="APP-CREATEUSER"> 명령을 사용해서 입력하는 비밀번호의
+   linkend="app-createuser"/> 명령을 사용해서 입력하는 비밀번호의
    흔적을 남기지 않던지 (이 명령은 서버로 비밀번호를 넘길 때 
-   이미 암호화 한다.), <xref linkend="app-psql"> 에서
+   이미 암호화 한다.), <xref linkend="app-psql"/> 에서
    <command>\password</command> 내장 명령어를 이용해서 
    비밀번호를 바꿔 평문 비밀번호가 기록되지 않도록 하는 것이 
    좋다.
@@ -434,8 +434,8 @@ CREATE ROLE jonathan LOGIN;
 <programlisting>
 CREATE USER davide WITH PASSWORD 'jw8s0F4';
 </programlisting>
-   (<command>CREATE USER</> 명령은 <command>CREATE ROLE</> 명령에
-   자동으로 <literal>LOGIN</> 옵션을 사용하는 것과 같다.)
+   (<command>CREATE USER</command> 명령은 <command>CREATE ROLE</command> 명령에
+   자동으로 <literal>LOGIN</literal> 옵션을 사용하는 것과 같다.)
   </para>
 
   <para>
@@ -460,7 +460,7 @@ CREATE ROLE admin WITH CREATEDB CREATEROLE;
    <command>CREATE ROLE</command> 구문은 표준 SQL 구문이다.
    하지만 표준 구문에서는 다음 구문만 정의한다.
 <synopsis>
-CREATE ROLE <replaceable class="PARAMETER">이름</> [ WITH ADMIN <replaceable class="PARAMETER">롤이름</> ]
+CREATE ROLE <replaceable class="parameter">이름</replaceable> [ WITH ADMIN <replaceable class="parameter">롤이름</replaceable> ]
 </synopsis>
    다중 초기 관리자와 여러 옵션들은 <productname>PostgreSQL</productname>
    확장 기능이다.
@@ -476,8 +476,8 @@ CREATE ROLE <replaceable class="PARAMETER">이름</> [ WITH ADMIN <replaceable c
   </para>
 
   <para>
-   SQL 표준에서는, <literal>NOINHERIT</> 속성이면 사용자,
-   <literal>INHERIT</> 속성이면 롤로 정의하고 있다.
+   SQL 표준에서는, <literal>NOINHERIT</literal> 속성이면 사용자,
+   <literal>INHERIT</literal> 속성이면 롤로 정의하고 있다.
   </para>
  </refsect1>
 
@@ -485,12 +485,12 @@ CREATE ROLE <replaceable class="PARAMETER">이름</> [ WITH ADMIN <replaceable c
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-set-role"></member>
-   <member><xref linkend="sql-alterrole"></member>
-   <member><xref linkend="sql-droprole"></member>
-   <member><xref linkend="sql-grant"></member>
-   <member><xref linkend="sql-revoke"></member>
-   <member><xref linkend="app-createuser"></member>
+   <member><xref linkend="sql-set-role"/></member>
+   <member><xref linkend="sql-alterrole"/></member>
+   <member><xref linkend="sql-droprole"/></member>
+   <member><xref linkend="sql-grant"/></member>
+   <member><xref linkend="sql-revoke"/></member>
+   <member><xref linkend="app-createuser"/></member>
   </simplelist>
  </refsect1>
 </refentry>

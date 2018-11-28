@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_collation.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERCOLLATION">
+<refentry id="sql-altercollation">
  <indexterm zone="sql-altercollation">
   <primary>ALTER COLLATION</primary>
  </indexterm>
@@ -37,7 +37,7 @@ ALTER COLLATION <replaceable>이름</replaceable> SET SCHEMA <replaceable>새스
   </para>
 
   <para>
-   작업 대상 정렬 규칙의 소유주여야 <command>ALTER COLLATION</> 명령을 
+   작업 대상 정렬 규칙의 소유주여야 <command>ALTER COLLATION</command> 명령을 
    사용할 수 있다.  소유주를 바꾸는 경우에는 
    기존 소유주는 새 소유주의 직간접적으로 구성원이어야 하며, 
    새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이 
@@ -93,7 +93,7 @@ ALTER COLLATION <replaceable>이름</replaceable> SET SCHEMA <replaceable>새스
      <para>
       버전 갱신.
       <xref linkend="sql-altercollation-notes"
-      endterm="sql-altercollation-notes-title">에서 자세히 설명함.
+      endterm="sql-altercollation-notes-title"/>에서 자세히 설명함.
      </para>
     </listitem>
    </varlistentry>
@@ -176,8 +176,8 @@ ALTER COLLATION "en_US" OWNER TO joe;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createcollation"></member>
-   <member><xref linkend="sql-dropcollation"></member>
+   <member><xref linkend="sql-createcollation"/></member>
+   <member><xref linkend="sql-dropcollation"/></member>
   </simplelist>
  </refsect1>
 </refentry>

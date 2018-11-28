@@ -5,15 +5,15 @@
   <title>Release 11</title>
 
   <formalpara>
-   <title>Release date:</title>
+   <title>출시일:</title>
    <para>2018-10-18</para>
   </formalpara>
 
   <sect2>
-   <title>Overview</title>
+   <title>개요</title>
 
    <para>
-    Major enhancements in <productname>PostgreSQL</productname> 11 include:
+    <productname>PostgreSQL</productname> 11 주요 개선 사항:
    </para>
 
    <!-- Items in this list summarize one or more items below -->
@@ -22,36 +22,35 @@
 
     <listitem>
      <para>
-      Improvements to partitioning functionality, including:
+      파티션 기능 개선 사항:
       <itemizedlist>
        <listitem>
         <para>
-         Add support for partitioning by a hash key
+         해시 키 파티션 지원
         </para>
        </listitem>
        <listitem>
         <para>
-         Add support for <literal>PRIMARY KEY</literal>, <literal>FOREIGN
-         KEY</literal>, indexes, and triggers on partitioned tables
+         상위 파티션 테이블에 <literal>PRIMARY KEY</literal>,
+         <literal>FOREIGN KEY</literal>, 인덱스, 트리거를 지정할 수 있음.
         </para>
        </listitem>
        <listitem>
         <para>
-         Allow creation of a <quote>default</quote> partition for storing
-         data that does not match any of the remaining partitions
+         어느 하위 파티션 테이블에도 저장할 수 없는 기타 자료를 
+         저장하는 하위 <quote>default</quote> 파티션 테이블을 만들 수 있음.
         </para>
        </listitem>
        <listitem>
         <para>
-         <command>UPDATE</command> statements that change a partition key
-         column now cause affected rows to be moved to the appropriate
-         partitions
+         파티션 키 값 변경으로 해당 자료가 다른 하위 테이블로 옮겨지는
+         <command>UPDATE</command> 구문 허용
         </para>
        </listitem>
        <listitem>
         <para>
-         Improve <command>SELECT</command> performance through enhanced
-         partition elimination strategies during query planning and execution
+         쿼리 실행 계획과 실행에서 향상된 파티션 테이블 선택 전략을
+         사용해서 <command>SELECT</command> 명령 성능을 보다 좋게 함.
         </para>
        </listitem>
       </itemizedlist>
@@ -60,26 +59,24 @@
 
     <listitem>
      <para>
-      Improvements to parallelism, including:
+      병렬 처리 개선 사항:
       <itemizedlist>
        <listitem>
         <para>
-         <command>CREATE INDEX</command> can now use parallel processing
-         while building a B-tree index
+         B-tree 인덱스인 경우 <command>CREATE INDEX</command> 명령에서
+         병렬 작업을 함.
         </para>
        </listitem>
        <listitem>
         <para>
-         Parallelization is now possible in <command>CREATE TABLE
-         ... AS</command>,
-         <command>CREATE MATERIALIZED VIEW</command>, and certain
-         queries using <literal>UNION</literal>
+         <command>CREATE TABLE ... AS</command>,
+         <command>CREATE MATERIALIZED VIEW</command>,
+         <literal>UNION</literal> 구문에서 병렬 작업을 함.
         </para>
        </listitem>
        <listitem>
         <para>
-         Parallelized hash joins and parallelized sequential scans now
-         perform better
+         해시 조인과 순차 탐색에서도 병렬 처리가 개선 됨.
         </para>
        </listitem>
       </itemizedlist>
@@ -88,62 +85,63 @@
 
     <listitem>
      <para>
-      SQL stored procedures that support embedded transactions
+      임베디드 트랜잭션을 지원하는 SQL 스토어드 프로시져
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Optional Just-in-Time (JIT) compilation for some SQL code, speeding
-      evaluation of expressions
+      몇몇 SQL 코드용 Just-in-Time (JIT) 짜깁기 compilation 기능을 
+      선택할 수 있음.  표현식 검사 속도를 더 빠르게 함.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Window functions now support all framing options shown in the SQL:2011
-      standard, including <literal>RANGE <replaceable>distance</replaceable>
-      PRECEDING/FOLLOWING</literal>, <literal>GROUPS</literal> mode, and
-      frame exclusion options
+      윈도우 함수가 이제 SQL:2011 표준을 모두 지원함.
+      <literal>RANGE <replaceable>distance</replaceable>
+      PRECEDING/FOLLOWING</literal>, <literal>GROUPS</literal> 모드, 
+      프레임 제외 옵션 기능을 지원함.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Covering indexes can now be created, using the
-      <literal>INCLUDE</literal> clause of <command>CREATE INDEX</command>
+      <command>CREATE INDEX</command> 구문에서
+      <literal>INCLUDE</literal> 절을 사용하여 커버링 인덱스 covering index 를
+      만들 수 있음.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Many other useful performance improvements, including the ability to
-      avoid a table rewrite for <command>ALTER TABLE ... ADD COLUMN</command>
-      with a non-null column default
+      <command>ALTER TABLE ... ADD COLUMN</command> 명령으로 not null default
+      값이 있는 칼럼을 추가 할 때 테이블 전체 다시 쓰기를 하지 않음.
+      그 외 많은 성능 개선.
      </para>
     </listitem>
 
    </itemizedlist>
 
    <para>
-    The above items are explained in more detail in the sections below.
+    위에서 언급한 각 항목들은 아래에서 다시 자세히 다룬다.
    </para>
 
   </sect2>
 
   <sect2>
 
-  <title>Migration to Version 11</title>
+  <title>11 버전으로 마이그레이션</title>
 
    <para>
-    A dump/restore using <xref linkend="app-pg-dumpall"/>, or use of <xref
-    linkend="pgupgrade"/>, is required for those wishing to migrate data
-    from any previous release.
+    이전 버전에서 사용하고 있던 자료를 계속 사용하려면,
+    <xref linkend="app-pg-dumpall"/> 명령을 이용해서 자료를 덤프하고, 
+    복원하거나, <xref linkend="pgupgrade"/> 명령을 이용한다.
    </para>
 
    <para>
-    Version 11 contains a number of changes that may affect compatibility
-    with previous releases.  Observe the following incompatibilities:
+    11 버전에서는 이전 버전과의 호환성 측면에서 영향을 줄 수 있는 변경
+    사항들이 많다.  아래 호환성 문제가 되는 부분을 잙 읽어야 한다: 
    </para>
 
    <itemizedlist>
@@ -156,48 +154,51 @@
 -->
 
        <para>
-        Make <link
+        데이터베이스 속성 관련 덤프는 이제 <link
         linkend="app-pgdump"><application>pg_dump</application></link>
-        dump the properties of a database, not just its contents
+        명령으로 한다.
         (Haribabu Kommi)
        </para>
 
        <para>
-        Previously, attributes of the database itself, such as database-level
-        <command>GRANT</command>/<command>REVOKE</command> permissions and
-        <command>ALTER DATABASE SET</command> variable settings, were only
-        dumped by <link linkend="app-pg-dumpall"><application>pg_dumpall</application></link>.
-        Now <command>pg_dump --create</command> and
-        <command>pg_restore --create</command> will restore these database
-        properties in addition to the objects within the
-        database.  <command>pg_dumpall -g</command> now only dumps role-
-        and tablespace-related attributes.
-        <application>pg_dumpall</application>'s complete output (without
-        <option>-g</option>) is unchanged.
+        이전 버전에서는 데이터베이스 수준의
+        <command>GRANT</command>/<command>REVOKE</command> 접근 권한,
+        <command>ALTER DATABASE SET</command> 명령으로 지정한 
+        변수값과 같은 데이터베이스 자체의 속성들은 
+        <link linkend="app-pg-dumpall"><application>pg_dumpall</application></link>
+        명령으로 덤프했다.  이제 <command>pg_dump --create</command>, 
+        <command>pg_restore --create</command> 명령이 그 일을 담당한다.
+        <command>pg_dumpall -g</command> 명령은 이제, 
+        롤 정보와 테이블스페이스 정보만 덤프한다.
+        <option>-g</option> 옵션을 사용하지 않고, 그냥
+        <application>pg_dumpall</application> 명령을 사용할 때는 
+        기존과 같이 작동한다.
        </para>
 
        <para>
-        <application>pg_dump</application> and
-        <application>pg_restore</application>, without
-        <option>--create</option>, no longer dump/restore database-level
-        comments and security labels; those are now treated as properties of
-        the database.
+        <application>pg_dump</application>,
+        <application>pg_restore</application> 명령에서
+        <option>--create</option> 옵션을 사용하지 않으면,
+        이제는 데이터베이스 수준의 주석, 보안 라벨을 덤프/복원하지
+        않는다.  이들도 데이터베이스 속성과 같은 방식으로 처리한다.
        </para>
 
        <para>
-        <application>pg_dumpall</application>'s output script will now always
-        create databases with their original locale and encoding, and hence
-        will fail if the locale or encoding name is unknown to the
-        destination system.  Previously, <command>CREATE DATABASE</command>
-        would be emitted without these specifications if the database locale
-        and encoding matched the old cluster's defaults.
+        <application>pg_dumpall</application> 명령은 이제 
+        데이터베이스를 만드는 구문을 만들 때, 
+        그 데이터베이스의 로케일과 인코딩 설정도 포함한다.
+        새로 복원하려는 서버에서 이 로케일과 인코딩을 지원하지 않으면
+        복원 작업을 할 수 없다.  이전 버전에서는 
+        클러스터의 기본 로케일과 인코딩과 같은 경우는 
+        <command>CREATE DATABASE</command> 구문에서 이것을 생략했었다.
        </para>
 
        <para>
-        <command>pg_dumpall --clean</command> now restores the original
-        locale and encoding settings of the <literal>postgres</literal>
-        and <literal>template1</literal> databases, as well as those of
-        user-created databases.
+        <command>pg_dumpall --clean</command> 명령에서도 
+        이 정책은 동일하다. 사용자가 만든 데이터베이스나, 
+        <literal>postgres</literal>, <literal>template1</literal> 
+        데이터베이스도 기존 인코딩과 로케일 설정을 그대로 사용하도록
+        덤프 한다.
        </para>
       </listitem>
 
@@ -208,23 +209,21 @@
 -->
 
        <para>
-        Consider syntactic form when disambiguating function versus column
-        references (Tom Lane)
+        함수와 칼럼 참조 사이 해석의 모호함이 생길 때 문법 양식을
+        고려한다. (Tom Lane)
        </para>
 
        <para>
-        When <replaceable>x</replaceable> is a table name or composite
-        column, <productname>PostgreSQL</productname> has traditionally
-        considered the syntactic
-        forms <literal><replaceable>f</replaceable>(<replaceable>x</replaceable>)</literal>
-        and <literal><replaceable>x</replaceable>.<replaceable>f</replaceable></literal>
-        to be equivalent, allowing tricks such as writing a function and
-        then using it as though it were a computed-on-demand column.
-        However, if both interpretations are feasible, the column
-        interpretation was always chosen, leading to surprising results if
-        the user intended the function interpretation.  Now, if there is
-        ambiguity, the interpretation that matches the syntactic form is
-        chosen.
+        <replaceable>x</replaceable>가 테이블 이름이거나
+        복합자료형 이름인 경우, <productname>PostgreSQL</productname>에서는
+        전통적으로 <literal><replaceable>f</replaceable>(<replaceable>x</replaceable>)</literal>
+        구문과, <literal><replaceable>x</replaceable>.<replaceable>f</replaceable></literal>
+        구문을 문법적으로 같은 것으로 처리한다.
+        즉, 문법 형식으로 보며, 마치 해당 칼럼 이름과 같은 함수가 있고, 그 인자로
+        테이블이나 복합 자료형을 사용하는 처럼 보인다. 
+        이 때, 그 칼럼 이름이 이미 있는 함수 이름과 같은 경우 이전 버전에는 
+        항상 그것을 칼럼으로 처리했으나, 이 버전부터는
+        구문 형식에 맞게 처리한다.
        </para>
       </listitem>
 
@@ -233,16 +232,15 @@
 2018-09-04 [fb466d7b5] Fully enforce uniqueness of constraint names.
 -->
        <para>
-        Fully enforce uniqueness of table and domain constraint names
+        테이블과 도메인의 제약 조건 이름이 이제 완벽한 유일성을 가진다.
         (Tom Lane)
        </para>
 
        <para>
-        <productname>PostgreSQL</productname> expects the names of a table's
-        constraints to be distinct, and likewise for the names of a domain's
-        constraints.  However, there was not rigid enforcement of this, and
-        previously there were corner cases where duplicate names could be
-        created.
+        <productname>PostgreSQL</productname>에서는 하나의 테이블이나
+        도메인에 지정하는 제약 조건은 그 이름이 유일해야 하는데, 
+        이전 버전까지는 중복된 이름의 제약 조건을 만들 수 있었다. 
+        이 버전부터는 엄격하게 같은 이름의 제약조건을 만들 수 없도록 했다.
        </para>
       </listitem>
 
@@ -254,22 +252,19 @@
 -->
 
        <para>
-        Make <function>power(numeric, numeric)</function>
-        and <function>power(float8, float8)</function>
-        handle <literal>NaN</literal> inputs according to the POSIX standard
+        <function>power(numeric, numeric)</function>,
+        <function>power(float8, float8)</function> 함수에서
+        <literal>NaN</literal> 입력값 처리를 POSIX 표준으로 따르도록 고쳤다.
         (Tom Lane, Dang Minh Huong)
        </para>
 
        <para>
-        POSIX says that <literal>NaN ^ 0 = 1</literal> and <literal>1 ^ NaN
-        = 1</literal>, but all other cases with <literal>NaN</literal>
-        input(s) should return <literal>NaN</literal>.
-        <function>power(numeric, numeric)</function> just
-        returned <literal>NaN</literal> in all such cases; now it honors the
-        two exceptions.  <function>power(float8, float8)</function> followed
-        the standard if the C library does; but on some old Unix platforms
-        the library doesn't, and there were also problems on some versions
-        of Windows.
+        POSIX에서는 <literal>NaN ^ 0 = 1</literal>, <literal>1 ^ NaN
+        = 1</literal>, 그 외 <literal>NaN</literal> 값을 입력으로하는 모든
+        결과값은 <literal>NaN</literal> 값으로 한다고 정하고 있다.
+        오래된 유닉스 플랫폼 라이브러리를 사용하거나, 
+        몇 윈도우즈 버전에서는 이런 규약과 다르게 결과값을 반환했다.
+        이 부분을 수정했다.
        </para>
       </listitem>
 
@@ -279,18 +274,19 @@
 -->
 
        <para>
-        Prevent <link
+        <link
         linkend="functions-formatting-numeric-table"><function>to_number()</function></link>
-        from consuming characters when the template separator does not
-        match (Oliver Ford)
+        함수에서 템플릿 구분문자가 일치하지 않을 때 입력값이 사라지는 부분 방지함.
+        (Oliver Ford)
        </para>
 
        <para>
-        Specifically, <command>SELECT to_number('1234', '9,999')</command>
-        used to return <literal>134</literal>.  It will now
-        return <literal>1234</literal>.  <literal>L</literal> and
-        <literal>TH</literal> now only consume characters that are not
-        digits, positive/negative signs, decimal points, or commas.
+        이전 버전에는 <command>SELECT to_number('1234', '9,999')</command>
+        명령 결과는 <literal>134</literal>이었다.
+        이 버전부터는 <literal>1234</literal>이다.
+        이제
+        <literal>L</literal>, <literal>TH</literal> 문자만 사라진다.
+        숫자, 양수/음수 기호, 소수점, 쉼표 위치의 숫자는 사라지지 않는다.
        </para>
       </listitem>
 
@@ -300,17 +296,18 @@
 -->
 
        <para>
-        Fix <link
+        <link
         linkend="functions-formatting"><function>to_date()</function></link>,
-        <function>to_number()</function>, and
-        <function>to_timestamp()</function> to skip a character for each
-        template character (Tom Lane)
+        <function>to_number()</function>,
+        <function>to_timestamp()</function> 에서 사용하는 템플릿 문자열에서
+        숫자 아닌 문자가 멀티 바이트 문자인 경우도 한 문자로 처리한다.
+        (Tom Lane)
        </para>
 
        <para>
-        Previously, they skipped one <emphasis>byte</emphasis> for each byte
-        of template character, resulting in strange behavior if either string
-        contained multibyte characters.
+        이전 버전까지는 이 문자는 1 바이트로 처리해서, 
+        그 결과 같이 의도하지 않게 출력되었다.  이제는 멀티 바이트 문자인 경우도
+        한 문자로 처리한다.
        </para>
       </listitem>
 
@@ -320,15 +317,15 @@
 -->
 
        <para>
-        Adjust the handling of backslashes inside double-quotes in
-        template strings for <function>to_char()</function>,
-        <function>to_number()</function>, and
-        <function>to_timestamp()</function>.
+        <function>to_char()</function>,
+        <function>to_number()</function>,
+        <function>to_timestamp()</function> 함수에 사용하는
+        템플릿 문자열에서 큰 따옴표 안에 있는 백슬래시 문자 처리 정책 변경.
        </para>
 
        <para>
-        Such a backslash now escapes the character after it, particularly
-        a double-quote or another backslash.
+        큰 따옴표나, 다른 백슬래쉬 뒤에 오는 백슬래쉬는 이 버전부터 이케이프
+        처리를 한다.
        </para>
       </listitem>
 
@@ -338,15 +335,13 @@
 -->
 
        <para>
-        Correctly handle relative path expressions
-        in <function>xmltable()</function>, <function>xpath()</function>,
-        and other XML-handling functions (Markus Winand)
+        <function>xmltable()</function>, <function>xpath()</function>,
+        기타 XML-처리 함수들에서 상대 경로 처리 정책 변경 (Markus Winand)
        </para>
 
        <para>
-        Per the SQL standard, relative paths start from the document node of
-        the XML input document, not the root node as these functions
-        previously did.
+        SQL 표준에 따라, 상대 경로는 입력되는 XML 문서의 document 노드를
+        기준으로 처리한다.  이전 버전까지는 root 노드를 기준으로 처리했다.
        </para>
       </listitem>
 
@@ -357,11 +352,11 @@
 -->
 
        <para>
-        In the <link linkend="protocol-query-concepts">extended query
-        protocol</link>,
-        make <link linkend="guc-statement-timeout"><varname>statement_timeout</varname></link>
-        apply to each Execute message separately, not to all commands before
-        Sync (Tatsuo Ishii, Andres Freund)
+        <link linkend="protocol-query-concepts">확장된 쿼리 프로토콜</link>에서,
+        <link linkend="guc-statement-timeout"><varname>statement_timeout</varname></link>
+        설정값은 모든 명령을 다 실행한 뒤가 아니라, 
+        각 명령 실행에 대해 적용한다.
+        (Tatsuo Ishii, Andres Freund)
        </para>
       </listitem>
 
@@ -371,13 +366,14 @@
 -->
 
        <para>
-        Remove the <structfield>relhaspkey</structfield> column from system
-        catalog <structname>pg_class</structname> (Peter Eisentraut)
+        <structname>pg_class</structname> 시스템 카탈로그에서
+        <structfield>relhaspkey</structfield> 칼럼이 빠졌다.
+        (Peter Eisentraut)
        </para>
-
+ 
        <para>
-        Applications needing to check for a primary key should consult
-        <structname>pg_index</structname>.
+        이제 기본키 속성 검색은 <structname>pg_index</structname>
+        테이블을 참조한다.
        </para>
       </listitem>
 
@@ -387,15 +383,15 @@
 -->
 
        <para>
-        Replace system catalog <structname>pg_proc</structname>'s
-        <structfield>proisagg</structfield> and
-        <structfield>proiswindow</structfield> columns with
-        <structfield>prokind</structfield> (Peter Eisentraut)
+        <structname>pg_proc</structname> 시스템 카탈로그에서
+        <structfield>proisagg</structfield>,
+        <structfield>proiswindow</structfield> 두 칼럼은
+        <structfield>prokind</structfield> 칼럼으로 통합되었다.
+        (Peter Eisentraut)
        </para>
 
        <para>
-        This new column more clearly distinguishes functions, procedures,
-        aggregates, and window functions.
+        함수, 프로시져, 집계 함수, 윈도우 함수 등 구분을 한 칼럼으로 처리한다.
        </para>
       </listitem>
 
@@ -405,14 +401,16 @@
 -->
 
        <para>
-        Correct information schema column <link
+        외부 테이블에 대한 information 스키마 
+        <link
         linkend="infoschema-tables"><structname>tables</structname>.<structfield>table_type</structfield></link>
-        to return <literal>FOREIGN</literal> instead of <literal>FOREIGN
-        TABLE</literal> (Peter Eisentraut)
+        칼럼 값이 <literal>FOREIGN TABLE</literal>에서
+        <literal>FOREIGN</literal>으로 바뀌었다.
+        (Peter Eisentraut)
        </para>
 
        <para>
-        This new output matches the SQL standard.
+        SQL 표준을 따른다.
        </para>
       </listitem>
 
@@ -422,10 +420,11 @@
 -->
 
        <para>
-        Change the ps process display
-        labels for background workers to match the <link
+        ps 명령에서 프로세스 이름을 
+        <link
         linkend="pg-stat-activity-view"><structname>pg_stat_activity</structname>.<structfield>backend_type</structfield></link>
-        labels (Peter Eisentraut)
+        칼럼 값과 맞췄다.
+        (Peter Eisentraut)
        </para>
       </listitem>
 
@@ -436,15 +435,17 @@
 -->
 
        <para>
-        Cause large object permission checks
-        to happen during large object open, <link
-        linkend="lo-open"><function>lo_open()</function></link>, not
-        when a read or write is attempted (Tom Lane, Michael Paquier)
+        대형 개체 사용을 위한 
+        <link
+        linkend="lo-open"><function>lo_open()</function></link>
+        함수 사용에서 접근 권한 검사를 한다.
+        이전에는 이 개체를 읽거나 쓸 때 접근 권한 검사를 했었다.
+        (Tom Lane, Michael Paquier)
        </para>
 
        <para>
-        If write access is requested and not available, an error will now be
-        thrown even if the large object is never written to.
+        쓰기 접근이 요청되었으나 불가능한 경우, 
+        그 대형 개체 쓰기 작업을 하지 않는다 하더라도 오류로 처리한다.
        </para>
       </listitem>
 
@@ -453,13 +454,13 @@
 2018-08-09 [87330e21c] Restrict access to reindex of shared catalogs for non-pr
 -->
        <para>
-        Prevent non-superusers from reindexing shared catalogs
+        공유되는 카탈로그의 reindex 작업은 슈퍼유저만 허용하도록 변경함.
         (Michael Paquier, Robert Haas)
        </para>
 
        <para>
-        Previously, database owners were also allowed to do this, but
-        now it is considered outside the bounds of their privileges.
+        이전 버전에는 해당 데이터베이스 소유주도 이 작업을 할 수 
+        있었으나, 이번 버전부터 권한 정책을 바꿨다.
        </para>
       </listitem>
 
@@ -469,18 +470,19 @@
 -->
 
        <para>
-        Remove deprecated <link
-        linkend="adminpack"><filename>adminpack</filename></link> functions
+        <link
+        linkend="adminpack"><filename>adminpack</filename></link> 확장 
+        모듈에 있었던
         <function>pg_file_read()</function>,
-        <function>pg_file_length()</function>, and
-        <function>pg_logfile_rotate()</function> (Stephen Frost)
+        <function>pg_file_length()</function>,
+        <function>pg_logfile_rotate()</function> 함수를 없앴다. (Stephen Frost)
        </para>
 
        <para>
-        Equivalent functionality is now present in the core backend.
-        Existing <filename>adminpack</filename> installs will continue to have
-        access to these functions until they are updated via <command>ALTER
-        EXTENSION ... UPDATE</command>.
+        이 함수들은 이미 내장 함수로 제공하고 있다.  <filename>adminpack</filename>
+        모듈 소속 함수를 제거하려면, 
+        <command>ALTER EXTENSION ... UPDATE</command> 명령을 이용해서
+        해당 모듈을 업데이트하면 된다.
        </para>
       </listitem>
 
@@ -490,16 +492,16 @@
 -->
 
        <para>
-        Honor the capitalization of double-quoted command options
+        옵션 이름으로 큰 따옴표를 사용한 대소문자를 구분하는
+        이름을 허용한다.
         (Daniel Gustafsson)
        </para>
 
        <para>
-        Previously, option names in certain SQL commands were forcibly
-        lower-cased even if entered with double quotes; thus for example
-        <literal>"FillFactor"</literal> would be accepted as an index storage
-        option, though properly its name is lower-case.  Such cases will now
-        generate an error.
+        이전 버전까지 옵션 이름은 모두 소문자를 사용해야 했었다.
+        이제 <literal>"FillFactor"</literal> 같이 대소문자를 구분
+        하는 경우는 큰따옴표를 사용한다.  물론 이렇게 사용하면 
+        오류로 처리한다. (fillfactor 옵션 이름은 모두 소문자다.)
        </para>
       </listitem>
 
@@ -509,12 +511,12 @@
 -->
 
        <para>
-        Remove server parameter <varname>replacement_sort_tuples</varname>
+        서버 매개변수 <varname>replacement_sort_tuples</varname> 삭제.
         (Peter Geoghegan)
        </para>
 
        <para>
-        Replacement sorts were determined to be no longer useful.
+        Replacement sort 기능이 더 이상 유용하지 않다고 결정했다.
        </para>
 
       </listitem>
@@ -525,14 +527,16 @@
 -->
 
        <para>
-        Remove <literal>WITH</literal> clause in <link
+        <link
         linkend="sql-createfunction"><command>CREATE
-        FUNCTION</command></link> (Michael Paquier)
+        FUNCTION</command></link> 구문에서
+        <literal>WITH</literal> 절이 빠졌다.
+        (Michael Paquier)
        </para>
 
        <para>
-        <productname>PostgreSQL</productname> has long supported a more
-        standard-compliant syntax for this capability.
+        이번 <productname>PostgreSQL</productname> 버전에서
+        표준 호환성 준수에 따라 이 구문을 뺐다.
        </para>
       </listitem>
 
@@ -541,19 +545,18 @@
   </sect2>
 
   <sect2>
-   <title>Changes</title>
+   <title>바뀐점</title>
 
    <para>
-    Below you will find a detailed account of the changes between
-    <productname>PostgreSQL</productname> 11 and the previous major
-    release.
+    다음에서 <productname>PostgreSQL</productname> 11과 
+    이전 메이저 버전 사이 바뀐 부분들을 소개한다.
    </para>
 
    <sect3>
-    <title>Server</title>
+    <title>서버</title>
 
     <sect4>
-     <title>Partitioning</title>
+     <title>파티션</title>
 
      <itemizedlist>
 
@@ -563,7 +566,7 @@
 -->
 
        <para>
-        Allow the creation of partitions based on hashing a key column
+        파티션 키로 해시 키를 사용할 수 있음.
         (Amul Sul)
        </para>
       </listitem>
@@ -576,15 +579,14 @@
 -->
 
        <para>
-        Support indexes on partitioned tables (&Aacute;lvaro Herrera,
+        상위 파티션 테이블에 인덱스 지정할 수 있음 (&Aacute;lvaro Herrera,
         Amit Langote)
        </para>
 
        <para>
-        An <quote>index</quote> on a partitioned table is not a physical
-        index across the whole partitioned table, but rather a template for
-        automatically creating similar indexes on each partition of the
-        table.
+        상위 파티션 테이블에 지정한 인덱스는 하위 테이블을 전체 자료를
+        대상으로 하는 물리적인 인덱스가 아니라, 각 하위 테이블에서 
+        자동으로 만들어질 인덱스에 대한 일종의 템플릿 정의다.
        </para>
 
        <para>
@@ -610,7 +612,7 @@
 -->
 
        <para>
-        Allow foreign keys on partitioned tables (&Aacute;lvaro Herrera)
+        상위 파티션 테이블에 참조 키를 지정할 수 있음 (&Aacute;lvaro Herrera)
        </para>
       </listitem>
 
@@ -620,8 +622,8 @@
 -->
 
        <para>
-        Allow <literal>FOR EACH ROW</literal> triggers on partitioned
-        tables (&Aacute;lvaro Herrera)
+        상위 파티션 테이블에 <literal>FOR EACH ROW</literal> 트리거를
+        지정할 수 있음 (&Aacute;lvaro Herrera)
        </para>
 
        <para>

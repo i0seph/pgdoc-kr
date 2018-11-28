@@ -3,7 +3,7 @@ doc/src/sgml/ref/discard.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DISCARD">
+<refentry id="sql-discard">
  <indexterm zone="sql-discard">
   <primary>DISCARD</primary>
  </indexterm>
@@ -29,16 +29,16 @@ DISCARD { ALL | PLANS | TEMPORARY | TEMP }
   <title>설명</title>
 
   <para>
-   <command>DISCARD</> 명령은 현재 세션이 사용하고 있는 
+   <command>DISCARD</command> 명령은 현재 세션이 사용하고 있는 
    데이터베이스 내부 자원들을 반환하다.  이 자원들은 
    일반적으로 세션이 종료되면 자동 반환된다.
   </para>
 
   <para>
-   <command>DISCARD TEMP</> 명령은 세션이 사용하고 있는 
-   모든 임시 테이블들을 삭제한다.  <command>DISCARD PLANS</>
+   <command>DISCARD TEMP</command> 명령은 세션이 사용하고 있는 
+   모든 임시 테이블들을 삭제한다.  <command>DISCARD PLANS</command>
    명령은 세션이 사용하고 있는 내부저인 실행계획 정보들을 삭제하고, 
-   <command>DISCARD ALL</> 명령은 앞 모든 작업과 함께 세션에서 
+   <command>DISCARD ALL</command> 명령은 앞 모든 작업과 함께 세션에서 
    달리 지정했던 환경 설정들도 세션 초기값으로 바꾼다.
   </para>
  </refsect1>
@@ -93,7 +93,7 @@ DISCARD TEMP;
   <title>참고</title>
 
    <para>
-    <command>DISCARD ALL</> 명령은 트랜잭션 내에서는 사용할 수 없다.
+    <command>DISCARD ALL</command> 명령은 트랜잭션 내에서는 사용할 수 없다.
    </para>
  </refsect1>
 

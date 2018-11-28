@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/ref/drop_foreign_table.sgml -->
 
-<refentry id="SQL-DROPFOREIGNTABLE">
+<refentry id="sql-dropforeigntable">
  <indexterm zone="sql-dropforeigntable">
   <primary>DROP FOREIGN TABLE</primary>
  </indexterm>
@@ -18,7 +18,7 @@
 
  <refsynopsisdiv>
 <synopsis>
-DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -46,7 +46,7 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replacea
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
       삭제할 (스키마 이름도 포함할 수 있는) 외부 테이블 이름.
@@ -59,7 +59,7 @@ DROP FOREIGN TABLE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replacea
     <listitem>
      <para>
       해당 외부 테이블을 필요로 하는 모든 개체(예: 뷰)들도 함께 
-      삭제 한다(<xref linkend="ddl-depend"> 참조).
+      삭제 한다(<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -94,7 +94,7 @@ DROP FOREIGN TABLE films, distributors;
   <para>
    ISO/IEC 9075-9 (SQL/MED) 규약을 준수한 명령어이며,
    이 규약에는 하나의 명령은 하나의 외부 테이블만 삭제할 수 있다.
-   <literal>IF EXISTS</> 옵션은 <productname>PostgreSQL</>
+   <literal>IF EXISTS</literal> 옵션은 <productname>PostgreSQL</productname>
    확장형이다.
   </para>
  </refsect1>
@@ -103,8 +103,8 @@ DROP FOREIGN TABLE films, distributors;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterforeigntable"></member>
-   <member><xref linkend="sql-createforeigntable"></member>
+   <member><xref linkend="sql-alterforeigntable"/></member>
+   <member><xref linkend="sql-createforeigntable"/></member>
   </simplelist>
  </refsect1>
 

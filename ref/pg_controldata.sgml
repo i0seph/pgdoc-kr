@@ -3,7 +3,7 @@ doc/src/sgml/ref/pg_controldata.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="APP-PGCONTROLDATA">
+<refentry id="app-pgcontroldata">
  <indexterm zone="app-pgcontroldata">
   <primary>pg_controldata</primary>
  </indexterm>
@@ -23,14 +23,20 @@ PostgreSQL documentation
   <cmdsynopsis>
    <command>pg_controldata</command>
    <arg choice="opt"><replaceable class="parameter">옵션</replaceable></arg>
-   <arg choice="opt"><arg choice="opt"><option>-D</option></arg> <replaceable class="parameter">데이터디렉터리</replaceable></arg>
+   <group choice="opt">
+    <group choice="opt">
+     <arg choice="plain"><option>--pgdata</option></arg>
+     <arg choice="plain"><option>-D</option></arg>
+    </group>
+    <replaceable class="parameter"> 데이터디렉터리</replaceable>
+   </group>
   </cmdsynopsis>
  </refsynopsisdiv>
 
- <refsect1 id="R1-APP-PGCONTROLDATA-1">
+ <refsect1 id="r1-app-pgcontroldata-1">
   <title>설명</title>
   <para>
-   <command>pg_controldata</command> 프로그램은 <command>initdb</>
+   <command>pg_controldata</command> 프로그램은 <command>initdb</command>
    프로그램으로 만든 데이터 클러스터의 카탈로그 버전 같은 컨트롤 정보를 
    보여준다.  또한 트랜잭션 로그와 체크포인트 관련 정보도 보여준다.  이 정보는
    특정 데이터베이스에 한정 되는 정보가 아니라, 클러스터 전역 정보이다.
@@ -39,11 +45,11 @@ PostgreSQL documentation
   <para>
    이 프로그램의 실행 권한은 데이터 클러스터 디렉터리를 읽을 수 있는 
    그 데이터 클러스터 디렉터리를 만든 사용자만 실행 할 수 있다.  입력행 매개 변수로 
-   그 디렉터리를 지정할 수 있으며, 지정하지 않으면, <envar>PGDATA</> 환경 변수에
+   그 디렉터리를 지정할 수 있으며, 지정하지 않으면, <envar>PGDATA</envar> 환경 변수에
    지정된 값을 데이터 클러스트 디렉터리로 간주한다.  이 프로그램에서 지원하는
-   옵션으로는 <option>-V</> 또는 <option>--version</>을 사용할 수 있으며, 
+   옵션으로는 <option>-V</option> 또는 <option>--version</option>을 사용할 수 있으며, 
    이것은 <application>pg_controldata</application> 프로그램의 버전 정보를 보여주고, 
-   마친다.  또, <option>-?</> 또는 <option>--help</> 옵션을 사용할 수 있는데, 
+   마친다.  또, <option>-?</option> 또는 <option>--help</option> 옵션을 사용할 수 있는데, 
    이것은 도움말을 보여주고 마친다.
   </para>
  </refsect1>

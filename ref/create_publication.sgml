@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_publication.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEPUBLICATION">
+<refentry id="sql-createpublication">
  <indexterm zone="sql-createpublication">
   <primary>CREATE PUBLICATION</primary>
  </indexterm>
@@ -41,7 +41,7 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
   <para>
    발행이란 논리 복제에서 사용할 그 대상 테이블 목록이다.
    논리 복제 발행에 대한 설명은 
-   <xref linkend="logical-replication-publication">에서 하고 있다.
+   <xref linkend="logical-replication-publication"/>에서 하고 있다.
    </para>
  </refsect1>
 
@@ -63,11 +63,11 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
     <listitem>
      <para>
       발행에 포함할 테이블 목록.
-      테이블 이름 앞에 <literal>ONLY</> 키워드를 추가하면,
+      테이블 이름 앞에 <literal>ONLY</literal> 키워드를 추가하면,
       그 테이블의 하위 테이블을 포함하지 않고 그 테이블만 대상으로 하고,
-      <literal>ONLY</> 키워드가 없으면 그 테이블 포함, 하위 테이블들도
+      <literal>ONLY</literal> 키워드가 없으면 그 테이블 포함, 하위 테이블들도
       모두 발행 대상이 된다.  선택적으로 
-      가독성을 높이기 위해 <literal>*</> 문자를 추가해서, 
+      가독성을 높이기 위해 <literal>*</literal> 문자를 추가해서, 
       하위 테이블 모두를 포함한다고 할 수도 있다.
      </para>
 
@@ -104,10 +104,11 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
         <listitem>
          <para>
           어떤 DML 작업에 대해서 발행할 것인지를 지정한다.
-          사용할 수 있는 값은 <literal>insert</literal>,
-          <literal>update</literal>, <literal>delete</literal> 세 가지며,
+          사용할 수 있는 값은 <literal>insert</literal>, <literal>update</literal>,
+          <literal>delete</literal>, <literal>truncate</literal> 네 가지며,
           쉼표로 구분해서 여러 개 사용할 수 있다.
-          기본값은 <literal>'insert, update, delete'</literal>.
+          기본값은 모든 작업을 대상으로 하는 
+          <literal>'insert, update, delete, truncate'</literal>.
          </para>
         </listitem>
        </varlistentry>
@@ -137,7 +138,7 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
 
   <para>
    발행을 만드려면, 해당 데이터베이스에 대해서
-   <literal>CREATE</> 권한이 있어야 한다.  (슈퍼유저는 예외)
+   <literal>CREATE</literal> 권한이 있어야 한다.  (슈퍼유저는 예외)
   </para>
 
   <para>
@@ -149,13 +150,13 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
 
   <para>
    <command>UPDATE</command>, <command>DELETE</command> 작업을 
-   발행하는 테이블은 그 테이블 속성으로 <literal>REPLICA IDENTITY</>
+   발행하는 테이블은 그 테이블 속성으로 <literal>REPLICA IDENTITY</literal>
    속성이 활성화 되어 있어야 한다.
    그렇지 않으면, 발행 목록에 포함될 수 없다.
   </para>
 
   <para>
-   발행 서버에서 있었던 <command>INSERT ... ON CONFLICT</> 작업은
+   발행 서버에서 있었던 <command>INSERT ... ON CONFLICT</command> 작업은
    구독 서버로 그 작업의 결과 작업이 전달된다.  즉, 
    <command>INSERT</command> 작업이 될 수도 있고, 
    <command>UPDATE</command> 작업이 될 수도 있고, 
@@ -168,7 +169,7 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
   </para>
 
   <para>
-   <command>TRUNCATE</command>, <acronym>DDL</acronym> 구문은 
+   <acronym>DDL</acronym> 구문은 
    발행되지 않는다.
   </para>
  </refsect1>
@@ -203,7 +204,7 @@ CREATE PUBLICATION insert_only FOR TABLE mydata
   <title>호환성</title>
 
   <para>
-   <command>CREATE PUBLICATION</command> 구문은 <productname>PostgreSQL</>
+   <command>CREATE PUBLICATION</command> 구문은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -212,8 +213,8 @@ CREATE PUBLICATION insert_only FOR TABLE mydata
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterpublication"></member>
-   <member><xref linkend="sql-droppublication"></member>
+   <member><xref linkend="sql-alterpublication"/></member>
+   <member><xref linkend="sql-droppublication"/></member>
   </simplelist>
  </refsect1>
 </refentry>

@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_rule.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATERULE">
+<refentry id="sql-createrule">
  <indexterm zone="sql-createrule">
   <primary>CREATE RULE</primary>
  </indexterm>
@@ -54,7 +54,7 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> A
    이 변환은 해당 명령이 실행 되기 이전에 일어남을 기억해야 한다.
    작업 대상 각 개별 로우를 대상으로 추가 작업이 필요한 경우는
    룰 대신에 트리거를 쓰는 것이 더 좋다.
-   룰에 대한 더 많은 정보는 <xref linkend="rules">에 있다.
+   룰에 대한 더 많은 정보는 <xref linkend="rules"/>에 있다.
   </para>
 
   <para>
@@ -75,8 +75,8 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> A
    <literal>ON INSERT</literal>, <literal>ON UPDATE</literal>,
    <literal>ON DELETE</literal> 룰을 그 뷰에 추가해서
    자료를 조작할 수도 있다. 또한
-   <command>INSERT RETURNING</> 작업도 룰로 구현할 수 있는데, 
-   이 때는 <literal>RETURNING</> 부분의 결과를 
+   <command>INSERT RETURNING</command> 작업도 룰로 구현할 수 있는데, 
+   이 때는 <literal>RETURNING</literal> 부분의 결과를 
    직접 지정해야 한다.
   </para>
 
@@ -99,21 +99,21 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> A
    서버가 더미 테이블 관련 작업을 아에 할 수 없도록 하는 것이 
    중요하다.  이렇게 하면, 조건절에 적용 되지 않는 자료들에 대해서는
    <literal>INSTEAD NOTHING</literal> 작업을 하게 된다.
-   (현재, 이 방법은  <literal>RETURNING</>  쿼리를 지원하지 않는다.)
+   (현재, 이 방법은  <literal>RETURNING</literal>  쿼리를 지원하지 않는다.)
   </para>
 
   <note>
    <para>
     단순한 뷰인 경우는 이미 기본적으로 자료 갱신 작업을 
-    허용하고 있다. (<xref linkend="sql-createview"> 명령 설명서 참조)
+    허용하고 있다. (<xref linkend="sql-createview"/> 명령 설명서 참조)
     그래서, 굳이 사용자가 이 작업을 위해 룰을 만들 필요는 없다.
     당연히 성능도 내장 자동 갱신 기능이 더 우수하다.
    </para>
 
    <para>
     또 하나, 룰을 쓰는 자리에, 
-    <literal>INSTEAD OF</> 트리거를 대신 쓰는 것도 고려해볼만 하다(<xref
-    linkend="sql-createtrigger"> 명령 설명서 참조).
+    <literal>INSTEAD OF</literal> 트리거를 대신 쓰는 것도 고려해볼만 하다(<xref
+    linkend="sql-createtrigger"/> 명령 설명서 참조).
    </para>
   </note>
  </refsect1>
@@ -163,7 +163,7 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> A
      <para>
       <acronym>SQL</acronym> 구문으로 작성된 표현식( 결과는 
       <type>boolean</type> 형).  이 식에서는
-      <literal>NEW</>, <literal>OLD</> 변수를 사용할 수 없으며,
+      <literal>NEW</literal>, <literal>OLD</literal> 변수를 사용할 수 없으며,
       집계 함수도 사용할 수 없다.
      </para>
     </listitem>
@@ -173,7 +173,7 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> A
     <term><option>INSTEAD</option></term>
     <listitem>
      <para><literal>INSTEAD</literal> 명령을 사용할 때.
-     원래 쿼리 대신에 여기서 지정한 명령을 <emphasis>대신</> 실행함.
+     원래 쿼리 대신에 여기서 지정한 명령을 <emphasis>대신</emphasis> 실행함.
      </para>
     </listitem>
    </varlistentry>
@@ -182,7 +182,7 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> A
     <term><option>ALSO</option></term>
     <listitem>
      <para><literal>ALSO</literal> 원래 쿼리 다음에 추가로 
-     지정한 명령을 <emphasis>더</> 실행함.
+     지정한 명령을 <emphasis>더</emphasis> 실행함.
      </para>
 
      <para>
@@ -228,18 +228,18 @@ CREATE [ OR REPLACE ] RULE <replaceable class="parameter">이름</replaceable> A
   <para>
    뷰에 <literal>INSERT</literal>, <literal>UPDATE</literal>, 또는
    <literal>DELETE</literal> 룰이 있는 경우,
-   뷰 칼럼을 보기 위해 <literal>RETURNING</> 구문을 사용할 수 있다.
-   이런 경우는 각각 <command>INSERT RETURNING</>,
-   <command>UPDATE RETURNING</>, 또는 <command>DELETE RETURNING</>
+   뷰 칼럼을 보기 위해 <literal>RETURNING</literal> 구문을 사용할 수 있다.
+   이런 경우는 각각 <command>INSERT RETURNING</command>,
+   <command>UPDATE RETURNING</command>, 또는 <command>DELETE RETURNING</command>
    명령이 그 출력을 위해 사용된다.
-   뷰 변경 작업에서 <literal>RETURNING</>을 사용하지 않았다면,
-   그런데, 룰 명령으로 이 <literal>RETURNING</> 절은 무시된다.
-   현재 <literal>INSTEAD</> 룰에서만 
-   <literal>RETURNING</> 절을 사용할 수 있다.
-   게다가, 이 <literal>RETURNING</> 절은 동일 이벤트에 대한 여러개의 
+   뷰 변경 작업에서 <literal>RETURNING</literal>을 사용하지 않았다면,
+   그런데, 룰 명령으로 이 <literal>RETURNING</literal> 절은 무시된다.
+   현재 <literal>INSTEAD</literal> 룰에서만 
+   <literal>RETURNING</literal> 절을 사용할 수 있다.
+   게다가, 이 <literal>RETURNING</literal> 절은 동일 이벤트에 대한 여러개의 
    룰이 있는 경우, 최종 하나에만 지정해야한다.
-   이 <literal>RETURNING</> 절이 하나도 없다면, 뷰 조작 쿼리에서
-   <literal>RETURNING</>을 사용하면 그 쿼리는 실행되지 않는다.
+   이 <literal>RETURNING</literal> 절이 하나도 없다면, 뷰 조작 쿼리에서
+   <literal>RETURNING</literal>을 사용하면 그 쿼리는 실행되지 않는다.
   </para>
 
   <para>
@@ -294,8 +294,8 @@ UPDATE mytable SET name = 'foo' WHERE id = 42;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterrule"></member>
-   <member><xref linkend="sql-droprule"></member>
+   <member><xref linkend="sql-alterrule"/></member>
+   <member><xref linkend="sql-droprule"/></member>
   </simplelist>
  </refsect1>
 

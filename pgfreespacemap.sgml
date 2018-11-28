@@ -8,7 +8,7 @@
  </indexterm>
 
  <para>
-  <filename>pg_freespacemap</> 모듈은 free space map (FSM)을 검사하는 
+  <filename>pg_freespacemap</filename> 모듈은 free space map (FSM)을 검사하는 
   기능을 제공한다.
   <function>pg_freespace</function> 함수와, 같은 함수 이름에 다른 인자를 
   사용할 수 있는 오버로드된 두 개의 함수도 추가적으로 지원한다.
@@ -35,7 +35,7 @@
 
     <listitem>
      <para>
-      지정한 <literal>regclass</> 이름의 릴레이션에서 <literal>blkno</> 블럭번호에서
+      지정한 <literal>regclass</literal> 이름의 릴레이션에서 <literal>blkno</literal> 블럭번호에서
           사용할 수 있는 총 여유 공간을 리턴한다.
      </para>
     </listitem>
@@ -49,8 +49,8 @@
 
     <listitem>
      <para>
-      지정한 <literal>regclass</> 이름의 릴레이션의 여유 공간을
-      <literal>(blkno bigint, avail int2)</> 형태의 로우로 리턴한다.
+      지정한 <literal>regclass</literal> 이름의 릴레이션의 여유 공간을
+      <literal>(blkno bigint, avail int2)</literal> 형태의 로우로 리턴한다.
       전체 로우는 해당 객체의 전체 페이지가 되며, 각 블럭별 여유 공간을 살펴 볼 수 있다.
      </para>
     </listitem>
@@ -59,7 +59,7 @@
 
   <para>
    이 여유 공간 값은 엄밀하게 말하는 정확한 값은 아니다. 
-   <symbol>BLCKSZ</>의 1/256 단위 (기본 <symbol>BLCKSZ</> 값의 32 바이트)로 반올림되기 때문에,
+   <symbol>BLCKSZ</symbol>의 1/256 단위 (기본 <symbol>BLCKSZ</symbol> 값의 32 바이트)로 반올림되기 때문에,
    insert, update 작업으로 그 공간이 줄었는 것을 정확하게 반영하지도 않는다.
   </para>
 

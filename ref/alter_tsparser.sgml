@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_tsparser.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERTSPARSER">
+<refentry id="sql-altertsparser">
  <indexterm zone="sql-altertsparser">
   <primary>ALTER TEXT SEARCH PARSER</primary>
  </indexterm>
@@ -36,7 +36,7 @@ ALTER TEXT SEARCH PARSER <replaceable>이름</replaceable> SET SCHEMA <replaceab
   </para>
 
   <para>
-   <command>ALTER TEXT SEARCH PARSER</> 명령은 슈퍼유저만 사용할 수 있다.
+   <command>ALTER TEXT SEARCH PARSER</command> 명령은 슈퍼유저만 사용할 수 있다.
   </para>
  </refsect1>
 
@@ -85,8 +85,8 @@ ALTER TEXT SEARCH PARSER <replaceable>이름</replaceable> SET SCHEMA <replaceab
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createtsparser"></member>
-   <member><xref linkend="sql-droptsparser"></member>
+   <member><xref linkend="sql-createtsparser"/></member>
+   <member><xref linkend="sql-droptsparser"/></member>
   </simplelist>
  </refsect1>
 </refentry>

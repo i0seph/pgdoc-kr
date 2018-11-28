@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_extension.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTEREXTENSION">
+<refentry id="sql-alterextension">
  <indexterm zone="sql-alterextension">
   <primary>ALTER EXTENSION</primary>
  </indexterm>
@@ -21,39 +21,41 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> UPDATE [ TO <replaceable class="PARAMETER">새버전</replaceable> ]
-ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> SET SCHEMA <replaceable class="PARAMETER">새스키마</replaceable>
-ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> ADD <replaceable class="PARAMETER">소속개체</replaceable>
-ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replaceable class="PARAMETER">소속개체</replaceable>
+ALTER EXTENSION <replaceable class="parameter">이름</replaceable> UPDATE [ TO <replaceable class="parameter">새버전</replaceable> ]
+ALTER EXTENSION <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
+ALTER EXTENSION <replaceable class="parameter">이름</replaceable> ADD <replaceable class="parameter">소속개체</replaceable>
+ALTER EXTENSION <replaceable class="parameter">이름</replaceable> DROP <replaceable class="parameter">소속개체</replaceable>
 
-<phrase><replaceable class="PARAMETER">소속개체</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">소속개체</replaceable> 자리에는:</phrase>
 
-  ACCESS METHOD <replaceable class="PARAMETER">개체이름</replaceable> |
-  AGGREGATE <replaceable class="PARAMETER">집계함수이름</replaceable> ( <replaceable>집계함수식별구문</replaceable> ) |
+  ACCESS METHOD <replaceable class="parameter">개체이름</replaceable> |
+  AGGREGATE <replaceable class="parameter">집계함수이름</replaceable> ( <replaceable>집계함수식별구문</replaceable> ) |
   CAST (<replaceable>기존자료형</replaceable> AS <replaceable>바뀔자료형</replaceable>) |
-  COLLATION <replaceable class="PARAMETER">개체이름</replaceable> |
-  CONVERSION <replaceable class="PARAMETER">개체이름</replaceable> |
-  DOMAIN <replaceable class="PARAMETER">개체이름</replaceable> |
-  EVENT TRIGGER <replaceable class="PARAMETER">개체이름</replaceable> |
-  FOREIGN DATA WRAPPER <replaceable class="PARAMETER">개체이름</replaceable> |
-  FOREIGN TABLE <replaceable class="PARAMETER">개체이름</replaceable> |
-  FUNCTION <replaceable class="PARAMETER">함수이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ] |
-  MATERIALIZED VIEW <replaceable class="PARAMETER">개체이름</replaceable> |
-  OPERATOR <replaceable class="PARAMETER">연산자이름</replaceable> (<replaceable class="PARAMETER">왼쪽자료형</replaceable>, <replaceable class="PARAMETER">오른쪽자료형</replaceable>) |
-  OPERATOR CLASS <replaceable class="PARAMETER">개체이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable> |
-  OPERATOR FAMILY <replaceable class="PARAMETER">개체이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable> |
-  [ PROCEDURAL ] LANGUAGE <replaceable class="PARAMETER">개체이름</replaceable> |
-  SCHEMA <replaceable class="PARAMETER">개체이름</replaceable> |
-  SEQUENCE <replaceable class="PARAMETER">개체이름</replaceable> |
-  SERVER <replaceable class="PARAMETER">개체이름</replaceable> |
-  TABLE <replaceable class="PARAMETER">개체이름</replaceable> |
-  TEXT SEARCH CONFIGURATION <replaceable class="PARAMETER">개체이름</replaceable> |
-  TEXT SEARCH DICTIONARY <replaceable class="PARAMETER">개체이름</replaceable> |
-  TEXT SEARCH PARSER <replaceable class="PARAMETER">개체이름</replaceable> |
-  TEXT SEARCH TEMPLATE <replaceable class="PARAMETER">개체이름</replaceable> |
+  COLLATION <replaceable class="parameter">개체이름</replaceable> |
+  CONVERSION <replaceable class="parameter">개체이름</replaceable> |
+  DOMAIN <replaceable class="parameter">개체이름</replaceable> |
+  EVENT TRIGGER <replaceable class="parameter">개체이름</replaceable> |
+  FOREIGN DATA WRAPPER <replaceable class="parameter">개체이름</replaceable> |
+  FOREIGN TABLE <replaceable class="parameter">개체이름</replaceable> |
+  FUNCTION <replaceable class="parameter">함수이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ] |
+  MATERIALIZED VIEW <replaceable class="parameter">개체이름</replaceable> |
+  OPERATOR <replaceable class="parameter">연산자이름</replaceable> (<replaceable class="parameter">왼쪽자료형</replaceable>, <replaceable class="parameter">오른쪽자료형</replaceable>) |
+  OPERATOR CLASS <replaceable class="parameter">개체이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable> |
+  OPERATOR FAMILY <replaceable class="parameter">개체이름</replaceable> USING <replaceable class="parameter">색인방법</replaceable> |
+  [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">개체이름</replaceable> |
+  PROCEDURE <replaceable class="parameter">프로시져이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ] |
+  ROUTINE <replaceable class="parameter">루틴이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ] |
+  SCHEMA <replaceable class="parameter">개체이름</replaceable> |
+  SEQUENCE <replaceable class="parameter">개체이름</replaceable> |
+  SERVER <replaceable class="parameter">개체이름</replaceable> |
+  TABLE <replaceable class="parameter">개체이름</replaceable> |
+  TEXT SEARCH CONFIGURATION <replaceable class="parameter">개체이름</replaceable> |
+  TEXT SEARCH DICTIONARY <replaceable class="parameter">개체이름</replaceable> |
+  TEXT SEARCH PARSER <replaceable class="parameter">개체이름</replaceable> |
+  TEXT SEARCH TEMPLATE <replaceable class="parameter">개체이름</replaceable> |
   TRANSFORM FOR <replaceable>자료형이름</replaceable> LANGUAGE <replaceable>언어이름</replaceable> |
-  TYPE <replaceable class="PARAMETER">개체이름</replaceable> |
-  VIEW <replaceable class="PARAMETER">개체이름</replaceable>
+  TYPE <replaceable class="parameter">개체이름</replaceable> |
+  VIEW <replaceable class="parameter">개체이름</replaceable>
 
 <phrase><replaceable>집계함수식별구문</replaceable> 자리에는:</phrase>
 
@@ -89,14 +91,14 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
      <para>
       해당 확장 모듈 소속 개체들을 다른 스키마로 옮긴다.  이 작업이
       정상적으로 수행되려면 해당 확장 모듈이
-      <firstterm>이동 가능한</> 것이여야 한다.  (소속 개체들의
+      <firstterm>이동 가능한</firstterm> 것이여야 한다.  (소속 개체들의
       스키마 바꾸기에 필요한 여러 접근 권한들이 있어야 한다 - 옮긴이)
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>ADD <replaceable class="PARAMETER">소속개체</replaceable></literal></term>
+    <term><literal>ADD <replaceable class="parameter">소속개체</replaceable></literal></term>
     <listitem>
      <para>
       해당 확장 모듈에 지정한 한 개체를 그 모듈의 구성 요소로 지정한다.
@@ -108,7 +110,7 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
    </varlistentry>
 
    <varlistentry>
-    <term><literal>DROP <replaceable class="PARAMETER">소속개체</replaceable></literal></term>
+    <term><literal>DROP <replaceable class="parameter">소속개체</replaceable></literal></term>
     <listitem>
      <para>
       해당 확장 모듈에 지정한 한 개체를 그 모듈에서 뺀다.
@@ -120,12 +122,12 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
    </varlistentry>
    </variablelist>
 
-   이 부분에 대한 추가 정보는 <xref linkend="extend-extensions">에서 다룬다.
+   이 부분에 대한 추가 정보는 <xref linkend="extend-extensions"/>에서 다룬다.
   </para>
 
   <para>
    <command>ALTER EXTENSION</command> 명령은 해당 확장 모듈의
-   소유주가 사용한다.  또한 <literal>ADD</>/<literal>DROP</> 작업은
+   소유주가 사용한다.  또한 <literal>ADD</literal>/<literal>DROP</literal> 작업은
    그 작업 대상 개체들의 소유주여야 한다.
   </para>
  </refsect1>
@@ -136,7 +138,7 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
   <para>
    <variablelist>
     <varlistentry>
-     <term><replaceable class="PARAMETER">이름</replaceable></term>
+     <term><replaceable class="parameter">이름</replaceable></term>
      <listitem>
       <para>
        작업 대상 확장 모듈 이름.
@@ -145,18 +147,18 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">새버전</replaceable></term>
+     <term><replaceable class="parameter">새버전</replaceable></term>
      <listitem>
       <para>
        사용할 해당 확장 모듈의 버전.  이 값은 식별값이거나 문자열이다.
-       이 값을 지정하지 않고, <command>ALTER EXTENSION UPDATE</> 명령을
+       이 값을 지정하지 않고, <command>ALTER EXTENSION UPDATE</command> 명령을
        사용하면, 해당 확장 모듈 제어 파일에 지정한 버전을 사용한다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">새스키마</replaceable></term>
+     <term><replaceable class="parameter">새스키마</replaceable></term>
      <listitem>
       <para>
        바뀔 새 스키마 이름.
@@ -169,10 +171,13 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
      <term><replaceable class="parameter">집계함수이름</replaceable></term>
      <term><replaceable class="parameter">함수이름</replaceable></term>
      <term><replaceable class="parameter">연산자이름</replaceable></term>
+     <term><replaceable class="parameter">procedure_name</replaceable></term>
+     <term><replaceable class="parameter">routine_name</replaceable></term>
      <listitem>
       <para>
        해당 확장 모듈에 포함하거나 뺄 테이블, 집계 함수, 도메인,
-       외부 테이블, 함수, 연산자, 연산자 클래스, 연산자 가족, 시퀀스,
+       외부 테이블, 함수, 연산자, 연산자 클래스, 연산자 가족, 프로시져,
+       루틴, 시퀀스,
        글 찾기 개체, 자료형, 뷰의 이름.  이 이름에는 스키마 이름도 포함
        할 수 있다.
       </para>
@@ -202,13 +207,13 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
 
      <listitem>
       <para>
-       함수나 집계 함수의 인자 모드: <literal>IN</>, <literal>OUT</>,
-       <literal>INOUT</>, 또는 <literal>VARIADIC</>.
-       생략하면, 기본값은 <literal>IN</>.
+       함수, 프로시시져나 집계 함수의 인자 모드: <literal>IN</literal>, <literal>OUT</literal>,
+       <literal>INOUT</literal>, 또는 <literal>VARIADIC</literal>.
+       생략하면, 기본값은 <literal>IN</literal>.
        <command>ALTER EXTENSION</command> 명령에서는
-       <literal>OUT</> 인자에 대해서는 무시하고, 함수 식별을 위해서
+       <literal>OUT</literal> 인자에 대해서는 무시하고, 함수 식별을 위해서
        입력 인자만 확인한다.  그래서 해당 함수를 지정하기 위해서는
-       <literal>IN</>, <literal>INOUT</>, <literal>VARIADIC</> 인자만
+       <literal>IN</literal>, <literal>INOUT</literal>, <literal>VARIADIC</literal> 인자만
        지정하면 된다.
       </para>
      </listitem>
@@ -219,7 +224,7 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
 
      <listitem>
       <para>
-       함수나 집계 함수의 인자 이름.
+       함수, 프로시져나 집계 함수의 인자 이름.
        <command>ALTER EXTENSION</command> 명령에서는
        지정한 해당 함수를 찾는데 이 이름은 사용하지 않고, 
        단지, 인자 모드와 인자 자료형만 사용한다.
@@ -232,7 +237,7 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
 
      <listitem>
       <para>
-       함수나 집계 함수의 인자 자료형.
+       함수, 프로시져나 집계 함수의 인자 자료형.
       </para>
      </listitem>
     </varlistentry>
@@ -243,7 +248,7 @@ ALTER EXTENSION <replaceable class="PARAMETER">이름</replaceable> DROP <replac
      <listitem>
       <para>
        연산자(스키마 이름 포함)를 지정하기 위한 자료형.
-       단항 연산자인 경우는 사용하지 않는 자료형에 <literal>NONE</>을 
+       단항 연산자인 경우는 사용하지 않는 자료형에 <literal>NONE</literal>을 
        지정한다.
       </para>
      </listitem>
@@ -310,17 +315,17 @@ ALTER EXTENSION hstore ADD FUNCTION populate_record(anyelement, hstore);
   <title>호환성</title>
 
   <para>
-   <command>ALTER EXTENSION</command> is a <productname>PostgreSQL</>
+   <command>ALTER EXTENSION</command> is a <productname>PostgreSQL</productname>
    extension.
   </para>
  </refsect1>
 
- <refsect1 id="SQL-ALTEREXTENSION-see-also">
+ <refsect1 id="sql-alterextension-see-also">
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createextension"></member>
-   <member><xref linkend="sql-dropextension"></member>
+   <member><xref linkend="sql-createextension"/></member>
+   <member><xref linkend="sql-dropextension"/></member>
   </simplelist>
  </refsect1>
 </refentry>

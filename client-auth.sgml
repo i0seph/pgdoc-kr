@@ -9,12 +9,12 @@
 
  <para>
 클라이언트 애플리케이션이 데이터베이스 서버에 연결하는 경우 어떤 <productname>PostgreSQL</productname> 데이터베이스 사용자 이름으로 연결할 것인지 지정하는데, 이것은 특정 사용자로 Unix 컴퓨터에 로그인하는 것과 매우 유사하다. 
-SQL 환경 내에서 사용 중인 데이터베이스 사용자 이름은 데이터베이스 개체에 대한 액세스 권한을 결정한다. 자세한 내용은 <xref linkend="user-manag">을 참고 바란다. 따라서 연결 가능한 데이터베이스 사용자를 제한하는 것이 중요하다.
+SQL 환경 내에서 사용 중인 데이터베이스 사용자 이름은 데이터베이스 개체에 대한 액세스 권한을 결정한다. 자세한 내용은 <xref linkend="user-manag"/>을 참고 바란다. 따라서 연결 가능한 데이터베이스 사용자를 제한하는 것이 중요하다.
  </para>
 
  <note>
   <para>
-<xref linkend="user-manag">에서 설명한 대로 <productname>PostgreSQL</productname>은 실제로 <quote>role</> 면에서 권한을 관리한다. 이 장에서는 <firstterm>데이터베이스 사용자</>가 <quote><literal>LOGIN</> 권한이 있는 role</quote>이라는 의미로 일관되게 사용된다.
+<xref linkend="user-manag"/>에서 설명한 대로 <productname>PostgreSQL</productname>은 실제로 <quote>role</quote> 면에서 권한을 관리한다. 이 장에서는 <firstterm>데이터베이스 사용자</firstterm>가 <quote><literal>LOGIN</literal> 권한이 있는 role</quote>이라는 의미로 일관되게 사용된다.
   </para>
  </note>
 
@@ -40,18 +40,18 @@ SQL 환경 내에서 사용 중인 데이터베이스 사용자 이름은 데이
   </indexterm>
 
   <para>
-   클라이언트 인증은 전통적으로 이름이 <filename>pg_hba.conf</filename>이고 데이터베이스 클러스터의 데이터 디렉터리에 저장되는 환경 설정 파일로 제어된다. (<acronym>HBA</>는 호스트 기반 인증(host-based authentication)의 약어이다.) 
-   기본 <filename>pg_hba.conf</filename> 파일은 데이터 디렉터리가 <command>initdb</command>에 의해 초기화될 때 설치된다. 인증 환경 설정 파일을 다른 곳에 배치하는 것도 가능하다. <xref linkend="guc-hba-file"> 환경 설정 파일을 참조 바란다.
+   클라이언트 인증은 전통적으로 이름이 <filename>pg_hba.conf</filename>이고 데이터베이스 클러스터의 데이터 디렉터리에 저장되는 환경 설정 파일로 제어된다. (<acronym>HBA</acronym>는 호스트 기반 인증(host-based authentication)의 약어이다.) 
+   기본 <filename>pg_hba.conf</filename> 파일은 데이터 디렉터리가 <command>initdb</command>에 의해 초기화될 때 설치된다. 인증 환경 설정 파일을 다른 곳에 배치하는 것도 가능하다. <xref linkend="guc-hba-file"/> 환경 설정 파일을 참조 바란다.
   </para>
 
   <para>
    <filename>pg_hba.conf</filename> 파일의 일반 형식은 한 줄당 하나씩 있는 레코드 세트이다. 빈 줄은 무시된다. <literal>#</literal> 주석 문자 뒤의 텍스트도 무시된다. 레코드는 줄을 바꿔서 이어질 수 없다. 레코드는 여러 개의 필드로 구성되며, 공백 및/또는 탭으로 구분된다. 
-   필드 값에 큰 따옴표를 사용하면 필드에 공백을 포함할 수 있다. 데이터베이스, 사용자 또는 주소 필드의 키워드에 따옴표를 사용하면(예: <literal>all</> 또는 <literal>replication</>) 단어는 자체의 특수한 의미를 상실하고 해당 이름의 데이터베이스, 사용자 또는 호스트와 동일하게 된다.
+   필드 값에 큰 따옴표를 사용하면 필드에 공백을 포함할 수 있다. 데이터베이스, 사용자 또는 주소 필드의 키워드에 따옴표를 사용하면(예: <literal>all</literal> 또는 <literal>replication</literal>) 단어는 자체의 특수한 의미를 상실하고 해당 이름의 데이터베이스, 사용자 또는 호스트와 동일하게 된다.
   </para>
 
   <para>
    각 레코드는 이러한 매개 변수와 일치하는 연결에 사용되는 연결 유형, 클라이언트 IP 주소 범위(연결 유형에 해당하는 경우), 데이터베이스 이름, 사용자 이름 및 인증 방법을 지정한다. 
-   연결 타입, 클라이언트 주소, 요청된 데이터베이스 및 사용자 이름이 일치하는 첫 번째 레코드는 인증을 수행할 때 사용된다. <quote>제어 이동(fall-through)</> 또는 <quote>백업</quote>은 없다. 레코드 하나가 선택되고 인증이 실패한 경우 후속 레코드는 고려되지 않는다. 
+   연결 타입, 클라이언트 주소, 요청된 데이터베이스 및 사용자 이름이 일치하는 첫 번째 레코드는 인증을 수행할 때 사용된다. <quote>제어 이동(fall-through)</quote> 또는 <quote>백업</quote>은 없다. 레코드 하나가 선택되고 인증이 실패한 경우 후속 레코드는 고려되지 않는다. 
    일치하는 레코드가 없으면 액세스가 거부된다.
   </para>
 
@@ -86,7 +86,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       </para>
      <note>
       <para>
-       기본 동작이 로컬 루프백 주소 <literal>localhost</>에 대해서만 TCP/IP 연결을 listen하는 것이므로 <xref linkend="guc-listen-addresses"> 환경 설정 매개 변수에 적절한 값으로 서버가 시작되지 않으면 원격 TCP/IP 연결이 불가능하다.
+       기본 동작이 로컬 루프백 주소 <literal>localhost</literal>에 대해서만 TCP/IP 연결을 listen하는 것이므로 <xref linkend="guc-listen-addresses"/> 환경 설정 매개 변수에 적절한 값으로 서버가 시작되지 않으면 원격 TCP/IP 연결이 불가능하다.
       </para>
      </note>
      </listitem>
@@ -101,8 +101,8 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
 
       <para>
        이 옵션을 사용하려면 서버는 <acronym>SSL</acronym> 지원이 내장되어 있어야 한다.  또한
-       <acronym>SSL</acronym>은 <xref linkend="guc-ssl"> 환경 설정 매개 변수 값
-       지정으로 활성화되어야 한다(자세한 내용은 <xref linkend="ssl-tcp"> 참조).
+       <acronym>SSL</acronym>은 <xref linkend="guc-ssl"/> 환경 설정 매개 변수 값
+       지정으로 활성화되어야 한다(자세한 내용은 <xref linkend="ssl-tcp"/> 참조).
        한편, <literal>hostssl</literal> 레코드 지정으로 접속 예외 처리 되는 
        정보는 경고 로그를 남기지 않는다.
       </para>
@@ -113,7 +113,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
      <term><literal>hostnossl</literal></term>
      <listitem>
       <para>
-       이 레코드 유형은 <literal>hostssl</>과는 반대로 동작한다. 
+       이 레코드 유형은 <literal>hostssl</literal>과는 반대로 동작한다. 
        <acronym>SSL</acronym>을 사용하지 않는 TCP/IP 상의 연결 시도에 대해서만 일치한다.
       </para>
      </listitem>
@@ -123,10 +123,10 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
      <term><replaceable>database</replaceable></term>
      <listitem>
       <para>
-       이 레코드가 일치하는 데이터베이스 이름을 지정한다. <literal>all</literal> 값은 모든 데이터베이스와 일치하도록 지정한다. <literal>sameuser</> 값은 요청된 데이터베이스가 요청된 사용자와 이름이 동일한 경우에 레코드가 일치하도록 지정한다. 
-       <literal>samerole</> 값은 요청된 사용자가 요청된 데이터베이스와 이름이 동일한 role의 멤버여야 하는지 지정한다. (<literal>samegroup</>은 폐지되었지만 <literal>samerole</>은 계속 쓸 수 있다.) 
-       수퍼유저는 직간접적으로 role의 명시적인 멤버가 아닐 경우, 단지 수퍼유저라는 이유로 <literal>samerole</>에 대한 role의 멤버로 간주되지 않는다. <literal>replication</> 값은 물리 복제 연결이 요청되는 경우 레코드가 일치하도록 지정한다(복제 연결은 특정 데이터베이스를 지정하지는 않는다). 
-       이 경우가 아니라면 특정 <productname>PostgreSQL</productname> 데이터베이스의 이름으로 사용된다. 쉼표로 구분해서 데이터베이스 이름을 여러 개 쓸 수 있다. 데이터베이스 이름이 포함된 파일은 파일 이름 앞에 <literal>@</>를 붙여서 지정 가능하다.
+       이 레코드가 일치하는 데이터베이스 이름을 지정한다. <literal>all</literal> 값은 모든 데이터베이스와 일치하도록 지정한다. <literal>sameuser</literal> 값은 요청된 데이터베이스가 요청된 사용자와 이름이 동일한 경우에 레코드가 일치하도록 지정한다. 
+       <literal>samerole</literal> 값은 요청된 사용자가 요청된 데이터베이스와 이름이 동일한 role의 멤버여야 하는지 지정한다. (<literal>samegroup</literal>은 폐지되었지만 <literal>samerole</literal>은 계속 쓸 수 있다.) 
+       수퍼유저는 직간접적으로 role의 명시적인 멤버가 아닐 경우, 단지 수퍼유저라는 이유로 <literal>samerole</literal>에 대한 role의 멤버로 간주되지 않는다. <literal>replication</literal> 값은 물리 복제 연결이 요청되는 경우 레코드가 일치하도록 지정한다(복제 연결은 특정 데이터베이스를 지정하지는 않는다). 
+       이 경우가 아니라면 특정 <productname>PostgreSQL</productname> 데이터베이스의 이름으로 사용된다. 쉼표로 구분해서 데이터베이스 이름을 여러 개 쓸 수 있다. 데이터베이스 이름이 포함된 파일은 파일 이름 앞에 <literal>@</literal>를 붙여서 지정 가능하다.
       </para>
      </listitem>
     </varlistentry>
@@ -135,10 +135,10 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
      <term><replaceable>user</replaceable></term>
      <listitem>
       <para>
-       이 레코드와 일치하는 데이터베이스 사용자 이름을 지정한다. <literal>all</literal> 값은 모든 사용자와 일치하도록 지정한다. 이 외에는, 특정한 데이터베이스 사용자의 이름이거나, 앞에 <literal>+</>를 붙인 그룹 이름이다. (<productname>PostgreSQL</>에서는 사용자와 그룹 이름 간에 실제로 차이는 없다. 
-       <literal>+</> 마크는 실제로 <quote>이 role의 직접 또는 간접 멤버인 아무 role과 일치함</quote>을 의미하며, <literal>+</> 마크가 없는 이름은 유일하게 특정 role과 일치한다.) 
+       이 레코드와 일치하는 데이터베이스 사용자 이름을 지정한다. <literal>all</literal> 값은 모든 사용자와 일치하도록 지정한다. 이 외에는, 특정한 데이터베이스 사용자의 이름이거나, 앞에 <literal>+</literal>를 붙인 그룹 이름이다. (<productname>PostgreSQL</productname>에서는 사용자와 그룹 이름 간에 실제로 차이는 없다. 
+       <literal>+</literal> 마크는 실제로 <quote>이 role의 직접 또는 간접 멤버인 아무 role과 일치함</quote>을 의미하며, <literal>+</literal> 마크가 없는 이름은 유일하게 특정 role과 일치한다.) 
        이러한 이유로, 수퍼유저는 단지 수퍼유저라는 이유 때문이 아니라, 직간접적으로 role의 명시적 멤버인 경우에만 role 멤버로 간주된다. 
-       쉼표로 구분함해서 사용자 이름을 여러 개 쓸 수 있다. 사용자 이름이 포함된 파일은 파일 이름 앞에 <literal>@</>를 붙여서 지정 가능하다.
+       쉼표로 구분함해서 사용자 이름을 여러 개 쓸 수 있다. 사용자 이름이 포함된 파일은 파일 이름 앞에 <literal>@</literal>를 붙여서 지정 가능하다.
       </para>
      </listitem>
     </varlistentry>
@@ -153,7 +153,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       </para>
 
       <para>
-       IP 주소 대역은 <acronym>CIDR</> 표기법을 사용하며, 
+       IP 주소 대역은 <acronym>CIDR</acronym> 표기법을 사용하며, 
        빗금 기호를 기준으로 왼쪽은 시작 주소, 오른쪽은 마스크 길이를 지정한다.
        마스크 길이는 일치해야 하는 클라이언트 IP 주소의 상위 비트 수를 나타낸다.
        이것의 오른쪽에 있는 비트는 주어진 IP 주소에서 0이어야 한다. 
@@ -173,14 +173,14 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
        <literal>::0/0</literal>은 모든 IPv6 주소를 나타낸다. 
        단일 호스트를 지정하려면 IPv4의 마스크 길이값으로 32를 사용하고
        IPv6의 경우 128을 사용해야 한다.
-       <acronym>CIDR</> 표기의 시작 주소를 지정할 때는 끝 값이 0이어도 
+       <acronym>CIDR</acronym> 표기의 시작 주소를 지정할 때는 끝 값이 0이어도 
        생략할 수 없음을 주의 해야 한다.
       </para>
 
       <para>
        클라이언트가 IPv4 주소로 연결을 시도하면, IPv4 주소 항목에서만 인증 처리를 하고,
        IPv6로 연결을 시도하면, IPv6 주소 항목에서만 인증 처리를 한다.
-       즉, <literal>127.0.0.1</> 주소와 <literal>::1/128</literal> 같은
+       즉, <literal>127.0.0.1</literal> 주소와 <literal>::1/128</literal> 같은
        루프백일지라도 각각 처리 된다.
        IPv6 형식의 항목은 표시된 주소가 IPv4-in-IPv6 범위 내이더라도 IPv6 연결만 
        고려한다.
@@ -216,7 +216,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       </para>
 
       <para>
-       이 필드는 <literal>host</literal>, <literal>hostssl</literal> 및 <literal>hostnossl</> 레코드에 적용된다.
+       이 필드는 <literal>host</literal>, <literal>hostssl</literal> 및 <literal>hostnossl</literal> 레코드에 적용된다.
       </para>
 
       <note>
@@ -244,15 +244,15 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
      <term><replaceable>IP-mask</replaceable></term>
      <listitem>
       <para>
-       이 두 필드는 <replaceable>IP-주소</><literal>/</><replaceable>마스크길이</>
+       이 두 필드는 <replaceable>IP-주소</replaceable><literal>/</literal><replaceable>마스크길이</replaceable>
        표기의 대안으로 사용될 수 있다. 마스크 길이를 지정하는 대신,
        실제 마스크를 지정한다.
-       예를 들면, <literal>255.0.0.0</>은 IPv4 CIDR 마스크 길이 8을 나타내고,
-       <literal>255.255.255.255</>는 CIDR 마스크 길이 32를 나타낸다.
+       예를 들면, <literal>255.0.0.0</literal>은 IPv4 CIDR 마스크 길이 8을 나타내고,
+       <literal>255.255.255.255</literal>는 CIDR 마스크 길이 32를 나타낸다.
       </para>
 
       <para>
-       이 필드는 <literal>host</literal> 및 <literal>hostssl</literal>, <literal>hostnossl</> 레코드에 적용된다.
+       이 필드는 <literal>host</literal> 및 <literal>hostssl</literal>, <literal>hostnossl</literal> 레코드에 적용된다.
       </para>
      </listitem>
     </varlistentry>
@@ -262,149 +262,149 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
      <listitem>
       <para>
        연결이 이 레코드와 일치할 때 사용하는 인증 방법을 지정한다. 
-       가능한 선택안이 여기에 요약되어 있다. 자세한 내용은 <xref linkend="auth-methods">을 참조 바란다.
+       가능한 선택안이 여기에 요약되어 있다. 자세한 내용은 <xref linkend="auth-methods"/>을 참조 바란다.
 
        <variablelist>
         <varlistentry>
-         <term><literal>trust</></term>
+         <term><literal>trust</literal></term>
          <listitem>
          <para>
           무조건 연결을 허용한다. 이 방법은 패스워드나 다른 인증 없이 임의의 <productname>PostgreSQL</productname> 데이터베이스 사용자로 로그인하여 누구나 <productname>PostgreSQL</productname> 데이터베이스 서버에 연결할 수 있다. 
           자세한 내용은 <xref
-          linkend="auth-trust">을 참조 바란다.
+          linkend="auth-trust"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>reject</></term>
+        <term><literal>reject</literal></term>
         <listitem>
          <para>
           무조건 연결을 거부한다. 이것은 그룹에서 특정 호스트를 <quote>필터링</quote>할 때 유용하다. 
-          예를 들면, <literal>reject</> 줄은 특정 호스트의 연결을 차단하고, 그 이후의 줄은 특정 네트워크에서 나머지 호스트의 연결을 허용한다.
+          예를 들면, <literal>reject</literal> 줄은 특정 호스트의 연결을 차단하고, 그 이후의 줄은 특정 네트워크에서 나머지 호스트의 연결을 허용한다.
          </para>
         </listitem>
        </varlistentry>
 
       <varlistentry>
-        <term><literal>scram-sha-256</></term>
+        <term><literal>scram-sha-256</literal></term>
         <listitem>
          <para>
           Perform SCRAM-SHA-256 authentication to verify the user's
-          password. See <xref linkend="auth-password"> for details.
+          password. See <xref linkend="auth-password"/> for details.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>md5</></term>
+        <term><literal>md5</literal></term>
         <listitem>
          <para>
           Perform SCRAM-SHA-256 or MD5 authentication to verify the
-          user's password. See <xref linkend="auth-password">
+          user's password. See <xref linkend="auth-password"/>
           for details.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>password</></term>
+        <term><literal>password</literal></term>
         <listitem>
          <para>
           클라이언트가 인증을 위해 암호화되지 않은 패스워드를 제공해야 한다. 
           패스워드는 네트워크 상에서 일반 텍스트로 전송되므로 신뢰하지 않는 네트워크에서 이것을 사용하면 안 된다. 
-          자세한 내용은 <xref linkend="auth-password">을 참조 바란다.
+          자세한 내용은 <xref linkend="auth-password"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>gss</></term>
+        <term><literal>gss</literal></term>
         <listitem>
          <para>
           GSSAPI를 사용하여 사용자를 인증한다. 이것은 TCP/IP 연결에서만 사용할 수 있다. 자세한 내용은 <xref
-          linkend="gssapi-auth">을 참조 바란다.
+          linkend="gssapi-auth"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>sspi</></term>
+        <term><literal>sspi</literal></term>
         <listitem>
          <para>
           SSPI를 사용하여 사용자를 인증한다. 이것은 Windows에서만 사용할 수 있다. 자세한 내용은 <xref
-          linkend="sspi-auth">을 참조 바란다.
+          linkend="sspi-auth"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>ident</></term>
+        <term><literal>ident</literal></term>
         <listitem>
          <para>
           클라이언트의 ident 서버에 접촉함으로써 클라이언트의 운영 체제 사용자 이름을 획득하고, 요청된 데이터베이스 사용자 이름과 일치하는지 확인한다. 
           Ident 인증은 TCP/IP 연결에서만 사용할 수 있다. 
-          로컬 연결에 대해 지정하는 경우 피어(peer) 인증이 대신 사용된다. 자세한 내용은 <xref linkend="auth-ident">을 참조 바란다.
+          로컬 연결에 대해 지정하는 경우 피어(peer) 인증이 대신 사용된다. 자세한 내용은 <xref linkend="auth-ident"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>peer</></term>
+        <term><literal>peer</literal></term>
         <listitem>
          <para>
           클라이언트의 운영 체제 사용자 이름을 운영 체제에서 획득하고, 요청된 데이터베이스 사용자 이름과 일치하는지 확인한다. 
-          이것은 로컬 연결에서만 사용할 수 있다. 자세한 내용은 <xref linkend="auth-peer">을 참조 바란다.
+          이것은 로컬 연결에서만 사용할 수 있다. 자세한 내용은 <xref linkend="auth-peer"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>ldap</></term>
+        <term><literal>ldap</literal></term>
         <listitem>
          <para>
-          <acronym>LDAP</> 서버를 사용하여 인증한다. 자세한 내용은 <xref
-          linkend="auth-ldap">을 참조 바란다.
+          <acronym>LDAP</acronym> 서버를 사용하여 인증한다. 자세한 내용은 <xref
+          linkend="auth-ldap"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>radius</></term>
+        <term><literal>radius</literal></term>
         <listitem>
          <para>
           RADIUS 서버를 사용하여 인증한다. 자세한 내용은 <xref
-          linkend="auth-radius">을 참조 바란다.
+          linkend="auth-radius"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>cert</></term>
+        <term><literal>cert</literal></term>
         <listitem>
          <para>
-          SSL 클라이언트 인증을 사용하여 인증한다. 자세한 내용은 <xref linkend="auth-cert">을 참조 바란다.
+          SSL 클라이언트 인증을 사용하여 인증한다. 자세한 내용은 <xref linkend="auth-cert"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>pam</></term>
+        <term><literal>pam</literal></term>
         <listitem>
          <para>
           운영 체제에서 제공하는 PAM(Pluggable Authentication Modules)을 사용하여 인증한다. 
           자세한 내용은 <xref
-          linkend="auth-pam">을 참조 바란다.
+          linkend="auth-pam"/>을 참조 바란다.
          </para>
         </listitem>
        </varlistentry>
 
        <varlistentry>
-        <term><literal>bsd</></term>
+        <term><literal>bsd</literal></term>
         <listitem>
          <para>
           운영체제에서 제공하는 BSD 인증 서비스를 이용해서 인증한다. 아래
-          <xref linkend="auth-bsd">에서 자세히 설명한다.
+          <xref linkend="auth-bsd"/>에서 자세히 설명한다.
          </para>
         </listitem>
        </varlistentry>
@@ -417,14 +417,14 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
      <term><replaceable>auth-options</replaceable></term>
      <listitem>
       <para>
-       <replaceable>auth-method</> 필드 이후에 인증 방법에 대한 옵션을 지정하는 <replaceable>name</><literal>=</><replaceable>value</> 형식의 필드가 있을 수 있다. 
+       <replaceable>auth-method</replaceable> 필드 이후에 인증 방법에 대한 옵션을 지정하는 <replaceable>name</replaceable><literal>=</literal><replaceable>value</replaceable> 형식의 필드가 있을 수 있다. 
        인증 방법에서 사용할 수 있는 옵션에 대한 자세한 내용은 아래에 나와 있다.
       </para>
       <para>
        In addition to the method-specific options listed below, there is one
-       method-independent authentication option <literal>clientcert</>, which
-       can be specified in any <literal>hostssl</> record.  When set
-       to <literal>1</>, this option requires the client to present a valid
+       method-independent authentication option <literal>clientcert</literal>, which
+       can be specified in any <literal>hostssl</literal> record.  When set
+       to <literal>1</literal>, this option requires the client to present a valid
        (trusted) SSL certificate, in addition to the other requirements of the
        authentication method.
       </para>
@@ -434,18 +434,18 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
   </para>
 
   <para>
-   <literal>@</> 구문이 포함된 파일은, 공백 또는 쉼표로 구분된 이름 목록으로 읽는다. 
-   <filename>pg_hba.conf</filename>처럼 <literal>#</literal>로 표시된 주석 및 중첩된 <literal>@</> 구문이 허용된다. 파일 이름 뒤에 <literal>@</>가 나오는 것이 절대 경로가 아니면 참고 파일이 있는 디렉터리의 상대 경로로 취급된다.
+   <literal>@</literal> 구문이 포함된 파일은, 공백 또는 쉼표로 구분된 이름 목록으로 읽는다. 
+   <filename>pg_hba.conf</filename>처럼 <literal>#</literal>로 표시된 주석 및 중첩된 <literal>@</literal> 구문이 허용된다. 파일 이름 뒤에 <literal>@</literal>가 나오는 것이 절대 경로가 아니면 참고 파일이 있는 디렉터리의 상대 경로로 취급된다.
   </para>
 
   <para>
    <filename>pg_hba.conf</filename> 레코드는 각 연결 시도에 대해 순차적으로 검사되므로 레코드의 순서는 중요하다. 일반적으로 초기 레코드는 연결 일치 매개 변수는 치밀하고, 인증 방법은 느슨한 반면, 후기 레코드는 일치 매개 변수는 느슨하고 인증 방법은 강력하다. 
-   예를 들면, 로컬 TCP/IP 연결에 대한 <literal>trust</> 인증을 사용하려고 하면서 원격 TCP/IP 연결을 원할 수도 있다. 이런 경우 127.0.0.1로부터 연결을 위한 <literal>trust</> 인증을 지정한 레코드는 다양한 허용 클라이언트 IP 주소에 대해 패스워드 인증을 지원하는 레코드 앞에 나타난다.
+   예를 들면, 로컬 TCP/IP 연결에 대한 <literal>trust</literal> 인증을 사용하려고 하면서 원격 TCP/IP 연결을 원할 수도 있다. 이런 경우 127.0.0.1로부터 연결을 위한 <literal>trust</literal> 인증을 지정한 레코드는 다양한 허용 클라이언트 IP 주소에 대해 패스워드 인증을 지원하는 레코드 앞에 나타난다.
   </para>
 
   <para>
    <filename>pg_hba.conf</filename> 파일은 시작 시 및 메인 서버 프로세스가 <systemitem>SIGHUP</systemitem><indexterm><primary>SIGHUP</primary></indexterm> 신호를 수신하면 읽어오기 된다. 
-   활성 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다(<literal>pg_ctl reload</> 또는 <literal>kill -HUP</> 사용).
+   활성 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다(<literal>pg_ctl reload</literal> 또는 <literal>kill -HUP</literal> 사용).
   </para>
 
   <note>
@@ -459,7 +459,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
   <para>
    The system view
    <link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>
-   can be helpful for pre-testing changes to the <filename>pg_hba.conf</>
+   can be helpful for pre-testing changes to the <filename>pg_hba.conf</filename>
    file, or for diagnosing problems if loading of the file did not have the
    desired effects.  Rows in the view with
    non-null <structfield>error</structfield> fields indicate problems in the
@@ -468,13 +468,13 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
 
   <tip>
    <para>
-    특수한 데이터베이스에 연결하려면 <filename>pg_hba.conf</filename> 검사만 통과해서는 안 되며 데이터베이스에 대한 <literal>CONNECT</> 권한이 사용자에게 있어야 한다. 
-    데이터베이스에 연결 가능한 사용자를 제한하고 싶으면 <filename>pg_hba.conf</filename> 항목에 규칙을 입력하는 것보다 <literal>CONNECT</> 권한을 부여/취소하는 것이 일반적으로 쉽다.
+    특수한 데이터베이스에 연결하려면 <filename>pg_hba.conf</filename> 검사만 통과해서는 안 되며 데이터베이스에 대한 <literal>CONNECT</literal> 권한이 사용자에게 있어야 한다. 
+    데이터베이스에 연결 가능한 사용자를 제한하고 싶으면 <filename>pg_hba.conf</filename> 항목에 규칙을 입력하는 것보다 <literal>CONNECT</literal> 권한을 부여/취소하는 것이 일반적으로 쉽다.
    </para>
   </tip>
 
   <para>
-   <filename>pg_hba.conf</filename> 항목에 대한 몇 가지 예시가 <xref linkend="example-pg-hba.conf">에 나와 있다. 서로 다른 인증 방법에 대한 자세한 내용은 다음 절을 참조 바란다.
+   <filename>pg_hba.conf</filename> 항목에 대한 몇 가지 예시가 <xref linkend="example-pg-hba.conf"/>에 나와 있다. 서로 다른 인증 방법에 대한 자세한 내용은 다음 절을 참조 바란다.
   </para>
 
    <example id="example-pg-hba.conf">
@@ -587,14 +587,14 @@ local   db1,db2,@demodbs  all                                   md5
   </para>
 
   <para>
-   사용자 이름 맵은 ident 맵 파일에서 정의되며, 기본적으로 이름은 <filename>pg_ident.conf</><indexterm><primary>pg_ident.conf</primary></indexterm>이며 클러스터의 데이터 디렉터리에 저장된다. 
-   (맵 파일을 다른 곳에 배치할 수도 있다. <xref linkend="guc-ident-file"> 환경 설정 매개 변수를 참조 바란다.)
+   사용자 이름 맵은 ident 맵 파일에서 정의되며, 기본적으로 이름은 <filename>pg_ident.conf</filename><indexterm><primary>pg_ident.conf</primary></indexterm>이며 클러스터의 데이터 디렉터리에 저장된다. 
+   (맵 파일을 다른 곳에 배치할 수도 있다. <xref linkend="guc-ident-file"/> 환경 설정 매개 변수를 참조 바란다.)
 <synopsis>
-<replaceable>map-name</> <replaceable>system-username</> <replaceable>database-username</>
+<replaceable>map-name</replaceable> <replaceable>system-username</replaceable> <replaceable>database-username</replaceable>
 </synopsis>
-   주석 및 공백은 <filename>pg_hba.conf</>에서와 동일하게 처리된다. <replaceable>map-name</>은 <filename>pg_hba.conf</filename>에서 이 매핑을 참고하기 위해 사용되는 임의의 이름이다. 
+   주석 및 공백은 <filename>pg_hba.conf</filename>에서와 동일하게 처리된다. <replaceable>map-name</replaceable>은 <filename>pg_hba.conf</filename>에서 이 매핑을 참고하기 위해 사용되는 임의의 이름이다. 
    나머지 2개의 필드는 운영 체제 사용자 이름 및 일치하는 데이터베이스 사용자 이름을 지정한다. 
-   동일한 <replaceable>map-name</>을 여러 번 사용해서 단일 맵 내에서 복수의 사용자 매핑을 지정할 수 있다.
+   동일한 <replaceable>map-name</replaceable>을 여러 번 사용해서 단일 맵 내에서 복수의 사용자 매핑을 지정할 수 있다.
   </para>
   <para>
    주어진 한 명의 운영 체제 사용자가 몇 명의 데이터베이스 사용자에 대응하는지에 대해서는 아무런 제한이 없다(그 반대로 마찬가지). 
@@ -602,37 +602,37 @@ local   db1,db2,@demodbs  all                                   md5
    사용자가 연결 요청을 한 데이터베이스 사용자 이름을 사용하여 외부 인증 시스템에서 획득한 사용자 이름과 쌍을 이루는 맵 항목이 있을 경우 연결이 허용된다.
   </para>
   <para>
-   <replaceable>system-username</> 필드가 슬래시(<literal>/</>)로 시작되는 경우 필드의 나머지는 정규식으로 처리된다. (<productname>PostgreSQL</>의 정규식 구문에 대한 내용은 <xref linkend="posix-syntax-details">을 참조 바란다.) 
-   정규식은 단일 캡처 또는 괄호 표현식을 포함할 수 있으며, <literal>\1</> (역슬래시 1개)로 <replaceable>database-username</> 필드에서 참조가 가능하다.  이것은 한 줄로 된 복수의 사용자 이름을 매핑할 수 있으며, 단순 구문 대체 시 특히 유용하다. 
+   <replaceable>system-username</replaceable> 필드가 슬래시(<literal>/</literal>)로 시작되는 경우 필드의 나머지는 정규식으로 처리된다. (<productname>PostgreSQL</productname>의 정규식 구문에 대한 내용은 <xref linkend="posix-syntax-details"/>을 참조 바란다.) 
+   정규식은 단일 캡처 또는 괄호 표현식을 포함할 수 있으며, <literal>\1</literal> (역슬래시 1개)로 <replaceable>database-username</replaceable> 필드에서 참조가 가능하다.  이것은 한 줄로 된 복수의 사용자 이름을 매핑할 수 있으며, 단순 구문 대체 시 특히 유용하다. 
    예를 들면,
 <programlisting>
 mymap   /^(.*)@mydomain\.com$      \1
 mymap   /^(.*)@otherdomain\.com$   guest
 </programlisting>
-   이 항목은 <literal>@mydomain.com</>로 끝나는 시스템 사용자 이름을 사용하여 사용자에 대한 도메인 부분을 삭제하고, 시스템 이름이 <literal>@otherdomain.com</>로 끝나는 모든 사용자가 <literal>guest</>로 로그인하는 것을 허용한다.
+   이 항목은 <literal>@mydomain.com</literal>로 끝나는 시스템 사용자 이름을 사용하여 사용자에 대한 도메인 부분을 삭제하고, 시스템 이름이 <literal>@otherdomain.com</literal>로 끝나는 모든 사용자가 <literal>guest</literal>로 로그인하는 것을 허용한다.
   </para>
 
   <tip>
    <para>
-    기본적으로 정규식은 string의 일부만 일치할 수 있다는 점에 유의해야 한다. 위의 예시처럼 전체 시스템 사용자 이름에 일치되도록 강제하려면 <literal>^</> 및 <literal>$</>를 사용하는 것이 현명하다.
+    기본적으로 정규식은 string의 일부만 일치할 수 있다는 점에 유의해야 한다. 위의 예시처럼 전체 시스템 사용자 이름에 일치되도록 강제하려면 <literal>^</literal> 및 <literal>$</literal>를 사용하는 것이 현명하다.
    </para>
   </tip>
 
   <para>
    <filename>pg_ident.conf</filename> 파일은 시작 시 및 메인 서버 프로세스가 <systemitem>SIGHUP</systemitem><indexterm><primary>SIGHUP</primary></indexterm> 신호를 수신하면 읽어지게 된다. 
-   활성 중인 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다(<literal>pg_ctl reload</> 또는 <literal>kill -HUP</> 사용).
+   활성 중인 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다(<literal>pg_ctl reload</literal> 또는 <literal>kill -HUP</literal> 사용).
   </para>
 
   <para>
    <xref
-   linkend="example-pg-hba.conf">에서 <filename>pg_ident.conf</filename> 파일과 함께 사용할 수 있는 <filename>pg_hba.conf</> 파일이 <xref
-   linkend="example-pg-ident.conf">에 나와 있다. 이 예제에서 운영 체제 사용자 이름 <literal>bryanh</> 또는 <literal>ann</>, <literal>robert</>가 없는 192.168 네트워크에서 머신에 로그인한 사용자는 액세스 권한을 부여 받지 못한다. 
-   Unix 사용자 <literal>robert</>는 <literal>robert</> 또는 다른 사람이 아니라 <productname>PostgreSQL</> 사용자인 <literal>bob</>으로 연결을 시도하는 경우에만 액세스가 허용된다. 
-   <literal>ann</>은 <literal>ann</>으로 연결할 때만 허용된다. 사용자 <literal>bryanh</>은 <literal>bryanh</> 또는 <literal>guest1</>일 때만 연결이 허용된다.
+   linkend="example-pg-hba.conf"/>에서 <filename>pg_ident.conf</filename> 파일과 함께 사용할 수 있는 <filename>pg_hba.conf</filename> 파일이 <xref
+   linkend="example-pg-ident.conf"/>에 나와 있다. 이 예제에서 운영 체제 사용자 이름 <literal>bryanh</literal> 또는 <literal>ann</literal>, <literal>robert</literal>가 없는 192.168 네트워크에서 머신에 로그인한 사용자는 액세스 권한을 부여 받지 못한다. 
+   Unix 사용자 <literal>robert</literal>는 <literal>robert</literal> 또는 다른 사람이 아니라 <productname>PostgreSQL</productname> 사용자인 <literal>bob</literal>으로 연결을 시도하는 경우에만 액세스가 허용된다. 
+   <literal>ann</literal>은 <literal>ann</literal>으로 연결할 때만 허용된다. 사용자 <literal>bryanh</literal>은 <literal>bryanh</literal> 또는 <literal>guest1</literal>일 때만 연결이 허용된다.
   </para>
 
   <example id="example-pg-ident.conf">
-   <title><filename>pg_ident.conf</> 파일 예시</title>
+   <title><filename>pg_ident.conf</filename> 파일 예시</title>
 <programlisting>
 # MAPNAME       SYSTEM-USERNAME         PG-USERNAME
 
@@ -649,45 +649,46 @@ omicron         bryanh                  guest1
  <sect1 id="auth-methods">
   <title>인증 방법</title>
   <para>
-   아래 절에서는 인증 방법을 자세하게 다룬다.
+   인증 방법은 다음 장부터 자세히 다룬다.
   </para>
+ </sect1>
 
-  <sect2 id="auth-trust">
+  <sect1 id="auth-trust">
    <title>트러스트 인증</title>
 
    <para>
-    <literal>trust</> 인증이 지정된 경우 <productname>PostgreSQL</productname>는 지정한 데이터베이스 사용자 이름을 사용하여 서버에 연결 가능한 모든 이가 데이터베이스 액세스에 대한 인증을 받는 것으로 간주한다(수퍼유저 이름 포함). 
-    물론, <literal>database</> 및 <literal>user</> 컬럼의 제한도 계속 적용된다. 
+    <literal>trust</literal> 인증이 지정된 경우 <productname>PostgreSQL</productname>는 지정한 데이터베이스 사용자 이름을 사용하여 서버에 연결 가능한 모든 이가 데이터베이스 액세스에 대한 인증을 받는 것으로 간주한다(수퍼유저 이름 포함). 
+    물론, <literal>database</literal> 및 <literal>user</literal> 컬럼의 제한도 계속 적용된다. 
     이 방법은 서버 연결에 대한 적절한 운영 체제 수준의 보호가 제공되는 경우에만 사용되어야 한다.
    </para>
 
    <para>
-    <literal>trust</> 인증은 단일 사용자 워크스테이션에 대한 로컬 연결 시 적절하며, 매우 편리하다. 다중 사용자 머신에서는 일반적으로 적절하지 <emphasis>않다</emphasis>. 
-    그러나, 파일 시스템 권한을 사용하여 서버의 Unix 도메인 소켓 파일에 대한 액세스를 제한하는 경우 다중 사용자 머신에서도 <literal>trust</>를 사용 가능할 수 있다. 
-    이렇게 하려면 <varname>unix_socket_permissions</varname>(및 가능하면 <varname>unix_socket_group</varname>) 환경 설정 매개 변수를 <xref linkend="runtime-config-connection">에서 설명한 대로 설정해야 한다. 
+    <literal>trust</literal> 인증은 단일 사용자 워크스테이션에 대한 로컬 연결 시 적절하며, 매우 편리하다. 다중 사용자 머신에서는 일반적으로 적절하지 <emphasis>않다</emphasis>. 
+    그러나, 파일 시스템 권한을 사용하여 서버의 Unix 도메인 소켓 파일에 대한 액세스를 제한하는 경우 다중 사용자 머신에서도 <literal>trust</literal>를 사용 가능할 수 있다. 
+    이렇게 하려면 <varname>unix_socket_permissions</varname>(및 가능하면 <varname>unix_socket_group</varname>) 환경 설정 매개 변수를 <xref linkend="runtime-config-connection"/>에서 설명한 대로 설정해야 한다. 
     또는 <varname>unix_socket_directories</varname> 환경 설정 매개 변수를 설정하여 소켓 파일을 적절히 제한된 디렉터리에 배치할 수 있다.
    </para>
 
    <para>
     파일 시스템 권한 설정은 Unix 소켓 연결 시에만 유용하다. 로컬 TCP/IP 연결은 파일 시스템 권한에 의해 제한되지 않는다. 
-    따라서 로컬 보안을 위해 파일 시스템 권한을 사용하려면 <literal>host ... 127.0.0.1 ...</> 줄을 <filename>pg_hba.conf</>에서 삭제하거나, 비 <literal>trust</> 방법으로 변경해야 한다.
+    따라서 로컬 보안을 위해 파일 시스템 권한을 사용하려면 <literal>host ... 127.0.0.1 ...</literal> 줄을 <filename>pg_hba.conf</filename>에서 삭제하거나, 비 <literal>trust</literal> 방법으로 변경해야 한다.
    </para>
 
    <para>
-    <literal>trust</> 인증은 <literal>trust</>를 지정하는 <filename>pg_hba.conf</> 줄에 의해 서버로의 연결이 허용된 모든 머신의 모든 사용자를 신뢰하는 경우에 TCP/IP 연결에 대해서만 적합하다. 
-    <systemitem>localhost</>(127.0.0.1) 외에 TCP/IP 연결에 대해 <literal>trust</>를 사용하는 것은 별로 합당하지 않다.
+    <literal>trust</literal> 인증은 <literal>trust</literal>를 지정하는 <filename>pg_hba.conf</filename> 줄에 의해 서버로의 연결이 허용된 모든 머신의 모든 사용자를 신뢰하는 경우에 TCP/IP 연결에 대해서만 적합하다. 
+    <systemitem>localhost</systemitem>(127.0.0.1) 외에 TCP/IP 연결에 대해 <literal>trust</literal>를 사용하는 것은 별로 합당하지 않다.
    </para>
 
-  </sect2>
+  </sect1>
 
-  <sect2 id="auth-password">
+  <sect1 id="auth-password">
    <title>패스워드 인증</title>
 
    <indexterm>
-    <primary>MD5</>
+    <primary>MD5</primary>
    </indexterm>
    <indexterm>
-    <primary>SCRAM</>
+    <primary>SCRAM</primary>
    </indexterm>
    <indexterm>
     <primary>패스워드</primary>
@@ -706,7 +707,7 @@ omicron         bryanh                  guest1
      <term><literal>scram-sha-256</literal></term>
      <listitem>
       <para>
-       The method <literal>scram-sha-256</> performs SCRAM-SHA-256
+       The method <literal>scram-sha-256</literal> performs SCRAM-SHA-256
        authentication, as described in
        <ulink url="https://tools.ietf.org/html/rfc7677">RFC 7677</ulink>.  It
        is a challenge-response scheme that prevents password sniffing on
@@ -725,7 +726,7 @@ omicron         bryanh                  guest1
      <term><literal>md5</literal></term>
      <listitem>
       <para>
-       The method <literal>md5</> uses a custom less secure challenge-response
+       The method <literal>md5</literal> uses a custom less secure challenge-response
        mechanism.  It prevents password sniffing and avoids storing passwords
        on the server in plain text but provides no protection if an attacker
        manages to steal the password hash from the server.  Also, the MD5 hash
@@ -735,7 +736,7 @@ omicron         bryanh                  guest1
 
       <para>
        The <literal>md5</literal> method cannot be used with
-       the <xref linkend="guc-db-user-namespace"> feature.
+       the <xref linkend="guc-db-user-namespace"/> feature.
       </para>
 
       <para>
@@ -752,10 +753,10 @@ omicron         bryanh                  guest1
      <term><literal>password</literal></term>
      <listitem>
       <para>
-       The method <literal>password</> sends the password in clear-text and is
-       therefore vulnerable to password <quote>sniffing</> attacks. It should
+       The method <literal>password</literal> sends the password in clear-text and is
+       therefore vulnerable to password <quote>sniffing</quote> attacks. It should
        always be avoided if possible. If the connection is protected by SSL
-       encryption then <literal>password</> can be used safely, though.
+       encryption then <literal>password</literal> can be used safely, though.
        (Though SSL certificate authentication might be a better choice if one
        is depending on using SSL).
       </para>
@@ -765,10 +766,10 @@ omicron         bryanh                  guest1
 
    <para>
     <productname>PostgreSQL</productname> 데이터베이스 패스워드는 운영 체제 사용자 패스워드와
-    구분된다.  각 데이터베이스 사용자에 대한 패스워드는 <literal>pg_authid</>
-    시스템 카탈로그에 저장된다.  패스워드는 SQL 명령 <xref linkend="sql-createuser">
-    및 <xref linkend="sql-alterrole">으로 관리할 수 있으며, 예를
-    들면 <userinput>CREATE USER foo WITH PASSWORD 'secret'</userinput>, 
+    구분된다.  각 데이터베이스 사용자에 대한 패스워드는 <literal>pg_authid</literal>
+    시스템 카탈로그에 저장된다.  패스워드는 SQL 명령 <xref linkend="sql-createrole"/>
+    및 <xref linkend="sql-alterrole"/>으로 관리할 수 있으며, 예를
+    들면 <userinput>CREATE ROLE foo WITH LOGIN PASSWORD 'secret'</userinput>, 
     또는 <application>psql</application> 내장 명령어
     <literal>\password</literal> 같은 작업으로 처리한다.  패스워드가 사용자에 대해 설정되지 않은
     경우 저장된 패스워드는 null이고 패스워드 인증은 해당 사용자에 대해 항상 실패한다.
@@ -778,7 +779,7 @@ omicron         bryanh                  guest1
     The availability of the different password-based authentication methods
     depends on how a user's password on the server is encrypted (or hashed,
     more accurately).  This is controlled by the configuration
-    parameter <xref linkend="guc-password-encryption"> at the time the
+    parameter <xref linkend="guc-password-encryption"/> at the time the
     password is set.  If a password was encrypted using
     the <literal>scram-sha-256</literal> setting, then it can be used for the
     authentication methods <literal>scram-sha-256</literal>
@@ -805,9 +806,9 @@ omicron         bryanh                  guest1
     and change the authentication method specifications
     in <filename>pg_hba.conf</filename> to <literal>scram-sha-256</literal>.
    </para>
-  </sect2>
+  </sect1>
 
-  <sect2 id="gssapi-auth">
+  <sect1 id="gssapi-auth">
    <title>GSSAPI 인증</title>
 
    <indexterm zone="gssapi-auth">
@@ -821,60 +822,60 @@ omicron         bryanh                  guest1
    </para>
 
    <para>
-    GSSAPI는 PostgreSQL이 빌드된 경우 활성화되어야 한다. 자세한 내용은 <xref linkend="installation">을 참조 바란다.
+    GSSAPI는 PostgreSQL이 빌드된 경우 활성화되어야 한다. 자세한 내용은 <xref linkend="installation"/>을 참조 바란다.
    </para>
 
    <para>
-    <productname>GSSAPI</productname>가 <productname>Kerberos</productname>를 사용하는 경우 <literal><replaceable>servicename</>/<replaceable>hostname</>@<replaceable>realm</></literal> 형식으로 표준 보안 주체(principal)가 사용된다. 
-    PostgreSQL 서버가 서버에서 사용되는 키탭에 포함된 보안 주체(principal)를 수용하지만, <literal>krbsrvname</> 연결 매개 변수를 사용하여 클라이언트에서 연결을 할 때 올바른 보안 주체(principal) 상세 정보를 지정할 때 특별히 주의해야 한다. 
-    (<xref linkend="libpq-paramkeywords">도 참조 바란다.) 설치 기본값은 빌드 시에 <literal>./configure --with-krb-srvnam=</><replaceable>whatever</>를 사용하여 기본값 <literal>postgres</literal>에서 변경 가능하다. 
+    <productname>GSSAPI</productname>가 <productname>Kerberos</productname>를 사용하는 경우 <literal><replaceable>servicename</replaceable>/<replaceable>hostname</replaceable>@<replaceable>realm</replaceable></literal> 형식으로 표준 보안 주체(principal)가 사용된다. 
+    PostgreSQL 서버가 서버에서 사용되는 키탭에 포함된 보안 주체(principal)를 수용하지만, <literal>krbsrvname</literal> 연결 매개 변수를 사용하여 클라이언트에서 연결을 할 때 올바른 보안 주체(principal) 상세 정보를 지정할 때 특별히 주의해야 한다. 
+    (<xref linkend="libpq-paramkeywords"/>도 참조 바란다.) 설치 기본값은 빌드 시에 <literal>./configure --with-krb-srvnam=</literal><replaceable>whatever</replaceable>를 사용하여 기본값 <literal>postgres</literal>에서 변경 가능하다. 
     대부분의 환경에서 이 매개 변수는 절대 변경할 필요가 없다. 일부 Kerberos 구현은 서비스 이름이 대문자여야 하는 Microsoft Active Directory처럼 서로 다른 서비스 이름을 요구할 수도 있다(<literal>POSTGRES</literal>).
    </para>
    <para>
-    <replaceable>hostname</>은 서버 머신의 정규화된 호스트 이름이다. 
+    <replaceable>hostname</replaceable>은 서버 머신의 정규화된 호스트 이름이다. 
     서비스 보안 주체의 영역(principal's realm)은 서버 머신의 기본 설정된 영역(realm)이다.
    </para>
 
    <para>
-    Client principals can be mapped to different <productname>PostgreSQL</>
-    database user names with <filename>pg_ident.conf</>.  For example,
-    <literal>pgusername@realm</> could be mapped to just <literal>pgusername</>.
-    Alternatively, you can use the full <literal>username@realm</> principal as
-    the role name in <productname>PostgreSQL</> without any mapping.
+    Client principals can be mapped to different <productname>PostgreSQL</productname>
+    database user names with <filename>pg_ident.conf</filename>.  For example,
+    <literal>pgusername@realm</literal> could be mapped to just <literal>pgusername</literal>.
+    Alternatively, you can use the full <literal>username@realm</literal> principal as
+    the role name in <productname>PostgreSQL</productname> without any mapping.
    </para>
 
    <para>
-    <productname>PostgreSQL</> also supports a parameter to strip the realm from
+    <productname>PostgreSQL</productname> also supports a parameter to strip the realm from
     the principal.  This method is supported for backwards compatibility and is
     strongly discouraged as it is then impossible to distinguish different users
     with the same user name but coming from different realms.  To enable this,
-    set <literal>include_realm</> to 0.  For simple single-realm
+    set <literal>include_realm</literal> to 0.  For simple single-realm
     installations, doing that combined with setting the
-    <literal>krb_realm</> parameter (which checks that the principal's realm
+    <literal>krb_realm</literal> parameter (which checks that the principal's realm
     matches exactly what is in the <literal>krb_realm</literal> parameter)
     is still secure; but this is a
     less capable approach compared to specifying an explicit mapping in
-    <filename>pg_ident.conf</>.
+    <filename>pg_ident.conf</filename>.
    </para>
 
    <para>
     사용자는 서버 키탭 파일을 <productname>PostgreSQL</productname> 서버 계정으로
-    읽기 가능한지(읽기 가능만, 쓰기 불가) 확인해야 한다. (<xref linkend="postgres-user">도
+    읽기 가능한지(읽기 가능만, 쓰기 불가) 확인해야 한다. (<xref linkend="postgres-user"/>도
     참조 바란다.) 키 파일의 위치는 <xref
-    linkend="guc-krb-server-keyfile"> 환경 설정 매개 변수에 의해 지정된다. 
-    기본값은 <filename>/usr/local/pgsql/etc/krb5.keytab</>(또는 빌드 시 <varname>sysconfdir</>로 지정된 아무 디렉터리). 보안상의 이유로, 시스템 키탭 파일에 대한 권한을 여는 것보다는 <productname>PostgreSQL</productname> 서버에 대해 별개의 키탭을 사용하는 것이 바람직하다.
+    linkend="guc-krb-server-keyfile"/> 환경 설정 매개 변수에 의해 지정된다. 
+    기본값은 <filename>/usr/local/pgsql/etc/krb5.keytab</filename>(또는 빌드 시 <varname>sysconfdir</varname>로 지정된 아무 디렉터리). 보안상의 이유로, 시스템 키탭 파일에 대한 권한을 여는 것보다는 <productname>PostgreSQL</productname> 서버에 대해 별개의 키탭을 사용하는 것이 바람직하다.
    </para>
    <para>
     키탭 파일은 Kerberos 소프트웨어에 의해 생성된다. 자세한 내용은 Kerberos 문서를 참조 바란다. 다음 예시는 MIT 호환 Kerberos 5 구현에 대한 것이다.
 <screen>
-<prompt>kadmin% </><userinput>ank -randkey postgres/server.my.domain.org</>
-<prompt>kadmin% </><userinput>ktadd -k krb5.keytab postgres/server.my.domain.org</>
+<prompt>kadmin% </prompt><userinput>ank -randkey postgres/server.my.domain.org</userinput>
+<prompt>kadmin% </prompt><userinput>ktadd -k krb5.keytab postgres/server.my.domain.org</userinput>
 </screen>
    </para>
 
    <para>
-    데이터베이스에 연결할 때 요청된 데이터베이스 사용자 이름과 일치하는 보안 주체(principal)에 대한 티켓이 있는지 확인해야 한다. 예를 들면, 데이터베이스 이름 <literal>fred</>의 경우 보안 주체(principal) <literal>fred@EXAMPLE.COM</>은 연결이 가능하다. 
-    보안 주체(principal) <literal>fred/users.example.com@EXAMPLE.COM</>의 연결도 허용하려면 <xref linkend="auth-username-maps">에 설명된 대로 사용자 이름 맵을 사용해야 한다.
+    데이터베이스에 연결할 때 요청된 데이터베이스 사용자 이름과 일치하는 보안 주체(principal)에 대한 티켓이 있는지 확인해야 한다. 예를 들면, 데이터베이스 이름 <literal>fred</literal>의 경우 보안 주체(principal) <literal>fred@EXAMPLE.COM</literal>은 연결이 가능하다. 
+    보안 주체(principal) <literal>fred/users.example.com@EXAMPLE.COM</literal>의 연결도 허용하려면 <xref linkend="auth-username-maps"/>에 설명된 대로 사용자 이름 맵을 사용해야 한다.
    </para>
 
    <para>
@@ -886,13 +887,13 @@ omicron         bryanh                  guest1
        <para>
         If set to 0, the realm name from the authenticated user principal is
         stripped off before being passed through the user name mapping
-        (<xref linkend="auth-username-maps">). This is discouraged and is
+        (<xref linkend="auth-username-maps"/>). This is discouraged and is
         primarily available for backwards compatibility, as it is not secure
         in multi-realm environments unless <literal>krb_realm</literal> is
         also used.  It is recommended to
         leave <literal>include_realm</literal> set to the default (1) and to
-        provide an explicit mapping in <filename>pg_ident.conf</> to convert
-        principal names to <productname>PostgreSQL</> user names.
+        provide an explicit mapping in <filename>pg_ident.conf</filename> to convert
+        principal names to <productname>PostgreSQL</productname> user names.
        </para>
       </listitem>
      </varlistentry>
@@ -901,7 +902,7 @@ omicron         bryanh                  guest1
       <term><literal>map</literal></term>
       <listitem>
        <para>
-        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps">을 참조 바란다. 
+        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps"/>을 참조 바란다. 
         For a GSSAPI/Kerberos
         principal, such as <literal>username@EXAMPLE.COM</literal> (or, less
         commonly, <literal>username/hostbased@EXAMPLE.COM</literal>), the
@@ -927,9 +928,9 @@ omicron         bryanh                  guest1
      </varlistentry>
     </variablelist>
    </para>
-  </sect2>
+  </sect1>
 
-  <sect2 id="sspi-auth">
+  <sect1 id="sspi-auth">
    <title>SSPI 인증</title>
 
    <indexterm zone="sspi-auth">
@@ -944,7 +945,7 @@ omicron         bryanh                  guest1
 
    <para>
     <productname>Kerberos</productname> 인증 사용 중에는 <productname>SSPI</productname>가 <productname>GSSAPI</productname>와 동일한 방식으로 작동된다. 
-    자세한 내용은 <xref linkend="gssapi-auth">을 참조 바란다.
+    자세한 내용은 <xref linkend="gssapi-auth"/>을 참조 바란다.
    </para>
 
    <para>
@@ -957,13 +958,13 @@ omicron         bryanh                  guest1
        <para>
         If set to 0, the realm name from the authenticated user principal is
         stripped off before being passed through the user name mapping
-        (<xref linkend="auth-username-maps">). This is discouraged and is
+        (<xref linkend="auth-username-maps"/>). This is discouraged and is
         primarily available for backwards compatibility, as it is not secure
         in multi-realm environments unless <literal>krb_realm</literal> is
         also used.  It is recommended to
         leave <literal>include_realm</literal> set to the default (1) and to
-        provide an explicit mapping in <filename>pg_ident.conf</> to convert
-        principal names to <productname>PostgreSQL</> user names.
+        provide an explicit mapping in <filename>pg_ident.conf</filename> to convert
+        principal names to <productname>PostgreSQL</productname> user names.
        </para>
       </listitem>
      </varlistentry>
@@ -996,9 +997,9 @@ omicron         bryanh                  guest1
         By default, these two names are identical for new user accounts.
        </para>
        <para>
-        Note that <application>libpq</> uses the SAM-compatible name if no
+        Note that <application>libpq</application> uses the SAM-compatible name if no
         explicit user name is specified. If you use
-        <application>libpq</> or a driver based on it, you should
+        <application>libpq</application> or a driver based on it, you should
         leave this option disabled or explicitly specify user name in the
         connection string.
        </para>
@@ -1009,7 +1010,7 @@ omicron         bryanh                  guest1
       <term><literal>map</literal></term>
       <listitem>
        <para>
-        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps">을 참조 바란다.
+        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps"/>을 참조 바란다.
         For a SSPI/Kerberos
         principal, such as <literal>username@EXAMPLE.COM</literal> (or, less
         commonly, <literal>username/hostbased@EXAMPLE.COM</literal>), the
@@ -1034,9 +1035,9 @@ omicron         bryanh                  guest1
      </varlistentry>
     </variablelist>
    </para>
-  </sect2>
+  </sect1>
 
-  <sect2 id="auth-ident">
+  <sect1 id="auth-ident">
    <title>Ident 인증</title>
 
    <indexterm>
@@ -1049,7 +1050,7 @@ omicron         bryanh                  guest1
 
    <note>
     <para>
-     로컬(비 TCP/IP) 연결에 대해 ident를 지정하는 경우 피어(peer) 인증이 대신 사용된다(<xref linkend="auth-peer"> 참조).
+     로컬(비 TCP/IP) 연결에 대해 ident를 지정하는 경우 피어(peer) 인증이 대신 사용된다(<xref linkend="auth-peer"/> 참조).
     </para>
    </note>
 
@@ -1060,7 +1061,7 @@ omicron         bryanh                  guest1
       <term><literal>map</literal></term>
       <listitem>
        <para>
-        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps">을 참조 바란다.
+        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps"/>을 참조 바란다.
        </para>
       </listitem>
      </varlistentry>
@@ -1070,7 +1071,7 @@ omicron         bryanh                  guest1
    <para>
     <quote>신분확인 프로토콜(Identification Protocol)</quote>은 RFC 1413에 설명되어 있다. 실제로 모든 Unix 류의 운영 체제에는 기본적으로 TCP 포트 113에서 listen하는 ident 서버가 내장되어 있다. 
     ident 서버의 기본적인 기능은, <quote>너의 포트 <replaceable>X</replaceable>에서 출력되어 내 포트 <replaceable>Y</replaceable>에 연결되는 연결을 초기화한 사용자는 누구인가?</quote> 같은 질문에 응답하는 것이다. 
-    실제 연결이 성립되면 <productname>PostgreSQL</>은 <replaceable>X</>와 <replaceable>Y</>를 모두 알고 있으므로 연결 클라이언트의 호스트에 대한 정보를 ident 서버에서 얻을 수 있으며, 주어진 연결에서 운영 체제 사용자를 이론적으로 판단할 수 있다.
+    실제 연결이 성립되면 <productname>PostgreSQL</productname>은 <replaceable>X</replaceable>와 <replaceable>Y</replaceable>를 모두 알고 있으므로 연결 클라이언트의 호스트에 대한 정보를 ident 서버에서 얻을 수 있으며, 주어진 연결에서 운영 체제 사용자를 이론적으로 판단할 수 있다.
    </para>
 
    <para>
@@ -1087,11 +1088,11 @@ omicron         bryanh                  guest1
 
    <para>
     일부 ident 서버는 원래 머신의 관리자만 알고 있는 키를 사용하여, 리턴된 사용자 이름을 암호화되도록 하는 비표준 옵션이 있다. 
-    <productname>PostgreSQL</>는 실제 사용자 이름을 결정하기 위해 리턴된 string의 암호를 해제할 방법이 없으므로 ident 서버에서 <productname>PostgreSQL</>을 사용하는 경우에는 이 옵션을 사용해서는 <emphasis>안</emphasis> 된다.
+    <productname>PostgreSQL</productname>는 실제 사용자 이름을 결정하기 위해 리턴된 string의 암호를 해제할 방법이 없으므로 ident 서버에서 <productname>PostgreSQL</productname>을 사용하는 경우에는 이 옵션을 사용해서는 <emphasis>안</emphasis> 된다.
    </para>
-  </sect2>
+  </sect1>
 
-  <sect2 id="auth-peer">
+  <sect1 id="auth-peer">
    <title>피어(peer) 인증</title>
 
    <indexterm>
@@ -1110,7 +1111,7 @@ omicron         bryanh                  guest1
       <term><literal>map</literal></term>
       <listitem>
        <para>
-        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps">을 참조 바란다.
+        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps"/>을 참조 바란다.
        </para>
       </listitem>
      </varlistentry>
@@ -1118,13 +1119,13 @@ omicron         bryanh                  guest1
    </para>
 
    <para>
-    피어(Peer) 인증은 <function>getpeereid()</> 함수, <symbol>SO_PEERCRED</symbol> 소켓 매개 변수 또는 유사 메커니즘이 제공되는 운영 체제에서만 사용할 수 있다. 현재 <systemitem class="osname">Linux</>가 포함되며, 
-    <systemitem class="osname">macOS</> 및 <systemitem class="osname">Solaris</systemitem>를 비롯한 <systemitem class="osname">BSD</>가 가장 선호된다.
+    피어(Peer) 인증은 <function>getpeereid()</function> 함수, <symbol>SO_PEERCRED</symbol> 소켓 매개 변수 또는 유사 메커니즘이 제공되는 운영 체제에서만 사용할 수 있다. 현재 <systemitem class="osname">Linux</systemitem>가 포함되며, 
+    <systemitem class="osname">macOS</systemitem> 및 <systemitem class="osname">Solaris</systemitem>를 비롯한 <systemitem class="osname">BSD</systemitem>가 가장 선호된다.
    </para>
 
-  </sect2>
+  </sect1>
 
-  <sect2 id="auth-ldap">
+  <sect1 id="auth-ldap">
    <title>LDAP 인증</title>
 
    <indexterm zone="auth-ldap">
@@ -1137,17 +1138,17 @@ omicron         bryanh                  guest1
    </para>
 
    <para>
-    LDAP 인증은 2가지 모드로 수행할 수 있다. 간단한 바인딩 모드라고 하는 첫 번째 방법은 서버가 <replaceable>prefix</> <replaceable>username</> <replaceable>suffix</>로 구성된 고유한 이름에 바인딩하는 것이다. 
-    일반적으로 <replaceable>prefix</> 매개 변수는 Active Directory 환경에서 <literal>cn=</> 또는 <replaceable>DOMAIN</><literal>\</>을 지정하는 데 사용된다. <replaceable>suffix</>는 비 Active Directory 환경의 나머지 부분을 지정할 때 사용된다.
+    LDAP 인증은 2가지 모드로 수행할 수 있다. 간단한 바인딩 모드라고 하는 첫 번째 방법은 서버가 <replaceable>prefix</replaceable> <replaceable>username</replaceable> <replaceable>suffix</replaceable>로 구성된 고유한 이름에 바인딩하는 것이다. 
+    일반적으로 <replaceable>prefix</replaceable> 매개 변수는 Active Directory 환경에서 <literal>cn=</literal> 또는 <replaceable>DOMAIN</replaceable><literal>\</literal>을 지정하는 데 사용된다. <replaceable>suffix</replaceable>는 비 Active Directory 환경의 나머지 부분을 지정할 때 사용된다.
    </para>
 
    <para>
-    검색+바인딩 모드라고 하는 두 번째 모드에서 서버는 <replaceable>ldapbinddn</> 및
-    <replaceable>ldapbindpasswd</>로 지정 및 고정된 사용자 이름과 패스워드를
+    검색+바인딩 모드라고 하는 두 번째 모드에서 서버는 <replaceable>ldapbinddn</replaceable> 및
+    <replaceable>ldapbindpasswd</replaceable>로 지정 및 고정된 사용자 이름과 패스워드를
     사용하여 LDAP 디렉터리에 먼저 바인딩한 다음, 데이터베이스에 로그인하려는 사용자를 검색한다. 
     사용자 및 패스워드가 구성되지 않은 경우 익명 바인딩이 디렉터리에 시도된다.
-    <replaceable>ldapbasedn</>의 서브 트리에서 검색이 수행되고
-    <replaceable>ldapsearchattribute</>에서 지정된 속성과 정확히 일치하는 것을 찾는다. 
+    <replaceable>ldapbasedn</replaceable>의 서브 트리에서 검색이 수행되고
+    <replaceable>ldapsearchattribute</replaceable>에서 지정된 속성과 정확히 일치하는 것을 찾는다. 
     이 검색에서 사용자를 찾았으며, 서버는 연결을 끊고, 로그인이 올바른지 검증하기 위해
     클라이언트에서 지정된 패스워드를 사용하여 이 사용자로 디렉터리에 다시 바인딩한다. 
     이 모드는 Apache <literal>mod_authnz_ldap</literal> 및 <literal>pam_ldap</literal> 같은
@@ -1176,11 +1177,34 @@ omicron         bryanh                  guest1
       </listitem>
      </varlistentry>
      <varlistentry>
+      <term><literal>ldapscheme</literal></term>
+      <listitem>
+       <para>
+        Set to <literal>ldaps</literal> to use LDAPS.  This is a non-standard
+        way of using LDAP over SSL, supported by some LDAP server
+        implementations.  See also the <literal>ldaptls</literal> option for
+        an alternative.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
       <term><literal>ldaptls</literal></term>
       <listitem>
        <para>
-        1로 설정하면 TLS 암호화를 사용하여 PostgreSQL과 LDAP 서버가 연결된다. 이것은 LDAP 서버로의 트래픽만 암호화된다. 클라이언트에 대한 연결은 SSL을 사용하지 않는 한 암호화되지 않은 상태가 지속된다.
-       </para>
+        1로 설정하면 TLS 암호화를 사용하여 PostgreSQL과 LDAP 서버가
+        연결된다.  This uses the <literal>StartTLS</literal>
+        operation per RFC 4513.  See also the <literal>ldapscheme</literal>
+        option for an alternative.
+   </para>
+
+   <para>
+    Note that using <literal>ldapscheme</literal> or
+    <literal>ldaptls</literal> only encrypts the traffic between the
+    PostgreSQL server and the LDAP server.  The connection between the
+    PostgreSQL server and the PostgreSQL client will still be unencrypted
+    unless SSL is used there as well.
+   </para>
+
       </listitem>
      </varlistentry>
     </variablelist>
@@ -1234,7 +1258,18 @@ omicron         bryanh                  guest1
        <term><literal>ldapsearchattribute</literal></term>
        <listitem>
         <para>
-         검색+바인딩 인증 수행 시 검색에서 사용자 이름에 대해 일치하는 속성. 속성이 지정되지 않으면 <literal>uid</> 속성이 사용된다.
+         검색+바인딩 인증 수행 시 검색에서 사용자 이름에 대해 일치하는 속성. 속성이 지정되지 않으면 <literal>uid</literal> 속성이 사용된다.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><literal>ldapsearchfilter</literal></term>
+       <listitem>
+        <para>
+         The search filter to use when doing search+bind authentication.
+         Occurrences of <literal>$username</literal> will be replaced with the
+         user name.  This allows for more flexible search filters than
+         <literal>ldapsearchattribute</literal>.
         </para>
        </listitem>
       </varlistentry>
@@ -1244,17 +1279,32 @@ omicron         bryanh                  guest1
         <para>
          RFC 4516 LDAP URL. 이것은 다른 LDAP 옵션 중 일부를 좀 더 간결한 표준 형식으로 작성하는 다른 방법이다. 기본값은 다음과 같다.
 <synopsis>
-ldap://<replaceable>host</replaceable>[:<replaceable>port</replaceable>]/<replaceable>basedn</replaceable>[?[<replaceable>attribute</replaceable>][?[<replaceable>scope</replaceable>]]]
+ldap[s]://<replaceable>host</replaceable>[:<replaceable>port</replaceable>]/<replaceable>basedn</replaceable>[?[<replaceable>attribute</replaceable>][?[<replaceable>scope</replaceable>][?[<replaceable>filter</replaceable>]]]]
 </synopsis>
-         <replaceable>scope</replaceable>는 <literal>base</literal>, <literal>one</literal>, <literal>sub</literal> 중 하나여야 하며, 일반적으로 후자이다. 한 가지 속성만 사용되며, 필터 및 확장 같은 표준 LDAP URL의 다른 일부 구성은 지원되지 않는다.
+         <replaceable>scope</replaceable>는 <literal>base</literal>, <literal>one</literal>, <literal>sub</literal> 중 하나여야 하며,
+         일반적으로 후자이다.  (The default is <literal>base</literal>, which
+         is normally not useful in this application.)  <replaceable>attribute</replaceable> can
+         nominate a single attribute, in which case it is used as a value for
+         <literal>ldapsearchattribute</literal>.  If
+         <replaceable>attribute</replaceable> is empty then
+         <replaceable>filter</replaceable> can be used as a value for
+         <literal>ldapsearchfilter</literal>.
         </para>
 
         <para>
-         비 익명 바인딩의 경우 <literal>ldapbinddn</literal> 및 <literal>ldapbindpasswd</literal>는 별도의 옵션으로 지정되어야 한다.
+         The URL scheme <literal>ldaps</literal> chooses the LDAPS method for
+         making LDAP connections over SSL, equivalent to using
+         <literal>ldapscheme=ldaps</literal>.  To use encrypted LDAP
+         connections using the <literal>StartTLS</literal> operation, use the
+         normal URL scheme <literal>ldap</literal> and specify the
+         <literal>ldaptls</literal> option in addition to
+         <literal>ldapurl</literal>.
         </para>
 
         <para>
-         암호화된 LDAP 연결을 사용하려면 <literal>ldapurl</literal> 외에도 <literal>ldaptls</literal> 옵션을 사용해야 한다. <literal>ldaps</literal> URL 스키마(다이렉트 SSL 연결)는 지원되지 않는다.
+         For non-anonymous binds, <literal>ldapbinddn</literal>
+         and <literal>ldapbindpasswd</literal> must be specified as separate
+         options.
         </para>
 
         <para>
@@ -1267,6 +1317,17 @@ ldap://<replaceable>host</replaceable>[:<replaceable>port</replaceable>]/<replac
 
    <para>
     간단한 바인딩의 구성 옵션과 검색+바인딩의 옵션을 혼용하는 것은 에러이다.
+   </para>
+
+   <para>
+    When using search+bind mode, the search can be performed using a single
+    attribute specified with <literal>ldapsearchattribute</literal>, or using
+    a custom search filter specified with
+    <literal>ldapsearchfilter</literal>.
+    Specifying <literal>ldapsearchattribute=foo</literal> is equivalent to
+    specifying <literal>ldapsearchfilter="(foo=$username)"</literal>.  If neither
+    option is specified the default is
+    <literal>ldapsearchattribute=uid</literal>.
    </para>
 
    <para>
@@ -1296,15 +1357,25 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
     LDAP에 대한 인증을 지원하는 일부 다른 소프트웨어는 동일한 URL 형식을 사용하므로 구성을 공유하기 쉬워진다.
    </para>
 
+   <para>
+    Here is an example for a search+bind configuration that uses
+    <literal>ldapsearchfilter</literal> instead of
+    <literal>ldapsearchattribute</literal> to allow authentication by
+    user ID or email address:
+<programlisting>
+host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapsearchfilter="(|(uid=$username)(mail=$username))"
+</programlisting>
+   </para>
+
    <tip>
     <para>
      LDAP는 주로 쉼표와 공백을 사용하여 DN의 서로 다른 부분을 구분하므로 예시에 표시된 대로 LDAP 옵션을 구성할 때 매개 변수를 큰따옴표로 둘러싸야 하는 경우가 있다.
     </para>
    </tip>
 
-  </sect2>
+  </sect1>
 
-  <sect2 id="auth-radius">
+  <sect1 id="auth-radius">
    <title>RADIUS 인증</title>
 
    <indexterm zone="auth-radius">
@@ -1317,8 +1388,8 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
    </para>
 
    <para>
-    RADIUS 인증을 사용 중인 경우 구성된 RADIUS 서버로 액세스 요청(Access Request) 메시지가 전송된다. 이 요청은 <literal>Authenticate Only</literal> 유형이며, <literal>user name</>, <literal>password</>(암호화됨) 및 <literal>NAS Identifier</>에 대한 매개 변수가 포함된다. 
-    요청은 서버와 공유되는 비밀을 사용하여 암호화된다. RADIUS 서버는 <literal>Access Accept</> 또는 <literal>Access Reject</>를 사용하여 이 서버에 응답한다. RADIUS 계정에 대한 지원은 없다.
+    RADIUS 인증을 사용 중인 경우 구성된 RADIUS 서버로 액세스 요청(Access Request) 메시지가 전송된다. 이 요청은 <literal>Authenticate Only</literal> 유형이며, <literal>user name</literal>, <literal>password</literal>(암호화됨) 및 <literal>NAS Identifier</literal>에 대한 매개 변수가 포함된다. 
+    요청은 서버와 공유되는 비밀을 사용하여 암호화된다. RADIUS 서버는 <literal>Access Accept</literal> 또는 <literal>Access Reject</literal>를 사용하여 이 서버에 응답한다. RADIUS 계정에 대한 지원은 없다.
    </para>
 
    <para>
@@ -1352,7 +1423,7 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
          보안을 유지하면서 RADIUS 서버와 통신할 때 사용되는 공유 비밀. 이것은 PostgreSQL 및 RADIUS 서버에서 값이 정확하게 동일해야 한다. 최소 16자의 string이 권장된다. 이 매개 변수는 필수이다.
          <note>
          <para>
-          사용되는 암호화 벡터는 <productname>PostgreSQL</>가 <productname>OpenSSL</>을 지원하도록 빌드된 경우 강력한 방식으로 암호화되어야 한다. 
+          사용되는 암호화 벡터는 <productname>PostgreSQL</productname>가 <productname>OpenSSL</productname>을 지원하도록 빌드된 경우 강력한 방식으로 암호화되어야 한다. 
           그 외의 경우에, RADIUS 서버로의 전송은 보안이 되지 않은 obfuscated로 간주해야 하며, 필요 시 외부 보안 대책을 적용해야 한다.
          </para>
          </note>
@@ -1364,7 +1435,7 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
        <term><literal>radiusports</literal></term>
        <listitem>
         <para>
-         연결할 RADIUS 서버의 포트 번호. 포트가 지정되지 않으면 기본 포트 <literal>1812</>가 사용된다.
+         연결할 RADIUS 서버의 포트 번호. 포트가 지정되지 않으면 기본 포트 <literal>1812</literal>가 사용된다.
         </para>
        </listitem>
       </varlistentry>
@@ -1373,18 +1444,18 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
        <term><literal>radiusidentifiers</literal></term>
        <listitem>
         <para>
-         RADIUS 요청에서 <literal>NAS Identifier</>로 사용되는 string. 
+         RADIUS 요청에서 <literal>NAS Identifier</literal>로 사용되는 string. 
          이 매개 변수는 예를 들면, 사용자가 인증하려는 데이터베이스 사용자를 식별하여 RADIUS 서버에서 정책 일치용으로 이용되는 제2의 매개 변수로 사용될 수 있다. 
-         식별자가 지정되지 않으면 기본 <literal>postgresql</>이 사용된다.
+         식별자가 지정되지 않으면 기본 <literal>postgresql</literal>이 사용된다.
         </para>
        </listitem>
       </varlistentry>
 
      </variablelist>
    </para>
-  </sect2>
+  </sect1>
 
-  <sect2 id="auth-cert">
+  <sect1 id="auth-cert">
    <title>인증서 인증</title>
 
    <indexterm zone="auth-cert">
@@ -1409,7 +1480,7 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
       <term><literal>map</literal></term>
       <listitem>
        <para>
-        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps">을 참조 바란다.
+        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps"/>을 참조 바란다.
        </para>
       </listitem>
      </varlistentry>
@@ -1417,18 +1488,18 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
    </para>
 
    <para>
-    In a <filename>pg_hba.conf</> record specifying certificate
-    authentication, the authentication option <literal>clientcert</> is
-    assumed to be <literal>1</>, and it cannot be turned off since a client
-    certificate is necessary for this method.  What the <literal>cert</>
-    method adds to the basic <literal>clientcert</> certificate validity test
+    In a <filename>pg_hba.conf</filename> record specifying certificate
+    authentication, the authentication option <literal>clientcert</literal> is
+    assumed to be <literal>1</literal>, and it cannot be turned off since a client
+    certificate is necessary for this method.  What the <literal>cert</literal>
+    method adds to the basic <literal>clientcert</literal> certificate validity test
     is a check that the <literal>cn</literal> attribute matches the database
     user name.
    </para>
-  </sect2>
+  </sect1>
 
 
-  <sect2 id="auth-pam">
+  <sect1 id="auth-pam">
    <title>PAM 인증</title>
 
    <indexterm zone="auth-pam">
@@ -1443,8 +1514,8 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
     접속하는 원격 호스트 이름 또는 IP 주소의 유효성을 검사하는데만 사용 된다.
     그래서, PAM 인증에 사용될 사용자 이름은 해당 데이터베이스 사용자로
     먼저 만들어져있어야 한다.  PAM에 대한 자세한 정보는
-    <ulink url="http://www.kernel.org/pub/linux/libs/pam/">
-    <productname>Linux-PAM</> 페이지</ulink>를 참고 바란다.
+    <ulink url="https://www.kernel.org/pub/linux/libs/pam/">
+    <productname>Linux-PAM</productname> 페이지</ulink>를 참고 바란다.
    </para>
 
    <para>
@@ -1477,12 +1548,12 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
 
    <note>
     <para>
-     PAM이 <filename>/etc/shadow</>를 읽도록 설정된 경우 PostgreSQL 서버는 root가 아닌 다른 사용자로 시작되므로 인증이 실패한다. 단, PAM이 LDAP 또는 다른 인증 방법을 사용하도록 구성된 경우 이것이 실행되지 않는다.
+     PAM이 <filename>/etc/shadow</filename>를 읽도록 설정된 경우 PostgreSQL 서버는 root가 아닌 다른 사용자로 시작되므로 인증이 실패한다. 단, PAM이 LDAP 또는 다른 인증 방법을 사용하도록 구성된 경우 이것이 실행되지 않는다.
     </para>
    </note>
-  </sect2>
+  </sect1>
 
-  <sect2 id="auth-bsd">
+  <sect1 id="auth-bsd">
    <title>BSD 인증</title>
 
    <indexterm zone="auth-bsd">
@@ -1500,11 +1571,11 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
    </para>
 
    <para>
-    BSD Authentication in <productname>PostgreSQL</> uses
+    BSD Authentication in <productname>PostgreSQL</productname> uses
     the <literal>auth-postgresql</literal> login type and authenticates with
     the <literal>postgresql</literal> login class if that's defined
     in <filename>login.conf</filename>. By default that login class does not
-    exist, and <productname>PostgreSQL</> will use the default login class.
+    exist, and <productname>PostgreSQL</productname> will use the default login class.
    </para>
 
    <note>
@@ -1515,9 +1586,7 @@ host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"
      exists by default on OpenBSD systems.
     </para>
    </note>
-  </sect2>
-
- </sect1>
+  </sect1>
 
   <sect1 id="client-authentication-problems">
    <title>인증 문제</title>

@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_domain.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEDOMAIN">
+<refentry id="sql-createdomain">
  <indexterm zone="sql-createdomain">
   <primary>CREATE DOMAIN</primary>
  </indexterm>
@@ -24,12 +24,12 @@ PostgreSQL documentation
 CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replaceable class="parameter">자료형</replaceable>
     [ COLLATE <replaceable>문자정렬규칙</replaceable> ]
     [ DEFAULT <replaceable>표현식</replaceable> ]
-    [ <replaceable class="PARAMETER">제약조건</replaceable> [ ... ] ]
+    [ <replaceable class="parameter">제약조건</replaceable> [ ... ] ]
 
-<phrase><replaceable class="PARAMETER">제약조건</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">제약조건</replaceable> 자리에는:</phrase>
 
-[ CONSTRAINT <replaceable class="PARAMETER">제약조건이름</replaceable> ]
-{ NOT NULL | NULL | CHECK (<replaceable class="PARAMETER">표현식</replaceable>) }
+[ CONSTRAINT <replaceable class="parameter">제약조건이름</replaceable> ]
+{ NOT NULL | NULL | CHECK (<replaceable class="parameter">표현식</replaceable>) }
 </synopsis>
  </refsynopsisdiv>
 
@@ -45,7 +45,7 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
 
   <para>
    스키마 이름을 포함하면, 해당 도메인은 그 스키마 안에
-   만들어 진다. (예, <literal>CREATE DOMAIN myschema.mydomain ...</>)
+   만들어 진다. (예, <literal>CREATE DOMAIN myschema.mydomain ...</literal>)
    스키마를 지정하지 않으면, 현재 스키마 안에 만들어진다.
    도메인 이름은 해당 스키마와 기반 자료형을 함께 따져 그 스키마 안에서
    유일해야 한다.
@@ -82,7 +82,7 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">자료형</replaceable></term>
+      <term><replaceable class="parameter">자료형</replaceable></term>
       <listitem>
        <para>
         해당 도메인의 기반 자료형 이름.  배열 자료형도 가능하다.
@@ -96,7 +96,7 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
        <para>
         해당 도메인의 문자 정렬 규칙.  지정하지 않으면,
         이 도메인의 문자 정렬 규칙은 기반 자료형의 그것을 따른다.
-        <literal>COLLATE</> 옵션을 사용하면, 그 기반 자료형도
+        <literal>COLLATE</literal> 옵션을 사용하면, 그 기반 자료형도
         이 문자 정렬 규칙을 사용할 수 있어야 한다.
        </para>
       </listitem>
@@ -127,7 +127,7 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
      </varlistentry>
 
      <varlistentry>
-      <term><literal>CONSTRAINT <replaceable class="PARAMETER">제약조건</replaceable></literal></term>
+      <term><literal>CONSTRAINT <replaceable class="parameter">제약조건</replaceable></literal></term>
       <listitem>
        <para>
         선택적으로 지정하는 제약 조건의 이름.
@@ -137,7 +137,7 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
      </varlistentry>
 
      <varlistentry>
-      <term><literal>NOT NULL</></term>
+      <term><literal>NOT NULL</literal></term>
       <listitem>
        <para>
         해당 도메인 값으로 null 값을 사용하지 못하도록 지정한다.
@@ -147,7 +147,7 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
      </varlistentry>
 
      <varlistentry>
-      <term><literal>NULL</></term>
+      <term><literal>NULL</literal></term>
       <listitem>
        <para>
         해당 도메인 값으로 null 값을 사용하도록 지정한다. 이것은 기본값이다.
@@ -161,12 +161,12 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
      </varlistentry>
 
    <varlistentry>
-    <term><literal>CHECK (<replaceable class="PARAMETER">표현식</replaceable>)</literal></term>
+    <term><literal>CHECK (<replaceable class="parameter">표현식</replaceable>)</literal></term>
     <listitem>
-     <para><literal>CHECK</> 옵션은 해당 도메인의
+     <para><literal>CHECK</literal> 옵션은 해당 도메인의
       자료 무결성 검사, 또는 자료 유효성 검사를 지정한다.
       여기서 사용하는 표현식의 결과는 불리언 값(참, 거짓, 알수없음)이여야 한다.
-      이 표현식에서 입력되는 값은 <literal>VALUE</> 라는 키워드를
+      이 표현식에서 입력되는 값은 <literal>VALUE</literal> 라는 키워드를
       사용한다.  
       이 표현의 결과값으로 TRUE 또는 UNKNOWN이면 검사를 통과한 것으로 간주한다.
       FALSE면, 오류로 처리한다. 즉 해당 도메인 값으로 쓸 수 없다는 뜻이다.
@@ -174,14 +174,14 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
 
      <para>
       현재 버전에서는 <literal>CHECK</literal> 표현식에는
-      서브쿼리를 사용할 수 없으며, <literal>VALUE</> 외 다른 변수값을
+      서브쿼리를 사용할 수 없으며, <literal>VALUE</literal> 외 다른 변수값을
       대상으로 검사할 수도 없다.
      </para>
 
      <para>
       하나 이상의 <literal>CHECK</literal> 제약 조건을 지정한다면,
       그 제약 조건의 이름 알파벳 순으로 검사를 진행한다.
-      (<productname>PostgreSQL</> 9.5 이전 버전에서는 
+      (<productname>PostgreSQL</productname> 9.5 이전 버전에서는 
       <literal>CHECK</literal> 제약 조건의 검사 순서를 정하지 않았다.)
      </para>
     </listitem>
@@ -193,7 +193,7 @@ CREATE DOMAIN <replaceable class="parameter">이름</replaceable> [ AS ] <replac
   <title>참고</title>
 
   <para>
-   도메인 제약 조건으로 <literal>NOT NULL</> 제약 조건은
+   도메인 제약 조건으로 <literal>NOT NULL</literal> 제약 조건은
    도메인으로 변환 될 때 검사 한다.  이럼이도 불구하고
    명목상 도메인 유형의 열에 null 값이 올 수 있다.
    예를 들어, 이런 일은 outer 조인에서 일어난다.
@@ -244,7 +244,7 @@ CREATE TABLE us_snail_addy (
 </programlisting></para>
  </refsect1>
 
- <refsect1 id="SQL-CREATEDOMAIN-compatibility">
+ <refsect1 id="sql-createdomain-compatibility">
   <title>호환성</title>
 
   <para>
@@ -252,12 +252,12 @@ CREATE TABLE us_snail_addy (
   </para>
  </refsect1>
 
- <refsect1 id="SQL-CREATEDOMAIN-see-also">
+ <refsect1 id="sql-createdomain-see-also">
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterdomain"></member>
-   <member><xref linkend="sql-dropdomain"></member>
+   <member><xref linkend="sql-alterdomain"/></member>
+   <member><xref linkend="sql-dropdomain"/></member>
   </simplelist>
  </refsect1>
 

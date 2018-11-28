@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_event_trigger.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEEVENTTRIGGER">
+<refentry id="sql-createeventtrigger">
  <indexterm zone="sql-createeventtrigger">
   <primary>CREATE EVENT TRIGGER</primary>
  </indexterm>
@@ -21,10 +21,10 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable>
-    ON <replaceable class="PARAMETER">이벤트</replaceable>
-    [ WHEN <replaceable class="PARAMETER">조건변수</replaceable> IN (조건값 [, ... ]) [ AND ... ] ]
-    EXECUTE PROCEDURE <replaceable class="PARAMETER">함수이름</replaceable>()
+CREATE EVENT TRIGGER <replaceable class="parameter">이름</replaceable>
+    ON <replaceable class="parameter">이벤트</replaceable>
+    [ WHEN <replaceable class="parameter">조건변수</replaceable> IN (조건값 [, ... ]) [ AND ... ] ]
+    EXECUTE { FUNCTION | PROCEDURE } <replaceable class="parameter">함수이름</replaceable>()
 </synopsis>
  </refsynopsisdiv>
 
@@ -34,9 +34,9 @@ CREATE EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable>
   <para>
    <command>CREATE EVENT TRIGGER</command> 명령은 새 이벤트 트리거를 만든다.
    이 이벤트 트리거는
-   지정한 이벤트가 있고, 그 트리거 <literal>WHEN</> 조건절에서
+   지정한 이벤트가 있고, 그 트리거 <literal>WHEN</literal> 조건절에서
    지정한 조건에 맞으면, 지정한 트리거 함수가 실행 되도록 한다.
-   이벤트 트리거에 대한 보다 자세한 설명은 <xref linkend="event-triggers">에서
+   이벤트 트리거에 대한 보다 자세한 설명은 <xref linkend="event-triggers"/>에서
    한다.  이벤트 트리거를 만드는 사용자가 그 트리거의 소유주가 된다.
   </para>
  </refsect1>
@@ -61,7 +61,7 @@ CREATE EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable>
      <para>
       이벤트 트리거용 함수가 실행되는 그 이벤트 이름.
       이벤트 이름에 대한 자세한 설명은 <xref
-      linkend="event-trigger-definition">에서 한다.
+      linkend="event-trigger-definition"/>에서 한다.
      </para>
     </listitem>
    </varlistentry>
@@ -84,8 +84,8 @@ CREATE EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable>
     <listitem>
      <para>
       위 조건 변수에 지정할 변수 값이다.
-      <literal>TAG</> 변수에 지정할 수 있는 값은
-      SQL 명령이다(예, <literal>'DROP FUNCTION'</>).
+      <literal>TAG</literal> 변수에 지정할 수 있는 값은
+      SQL 명령이다(예, <literal>'DROP FUNCTION'</literal>).
      </para>
     </listitem>
    </varlistentry>
@@ -97,6 +97,14 @@ CREATE EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable>
       해당 이벤트 발생시 작업할 함수 이름.
       이 함수는 입력 인자는 없고, 반환값은 <literal>event_trigger</literal>
       자료형인 함수여야 한다.
+     </para>
+
+     <para>
+      <literal>CREATE EVENT TRIGGER</literal> 구문에서
+      <literal>FUNCTION</literal>과 <literal>PROCEDURE</literal>는
+      같은 의미다.  하지만, 여기서 지정할 수 있는 것은 
+      프로시져가 아니라, 함수만 가능하다.  현재 구문은 하위 호환성 때문에 
+      있으며, <literal>PROCEDURE</literal> 키워드는 사라질 예정이다.
      </para>
     </listitem>
    </varlistentry>
@@ -112,7 +120,7 @@ CREATE EVENT TRIGGER <replaceable class="PARAMETER">이름</replaceable>
   </para>
 
   <para>
-   이벤트 트리거는 단일 사용자 모드(<xref linkend="app-postgres">)에서는
+   이벤트 트리거는 단일 사용자 모드(<xref linkend="app-postgres"/>)에서는
    비활성화 된다.  어떤 오류가 있는 이벤트 트리거를 해당 데이터베이스에
    지정하면, 이 트리거를 지우지 못한는 상황이 발생할 수도 있다.
    이 때는 단일 사용자 모드로 재실행 해서 해당 이벤트 트리거를 지워야 한다. 
@@ -136,7 +144,7 @@ END;
 $$;
 
 CREATE EVENT TRIGGER abort_ddl ON ddl_command_start
-   EXECUTE PROCEDURE abort_any_command();
+   EXECUTE FUNCTION abort_any_command();
 </programlisting></para>
  </refsect1>
 
@@ -153,9 +161,9 @@ CREATE EVENT TRIGGER abort_ddl ON ddl_command_start
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-altereventtrigger"></member>
-   <member><xref linkend="sql-dropeventtrigger"></member>
-   <member><xref linkend="sql-createfunction"></member>
+   <member><xref linkend="sql-altereventtrigger"/></member>
+   <member><xref linkend="sql-dropeventtrigger"/></member>
+   <member><xref linkend="sql-createfunction"/></member>
   </simplelist>
  </refsect1>
 </refentry>

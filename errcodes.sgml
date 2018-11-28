@@ -15,12 +15,12 @@
 
  <para>
   <productname>PostgreSQL</productname>서버에서 뱉어내는 모든 메시지는
-  <quote>SQLSTATE</>의 SQL 표준 규약에 따라 다섯 문자로 표현한다.
+  <quote>SQLSTATE</quote>의 SQL 표준 규약에 따라 다섯 문자로 표현한다.
   에러 상태를 알고싶은 어플리케이션들은 대부분 텍스트로 에러 메시지를
   보여주기 보다는 에러코드를 발생한다.
-  에러코드는 <productname>PostgreSQL</>의 릴리즈에 따른 변화가 적고,
+  에러코드는 <productname>PostgreSQL</productname>의 릴리즈에 따른 변화가 적고,
   에러 메시지의 지역화를 하는데 대상이 되지 않는다.
-  전체가 아닌 일부 에러코드는 <productname>PostgreSQL</>이 SQL표준으로
+  전체가 아닌 일부 에러코드는 <productname>PostgreSQL</productname>이 SQL표준으로
   정의 한것으로 만들어졌다; 일부 에러코드는 표준 규약이나 다른 데이타
   베이스에서는 찾아볼수 없는 것이 정의되어있다.
  </para>
@@ -33,31 +33,31 @@
  </para>
 
  <para>
-  <xref linkend="errcodes-table">에는 
+  <xref linkend="errcodes-table"/>에는 
   <productname>PostgreSQL</productname> &version;에서 정의한 모든 에러 코드들이
   정의 되어있다.  (실제로는 전부는 정의되어 있지않다. 하지만 SQL 표준관련된
   것들은 모두 정의되어있다.)
   에러 클래스도 물론 포함한다. 각각의 에러 클래스들은 마지막 3개의 문자
-  <literal>000</>을 갖는 표준 에러 코드들이 있다.
+  <literal>000</literal>을 갖는 표준 에러 코드들이 있다.
   이 코드들은 에러 클래스에 해당하는 에러 상태에 대해서만 알수있지,
   자세한 내용은 알수 없다.
  </para>
 
  <para>
-  두번째 열에 보여지는 <quote>예외이름</quote>은 <application>PL/pgSQL</>에서
+  두번째 열에 보여지는 <quote>예외이름</quote>은 <application>PL/pgSQL</application>에서
   예외 처리를 할 때 사용하는 시스템에서 미리 정의된 예외 이름이다.
   상태는 대문자 또는 소문자로 화면에 표현됩니다.
-  (<application>PL/pgSQL</>은 에러의 반대인, class 00, 01 그리고 02같은 경고는
+  (<application>PL/pgSQL</application>은 에러의 반대인, class 00, 01 그리고 02같은 경고는
   무시한다.)
  </para>
 
  <para>
   몇몇 오류들은 그 오류와 관계된 데이터베이스 객체들(
   테이블, 테이블 칼럼, 자료형, 또는 제약조건 등)의 이름도 함께 알려 준다:
-  한 예로,  <symbol>unique_violation</> 오류는 해당 오류가 발생된 
+  한 예로,  <symbol>unique_violation</symbol> 오류는 해당 오류가 발생된 
   제약조건의 이름도 함께 알려 준다.  이런 내용들은 오류 메시지와 분리되어 제공되어,
   응용 프로그램 개발자가 이것을 추출하기 위해 오류 메시지를 분석하는 작업을 할 필요는 
-  없다.  <productname>PostgreSQL</> 9.3 에서는 23개의 SQLSTATE 클래스에서 이 
+  없다.  <productname>PostgreSQL</productname> 9.3 에서는 23개의 SQLSTATE 클래스에서 이 
   기능을 제공하며,앞으로도 계속 보다 친절한 오류 메시지를 처리 할 수 있도록 할 것이다.
  </para>
 
@@ -66,9 +66,9 @@
  <title><productname>PostgreSQL</productname> 에러 코드</title>
 
  <tgroup cols="2">
-  <colspec colnum="1" colname="errorcode">
-  <colspec colnum="2" colname="condname">
-  <spanspec namest="errorcode" nameend="condname" spanname="span12">
+  <colspec colnum="1" colname="errorcode"/>
+  <colspec colnum="2" colname="condname"/>
+  <spanspec namest="errorcode" nameend="condname" spanname="span12"/>
 
   <thead>
    <row>

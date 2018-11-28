@@ -44,33 +44,22 @@ PDF 형식의 문서는 따로 다운로드 해서 사용할 수 있다.
   <title>DocBook</title>
   <para>
    이 문서는 <firstterm>DocBook</firstterm> 조판 언어로 작성되었다.  이것은
-   <acronym>HTML</acronym>과 비슷하다. 이 둘 모두 
-   <firstterm>표준 일반화된 조판 언어, Standard Generalized
-   Markup Language</firstterm>, <acronym>SGML</acronym> 기반 위에 
-   구현된 것이다.  여기서는 DocBook이라는 용어와,  <acronym>SGML</acronym>
+   <acronym>XML</acronym>로 만들어졌다.
+   여기서는 DocBook이라는 용어와,  <acronym>XML</acronym>
    용어가 함께 사용되지만, 기술적으로는 서로 호환되는 것은 아니다.
   </para>
-
-  <note>
-   <para>
-    PostgreSQL 문서는 현재 SGML, DSSSL 스타일 시트 기반에서
-    DocBook XML, XSLT 스타일 시트 기반으로 변경되었다.  작업하는 버전에 따라
-    필요한 도구와 작업 방법이 다르기 때문에 아래 소개 내용을 잘 숙지하고, 
-    작업 해야한다.
-   </para>
-  </note>
 
   <para>
   <productname>DocBook</productname>은 최종 출력이 어떤 모습으로 
   될 것인지를 고민하지 않고, 단지, 기술적인 문서의 내용과 
   그 구조들에 대해서만 작성 할 수 있도록 한다.  문서의 최종 모습은 
-  문서 스타일로 정의한다.  DocBook은 현재, <ulink url="http://www.oasis-open.org">
-  OASIS 그룹</ulink>에서 관리되고 있다.  <ulink url="http://www.oasis-open.org/docbook/">
+  문서 스타일로 정의한다.  DocBook은 현재, <ulink url="https://www.oasis-open.org">
+  OASIS 그룹</ulink>에서 관리되고 있다.  <ulink url="https://www.oasis-open.org/docbook/">
   DocBook 공식 사이트</ulink>에서 소개와 문서 작성 방법에 대한 설명을 자세히 하고 있으며,
   O'Reilly 책도 온라인으로 읽을 수 있도록 제공하고 있다.  또한
    <ulink url="http://newbiedoc.sourceforge.net/metadoc/docbook-guide.html">
    NewbieDoc Docbook Guide</ulink> 웹 페이지도 처음 사용자에게는 유용한
-   문서다.  <ulink url="http://www.freebsd.org/docproj/docproj.html">
+   문서다.  <ulink url="https://www.freebsd.org/docproj/docproj.html">
    FreeBSD 문서 프로젝트</ulink>도 DocBook을 사용하고 있으며,  참고 할 만한 여러 스타일
    제안들을 포함하는 여러 도움 될 만한 정보를 제공하고 있다.
   </para>
@@ -89,19 +78,8 @@ PDF 형식의 문서는 따로 다운로드 해서 사용할 수 있다.
      <listitem>
       <para>
            DocBook 문서 형식 정의 파일이다.  PostgreSQL 문서는 4.2 버전을 
-           사용하다.  다른 버전을 사용할 수 없다.  그외, DocBook DTD를 
-           사용하기 위해서, 기타 여러  <acronym>SGML</acronym> DTD와
-           <acronym>XML</acronym> DTD가 필요하다.  이들은 대부분 배포판에서
-           분리되어 배포하고 있다.
-      </para>
-     </listitem>
-    </varlistentry>
-
-    <varlistentry>
-     <term><ulink url="http://www.oasis-open.org/cover/ISOEnts.zip">ISO 8879 문자셋 집합</ulink></term>
-     <listitem>
-      <para>
-           DocBook SGML에서 사용되지만, ISO에서 관리하기 때문에, 이 파일들은 분리되어 있다.
+           사용하다.  다른 버전을 사용할 수 없다.  
+           DocBook DTD의 <acronym>XML</acronym> 패키지들이 필요하다.
       </para>
      </listitem>
     </varlistentry>
@@ -116,17 +94,6 @@ PDF 형식의 문서는 따로 다운로드 해서 사용할 수 있다.
 
       <para>
        1.77.0 버전 이상을 필요로 하나, 보다 나은 환경은 사용 가능한 최신 버전을 사용한다.
-      </para>
-     </listitem>
-    </varlistentry>
-
-    <varlistentry>
-     <term><ulink url="http://openjade.sourceforge.net">OpenSP</ulink></term>
-     <listitem>
-      <para>
-       이것은 <acronym>SGML</acronym> 처리에 가장 좋은 도구다.  여기서는 
-       더이상 OpenJade를 사용하지 않고, <acronym>DSSSL</acronym>을 이용해
-       SGML 문서를 XML 문서로 변화는 작업만 사용한다.
       </para>
      </listitem>
     </varlistentry>
@@ -189,7 +156,7 @@ PDF 형식의 문서는 따로 다운로드 해서 사용할 수 있다.
    <para>
     관련 패키지를 설치하기 위해서는 다음 명령을 실행한다:
 <programlisting>
-yum install docbook-dtds docbook-style-xsl fop libxslt opensp
+yum install docbook-dtds docbook-style-xsl fop libxslt
 </programlisting>
 
    </para>
@@ -207,40 +174,9 @@ yum install docbook-dtds docbook-style-xsl fop libxslt opensp
    <title>FreeBSD에서 설치</title>
 
    <para>
-    The FreeBSD Documentation Project is itself a heavy user of
-    DocBook, so it comes as no surprise that there is a full set of
-    <quote>ports</quote> of the documentation tools available on
-    FreeBSD.  The following ports need to be installed to build the
-    documentation on FreeBSD.
-    <itemizedlist>
-     <listitem>
-      <para><filename>textproc/docbook-sgml</filename></para>
-     </listitem>
-     <listitem>
-      <para><filename>textproc/openjade-xml</filename></para>
-     </listitem>
-     <listitem>
-      <para><filename>textproc/docbook-xsl</filename></para>
-     </listitem>
-     <listitem>
-      <para><filename>textproc/dsssl-docbook-modular</filename></para>
-     </listitem>
-     <listitem>
-      <para><filename>textproc/libxslt</filename></para>
-     </listitem>
-     <listitem>
-      <para><filename>textproc/fop</filename></para>
-     </listitem>
-     <listitem>
-      <para><filename>textproc/opensp</filename></para>
-     </listitem>
-    </itemizedlist>
-   </para>
-
-   <para>
     To install the required packages with <command>pkg</command>, use:
 <programlisting>
-pkg install docbook-sgml docbook-xml docbook-xsl fop libxslt opensp
+pkg install docbook-xml docbook-xsl fop libxslt
 </programlisting>
    </para>
 
@@ -250,11 +186,6 @@ pkg install docbook-sgml docbook-xml docbook-xsl fop libxslt opensp
     makefile provided is not suitable for FreeBSD's <command>make</command>.
    </para>
 
-   <para>
-    More information about the FreeBSD documentation tools can be
-    found in the <ulink url="http://www.freebsd.org/doc/en_US.ISO8859-1/books/fdp-primer/tools.html">
-    FreeBSD Documentation Project's instructions</ulink>.
-   </para>
   </sect2>
 
   <sect2>
@@ -264,7 +195,7 @@ pkg install docbook-sgml docbook-xml docbook-xsl fop libxslt opensp
     <productname>Debian GNU/Linux</productname>에서는 
         다음 패키지들을 설치하면 된다. 간단하게:
 <programlisting>
-apt-get install docbook docbook-xml docbook-xsl fop libxml2-utils opensp xsltproc
+apt-get install docbook-xml docbook-xsl fop libxml2-utils xsltproc
 </programlisting>
    </para>
   </sect2>
@@ -273,118 +204,21 @@ apt-get install docbook docbook-xml docbook-xsl fop libxml2-utils opensp xsltpro
    <title>macOS</title>
 
    <para>
-    MacPort를 사용한다면, 다음 명령을 실행한다:
-<programlisting>
-sudo port install docbook-sgml-4.2 docbook-xml-4.2 docbook-xsl fop libxslt opensp
-</programlisting>
+    On macOS, you can build the HTML and man documentation without installing
+    anything extra.  If you want to build PDFs or want to install a local copy
+    of DocBook, you can get those from your preferred package manager.
    </para>
-  </sect2>
-
-
-  <sect2>
-   <title>소스에서 직접 설치하는 방법</title>
 
    <para>
-    The manual installation process of the DocBook tools is somewhat
-    complex, so if you have pre-built packages available, use them.
-    We describe here only a standard setup, with reasonably standard
-    installation paths, and no <quote>fancy</quote> features.  For
-    details, you should study the documentation of the respective
-    package, and read <acronym>SGML</acronym> introductory material.
+    If you use MacPorts, the following will get you set up:
+<programlisting>
+sudo port install docbook-xml-4.2 docbook-xsl fop
+</programlisting>
+    If you use Homebrew, use this:
+<programlisting>
+brew install docbook docbook-xsl fop
+</programlisting>
    </para>
-
-   <sect3>
-    <title>Installing OpenSP</title>
-
-    <para>
-     The installation of OpenSP offers a GNU-style
-     <literal>./configure; make; make install</literal> build process.
-     Details can be found in the OpenSP source distribution. In a nutshell:
-<synopsis>
-./configure --enable-default-catalog=/usr/local/etc/sgml/catalog
-make
-make install
-</synopsis>
-     Be sure to remember where you put the <quote>default catalog</quote>; you
-     will need it below.  You can also leave it off, but then you will have to
-     set the environment variable <envar>SGML_CATALOG_FILES</envar> to point
-     to the file whenever you use any programs from OpenSP later on.  (This
-     method is also an option if OpenSP is already installed and you want to
-     install the rest of the toolchain locally.)
-    </para>
-   </sect3>
-
-   <sect3>
-    <title>Installing the <productname>DocBook</productname> <acronym>DTD</acronym> Kit</title>
-
-    <procedure>
-     <step>
-      <para>
-       Obtain the <ulink url="http://www.docbook.org/sgml/4.2/docbook-4.2.zip">
-       DocBook V4.2 distribution</ulink>.
-      </para>
-     </step>
-
-     <step>
-      <para>
-       Create the directory
-       <filename>/usr/local/share/sgml/docbook-4.2</filename> and change
-       to it. (The exact location is irrelevant, but this one is
-       reasonable within the layout we are following here.)
-<screen>
-<prompt>$ </prompt><userinput>mkdir /usr/local/share/sgml/docbook-4.2</userinput>
-<prompt>$ </prompt><userinput>cd /usr/local/share/sgml/docbook-4.2</userinput>
-</screen>
-      </para>
-     </step>
-
-     <step>
-      <para>
-       Unpack the archive:
-<screen>
-<prompt>$ </prompt><userinput>unzip -a ...../docbook-4.2.zip</userinput>
-</screen>
-       (The archive will unpack its files into the current directory.)
-      </para>
-     </step>
-
-     <step>
-      <para>
-       Edit the file
-       <filename>/usr/local/share/sgml/catalog</filename> (or whatever
-       you told jade during installation) and put a line like this
-       into it:
-<programlisting>
-CATALOG "docbook-4.2/docbook.cat"
-</programlisting>
-      </para>
-     </step>
-
-     <step>
-      <para>
-       Download the <ulink url="http://www.oasis-open.org/cover/ISOEnts.zip">
-       ISO 8879 character entities archive</ulink>, unpack it, and put the
-       files in the same directory you put the DocBook files in:
-<screen>
-<prompt>$ </prompt><userinput>cd /usr/local/share/sgml/docbook-4.2</userinput>
-<prompt>$ </prompt><userinput>unzip ...../ISOEnts.zip</userinput>
-</screen>
-      </para>
-     </step>
-
-     <step>
-      <para>
-       Run the following command in the directory with the DocBook and ISO files:
-<programlisting>
-perl -pi -e 's/iso-(.*).gml/ISO\1/g' docbook.cat
-</programlisting>
-       (This fixes a mixup between the names used in the DocBook
-       catalog file and the actual names of the ISO character entity
-       files.)
-      </para>
-     </step>
-    </procedure>
-   </sect3>
   </sect2>
 
   <sect2 id="docguide-toolsets-configure">
@@ -400,25 +234,14 @@ perl -pi -e 's/iso-(.*).gml/ISO\1/g' docbook.cat
    경로를 지정한다든가, 적당한 패키지를 설치한다든가)을 
    한다:
 <screen>
-<computeroutput>
-checking for onsgmls... onsgmls
-checking for DocBook V4.2... yes
-checking for dbtoepub... dbtoepub
 checking for xmllint... xmllint
+checking for DocBook XML V4.2... yes
+checking for dbtoepub... dbtoepub
 checking for xsltproc... xsltproc
-checking for osx... osx
 checking for fop... fop
-</computeroutput>
 </screen>
-   <filename>onsgmls</filename> 이나 <filename>nsgmls</filename> 
-   프로그램 모두 찾지 못했다면, 나머지 문서 작업 관련 모든 검사는 
-   생략된다.  <filename>nsgmls</filename> 프로그램은 OpenSP 패키지 
-   안에 있다.  자동으로 이것을 못 찾는다면, 
-   <envar>NSGMLS</envar> 쉘 환경 변수를 지정해서 사용할 수도 있다.  또한
-   <quote>DocBook V4.2</quote> 관련 파일을 못 찾는다면,  
-   OpenSP 안에 있는 DocBook DTD 키트를 설치하지 않았거나, 
-   catalog 파일 설정을 하지 않는 경우이다.  이 때는
-   이 문서 앞 부분을 다시 차근히 읽어 보길 바란다.
+   <filename>xmllint</filename> 검사를 실패 하면 이하 검사 작업은
+   생략한다. 
   </para>
 
   </sect2>
@@ -446,7 +269,7 @@ checking for fop... fop
    </para>
    <para>
     기본 단순한 스타일 대신에 <ulink
-    url="https://www.postgresql.org/docs/current">postgresql.org</> 사이트에서
+    url="https://www.postgresql.org/docs/current/">postgresql.org</ulink> 사이트에서
     사용하는 스타일을 사용하는 HTML 문서는 다음과 같이 만든다:
 <screen>
 <prompt>doc/src/sgml$ </prompt><userinput>make STYLE=website html</userinput>
@@ -460,8 +283,7 @@ checking for fop... fop
   <para>
    맨페이지는 DocBook XSL 스타일시트를 이용해서, 
    <productname>DocBook</productname> <sgmltag>refentry</sgmltag>
-   페이지로 변환해서 만든다.  이 페이지는 맨페이지와 호환 된다.  맨페이지도
-   <acronym>HTML</acronym> 버전과 비슷하게, tar 묶음 파일로 배포된다.  직접
+   페이지로 변환해서 만든다.  직접
    맨페이지를 만드려면 다음 명령을 실행한다:
 <screen>
 <prompt>doc/src/sgml$ </prompt><userinput>make man</userinput>
@@ -529,7 +351,7 @@ ADDITIONAL_FLAGS='-Xmx1500m'
     The installation instructions are also distributed as plain text,
     in case they are needed in a situation where better reading tools
     are not available.  The <filename>INSTALL</filename> file
-    corresponds to <xref linkend="installation">, with some minor
+    corresponds to <xref linkend="installation"/>, with some minor
     changes to account for the different context.  To recreate the
     file, change to the directory <filename>doc/src/sgml</filename>
     and enter <userinput>make INSTALL</userinput>.
@@ -567,113 +389,38 @@ ADDITIONAL_FLAGS='-Xmx1500m'
    소개를 하고 있다.  필요한 사람이 번역하기
    </para>
    </note>
+
    <para>
-    <acronym>SGML</acronym> and <productname>DocBook</productname> do
-    not suffer from an oversupply of open-source authoring tools. The
-    most common tool set is the
-    <productname>Emacs</productname>/<productname>XEmacs</productname>
-    editor with appropriate editing mode.  On some systems
-    these tools are provided in a typical full installation.
+    The documentation sources are most conveniently modified with an editor
+    that has a mode for editing XML, and even more so if it has some awareness
+    of XML schema languages so that it can know about
+    <productname>DocBook</productname> syntax specifically.
+   </para>
+
+   <para>
+    Note that for historical reasons the documentation source files are named
+    with an extension <filename>.sgml</filename> even though they are now XML
+    files.  So you might need to adjust your editor configuration to set the
+    correct mode.
    </para>
 
    <sect2>
-    <title>Emacs/PSGML</title>
+    <title>Emacs</title>
 
     <para>
-     <productname>PSGML</productname> is the most common and most
-     powerful mode for editing <acronym>SGML</acronym> documents.
-     When properly configured, it will allow you to use
-     <application>Emacs</application> to insert tags and check markup
-     consistency.  You could use it for <acronym>HTML</acronym> as
-     well.  Check the <ulink url="http://www.lysator.liu.se/projects/about_psgml.html">
-     PSGML web site</ulink> for downloads, installation instructions, and
-     detailed documentation.
+     <productname>nXML Mode</productname>, which ships with
+     <productname>Emacs</productname>, is the most common mode for editing
+     <acronym>XML</acronym> documents with <productname>Emacs</productname>.
+     It will allow you to use <application>Emacs</application> to insert tags
+     and check markup consistency, and it supports
+     <productname>DocBook</productname> out of the box.  Check the <ulink
+     url="https://www.gnu.org/software/emacs/manual/html_mono/nxml-mode.html">
+     nXML manual</ulink> for detailed documentation.
     </para>
 
     <para>
-     There is one important thing to note with
-     <productname>PSGML</productname>: its author assumed that your
-     main <acronym>SGML</acronym> <acronym>DTD</acronym> directory
-     would be <filename>/usr/local/lib/sgml</filename>.  If, as in the
-     examples in this chapter, you use
-     <filename>/usr/local/share/sgml</filename>, you have to
-     compensate for this, either by setting
-     <envar>SGML_CATALOG_FILES</envar> environment variable, or you
-     can customize your <productname>PSGML</productname> installation
-     (its manual tells you how).
-    </para>
-
-    <para>
-     Put the following in your <filename>~/.emacs</filename>
-     environment file (adjusting the path names to be appropriate for
-     your system):
-
-<programlisting>
-; ********** for SGML mode (psgml)
-
-(setq sgml-omittag t)
-(setq sgml-shorttag t)
-(setq sgml-minimize-attributes nil)
-(setq sgml-always-quote-attributes t)
-(setq sgml-indent-step 1)
-(setq sgml-indent-data t)
-(setq sgml-parent-document nil)
-(setq sgml-exposed-tags nil)
-(setq sgml-catalog-files '("/usr/local/share/sgml/catalog"))
-
-(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t )
-</programlisting>
-
-     and in the same file add an entry for <acronym>SGML</acronym>
-     into the (existing) definition for
-     <varname>auto-mode-alist</varname>:
-<programlisting>
-(setq
-  auto-mode-alist
-  '(("\\.sgml$" . sgml-mode)
-   ))
-</programlisting>
-    </para>
-
-    <para>
-     You might find that when using <productname>PSGML</productname>, a
-     comfortable way of working with these separate files of book
-     parts is to insert a proper <literal>DOCTYPE</literal>
-     declaration while you're editing them.  If you are working on
-     this source, for instance, it is an appendix chapter, so you
-     would specify the document as an <quote>appendix</quote> instance
-     of a DocBook document by making the first line look like this:
-
-<programlisting>
-&lt;!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook V4.2//EN"&gt;
-</programlisting>
-
-     This means that anything and everything that reads
-     <acronym>SGML</acronym> will get it right, and I can verify the
-     document with <command>nsgmls -s docguide.sgml</command>.  (But
-     you need to take out that line before building the entire
-     documentation set.)
-    </para>
-   </sect2>
-
-   <sect2>
-    <title>Other Emacs Modes</title>
-
-    <para>
-     <productname>GNU Emacs</productname> ships with a different
-     <acronym>SGML</acronym> mode, which is not quite as powerful as
-     <productname>PSGML</productname>, but it's less confusing and
-     lighter weight.  Also, it offers syntax highlighting (font lock),
-     which can be very helpful.
      <filename>src/tools/editors/emacs.samples</filename> contains
-     sample settings for this mode.
-    </para>
-
-    <para>
-     Norm Walsh offers a
-     <ulink url="http://nwalsh.com/emacs/docbookide/index.html">major mode</ulink>
-     specifically for DocBook which also has font-lock and a number of features to
-     reduce typing.
+     recommended settings for this mode.
     </para>
    </sect2>
 
@@ -681,10 +428,10 @@ ADDITIONAL_FLAGS='-Xmx1500m'
 
 
  <sect1 id="docguide-style">
-  <title>스타일 안내</title>
+  <title>Style Guide</title>
 
   <sect2>
-   <title>설명서 페이지</title>
+   <title>Reference Pages</title>
 
    <para>
     Reference pages should follow a standard layout.  This allows

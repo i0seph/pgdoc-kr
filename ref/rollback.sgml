@@ -3,7 +3,7 @@ doc/src/sgml/ref/rollback.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ROLLBACK">
+<refentry id="sql-rollback">
  <indexterm zone="sql-rollback">
   <primary>ROLLBACK</primary>
  </indexterm>
@@ -55,11 +55,11 @@ ROLLBACK [ WORK | TRANSACTION ]
 
   <para>
    트랜잭션에서 작업한 모든 내역을 적용하고, 
-   트랜잭션을 끝내려면, <xref linkend="SQL-COMMIT"> 명령을 이용한다.
+   트랜잭션을 끝내려면, <xref linkend="sql-commit"/> 명령을 이용한다.
   </para>
 
   <para>
-   트랜잭션 작업 상태가 아닌 상황에서 <command>ROLLBACK</>
+   트랜잭션 작업 상태가 아닌 상황에서 <command>ROLLBACK</command>
    명령을 사용하면, 경고 메시지를 보이며 아무런 작업을 하지 않는다.
   </para>
  </refsect1>
@@ -88,9 +88,9 @@ ROLLBACK;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-begin"></member>
-   <member><xref linkend="sql-commit"></member>
-   <member><xref linkend="sql-rollback-to"></member>
+   <member><xref linkend="sql-begin"/></member>
+   <member><xref linkend="sql-commit"/></member>
+   <member><xref linkend="sql-rollback-to"/></member>
   </simplelist>
  </refsect1>
 </refentry>

@@ -86,7 +86,7 @@
    </para>
 
    <para>
-    <systemitem class="resource">comp.ai.genetic</> 뉴스그룹 <acronym>FAQ</acronym>에
+    <systemitem class="resource">comp.ai.genetic</systemitem> 뉴스그룹 <acronym>FAQ</acronym>에
     따르면, 
     어떤 문제의 해결책을 찾는데 있어 
     <acronym>GA</acronym> 방법은
@@ -230,7 +230,7 @@
     (각각의 조인 계획은 가능한 세가지 조인 전략을 모두 
     고려하고,  초기 결정된 릴레이션 검색 계획에 모두 반영한다.
     이 가운데, 선택되는 실행 계획은 그 추정 비용이 제일 싼 것이다.)
-    추정 비용이 싸다는 것은 비싼 계획보다 <quote>보다 적합한</>
+    추정 비용이 싸다는 것은 비싼 계획보다 <quote>보다 적합한</quote>
     계획으로 간주한다.
     유전 알고리즘은 제일 나쁜 후보 계획을 버린다.
     다음, 보다 접합한 새로운 실행 계획
@@ -243,22 +243,22 @@
 
    <para>
     이 과정은 본질적으로 비결정론적이다. 왜냐하면, 
-    처음 만드는 실행 계획과 다은 <quote>변의</> 작업으로 만들어내는 
+    처음 만드는 실행 계획과 다은 <quote>변의</quote> 작업으로 만들어내는 
     보다 나은 실행 계획 사이 선택은 무작위 선택을 이용하기 때문이다.
     선택된 실행 계획의 엉뚱한 변화를 막기 위해서, 
-    <xref linkend="guc-geqo-seed"> 환경 설정값으로 GEQO 알고리즘은 
+    <xref linkend="guc-geqo-seed"/> 환경 설정값으로 GEQO 알고리즘은 
     매번 난수 발생기를 매번 재실행한다. 이렇게 해서, 
     동일 입력값 (테이블 통계정보, 쿼리 내용) 환경에서는 
-    <varname>geqo_seed</>와 그 관련 환경 설정값들이 바뀌지 않으면, 
+    <varname>geqo_seed</varname>와 그 관련 환경 설정값들이 바뀌지 않으면, 
     실행 계획도 바뀌지 않는다.  GEQO 알고리즘으로 만들어내는 
-    다른 실행 계획을 보고싶다면, <varname>geqo_seed</> 환경설정값을 
+    다른 실행 계획을 보고싶다면, <varname>geqo_seed</varname> 환경설정값을 
     변경하면 된다.
    </para>
 
   </sect2>
 
   <sect2 id="geqo-future">
-   <title><productname>PostgreSQL</> <acronym>GEQO</acronym> 개선 할 점</title>
+   <title><productname>PostgreSQL</productname> <acronym>GEQO</acronym> 개선 할 점</title>
 
      <para>
       유전 알고리즘 매개 변수 설정에 관련하여 여전히 작업이 필요하다.
@@ -330,13 +330,13 @@
 
     <listitem>
      <para>
-      <xref linkend="ELMA04">
+      <xref linkend="elma04"/>
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <xref linkend="FONG">
+      <xref linkend="fong"/>
      </para>
     </listitem>
    </itemizedlist>

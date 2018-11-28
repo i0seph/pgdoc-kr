@@ -53,8 +53,10 @@
    &alterOperatorClass;
    &alterOperatorFamily;
    &alterPolicy;
+   &alterProcedure;
    &alterPublication;
    &alterRole;
+   &alterRoutine;
    &alterRule;
    &alterSchema;
    &alterSequence;
@@ -75,6 +77,7 @@
    &alterView;
    &analyze;
    &begin;
+   &call;
    &checkpoint;
    &close;
    &cluster;
@@ -102,6 +105,7 @@
    &createOperatorClass;
    &createOperatorFamily;
    &createPolicy;
+   &createProcedure;
    &createPublication;
    &createRole;
    &createRule;
@@ -149,8 +153,10 @@
    &dropOperatorFamily;
    &dropOwned;
    &dropPolicy;
+   &dropProcedure;
    &dropPublication;
    &dropRole;
+   &dropRoutine;
    &dropRule;
    &dropSchema;
    &dropSequence;
@@ -262,7 +268,7 @@
     여기서는 <productname>PostgreSQL</productname> 서버 
         응용프로그램과 그 관련 유틸리티들에 설명을 한다.  이 명령들은
         서버가 실행되고 있는 호스트에서 실행하는 것들이다.  그 외
-        응용프로그램에 대한 설명들은 <xref linkend="reference-client">에서
+        응용프로그램에 대한 설명들은 <xref linkend="reference-client"/>에서
         다룬다.
    </para>
   </partintro>
@@ -276,6 +282,7 @@
    &pgtestfsync;
    &pgtesttiming;
    &pgupgrade;
+   &pgVerifyChecksums;
    &pgwaldump;
    &postgres;
    &postmaster;

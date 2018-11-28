@@ -17,7 +17,7 @@
 
    <para>
     여기서도  <xref
-    linkend="tutorial-sql">에서 예제로 사용했던 그 자료들을 가지고
+    linkend="tutorial-sql"/>에서 예제로 사용했던 그 자료들을 가지고
     예제를 설명합니다.  아직 읽어보지 않았다면, 한 번 정도 간단하게나마
     읽어 보면 이 장을 읽는데 도움이 많이 될 것입니다.  이 장에서 다루는
     몇몇 예제는 소스의 tutorial 디렉터리안에 있는
@@ -25,7 +25,7 @@
     수 있습니다.  또한 이 파일에는 이 장에서 사용할 예제 자료들도
     함께 있습니다.  이 자료들은 2장에서 입력한 자료들은
     포함하고 있지 않습니다. (이 파일을 사용하는 방법은 
-    <xref linkend="tutorial-sql-intro">에서 설명하고 있습니다.)
+    <xref linkend="tutorial-sql-intro"/>에서 설명하고 있습니다.)
    </para>
   </sect1>
 
@@ -37,7 +37,7 @@
    <indexterm zone="tutorial-views"><primary>뷰</primary></indexterm>
 
    <para>
-    <xref linkend="tutorial-join">에서 다룬 쿼리를 다시 한 번
+    <xref linkend="tutorial-join"/>에서 다룬 쿼리를 다시 한 번
     살펴보겠습니다.  응용 프로그램에서는 항상 날씨 정보와 
     도시 위치를 함께 출력하는 작업을 하는데, 이 때마다 
     그 복잡한 쿼리를 계속 사용한다는 것은 번거로운 일입니다.  이 때
@@ -82,7 +82,7 @@ SELECT * FROM myview;
 
    <para>
     <xref
-    linkend="tutorial-sql">에서 사용한 <classname>weather</classname>, 
+    linkend="tutorial-sql"/>에서 사용한 <classname>weather</classname>, 
     <classname>cities</classname> 테이블의 관계를 다시 한 번 살펴봅시다.  이
     두 테이블 간에 아무른 관계 조건이 없다고 가정한다면,  다음과 같은
     문제점들이 발생할 것입니다.  두 테이블을 도시명으로 조인해서 자료를
@@ -149,7 +149,7 @@ DETAIL:  Key (city)=(Berkeley) is not present in table "cities".
     자료의 관계성을 보다 견고하게 만들어줍니다.  참조키 기능은 여기서
     언급한 것보다 훨씬 많은 것을 제공하고 있습니다.  이 자습서에서 그
     세세한 기능들에 대해서는 언급하지 않겠습니다.  자세한
-    사항은 <xref linkend="ddl">을 참조하십시오.
+    사항은 <xref linkend="ddl"/>을 참조하십시오.
    </para>
   </sect1>
 
@@ -161,7 +161,7 @@ DETAIL:  Key (city)=(Berkeley) is not present in table "cities".
    <indexterm zone="tutorial-transactions"><primary>트랜잭션</primary></indexterm>
 
    <para>
-    <firstterm>트랜잭션</>  <firstterm>transaction</> 이란 모든 데이터베이스
+    <firstterm>트랜잭션</firstterm>  <firstterm>transaction</firstterm> 이란 모든 데이터베이스
         시스템에서 기본적인 한 개념입니다.  트랜잭션의 핵심은 여러개의 작업이
         최종적으로는 하나로 취급된다는 것입니다.  이것을 전부 적용 아니면 전부
         취소 작업(all-or-nothing operation)이라고 부릅니다.  각각의 트랜잭션은
@@ -196,10 +196,10 @@ UPDATE branches SET balance = balance + 100.00
         도중 부분적으로 작업을 성공하고, 그 나머지는 실패한다면, 각 계좌에
         남아있는 금액이 이상해지겠지요.  이런 사태를 막기위해서, 하나의 
         작업군(여러개의 작업)이 전부 처리가 되든지, 아니면, 전부 취소가
-        되는 이런 작업이 필요합니다. 이런 작업을 할 때, <firstterm>트랜잭션</>을
+        되는 이런 작업이 필요합니다. 이런 작업을 할 때, <firstterm>트랜잭션</firstterm>을
         이용합니다.  이런 하나의 트랜잭션 내에서의 일군의 작업이 하나로 처리되는
-        것을 데이터베이스 용어로 트랜잭션의 <firstterm>원자성</>
-        <firstterm>atomic</>이라고 합니다.
+        것을 데이터베이스 용어로 트랜잭션의 <firstterm>원자성</firstterm>
+        <firstterm>atomic</firstterm>이라고 합니다.
    </para>
 
    <para>
@@ -231,8 +231,8 @@ UPDATE branches SET balance = balance + 100.00
    </para>
 
    <para>
-    <productname>PostgreSQL</>에서 트랜잭션 작업을 하려면, 
-        그 해당 작업 앞뒤로 <command>BEGIN</> 명령과 <command>COMMIT</> 명령을
+    <productname>PostgreSQL</productname>에서 트랜잭션 작업을 하려면, 
+        그 해당 작업 앞뒤로 <command>BEGIN</command> 명령과 <command>COMMIT</command> 명령을
         지정합니다.  다음과 같은 형태가 트랙잭션을 사용하는 예입니다:
 
 <programlisting>
@@ -248,35 +248,35 @@ COMMIT;
     만일, 작업 도중 해당 작업에 문제가 생겨 다음 작업을
         더이상 진행하지 말아야할 경우가 생깁니다.  (윗 예로 든 경우라면,
         Alice 잔고가 없는 경우)  이때는 
-        <command>COMMIT</>  작업 대신에, <command>ROLLBACK</> 명령을
+        <command>COMMIT</command>  작업 대신에, <command>ROLLBACK</command> 명령을
         사용해서 지금까지 작업한 내역들을 모두 취소하고 트랜잭션을 종료합니다.
    </para>
 
    <para>
-    <productname>PostgreSQL</>에서는 모든 SQL 구문은 모두 
-        트랜잭션 안에서 실행되는 것으로 간주합니다.   <command>BEGIN</>
+    <productname>PostgreSQL</productname>에서는 모든 SQL 구문은 모두 
+        트랜잭션 안에서 실행되는 것으로 간주합니다.   <command>BEGIN</command>
         명령을 명시적으로 실행하지 않았다고 하더라도 
-        실행하고자 하는 명령 앞 뒤에,  <command>BEGIN</>과
-        (그 명령이 성공했다면) <command>COMMIT</> 명령을 함께 사용합니다.  이 때
-        <command>BEGIN</>과 <command>COMMIT</> 사이의 영역을 
-        <firstterm>트랜잭션 블록</>이라고 합니다.
+        실행하고자 하는 명령 앞 뒤에,  <command>BEGIN</command>과
+        (그 명령이 성공했다면) <command>COMMIT</command> 명령을 함께 사용합니다.  이 때
+        <command>BEGIN</command>과 <command>COMMIT</command> 사이의 영역을 
+        <firstterm>트랜잭션 블록</firstterm>이라고 합니다.
    </para>
 
    <note>
     <para>
-         몇몇 클라이언트 라이브러리는 자동으로 <command>BEGIN</>, <command>COMMIT</>
+         몇몇 클라이언트 라이브러리는 자동으로 <command>BEGIN</command>, <command>COMMIT</command>
          명령을 포함해서 실행되기 때문에, 사용자가 트랜잭션 지정하면 오류를 내는 경우도
          있습니다.  자세한 것은 해당 라이브러리 문서를 참조하십시오.
     </para>
    </note>
 
    <para>
-    트랜잭션 안에서 <firstterm>savepoint</>를 지정해서 작업을 좀 더 
+    트랜잭션 안에서 <firstterm>savepoint</firstterm>를 지정해서 작업을 좀 더 
         유연하게 처리할 수도 있습니다.  savepoint란 여기까지
-        작업이 정상 처리 되었다면,  <command>ROLLBACK TO</> 명령을 
+        작업이 정상 처리 되었다면,  <command>ROLLBACK TO</command> 명령을 
         이용해서 그 지점 전까지 작업한 것에 대해서는 작업한 내용을 
         보장하겠다는 표시하는 지점입니다.  이 지점을 표시하는 방법은 
-         <command>SAVEPOINT</> 명령을 이용합니다.   
+         <command>SAVEPOINT</command> 명령을 이용합니다.   
    </para>
 
    <para>
@@ -316,7 +316,7 @@ COMMIT;
 
    <para>
     이 예제는 처음처럼 Alice 계좌에서 출금을 하고, 
-        Bob 계좌로 잘못 입금해서 <command>ROLLBACK TO</>
+        Bob 계좌로 잘못 입금해서 <command>ROLLBACK TO</command>
         명령으로 입금 전 상태로 되돌리고, 
         다시 바른 입금 처리를 하고, 트랜잭션을 커밋하는 것을 
         보여주는 것입니다. (물론 commit 명령이 아니라, 
@@ -371,29 +371,29 @@ SELECT depname, empno, salary, avg(salary) OVER (PARTITION BY depname) FROM emps
 (10 rows)
 </screen>
 
-    첫번째 칼럼부터 세번째 칼럼까지는 <structname>empsalary</> 테이블의
+    첫번째 칼럼부터 세번째 칼럼까지는 <structname>empsalary</structname> 테이블의
         자료 그대로다.  여기서 하나의 로우는 실재 테이블 자료의 실재
-        로우다.  네번째 칼럼은 <structfield>depname</> 칼럼 값을 기준으로 
+        로우다.  네번째 칼럼은 <structfield>depname</structfield> 칼럼 값을 기준으로 
         그룹화된 자료의 평균값을 각 로우마다 보여준다.  (이 예제에서
-        보이는 <function>avg</> 함수는 집계 함수와 그 사용법이 
-        완벽하게 같은데, 뒤에 오는 <literal>OVER</> 절로 판단해서 
+        보이는 <function>avg</function> 함수는 집계 함수와 그 사용법이 
+        완벽하게 같은데, 뒤에 오는 <literal>OVER</literal> 절로 판단해서 
         윈도우 함수로 처리된다.)
    </para>
 
    <para>
-    윈도우 함수 뒤에는 항상 <literal>OVER</> 절을 사용한다.  이 규칙은
+    윈도우 함수 뒤에는 항상 <literal>OVER</literal> 절을 사용한다.  이 규칙은
         이 함수가 윈도우 함수로 처리할 것인지, 그렇지 않을 것인지를
-        구분하는 문법상 규칙이다.  <literal>OVER</> 절에는
+        구분하는 문법상 규칙이다.  <literal>OVER</literal> 절에는
         윈도우 함수의 계산 대상이 되는 로우들을 집합화하는 방법을 정의한다.
-        <literal>PARTITION BY</>로 정의하는 목록은 같은 그룹인지, 
+        <literal>PARTITION BY</literal>로 정의하는 목록은 같은 그룹인지, 
         다른 그룹인지 구분하는 기준으로 사용되고, 같은 그룹 내에서는 
         현재 로우 값도 포함해서 계산 된 윈도우 함수의 결과값을 공유한다.  
    </para>
 
    <para>
-    또한 <literal>OVER</> 절로 집합화 하는 로우들의 정렬 순서를
-        <literal>ORDER BY</> 절을 사용해서 지정할 수 있다. 
-    (The window <literal>ORDER BY</> does not even have to match the
+    또한 <literal>OVER</literal> 절로 집합화 하는 로우들의 정렬 순서를
+        <literal>ORDER BY</literal> 절을 사용해서 지정할 수 있다. 
+    (The window <literal>ORDER BY</literal> does not even have to match the
     order in which the rows are output.)  다음은 그 예제다:
 
 <programlisting>
@@ -419,50 +419,50 @@ FROM empsalary;
 </screen>
 
     위에서 보는 바와 같이, 이 결과는 부서명을 기준으로 급여가 많은 자료부터
-        차례로 출력하는데, 이 때 <function>rank</> 함수를 
+        차례로 출력하는데, 이 때 <function>rank</function> 함수를 
         사용하여 그 순위를 보여주는 것이다. 
-    <function>rank</> 함수의 입력 매개 변수는 필요없다.  다음에 오는
-        <literal>OVER</> 절에서 이 함수에서 처리해야할 모든 입력 정보들이
+    <function>rank</function> 함수의 입력 매개 변수는 필요없다.  다음에 오는
+        <literal>OVER</literal> 절에서 이 함수에서 처리해야할 모든 입력 정보들이
         다 정의되었기 때문이다.
    </para>
 
    <para>
     윈도우 함수의 계산 대상이 대는 로우는 
-        <literal>FROM</> 다음부터 <literal>WHERE</>, <literal>GROUP BY</>,
-        <literal>HAVING</> 절로 각 조건에 맞게 걸러진 
-        <quote>가상 테이블</>의 각 로우다.  예를 들어,
-        <literal>WHERE</> 조건절을 통해서 이미 걸러져 버린 
+        <literal>FROM</literal> 다음부터 <literal>WHERE</literal>, <literal>GROUP BY</literal>,
+        <literal>HAVING</literal> 절로 각 조건에 맞게 걸러진 
+        <quote>가상 테이블</quote>의 각 로우다.  예를 들어,
+        <literal>WHERE</literal> 조건절을 통해서 이미 걸러져 버린 
         로우에 대해서는 원도우 함수의 계산 대상이 되지 않는다.  하나의
         쿼리에 여러개의 윈도우 함수를 사용할 수 있다.  이 함수들은
-        각각의 <literal>OVER</> 절을 사용하여 각각 자료를 집합화 한다.  하지만,
+        각각의 <literal>OVER</literal> 절을 사용하여 각각 자료를 집합화 한다.  하지만,
         이 집합화 대상이 대는 가상 테이블은 같아야한다.
    </para>
 
    <para>
-    이미 살펴 보았듯이, <literal>ORDER BY</> 절이 필요 없는 경우라면, 
+    이미 살펴 보았듯이, <literal>ORDER BY</literal> 절이 필요 없는 경우라면, 
         생략할 수 있다.  이와 마찬가지로 <literal>PARTITION
-        BY</> 절도 생략할 수 있으며, 이것이 생략된다면, 윈도우 함수가 처리하는
+        BY</literal> 절도 생략할 수 있으며, 이것이 생략된다면, 윈도우 함수가 처리하는
         같은 집합은 처리 결과 모든 로우의 집합이 된다.
    </para>
 
    <para>
     윈도우 함수와 관련된 또 하나 중요한 사항은 다음과 같다:
-        <firstterm>윈도우 프래임</> <firstterm>window frame</>이라는 개념인데, 
+        <firstterm>윈도우 프래임</firstterm> <firstterm>window frame</firstterm>이라는 개념인데, 
         구분 대상이 되는 로우 집함들 가운데,  현재 윈도우 함수가 
         처리 하는 로우 집합을 뜻한다.  많은 윈도우 함수들이 
         이 윈도우 프래임 단위로 계산을 한다. (물론 전부는 아니다)  
-        초기값으로 <literal>ORDER BY</> 절을 사용하면, 
+        초기값으로 <literal>ORDER BY</literal> 절을 사용하면, 
         윈도우 프래임은 해당 정렬 방법으로 정렬 해서 순차적으로 현재 로우까지가
-        된다.  <literal>ORDER BY</> 절이 빠지면,  그 구분되는 집합들의 
+        된다.  <literal>ORDER BY</literal> 절이 빠지면,  그 구분되는 집합들의 
         모든 로우가 윈도우 함수의 계산 대상이 된다.
      <footnote>
       <para>
            물론, 이 기본 특성을 바꾸기 위해 윈도우 프래임을 바꾸는 옵션도 있지만,
            이 자습서의 범위를 벗어나 생략한다.  자세한 내용은
-           <xref linkend="syntax-window-functions">을 참조한다.
+           <xref linkend="syntax-window-functions"/>을 참조한다.
       </para>
      </footnote>
-    다음은 <function>sum</> 윈도우 함수를 사용한 예다:
+    다음은 <function>sum</function> 윈도우 함수를 사용한 예다:
    </para>
 
 <programlisting>
@@ -486,11 +486,11 @@ SELECT salary, sum(salary) OVER () FROM empsalary;
 </screen>
 
    <para>
-    위에서 처럼, <literal>OVER</> 절에 <literal>ORDER BY</> 정의를
-        하지 않았고, <literal>PARTITION BY</> 절을 사용하지 않아서 
+    위에서 처럼, <literal>OVER</literal> 절에 <literal>ORDER BY</literal> 정의를
+        하지 않았고, <literal>PARTITION BY</literal> 절을 사용하지 않아서 
         가상 테이블은 실재 테이블의 전체 자료가 된다.  즉, 
         모든 로우에는 같은 윈도우 함수의 결과값이 출력된다.  하지만
-        <literal>ORDER BY</> 정의를 하게 되면 다음과 같이 
+        <literal>ORDER BY</literal> 정의를 하게 되면 다음과 같이 
         결과는 전혀 다르게 나온다.
    </para>
 
@@ -522,8 +522,8 @@ SELECT salary, sum(salary) OVER (ORDER BY salary) FROM empsalary;
 
    <para>
     윈도우 함수는 <literal>SELECT</literal> 항목 영역 안에서와, 
-        <literal>ORDER BY</> 절에서만 사용할 수 있다.  그외
-        <literal>GROUP BY</> 절이나, <literal>HAVING</>,
+        <literal>ORDER BY</literal> 절에서만 사용할 수 있다.  그외
+        <literal>GROUP BY</literal> 절이나, <literal>HAVING</literal>,
         <literal>WHERE</literal> 절에서는 사용할 수 없다.  이는
     논리적으로 이 함수의 처리 대상이 되는 입력 매개 변수값이 
         이미 결정이 나야하기 때문이다.  이와 같은 이유로, 
@@ -545,14 +545,14 @@ FROM
 WHERE pos &lt; 3;
 </programlisting>
 
-    윗 쿼리는 <literal>rank</> 값이 3보다 작은 자료들만 출력한다.
+    윗 쿼리는 <literal>rank</literal> 값이 3보다 작은 자료들만 출력한다.
    </para>
 
    <para>
-    여러 개의 윈도우 함수를 함께 쓸 때는 각각 <literal>OVER</>
+    여러 개의 윈도우 함수를 함께 쓸 때는 각각 <literal>OVER</literal>
         절을 사용해야하는데, 이 때 지정할 원도우 프래임이 복잡하다면,
         그것을 계속 중복 입력해야는 것과, 이로 인해 오류를 낼 가능성 커진다.  이 
-        문제점을 줄이기 위해서 <literal>WINDOW</> 절을 이용한다. 다음은 
+        문제점을 줄이기 위해서 <literal>WINDOW</literal> 절을 이용한다. 다음은 
         그 예다:
 
 <programlisting>
@@ -564,10 +564,10 @@ SELECT sum(salary) OVER w, avg(salary) OVER w
 
    <para>
     윈도우 함수에 대한 보다 많은 정보들은 
-    <xref linkend="syntax-window-functions">,
-    <xref linkend="functions-window">,
-    <xref linkend="queries-window">, 및
-    <xref linkend="sql-select"> 설명서 페이지에서 다루고 있다.
+    <xref linkend="syntax-window-functions"/>,
+    <xref linkend="functions-window"/>,
+    <xref linkend="queries-window"/>, 및
+    <xref linkend="sql-select"/> 설명서 페이지에서 다루고 있다.
    </para>
   </sect1>
 
@@ -589,7 +589,7 @@ SELECT sum(salary) OVER w, avg(salary) OVER w
    </para>
 
    <para>
-    <classname>cities</> (도시) 테이블과 <classname>capitals</> (수도) 테이블
+    <classname>cities</classname> (도시) 테이블과 <classname>capitals</classname> (수도) 테이블
         두 개를 만들어봅시다.  실 세계의 개념으로 본다면, 도시를 모두 찾아보자면,
         당연히 수도도 포함되겠지요.  여기서 테이블 상속 개념은 출발합니다.  만일
         전통적인 개념으로 자료구조를 설계한다면 다음과 같이 하겠지요:
@@ -635,10 +635,10 @@ CREATE TABLE capitals (
    </para>
 
    <para>
-    윗 예제는, <classname>capitals</> 테이블에서 지정한
-        <firstterm>inherits</> 예약어가 바로 테이블을 상속받겠다는
+    윗 예제는, <classname>capitals</classname> 테이블에서 지정한
+        <firstterm>inherits</firstterm> 예약어가 바로 테이블을 상속받겠다는
         것을 나타냅니다.  윗 경우라면, cities 테이블의 모든 칼럼을
-        상속 받는 것을 의미합니다.  윗 <structfield>name</> 칼럼의
+        상속 받는 것을 의미합니다.  윗 <structfield>name</structfield> 칼럼의
         <type>text</type> 자료형은 <productname>PostgreSQL</productname>에서
         사용하는 고유한 가변길이 문자열 자료형입니다. PostgreSQL에서는
         하나의 테이블은 자기 자신이 상위테이블 (하나도 상속 받지 않은 테이블)이
@@ -697,7 +697,7 @@ SELECT name, altitude
     <para>
          테이블 상속 기능은 이렇게 유용함에도 불구하고, 
          유니크 제약조건, 참조키 같은 부분에서 그리 깔끔한 해결책을 
-         제시하고 있지는 못합니다.  보다 자세한 사항은  <xref linkend="ddl-inherit">
+         제시하고 있지는 못합니다.  보다 자세한 사항은  <xref linkend="ddl-inherit"/>
          에서 다루고 있습니다.
     </para>
    </note>

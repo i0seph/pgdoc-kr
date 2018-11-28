@@ -3,7 +3,7 @@ doc/src/sgml/ref/deallocate.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DEALLOCATE">
+<refentry id="sql-deallocate">
  <indexterm zone="sql-deallocate">
   <primary>DEALLOCATE</primary>
  </indexterm>
@@ -41,7 +41,7 @@ DEALLOCATE [ PREPARE ] { <replaceable class="parameter">이름</replaceable> | A
 
   <para>
    prepared statement에 대한 자세한 설명은  <xref
-      linkend="sql-prepare">명령을 참조하라.
+      linkend="sql-prepare"/>명령을 참조하라.
   </para>
  </refsect1>
 
@@ -91,8 +91,8 @@ DEALLOCATE [ PREPARE ] { <replaceable class="parameter">이름</replaceable> | A
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-execute"></member>
-   <member><xref linkend="sql-prepare"></member>
+   <member><xref linkend="sql-execute"/></member>
+   <member><xref linkend="sql-prepare"/></member>
   </simplelist>
  </refsect1>
 </refentry>

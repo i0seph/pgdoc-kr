@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_group.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEGROUP">
+<refentry id="sql-creategroup">
  <indexterm zone="sql-creategroup">
   <primary>CREATE GROUP</primary>
  </indexterm>
@@ -21,23 +21,23 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE GROUP <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <replaceable class="PARAMETER">옵션</replaceable> [ ... ] ]
+CREATE GROUP <replaceable class="parameter">이름</replaceable> [ [ WITH ] <replaceable class="parameter">옵션</replaceable> [ ... ] ]
 
-<phrase><replaceable class="PARAMETER">옵션</replaceable>에서 사용할 수 있는 것:</phrase>
+<phrase><replaceable class="parameter">옵션</replaceable>에서 사용할 수 있는 것:</phrase>
 
       SUPERUSER | NOSUPERUSER
     | CREATEDB | NOCREATEDB
     | CREATEROLE | NOCREATEROLE
     | INHERIT | NOINHERIT
     | LOGIN | NOLOGIN
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
-    | VALID UNTIL '<replaceable class="PARAMETER">시간값</replaceable>'
-    | IN ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | IN GROUP <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | ADMIN <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | USER <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | SYSID <replaceable class="PARAMETER">uid</replaceable>
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>'
+    | VALID UNTIL '<replaceable class="parameter">시간값</replaceable>'
+    | IN ROLE <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | IN GROUP <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | ROLE <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | ADMIN <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | USER <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | SYSID <replaceable class="parameter">uid</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -46,7 +46,7 @@ CREATE GROUP <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <rep
 
   <para>
    <command>CREATE GROUP</command> 명령은
-   <xref linkend="sql-createrole"> 명령의 별칭이다.
+   <xref linkend="sql-createrole"/> 명령의 별칭이다.
   </para>
  </refsect1>
 
@@ -62,7 +62,7 @@ CREATE GROUP <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <rep
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createrole"></member>
+   <member><xref linkend="sql-createrole"/></member>
   </simplelist>
  </refsect1>
 </refentry>

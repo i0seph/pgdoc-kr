@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_user.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPUSER">
+<refentry id="sql-dropuser">
  <indexterm zone="sql-dropuser">
   <primary>DROP USER</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP USER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...]
+DROP USER [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...]
 </synopsis>
  </refsynopsisdiv>
 
@@ -30,7 +30,7 @@ DROP USER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, .
 
   <para>
    <command>DROP USER</command> 명령은 
-   <xref linkend="sql-droprole"> 명령과 같으며, 옛 버전 호환성을 위해 남겨 두고 있다.
+   <xref linkend="sql-droprole"/> 명령과 같으며, 옛 버전 호환성을 위해 남겨 두고 있다.
   </para>
  </refsect1>
 
@@ -48,7 +48,7 @@ DROP USER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, .
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-droprole"></member>
+   <member><xref linkend="sql-droprole"/></member>
   </simplelist>
  </refsect1>
 

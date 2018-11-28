@@ -16,9 +16,9 @@
        <productname>PostgreSQL</productname> <ulink
        url="https://wiki.postgresql.org">위키</ulink> 사이트에서
        <ulink
-       url="https://wiki.postgresql.org/wiki/Frequently_Asked_Questions">FAQ</> (흔히 하는 질문과 답변) 문서 작업을
+       url="https://wiki.postgresql.org/wiki/Frequently_Asked_Questions">FAQ</ulink> (흔히 하는 질문과 답변) 문서 작업을
        진행하며, <ulink
-       url="https://wiki.postgresql.org/wiki/Todo">할 일들</>에 대해서 소개하고 있으며,
+       url="https://wiki.postgresql.org/wiki/Todo">할 일들</ulink>에 대해서 소개하고 있으며,
        보다 많은, 보다 다양한 정보들을 소개하고 있다.
      </para>
     </listitem>
@@ -43,7 +43,7 @@
       질문과 대답이 오가는 소통 창구로는 메일링 리스트가 좋다.  이곳을
       통해 질문하면, 해당 메일링 리스트를 구독하고 있는 사용자, 
       개발자들이 대답을 하거나, 서로의 경험을 공유해서, 문제를 해결하는데
-      도움이 될 것이다.   보다 자세한 내용은 <productname>PostgreSQL</>
+      도움이 될 것이다.   보다 자세한 내용은 <productname>PostgreSQL</productname>
       웹 사이트에서 소개하고 있다.
      </para>
     </listitem>

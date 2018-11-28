@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_statistics.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATESTATISTICS">
+<refentry id="sql-createstatistics">
  <indexterm zone="sql-createstatistics">
   <primary>CREATE STATISTICS</primary>
  </indexterm>
@@ -21,15 +21,15 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름</replaceable>
-    [ ( <replaceable class="PARAMETER">통계종류</replaceable> [, ... ] ) ]
-    ON <replaceable class="PARAMETER">칼럼이름</replaceable>, <replaceable class="PARAMETER">칼럼이름</replaceable> [, ...]
-    FROM <replaceable class="PARAMETER">테이블이름</replaceable>
+CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="parameter">통계이름</replaceable>
+    [ ( <replaceable class="parameter">통계종류</replaceable> [, ... ] ) ]
+    ON <replaceable class="parameter">칼럼이름</replaceable>, <replaceable class="parameter">칼럼이름</replaceable> [, ...]
+    FROM <replaceable class="parameter">테이블이름</replaceable>
 </synopsis>
 
  </refsynopsisdiv>
 
- <refsect1 id="SQL-CREATESTATISTICS-description">
+ <refsect1 id="sql-createstatistics-description">
   <title>설명</title>
 
   <para>
@@ -42,7 +42,7 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름<
   <para>
    통계 정보 이름에 스키마 이름을 포함하면(예,
    <literal>CREATE STATISTICS
-   myschema.mystat ...</>) 해당 스키마 안에 만든다.
+   myschema.mystat ...</literal>) 해당 스키마 안에 만든다.
    스키마 이름이 없으면, 현재 스키마 안에 만든다.
    통계 정보 이름은 같은 스키마 내에서는 유일해야 한다.
   </para>
@@ -54,7 +54,7 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름<
   <variablelist>
 
    <varlistentry>
-    <term><literal>IF NOT EXISTS</></term>
+    <term><literal>IF NOT EXISTS</literal></term>
     <listitem>
      <para>
       이미 같은 이름의 통계 정보가 있으면 알림 메시지만 보이고, 
@@ -65,7 +65,7 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름<
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">통계이름</replaceable></term>
+    <term><replaceable class="parameter">통계이름</replaceable></term>
     <listitem>
      <para>
       만들 사용자 정의 통계 정보 이름(스키마 이름 포함).
@@ -74,7 +74,7 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름<
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">통계종류</replaceable></term>
+    <term><replaceable class="parameter">통계종류</replaceable></term>
     <listitem>
      <para>
       이 통계 정보 개체의 통계 종류.
@@ -83,15 +83,15 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름<
       두 종류를 지원한다.
       이 옵션을 생략하면, 만들어지는 통계 정보에, 
       두 종류 모든 통계를 보관한다.
-      <xref linkend="planner-stats-extended">,
-      <xref linkend="multivariate-statistics-examples">에서 이 부분에 
+      <xref linkend="planner-stats-extended"/>,
+      <xref linkend="multivariate-statistics-examples"/>에서 이 부분에 
       대한 자세한 내용을 다룬다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">칼럼이름</replaceable></term>
+    <term><replaceable class="parameter">칼럼이름</replaceable></term>
     <listitem>
      <para>
       통계 정보를 수집할 칼럼 이름.  최소 두 개 이상 지정해야 한다.
@@ -100,7 +100,7 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름<
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">테이블이름</replaceable></term>
+    <term><replaceable class="parameter">테이블이름</replaceable></term>
     <listitem>
      <para>
       통계 정보를 수집할 해당 테이블 이름(스키마 이름 포함).
@@ -121,11 +121,11 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="PARAMETER">통계이름<
   </para>
  </refsect1>
 
- <refsect1 id="SQL-CREATESTATISTICS-examples">
+ <refsect1 id="sql-createstatistics-examples">
   <title>예제</title>
 
   <para>
-   <structname>t1</> 테이블에는 두 개의 칼럼이 있는데, 
+   <structname>t1</structname> 테이블에는 두 개의 칼럼이 있는데, 
    이 칼럼은 기능적으로 서로 의존적이다.  아래의 경우는 
    첫번째 칼럼이 100단위, 두번째 칼럼이 500단위다.
 
@@ -153,10 +153,10 @@ EXPLAIN ANALYZE SELECT * FROM t1 WHERE (a = 1) AND (b = 0);
 
    기능적 의존 관계가 있는 통계 정보를 사용하지 않으면, 
    실행 계획기는,
-   <literal>WHERE</> 조건이 두 개인 경우, 각 예측 값의 AND 연산를 
+   <literal>WHERE</literal> 조건이 두 개인 경우, 각 예측 값의 AND 연산를 
    해서 실 자료보다 훨씬 적은 예측값을 사용하게 된다.
    이런 사용자 정의 통계 정보를 만들면,
-   <literal>WHERE</> 조건절에 다중 칼럼을 사용하는 경우, 
+   <literal>WHERE</literal> 조건절에 다중 칼럼을 사용하는 경우, 
    보다 정확한 예측을 할 수 있도록 한다.
   </para>
 
@@ -174,8 +174,8 @@ EXPLAIN ANALYZE SELECT * FROM t1 WHERE (a = 1) AND (b = 0);
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterstatistics"></member>
-   <member><xref linkend="sql-dropstatistics"></member>
+   <member><xref linkend="sql-alterstatistics"/></member>
+   <member><xref linkend="sql-dropstatistics"/></member>
   </simplelist>
  </refsect1>
 </refentry>

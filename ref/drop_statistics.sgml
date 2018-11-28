@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_statistics.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPSTATISTICS">
+<refentry id="sql-dropstatistics">
  <indexterm zone="sql-dropstatistics">
   <primary>DROP STATISTICS</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP STATISTICS [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...]
+DROP STATISTICS [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...]
 </synopsis>
  </refsynopsisdiv>
 
@@ -52,7 +52,7 @@ DROP STATISTICS [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
       삭제 하려는 사용자 정의 통계 정보 이름(스키마 이름을 포함 할 수도 있고).
@@ -88,8 +88,8 @@ DROP STATISTICS IF EXISTS
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterstatistics"></member>
-   <member><xref linkend="sql-createstatistics"></member>
+   <member><xref linkend="sql-alterstatistics"/></member>
+   <member><xref linkend="sql-createstatistics"/></member>
   </simplelist>
  </refsect1>
 

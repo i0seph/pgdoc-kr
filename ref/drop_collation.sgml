@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/ref/drop_collation.sgml -->
 
-<refentry id="SQL-DROPCOLLATION">
+<refentry id="sql-dropcollation">
  <indexterm zone="sql-dropcollation">
   <primary>DROP COLLATION</primary>
  </indexterm>
@@ -62,7 +62,7 @@ DROP COLLATION [ IF EXISTS ] <replaceable>이름</replaceable> [ CASCADE | RESTR
      <listitem>
       <para>
        이 정렬 규칙을 필요로 하는 모든 개체도 함께 삭제한다
-       (<xref linkend="ddl-depend"> 참조).
+       (<xref linkend="ddl-depend"/> 참조).
       </para>
      </listitem>
     </varlistentry>
@@ -83,7 +83,7 @@ DROP COLLATION [ IF EXISTS ] <replaceable>이름</replaceable> [ CASCADE | RESTR
   <title>예제</title>
 
   <para>
-   <literal>german</> 정렬 규칙을 삭제하려면:
+   <literal>german</literal> 정렬 규칙을 삭제하려면:
 <programlisting>
 DROP COLLATION german;
 </programlisting></para>
@@ -95,8 +95,8 @@ DROP COLLATION german;
   <para>
    <command>DROP COLLATION</command> 명령은 
    <acronym>SQL</acronym> 표준을 따르지만, 
-   <literal>IF EXISTS</> 옵션은 
-   <productname>PostgreSQL</> 확장형이다.
+   <literal>IF EXISTS</literal> 옵션은 
+   <productname>PostgreSQL</productname> 확장형이다.
   </para>
  </refsect1>
 
@@ -104,8 +104,8 @@ DROP COLLATION german;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-altercollation"></member>
-   <member><xref linkend="sql-createcollation"></member>
+   <member><xref linkend="sql-altercollation"/></member>
+   <member><xref linkend="sql-createcollation"/></member>
   </simplelist>
  </refsect1>
 

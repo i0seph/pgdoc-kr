@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_language.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPLANGUAGE">
+<refentry id="sql-droplanguage">
  <indexterm zone="sql-droplanguage">
   <primary>DROP LANGUAGE</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP [ PROCEDURAL ] LANGUAGE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [ CASCADE | RESTRICT ]
+DROP [ PROCEDURAL ] LANGUAGE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -37,9 +37,9 @@ DROP [ PROCEDURAL ] LANGUAGE [ IF EXISTS ] <replaceable class="PARAMETER">이름
   <note>
    <para>
     <productname>PostgreSQL</productname> 9.1 버전부터는 
-        프로시져 언어는 <quote>extensions</>으로 관리된다.  그렇기 때문에, 
+        프로시져 언어는 <quote>extensions</quote>으로 관리된다.  그렇기 때문에, 
         <command>DROP LANGUAGE</command> 명령을 사용하지 않고, 
-        <xref linkend="sql-dropextension"> 명령을 사용해서 삭제한다.
+        <xref linkend="sql-dropextension"/> 명령을 사용해서 삭제한다.
    </para>
   </note>
  </refsect1>
@@ -59,7 +59,7 @@ DROP [ PROCEDURAL ] LANGUAGE [ IF EXISTS ] <replaceable class="PARAMETER">이름
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
           삭제하려는 프로시져 언어 이름.  하위 버전 호환성을 위해서 
@@ -75,7 +75,7 @@ DROP [ PROCEDURAL ] LANGUAGE [ IF EXISTS ] <replaceable class="PARAMETER">이름
           해당 언어와 의존성 관계가 있는 모든 객체들(이 언어를 사용하는 
           함수들)도 함께 삭제한다.
 물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -115,8 +115,8 @@ DROP LANGUAGE plsample;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterlanguage"></member>
-   <member><xref linkend="sql-createlanguage"></member>
+   <member><xref linkend="sql-alterlanguage"/></member>
+   <member><xref linkend="sql-createlanguage"/></member>
   </simplelist>
  </refsect1>
 

@@ -30,7 +30,7 @@ PostgreSQL documentation
   </cmdsynopsis>
  </refsynopsisdiv>
 
- <refsect1 id="R1-APP-PGWALDUMP-1">
+ <refsect1 id="r1-app-pgwaldump-1">
   <title>설명</title>
   <para>
    <command>pg_waldump</command> 명령은 미리-쓰기 로그를 
@@ -134,7 +134,7 @@ PostgreSQL documentation
       <listitem>
        <para>
         지정한 리소스 관리자가 만든 레코드만 출력한다.
-        이 옵션 값으로 <literal>list</>를 사용하면, 
+        이 옵션 값으로 <literal>list</literal>를 사용하면, 
         사용할 수 있는 모든 리소스 이름을 보여주고 마친다.
        </para>
       </listitem>
@@ -156,15 +156,15 @@ PostgreSQL documentation
       <term><option>--timeline=<replaceable>타임라인</replaceable></option></term>
       <listitem>
        <para>
-        타임라인 지정.  기본값은 <replaceable>시작조각</> 파일의 타임라인을
+        타임라인 지정.  기본값은 <replaceable>시작조각</replaceable> 파일의 타임라인을
         사용할 수 있으면 그것을 쓰고, 사용할 수 없으면, 1이다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-       <term><option>-V</></term>
-       <term><option>--version</></term>
+       <term><option>-V</option></term>
+       <term><option>--version</option></term>
        <listitem>
        <para>
        <application>pg_waldump</application> 버전을 보여주고 마친다.
@@ -196,8 +196,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-?</></term>
-      <term><option>--help</></term>
+      <term><option>-?</option></term>
+      <term><option>--help</option></term>
        <listitem>
         <para>
          <application>pg_waldump</application> 명령에서 사용할 수 있는
@@ -221,9 +221,9 @@ PostgreSQL documentation
   </para>
 
   <para>
-    <application>pg_waldump</> 명령은
-    <literal>.partial</> 확장자 WAL 파일은 읽을 수 없다.
-    <literal>.partial</> 파일을 읽어야 한다면, 그 확장자가 없는
+    <application>pg_waldump</application> 명령은
+    <literal>.partial</literal> 확장자 WAL 파일은 읽을 수 없다.
+    <literal>.partial</literal> 파일을 읽어야 한다면, 그 확장자가 없는
     이름으로 바꾸어 사용해야 한다.
   </para>
  </refsect1>
@@ -232,7 +232,7 @@ PostgreSQL documentation
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="wal-internals"></member>
+   <member><xref linkend="wal-internals"/></member>
   </simplelist>
  </refsect1>
 

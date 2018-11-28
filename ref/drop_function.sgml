@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_function.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPFUNCTION">
+<refentry id="sql-dropfunction">
  <indexterm zone="sql-dropfunction">
   <primary>DROP FUNCTION</primary>
  </indexterm>
@@ -65,12 +65,12 @@ DROP FUNCTION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> 
 
     <listitem>
      <para>
-          함수의 매개 변수 종류로 <literal>IN</>, <literal>OUT</>,
-          <literal>INOUT</>, 또는 <literal>VARIADIC</>을 
+          함수의 매개 변수 종류로 <literal>IN</literal>, <literal>OUT</literal>,
+          <literal>INOUT</literal>, 또는 <literal>VARIADIC</literal>을 
           사용할 수 있다.  <command>DROP FUNCTION</command> 명령에서는
-          함수의 <literal>OUT</> 매개 변수는 조사하지 않기 때문에, 
-          실질적으로는 <literal>IN</>, <literal>INOUT</>,
-          <literal>VARIADIC</> 매개 변수만 지정하면 된다.
+          함수의 <literal>OUT</literal> 매개 변수는 조사하지 않기 때문에, 
+          실질적으로는 <literal>IN</literal>, <literal>INOUT</literal>,
+          <literal>VARIADIC</literal> 매개 변수만 지정하면 된다.
      </para>
     </listitem>
    </varlistentry>
@@ -106,7 +106,7 @@ DROP FUNCTION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> 
           해당 함수와 의존성 관계가 있는 모든 객체를 함께 
           삭제한다. (해당 함수를 사용하는 트리거 같은 것들)
      물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -123,7 +123,7 @@ DROP FUNCTION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> 
   </variablelist>
  </refsect1>
 
- <refsect1 id="SQL-DROPFUNCTION-examples">
+ <refsect1 id="sql-dropfunction-examples">
   <title>예제</title>
 
   <para>
@@ -155,7 +155,7 @@ DROP FUNCTION update_employee_salaries();
 
  </refsect1>
 
- <refsect1 id="SQL-DROPFUNCTION-compatibility">
+ <refsect1 id="sql-dropfunction-compatibility">
   <title>호환성</title>
 
   <para>
@@ -179,8 +179,10 @@ DROP FUNCTION update_employee_salaries();
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createfunction"></member>
-   <member><xref linkend="sql-alterfunction"></member>
+   <member><xref linkend="sql-createfunction"/></member>
+   <member><xref linkend="sql-alterfunction"/></member>
+   <member><xref linkend="sql-dropprocedure"/></member>
+   <member><xref linkend="sql-droproutine"/></member>
   </simplelist>
  </refsect1>
 

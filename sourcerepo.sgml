@@ -18,14 +18,14 @@
 
   <para>
    <productname>PostgreSQL</productname> 소스로 빌드하기위해서는 
-    최신의 <application>bison</>,<application>flex</>, 그리고 <application>Perl</>이 필요하다. 빌드하는데 필요한 도구들이 tarball에 포함되어있기 때문에 tarball로 빌드할 경우, 위 도구들은 필요하지않다. 그외 도구들은 <xref linkend="install-requirements">과 동일하다.
+    최신의 <application>bison</application>,<application>flex</application>, 그리고 <application>Perl</application>이 필요하다. 빌드하는데 필요한 도구들이 tarball에 포함되어있기 때문에 tarball로 빌드할 경우, 위 도구들은 필요하지않다. 그외 도구들은 <xref linkend="install-requirements"/>과 동일하다.
   </para>
 
  <sect1 id="git">
-  <title><productname>Git</>으로 소스 가져오기</title>
+  <title><productname>Git</productname>으로 소스 가져오기</title>
 
   <para>
-   <productname>Git</>으로 작업하면, 전체 코드 저장소를 당신의 컴퓨터에 
+   <productname>Git</productname>으로 작업하면, 전체 코드 저장소를 당신의 컴퓨터에 
    복사할것이다.
    그래서 오프라인 상황에서도 모든 log나 브랜치에 접근 할수있다.
    덕분에 개발하거나, 테스트할때 매우 빠르고 유연하게 해준다.
@@ -36,9 +36,9 @@
 
    <step>
     <para>
-     <ulink url="https://git-scm.com"></ulink>에서 <productname>Git</>을 설치한다.
+     <ulink url="https://git-scm.com"></ulink>에서 <productname>Git</productname>을 설치한다.
      대부분의 시스템에서는 기본으로 최신 버전 또는 각자의 시스템에 맞는 
-     패키지의 <application>Git</>이 설치되어있다. 
+     패키지의 <application>Git</application>이 설치되어있다. 
     </para>
    </step>
 
@@ -52,13 +52,13 @@ git clone https://git.postgresql.org/git/postgresql.git
 
      당신의 컴퓨터의 전체 저장소가 복사 될것이다. 인터넷 속도가 느리다면 
      시간이 꽤 걸린다.
-     파일들은 현재 폴더에서 <filename>postgresql</>라는 이름의 
+     파일들은 현재 폴더에서 <filename>postgresql</filename>라는 이름의 
      새로운 하위 폴더에 위치할것이다.
     </para>
 
     <para>
      Git프로토콜로 Git 미러에 접속 할 수있다면
-     다음과 같이, 접두사만 <literal>git</>으로 바꾸면 된다:
+     다음과 같이, 접두사만 <literal>git</literal>으로 바꾸면 된다:
 
 <programlisting>
 git clone git://git.postgresql.org/git/postgresql.git
@@ -69,7 +69,7 @@ git clone git://git.postgresql.org/git/postgresql.git
 
    <step>
     <para>
-     최신 업데이트를 받고싶을때는 <command>cd</>명령으로 저장소 폴더로 가서,
+     최신 업데이트를 받고싶을때는 <command>cd</command>명령으로 저장소 폴더로 가서,
      다음을 실행해보자:
 
 <programlisting>
@@ -80,9 +80,9 @@ git fetch
   </procedure>
 
   <para>
-   <productname>Git</> 은 소스 가져오는것 외에 더 많은 일을 할 수 있다.
-   자세한 내용은, <productname>Git</> man 페이지나,
-   <ulink url="https://git-scm.com"></>을 통해 얻을 수 있다.
+   <productname>Git</productname> 은 소스 가져오는것 외에 더 많은 일을 할 수 있다.
+   자세한 내용은, <productname>Git</productname> man 페이지나,
+   <ulink url="https://git-scm.com"></ulink>을 통해 얻을 수 있다.
   </para>
  </sect1>
 

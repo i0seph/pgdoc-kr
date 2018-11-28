@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_operator.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTEROPERATOR">
+<refentry id="sql-alteroperator">
  <indexterm zone="sql-alteroperator">
   <primary>ALTER OPERATOR</primary>
  </indexterm>
@@ -42,7 +42,7 @@ ALTER OPERATOR <replaceable>이름</replaceable> ( { <replaceable>왼쪽자료�
   </para>
 
   <para>
-   <command>ALTER OPERATOR</> 명령은 해당 연산자 소유주만 사용할 수 있다.
+   <command>ALTER OPERATOR</command> 명령은 해당 연산자 소유주만 사용할 수 있다.
    소유주를 바꿀 때는 기존 소유주가 새 소유주의 직간접적으로 구성원이어야
    하며, 새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이
    있어야 한다.  (새로 바뀐 소유주가 해당 연산자를 지우거나 다시
@@ -136,10 +136,10 @@ ALTER OPERATOR @@ (text, text) OWNER TO joe;
 </programlisting></para>
 
   <para>
-    <type>int[]</type> 자료형용 <literal>a && b</literal> 연산자의
+    <type>int[]</type> 자료형용 <literal>a &amp;&amp; b</literal> 연산자의
     제한 함수와 조인 함수를 바꾸는 예제:
 <programlisting>
-ALTER OPERATOR && (_int4, _int4) SET (RESTRICT = _int_contsel, JOIN = _int_contjoinsel);
+ALTER OPERATOR &amp;&amp; (_int4, _int4) SET (RESTRICT = _int_contsel, JOIN = _int_contjoinsel);
 </programlisting></para>
 
  </refsect1>
@@ -156,8 +156,8 @@ ALTER OPERATOR && (_int4, _int4) SET (RESTRICT = _int_contsel, JOIN = _int_contj
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createoperator"></member>
-   <member><xref linkend="sql-dropoperator"></member>
+   <member><xref linkend="sql-createoperator"/></member>
+   <member><xref linkend="sql-dropoperator"/></member>
   </simplelist>
  </refsect1>
 </refentry>

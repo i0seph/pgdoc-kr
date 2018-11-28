@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_sequence.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATESEQUENCE">
+<refentry id="sql-createsequence">
  <indexterm zone="sql-createsequence">
   <primary>CREATE SEQUENCE</primary>
  </indexterm>
@@ -58,7 +58,7 @@ CREATE [ TEMPORARY | TEMP ] SEQUENCE [ IF NOT EXISTS ] <replaceable class="param
    <function>currval</function>,
    <function>setval</function> 함수로 한다.
    이 함수에 대한 설명은
-   <xref linkend="functions-sequence">에서 한다.
+   <xref linkend="functions-sequence"/>에서 한다.
   </para>
 
   <para>
@@ -70,9 +70,9 @@ SELECT * FROM <replaceable>name</replaceable>;
 </programlisting>
 
    이 명령으로 해당 시퀀스의 속성과 현재 상태를 살펴볼 있다.
-   특히, <literal>last_value</> 칼럼 값은 모든 세션에 아우른 가장
+   특히, <literal>last_value</literal> 칼럼 값은 모든 세션에 아우른 가장
    마지막 값이다.  (물론, 이 명령을 실행하는 시점의 값이다.
-   다른 세션에서 <function>nextval</> 함수를 호출 해서 바뀌었을 수도
+   다른 세션에서 <function>nextval</function> 함수를 호출 해서 바뀌었을 수도
    있다.)
   </para>
  </refsect1>
@@ -256,13 +256,13 @@ SELECT * FROM <replaceable>name</replaceable>;
   </para>
 
   <para>
-   시퀀스는 기본적으로 <type>bigint</>형 기반 계산을 한다.
+   시퀀스는 기본적으로 <type>bigint</type>형 기반 계산을 한다.
    그래서, 8 바이트 정수형 범위를 벗어날 수 없다.
    (-9223372036854775808 ~ 9223372036854775807)
   </para>
 
   <para>
-   <function>nextval</>, <function>setval</> 함수 호출은 
+   <function>nextval</function>, <function>setval</function> 함수 호출은 
    취소가  안된다.  이 때문에, "비지 않는" 일련 번호를
    처리하는 용도로 사용할 수 없다.
    이런 비지 않는 일련 번호는 번호 처리용 테이블을 
@@ -276,7 +276,7 @@ SELECT * FROM <replaceable>name</replaceable>;
    class="parameter">캐시</replaceable> 옵션을 사용하는 경우,
    다중 세션 환경에서는 일련 번호가 순차적으로 구해지지 않는다.
    다중 세션 환경에서는 각 세션별로 캐시 값 만큼 건너뛰어 
-   다른 세션의 첫 일련번호는 <literal>last_value</> + 
+   다른 세션의 첫 일련번호는 <literal>last_value</literal> + 
    <replaceable class="parameter">캐시</replaceable> - 1 값을
    그 세션의 시작 번호로 사용한다. 
    즉 시퀀스의 캐시는 한 세션 내에서의 캐시를 의미한다.  이렇게 하여
@@ -304,7 +304,7 @@ SELECT * FROM <replaceable>name</replaceable>;
 
   <para>
    <replaceable class="parameter">캐시</replaceable> 옵션을 사용할 때, 
-   또 기억해야 할 점은, <function>setval</> 함수를 호출 하는 경우, 
+   또 기억해야 할 점은, <function>setval</function> 함수를 호출 하는 경우, 
    해당 세션의 캐시 범위를 모두 소진하기 전까지는 반영되지 않는다는 점이다.
   </para>
  </refsect1>
@@ -370,13 +370,13 @@ END;
      <para>
       다음 값 구하기(채번작업)는
       표준에는 <command>NEXT VALUE FOR</command> 구문을 사용하고, 
-      <productname>PostgreSQL</>에서는 <function>nextval()</> 함수
+      <productname>PostgreSQL</productname>에서는 <function>nextval()</function> 함수
       호출로 한다.
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>OWNED BY</> 구문은 <productname>PostgreSQL</>
+      <literal>OWNED BY</literal> 구문은 <productname>PostgreSQL</productname>
       확장 기능이다.
      </para>
     </listitem>
@@ -387,8 +387,8 @@ END;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-altersequence"></member>
-   <member><xref linkend="sql-dropsequence"></member>
+   <member><xref linkend="sql-altersequence"/></member>
+   <member><xref linkend="sql-dropsequence"/></member>
   </simplelist>
  </refsect1>
 

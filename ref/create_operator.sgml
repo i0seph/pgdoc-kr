@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_operator.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEOPERATOR">
+<refentry id="sql-createoperator">
  <indexterm zone="sql-createoperator">
   <primary>CREATE OPERATOR</primary>
  </indexterm>
@@ -22,7 +22,7 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 CREATE OPERATOR <replaceable>이름</replaceable> (
-    PROCEDURE = <replaceable class="parameter">함수이름</replaceable>
+    {FUNCTION|PROCEDURE} = <replaceable class="parameter">함수이름</replaceable>
     [, LEFTARG = <replaceable class="parameter">왼쪽자료형</replaceable> ] [, RIGHTARG = <replaceable class="parameter">오른쪽자료형</replaceable> ]
     [, COMMUTATOR = <replaceable class="parameter">교환연산자</replaceable> ] [, NEGATOR = <replaceable class="parameter">부정연산자</replaceable> ]
     [, RESTRICT = <replaceable class="parameter">restrict함수</replaceable> ] [, JOIN = <replaceable class="parameter">join함수</replaceable> ]
@@ -43,7 +43,7 @@ CREATE OPERATOR <replaceable>이름</replaceable> (
   </para>
 
   <para>
-   연산자 이름은 다음 문자들의 집합으로 최대 <symbol>NAMEDATALEN</>-1
+   연산자 이름은 다음 문자들의 집합으로 최대 <symbol>NAMEDATALEN</symbol>-1
    (기본값 63) 바이트까지 문자열로 구성할 수 있다:
 <literallayout>
 + - * / &lt; &gt; = ~ ! @ # % ^ &amp; | ` ?
@@ -72,7 +72,7 @@ CREATE OPERATOR <replaceable>이름</replaceable> (
     </listitem>
     <listitem>
      <para>
-     <literal>=&gt;</> 연산자 이름은 더 이상 사용하지 않는다.  앞으로도
+     <literal>=&gt;</literal> 연산자 이름은 더 이상 사용하지 않는다.  앞으로도
      이 연산자는 허용하지 않을 것이다.
      </para>
     </listitem>
@@ -87,10 +87,10 @@ CREATE OPERATOR <replaceable>이름</replaceable> (
   </para>
 
   <para>
-   연산자를 만들 때, <literal>LEFTARG</> 값 또는 <literal>RIGHTARG</> 값은 
+   연산자를 만들 때, <literal>LEFTARG</literal> 값 또는 <literal>RIGHTARG</literal> 값은 
    적어도 하나 이상은 지정해야 한다.  이항 연산자라면 반드시 두 값 모두
-   지정해야 한다.  오른쪽 단항 연산자인 경우는 <literal>LEFTARG</> 값을,
-   왼쪽 단항 연산자는 <literal>RIGHTARG</> 값을 지정해야 한다.
+   지정해야 한다.  오른쪽 단항 연산자인 경우는 <literal>LEFTARG</literal> 값을,
+   왼쪽 단항 연산자는 <literal>RIGHTARG</literal> 값을 지정해야 한다.
   </para>
 
   <para>
@@ -100,8 +100,16 @@ CREATE OPERATOR <replaceable>이름</replaceable> (
   </para>
 
   <para>
+   In the syntax of <literal>CREATE OPERATOR</literal>, the keywords
+   <literal>FUNCTION</literal> and <literal>PROCEDURE</literal> are
+   equivalent, but the referenced function must in any case be a function, not
+   a procedure.  The use of the keyword <literal>PROCEDURE</literal> here is
+   historical and deprecated.
+  </para>
+
+  <para>
    다른 구문들은 모두 선택형이다.  각 옵션들에 대한 자세한 설명은
-   <xref linkend="xoper-optimization">에서 자세히 설명한다.
+   <xref linkend="xoper-optimization"/>에서 자세히 설명한다.
   </para>
 
   <para>
@@ -122,10 +130,10 @@ CREATE OPERATOR <replaceable>이름</replaceable> (
       <listitem>
        <para>
         연산자 이름.  사용할 수 있는 문자는 위에서 설명하고 있다.  스키마를
-        지정하려면 <literal>CREATE OPERATOR myschema.+ (...)</> 형태로
+        지정하려면 <literal>CREATE OPERATOR myschema.+ (...)</literal> 형태로
         지정한다.  스키마 이름이 빠지면 현재 스키마 소속으로 만들어진다.  한
         스키마 내에 같은 이름의 연산자를 만들 수 있는데, 이 경우는
-        함수의 <firstterm>오버로딩</>과 같이 그 사용하는 자료형이 다르면 된다.
+        함수의 <firstterm>오버로딩</firstterm>과 같이 그 사용하는 자료형이 다르면 된다.
        </para>
       </listitem>
      </varlistentry>
@@ -215,7 +223,7 @@ CREATE OPERATOR <replaceable>이름</replaceable> (
   <para>
    <replaceable class="parameter">교환연산자</replaceable>처럼
    지정할 옵션 값으로 연산자가 사용될 경우, 그 연산자에
-   스키마를 지정해야 한다면, <literal>OPERATOR()</>
+   스키마를 지정해야 한다면, <literal>OPERATOR()</literal>
    구문을 사용해야 한다. 사용예:
 <programlisting>
 COMMUTATOR = OPERATOR(myschema.===) ,
@@ -227,30 +235,30 @@ COMMUTATOR = OPERATOR(myschema.===) ,
 
   <para>
    사용자 정의 새로운 연산자에 대한 보다 자세한 내용은 
-   <xref linkend="xoper">에서 소개하고 있다.
+   <xref linkend="xoper"/>에서 소개하고 있다.
   </para>
 
   <para>
-   <command>CREATE OPERATOR</> 명령으로 연산자를 만들 때,
+   <command>CREATE OPERATOR</command> 명령으로 연산자를 만들 때,
    연산자의 어휘적 우선순위는 임의로 지정할 수 없다.  왜냐하면, 
    연산자 우선 순위는 고정되어 있다.  이 우선 순위에 대한 
-   자세한 이야기는 <xref linkend="sql-precedence">에서 다룬다.
+   자세한 이야기는 <xref linkend="sql-precedence"/>에서 다룬다.
   </para>
 
   <para>
-   <literal>SORT1</>, <literal>SORT2</>, <literal>LTCMP</>, 
-   <literal>GTCMP</> 옵션들은 머지 조인이 가능한 연산자로 
+   <literal>SORT1</literal>, <literal>SORT2</literal>, <literal>LTCMP</literal>, 
+   <literal>GTCMP</literal> 옵션들은 머지 조인이 가능한 연산자로 
    지정할 경우 자연스럽게 사용되는 기능이기 때문에,  더 이상
    사용하지 않는다.  B-트리 연산자 가족을 대신에 찾아서
    해당 처리를 하기 때문에 더 이상 필요가 없다.
-   이런 옵션을 지정했는데, <literal>MERGES</> 옵션을 지정했다면,
+   이런 옵션을 지정했는데, <literal>MERGES</literal> 옵션을 지정했다면,
    그 옵션은 무시 된다.
   </para>
 
   <para>
    데이터베이스에서 사용자 정의 연산자를 삭제 하려면, 
-   <xref linkend="sql-dropoperator"> 명령을 사용한다.  해당
-   연사자를 변경하려면, <xref linkend="sql-alteroperator"> 명령을
+   <xref linkend="sql-dropoperator"/> 명령을 사용한다.  해당
+   연사자를 변경하려면, <xref linkend="sql-alteroperator"/> 명령을
    사용한다.
   </para>
  </refsect1>
@@ -265,11 +273,11 @@ COMMUTATOR = OPERATOR(myschema.===) ,
 CREATE OPERATOR === (
     LEFTARG = box,
     RIGHTARG = box,
-    PROCEDURE = area_equal_procedure,
+    FUNCTION = area_equal_function,
     COMMUTATOR = ===,
     NEGATOR = !==,
-    RESTRICT = area_restriction_procedure,
-    JOIN = area_join_procedure,
+    RESTRICT = area_restriction_function,
+    JOIN = area_join_function,
     HASHES, MERGES
 );
 </programlisting></para>
@@ -289,9 +297,9 @@ CREATE OPERATOR === (
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alteroperator"></member>
-   <member><xref linkend="sql-createopclass"></member>
-   <member><xref linkend="sql-dropoperator"></member>
+   <member><xref linkend="sql-alteroperator"/></member>
+   <member><xref linkend="sql-createopclass"/></member>
+   <member><xref linkend="sql-dropoperator"/></member>
   </simplelist>
  </refsect1>
 </refentry>

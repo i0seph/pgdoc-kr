@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_domain.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPDOMAIN">
+<refentry id="sql-dropdomain">
  <indexterm zone="sql-dropdomain">
   <primary>DROP DOMAIN</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP DOMAIN [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP DOMAIN [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -48,7 +48,7 @@ DROP DOMAIN [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [,
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">name</replaceable></term>
+    <term><replaceable class="parameter">name</replaceable></term>
     <listitem>
      <para>
           (스키마를 지정할 수도 있는) 삭제할 도메인 이름.
@@ -57,19 +57,19 @@ DROP DOMAIN [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [,
    </varlistentry>
 
    <varlistentry>
-    <term><literal>CASCADE</></term>
+    <term><literal>CASCADE</literal></term>
     <listitem>
      <para>
           (테이블 칼럼과 같은) 해당 도메인과 의존성 관계가 있는 모든 객체도
           함께 삭제 한다.
      물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>RESTRICT</></term>
+    <term><literal>RESTRICT</literal></term>
     <listitem>
      <para>
           삭제하려는 도메인과 의존관계가 있는 객체가 있다면, 
@@ -80,7 +80,7 @@ DROP DOMAIN [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [,
   </variablelist>
  </refsect1>
 
- <refsect1 id="SQL-DROPDOMAIN-examples">
+ <refsect1 id="sql-dropdomain-examples">
   <title>예제</title>
 
   <para>
@@ -91,21 +91,21 @@ DROP DOMAIN box;
 </programlisting></para>
  </refsect1>
 
- <refsect1 id="SQL-DROPDOMAIN-compatibility">
+ <refsect1 id="sql-dropdomain-compatibility">
   <title>호환성</title>
 
   <para>
-   표준 SQL에서 사용하는 명령이다.  <literal>IF EXISTS</> 옵션은
-   <productname>PostgreSQL</> 확장 기능이다.
+   표준 SQL에서 사용하는 명령이다.  <literal>IF EXISTS</literal> 옵션은
+   <productname>PostgreSQL</productname> 확장 기능이다.
   </para>
  </refsect1>
 
- <refsect1 id="SQL-DROPDOMAIN-see-also">
+ <refsect1 id="sql-dropdomain-see-also">
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createdomain"></member>
-   <member><xref linkend="sql-alterdomain"></member>
+   <member><xref linkend="sql-createdomain"/></member>
+   <member><xref linkend="sql-alterdomain"/></member>
   </simplelist>
  </refsect1>
 

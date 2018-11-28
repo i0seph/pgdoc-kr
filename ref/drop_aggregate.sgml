@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_aggregate.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPAGGREGATE">
+<refentry id="sql-dropaggregate">
  <indexterm zone="sql-dropaggregate">
   <primary>DROP AGGREGATE</primary>
  </indexterm>
@@ -64,7 +64,7 @@ DROP AGGREGATE [ IF EXISTS ] <replaceable>name</replaceable> ( <replaceable>aggr
     <listitem>
      <para>
           해당 집계 함수에서 사용하는 입력 매개 변수의 자료형.  입력 
-          매개 밴수가 없는 집계 함수라면, 이 자리에 <literal>*</>
+          매개 밴수가 없는 집계 함수라면, 이 자리에 <literal>*</literal>
           문자를 입력한다.
      </para>
     </listitem>
@@ -77,7 +77,7 @@ DROP AGGREGATE [ IF EXISTS ] <replaceable>name</replaceable> ( <replaceable>aggr
           해당 집계 함수와 의존성 관계를 가진 모든 객체도 함께 삭제 한다.
           (뷰를 삭제 할 때와 같이)
       물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
 
      </para>
     </listitem>
@@ -124,8 +124,8 @@ DROP AGGREGATE myavg(integer), myavg(bigint);
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alteraggregate"></member>
-   <member><xref linkend="sql-createaggregate"></member>
+   <member><xref linkend="sql-alteraggregate"/></member>
+   <member><xref linkend="sql-createaggregate"/></member>
   </simplelist>
  </refsect1>
 

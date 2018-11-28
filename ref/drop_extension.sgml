@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_extension.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPEXTENSION">
+<refentry id="sql-dropextension">
  <indexterm zone="sql-dropextension">
   <primary>DROP EXTENSION</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP EXTENSION [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP EXTENSION [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -55,7 +55,7 @@ DROP EXTENSION [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
       삭제하려는 확장 기능 패키지 이름.
@@ -69,7 +69,7 @@ DROP EXTENSION [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
      <para>
           해당 확장 기능과 의존성 관계가 있는 모든 객체를 함께 삭제한다.
       물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -96,10 +96,10 @@ DROP EXTENSION [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
 <programlisting>
 DROP EXTENSION hstore;
 </programlisting>
-   만일 해당 데이터베이스의 한 테이블이 <type>hstore</> 자료형을 
+   만일 해당 데이터베이스의 한 테이블이 <type>hstore</type> 자료형을 
    사용하고 있다면, 이 명령은 오류를 낸다.  왜냐하면, 
-   <type>hstore</> 자료형은 <literal>hstore</literal> 확장 기능 패키지의
-   소속 객체이기 때문이다.  이런 경우는 <literal>CASCADE</> 옵션을 
+   <type>hstore</type> 자료형은 <literal>hstore</literal> 확장 기능 패키지의
+   소속 객체이기 때문이다.  이런 경우는 <literal>CASCADE</literal> 옵션을 
    사용해서 사용하는 모든 객체를 함께 삭제 할 수도 있다.
   </para>
  </refsect1>
@@ -108,7 +108,7 @@ DROP EXTENSION hstore;
   <title>호환성</title>
 
   <para>
-   <command>DROP EXTENSION</command> 명령은 <productname>PostgreSQL</>
+   <command>DROP EXTENSION</command> 명령은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -117,8 +117,8 @@ DROP EXTENSION hstore;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createextension"></member>
-   <member><xref linkend="sql-alterextension"></member>
+   <member><xref linkend="sql-createextension"/></member>
+   <member><xref linkend="sql-alterextension"/></member>
   </simplelist>
  </refsect1>
 

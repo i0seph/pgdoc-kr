@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_subscription.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATESUBSCRIPTION">
+<refentry id="sql-createsubscription">
  <indexterm zone="sql-createsubscription">
   <primary>CREATE SUBSCRIPTION</primary>
  </indexterm>
@@ -21,9 +21,9 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE SUBSCRIPTION <replaceable class="PARAMETER">구독이름</replaceable>
-    CONNECTION '<replaceable class="PARAMETER">접속정보</replaceable>'
-    PUBLICATION <replaceable class="PARAMETER">발행이름</replaceable> [, ...]
+CREATE SUBSCRIPTION <replaceable class="parameter">구독이름</replaceable>
+    CONNECTION '<replaceable class="parameter">접속정보</replaceable>'
+    PUBLICATION <replaceable class="parameter">발행이름</replaceable> [, ...]
     [ WITH ( <replaceable class="parameter">구독_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
@@ -50,8 +50,8 @@ CREATE SUBSCRIPTION <replaceable class="PARAMETER">구독이름</replaceable>
 
   <para>
    구독과 논리 복제에 대한 자세한 내용은
-   <xref linkend="logical-replication-subscription">,
-   <xref linkend="logical-replication">에서 다룬다.
+   <xref linkend="logical-replication-subscription"/>,
+   <xref linkend="logical-replication"/>에서 다룬다.
   </para>
 
  </refsect1>
@@ -74,7 +74,7 @@ CREATE SUBSCRIPTION <replaceable class="PARAMETER">구독이름</replaceable>
     <listitem>
      <para>
       발행 서버 접속 문자열.
-      <xref linkend="libpq-connstring"> 참조.
+      <xref linkend="libpq-connstring"/> 참조.
      </para>
     </listitem>
    </varlistentry>
@@ -151,7 +151,7 @@ CREATE SUBSCRIPTION <replaceable class="PARAMETER">구독이름</replaceable>
         <listitem>
          <para>
           복제 작업에서 참조하는
-          <xref linkend="guc-synchronous-commit"> 설정을 바꾼다.
+          <xref linkend="guc-synchronous-commit"/> 설정을 바꾼다.
           기본값은 <literal>off</literal>.
          </para>
 
@@ -202,7 +202,7 @@ CREATE SUBSCRIPTION <replaceable class="PARAMETER">구독이름</replaceable>
           <literal>false</literal> 설정은 테이블 구독을 안함을 의미한다.
           나중에 이 값을 바꾼다 하더라도 구독 작업은 진행하지 않는다.
           이런 경우는
-          <literal>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</> 명령으로
+          <literal>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</literal> 명령으로
           구독을 갱신해야 한다.
          </para>
         </listitem>
@@ -219,7 +219,7 @@ CREATE SUBSCRIPTION <replaceable class="PARAMETER">구독이름</replaceable>
 
   <para>
    발행 서버와 구독 서버 사이 접근 제어 관련 설정과 설명은
-   <xref linkend="logical-replication-security">에서 다룬다.
+   <xref linkend="logical-replication-security"/>에서 다룬다.
   </para>
 
   <para>
@@ -272,7 +272,7 @@ CREATE SUBSCRIPTION mysub
   <title>호환성</title>
 
   <para>
-   <command>CREATE SUBSCRIPTION</command> 구문은 <productname>PostgreSQL</>
+   <command>CREATE SUBSCRIPTION</command> 구문은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -281,10 +281,10 @@ CREATE SUBSCRIPTION mysub
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-altersubscription"></member>
-   <member><xref linkend="sql-dropsubscription"></member>
-   <member><xref linkend="sql-createpublication"></member>
-   <member><xref linkend="sql-alterpublication"></member>
+   <member><xref linkend="sql-altersubscription"/></member>
+   <member><xref linkend="sql-dropsubscription"/></member>
+   <member><xref linkend="sql-createpublication"/></member>
+   <member><xref linkend="sql-alterpublication"/></member>
   </simplelist>
  </refsect1>
 </refentry>

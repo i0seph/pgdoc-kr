@@ -3,7 +3,7 @@ doc/src/sgml/ref/ecpg-ref.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="APP-ECPG">
+<refentry id="app-ecpg">
  <indexterm zone="app-ecpg">
   <primary>ecpg</primary>
  </indexterm>
@@ -28,7 +28,7 @@ PostgreSQL documentation
  </refsynopsisdiv>
 
 
- <refsect1 id="APP-ECPG-description">
+ <refsect1 id="app-ecpg-description">
   <title>설명</title>
 
   <para>
@@ -48,7 +48,7 @@ PostgreSQL documentation
 
   <para>
    여기서는 임베디드 SQL 언어에 대한 설명은 하지 않는다.  이 부분은
-   <xref linkend="ecpg">에서 자세히 다룬다.
+   <xref linkend="ecpg"/>에서 자세히 다룬다.
   </para>
  </refsect1>
 
@@ -75,8 +75,9 @@ PostgreSQL documentation
      <listitem>
       <para>
        호환 모드 지정. <replaceable>모드</replaceable> 값으로
-       <literal>INFORMIX</literal> 또는 <literal>INFORMIX_SE</literal>
-       둘 중 하나를 지정할 수 있다.
+       <literal>INFORMIX</literal>, <literal>INFORMIX_SE</literal>
+       <literal>ORACLE</literal>
+       셋 중 하나를 지정할 수 있다.
       </para>
      </listitem>
     </varlistentry>
@@ -214,8 +215,8 @@ PostgreSQL documentation
 
   <para>
    이 명령으로 전처리 작업이 완료된 C 코드 파일을 컴파일 하려면,
-   <productname>PostgreSQL</> include 디렉터리 안에 있는 
-   <application>ECPG</> 헤더 파일이 필요하다.  그래서,
+   <productname>PostgreSQL</productname> include 디렉터리 안에 있는 
+   <application>ECPG</application> 헤더 파일이 필요하다.  그래서,
    C 컴파일 작업에서는 <literal>-I/usr/local/pgsql/include</literal> 옵션처럼
    그 컴파일러 맞는 include 파일 경로 설정이 필요하다.
   </para>
@@ -230,7 +231,7 @@ PostgreSQL documentation
 
   <para>
    앞에서 설명한 각 경로들의 적당한 값을 찾는 방법은
-   <xref linkend="app-pgconfig"> 명령을 이용하면 된다.
+   <xref linkend="app-pgconfig"/> 명령을 이용하면 된다.
   </para>
  </refsect1>
 

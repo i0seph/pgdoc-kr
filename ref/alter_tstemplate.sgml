@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_tstemplate.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERTSTEMPLATE">
+<refentry id="sql-altertstemplate">
  <indexterm zone="sql-altertstemplate">
   <primary>ALTER TEXT SEARCH TEMPLATE</primary>
  </indexterm>
@@ -36,7 +36,7 @@ ALTER TEXT SEARCH TEMPLATE <replaceable>이름</replaceable> SET SCHEMA <replace
   </para>
 
   <para>
-   <command>ALTER TEXT SEARCH TEMPLATE</> 명령은 슈퍼유저만 사용할 수 있다.
+   <command>ALTER TEXT SEARCH TEMPLATE</command> 명령은 슈퍼유저만 사용할 수 있다.
   </para>
  </refsect1>
 
@@ -85,8 +85,8 @@ ALTER TEXT SEARCH TEMPLATE <replaceable>이름</replaceable> SET SCHEMA <replace
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createtstemplate"></member>
-   <member><xref linkend="sql-droptstemplate"></member>
+   <member><xref linkend="sql-createtstemplate"/></member>
+   <member><xref linkend="sql-droptstemplate"/></member>
   </simplelist>
  </refsect1>
 </refentry>

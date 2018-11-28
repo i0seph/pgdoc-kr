@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_database.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERDATABASE">
+<refentry id="sql-alterdatabase">
  <indexterm zone="sql-alterdatabase">
   <primary>ALTER DATABASE</primary>
  </indexterm>
@@ -21,24 +21,24 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <replaceable class="PARAMETER">옵션</replaceable> [ ... ] ]
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> [ [ WITH ] <replaceable class="parameter">옵션</replaceable> [ ... ] ]
 
-<phrase><replaceable class="PARAMETER">옵션</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">옵션</replaceable> 자리에는:</phrase>
 
-    ALLOW_CONNECTIONS <replaceable class="PARAMETER">접속여부</replaceable>
-    CONNECTION LIMIT <replaceable class="PARAMETER">제한접속수</replaceable>
-    IS_TEMPLATE <replaceable class="PARAMETER">템플릿여부</replaceable>
+    ALLOW_CONNECTIONS <replaceable class="parameter">접속여부</replaceable>
+    CONNECTION LIMIT <replaceable class="parameter">제한접속수</replaceable>
+    IS_TEMPLATE <replaceable class="parameter">템플릿여부</replaceable>
 
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> SET TABLESPACE <replaceable class="PARAMETER">새테이블스페이스</replaceable>
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> SET TABLESPACE <replaceable class="parameter">새테이블스페이스</replaceable>
 
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> SET <replaceable>환경설정_매개변수</replaceable> { TO | = } { <replaceable>값</replaceable> | DEFAULT }
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> SET <replaceable>환경설정_매개변수</replaceable> FROM CURRENT
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> RESET <replaceable>환경설정_매개변수</replaceable>
-ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> RESET ALL
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> SET <replaceable>환경설정_매개변수</replaceable> { TO | = } { <replaceable>값</replaceable> | DEFAULT }
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> SET <replaceable>환경설정_매개변수</replaceable> FROM CURRENT
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> RESET <replaceable>환경설정_매개변수</replaceable>
+ALTER DATABASE <replaceable class="parameter">이름</replaceable> RESET ALL
 </synopsis>
  </refsynopsisdiv>
 
@@ -90,7 +90,7 @@ ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> RESET ALL
    구문이다.
    새로운 세션이 이 데이터베이스로 접속하면, 여기서 지정한 설정 값을
    그 세션 기본값으로 사용한다.
-   <filename>postgresql.conf</>에서 지정했거나, 
+   <filename>postgresql.conf</filename>에서 지정했거나, 
    서버 실행시 지정한 명령행 옵션으로 지정한 설정값을 무시하고, 
    이 값을 사용한다.
    데이터베이스 소유주나 슈퍼유저만 이 명령을 사용할 수 이다.
@@ -104,7 +104,7 @@ ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> RESET ALL
 
     <variablelist>
      <varlistentry>
-      <term><replaceable class="PARAMETER">이름</replaceable></term>
+      <term><replaceable class="parameter">이름</replaceable></term>
       <listitem>
        <para>
         작업 대상 데이터베이스 이름.
@@ -186,15 +186,15 @@ ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> RESET ALL
         접속하는 세션은 시스템 전역 설정값을 사용한다.
         <literal>RESET ALL</literal> 구문은 모든 데이터베이스 단위
         지정한 설정을 없앤다. 
-        <literal>SET FROM CURRENT</> 구문은 현재 접속해 있는 세션이
+        <literal>SET FROM CURRENT</literal> 구문은 현재 접속해 있는 세션이
         사용하고 있는 설정값을 데이터베이스 설정 값으로 지정할 때
         사용한다.
        </para>
 
        <para>
         이 서버 환경 설정 매개 변수에 대한 자세한 설명은
-        <xref linkend="sql-set"> 명령 설명과 
-        <xref linkend="runtime-config">에서 다룬다.
+        <xref linkend="sql-set"/> 명령 설명과 
+        <xref linkend="runtime-config"/>에서 다룬다.
        </para>
       </listitem>
      </varlistentry>
@@ -207,7 +207,7 @@ ALTER DATABASE <replaceable class="PARAMETER">이름</replaceable> RESET ALL
   <para>
    세션이 사용할 서버 환경 설정 기본값 지정은
    데이터베이스 단위로 지정할 수도 있지만, 롤에서 지정할 수도 있다;
-   <xref linkend="sql-alterrole"> 참고.
+   <xref linkend="sql-alterrole"/> 참고.
    두 지정이 서로 같은 변수인 경우는 롤에서 지정한 값을 사용한다.
   </para>
  </refsect1>
@@ -236,10 +236,10 @@ ALTER DATABASE test SET enable_indexscan TO off;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createdatabase"></member>
-   <member><xref linkend="sql-dropdatabase"></member>
-   <member><xref linkend="sql-set"></member>
-   <member><xref linkend="sql-createtablespace"></member>
+   <member><xref linkend="sql-createdatabase"/></member>
+   <member><xref linkend="sql-dropdatabase"/></member>
+   <member><xref linkend="sql-set"/></member>
+   <member><xref linkend="sql-createtablespace"/></member>
   </simplelist>
  </refsect1>
 </refentry>

@@ -3,19 +3,19 @@
 <chapter id="high-availability">
  <title>고가용성, 부하 분산, 복제</title>
 
- <indexterm><primary>high availability</></>
- <indexterm><primary>failover</></>
- <indexterm><primary>replication</></>
- <indexterm><primary>load balancing</></>
- <indexterm><primary>clustering</></>
- <indexterm><primary>data partitioning</></>
- <indexterm><primary>고가용성</></>
- <indexterm><primary>장애처리</></>
- <indexterm><primary>리플리케이션</></>
- <indexterm><primary>로드 밸런싱</></>
- <indexterm><primary>부하 분산</></>
- <indexterm><primary>클러스터링</></>
- <indexterm><primary>복제</></>
+ <indexterm><primary>high availability</primary></indexterm>
+ <indexterm><primary>failover</primary></indexterm>
+ <indexterm><primary>replication</primary></indexterm>
+ <indexterm><primary>load balancing</primary></indexterm>
+ <indexterm><primary>clustering</primary></indexterm>
+ <indexterm><primary>data partitioning</primary></indexterm>
+ <indexterm><primary>고가용성</primary></indexterm>
+ <indexterm><primary>장애처리</primary></indexterm>
+ <indexterm><primary>리플리케이션</primary></indexterm>
+ <indexterm><primary>로드 밸런싱</primary></indexterm>
+ <indexterm><primary>부하 분산</primary></indexterm>
+ <indexterm><primary>클러스터링</primary></indexterm>
+ <indexterm><primary>복제</primary></indexterm>
 
 
  <para>
@@ -45,13 +45,13 @@
 
  <para>
   한 가지 해결책은 오직 하나의 데이터베이스만 읽기/쓰기를 허용하는 것이다.
-  이 때, 이 서버를 <firstterm>마스터</> 또는 <firstterm>프라이머리</> 서버라고 한다.
+  이 때, 이 서버를 <firstterm>마스터</firstterm> 또는 <firstterm>프라이머리</firstterm> 서버라고 한다.
   마스터 서버의 변경된 내용이 그대로 내부적으로 동기화 되는 서버를 
-  <firstterm>스탠바이</> 또는 <firstterm>세컨더리</> 서버라고 한다. 
+  <firstterm>스탠바이</firstterm> 또는 <firstterm>세컨더리</firstterm> 서버라고 한다. 
   마스터 서버의 장애로 운영 제어권을 스탠바이 서버로 남기기 전까지 
-  스탠바이 서버를 사용할 없는 환경을 <firstterm>warm standby</> 서버 환경이라고 하고, 
+  스탠바이 서버를 사용할 없는 환경을 <firstterm>warm standby</firstterm> 서버 환경이라고 하고, 
   이와 달리 스탠바이 서버를 읽기 전용으로 사용이 가능한 환경을 
-  <firstterm>hot standby</> 서버 환경이라고 한다.
+  <firstterm>hot standby</firstterm> 서버 환경이라고 한다.
   (일단은 용어들을 영어 단어 그대로 옮겼다.
    운영 서버, 대기 서버, 주 서버, 보조 서버 등
   우리말 옮기고 싶었으나, 혼돈이 있을 것 같아, 그냥 그대로 옮겼다. 
@@ -111,9 +111,9 @@
     <para>
          이 방식은 일반적으로 네트워크 저장 장치와 같이 하드웨어 기능을 
          이용해서 공유하는 방식이다. 네트워크 파일 시스템을 이용할 수도 있으나, 
-         그 파일 시스템이 <acronym>POSIX</> 모든 기능을 다 수용할 수 있어야한다.
+         그 파일 시스템이 <acronym>POSIX</acronym> 모든 기능을 다 수용할 수 있어야한다.
          (자세한 이야기는 <xref
-              linkend="creating-cluster-nfs"> 참조)
+              linkend="creating-cluster-nfs"/> 참조)
          이 방식의 한 가지 한계점은 운영서버가 그 디스크 영역을 쓰는 동안에는 
          대기서버가 전혀 그 디스크 영역을 사용할 수 없는 것이며, 
          만일 그 디스크 영역에 장애가 발생하면, 두 서버 모두 사용할 수 없다는 점이다.
@@ -131,7 +131,7 @@
          데이터베이스가 운영되어 데이터 파일의 변경이 있었다면, 
          그 변경 내용에 대해서 다른 서버에도 파일 시스템 차원에서 동기화한다.
          제약 조건은 운영 서버의 변경 순서와 동일한 순서로 파일 시스템이 대기 서버에도 
-         복제되어야한다. 이 방식을 이용한 리눅스 솔루션으로는 <productname>DRBD</>이다.
+         복제되어야한다. 이 방식을 이용한 리눅스 솔루션으로는 <productname>DRBD</productname>이다.
     </para>
 
 <!--
@@ -151,7 +151,7 @@ protocol to make nodes agree on a serializable transactional order.
    <listitem>
 
     <para>
-        운영 서버의 미리 쓰는 로그(<acronym>WAL</>)의 내용을 
+        운영 서버의 미리 쓰는 로그(<acronym>WAL</acronym>)의 내용을 
         대기 서버로 옮겨 그대로 다시 실행해서, 운영 서버 상태와 같은 상태를 
         유지하도록 하는 방법이다. 운영 서버가 장애로 중지되면, 
         즉시, 대기 서버가 운영 서버로 운영 될 수 있다.
@@ -162,9 +162,9 @@ protocol to make nodes agree on a serializable transactional order.
     <para>
          대기 서버를 구축하려면, WAL 내용을 대기 서버로 전달해야하 하는데, 
          그 전달하는 방법으로 파일 기반 로그 복사 (log shipping)를 하는 
-         방식(<xref linkend="warm-standby">)과 스트리밍 리플리케이션(<xref linkend="streaming-replication">)
+         방식(<xref linkend="warm-standby"/>)과 스트리밍 리플리케이션(<xref linkend="streaming-replication"/>)
          방식, 이 두 방법을 혼용해서 사용할 수 있다. 
-         hot standby 서버 구축에 대한 자세한 설명은 <xref linkend="hot-standby">
+         hot standby 서버 구축에 대한 자세한 설명은 <xref linkend="hot-standby"/>
          에서 자세히 다루고 있다.
     </para>
    </listitem>
@@ -180,9 +180,9 @@ protocol to make nodes agree on a serializable transactional order.
      복제는 개별 테이블 단위로 복제할 수 있다.  논리 복제를 위해
      운영 서버와 복제 서버에서 특별하게 따로 준비해야할 것은 없으며, 여러 
      복제 서버를 하나의 운영 서버로부터 구축할 수 있다.  논리 복제에
-     대한 자세한 내용은 <xref linkend="logical-replication">에서
+     대한 자세한 내용은 <xref linkend="logical-replication"/>에서
      다룬다.  또한 논리 디코딩을 이용한 제3제공자 확장 모듈 제작을 
-     위한 인터페이스 설명은 <xref linkend="logicaldecoding">에서
+     위한 인터페이스 설명은 <xref linkend="logicaldecoding"/>에서
      다룬다.
     </para>
    </listitem>
@@ -201,7 +201,7 @@ protocol to make nodes agree on a serializable transactional order.
     </para>
 
     <para>
-         이 방식을 이용하는 제품으로는 <productname>Slony-I</>이 있다.
+         이 방식을 이용하는 제품으로는 <productname>Slony-I</productname>이 있다.
          테이블 단위 복제가 가능하며, 여러 대의 대기 서버를 함께 운영 할 수 있다.
          대기 서버의 자료 동기화 방식으로 비동기식이 사용됨으로, 장애 발생시 
          자료 손실이 있을 수 있다.
@@ -223,8 +223,8 @@ protocol to make nodes agree on a serializable transactional order.
     </para>
 
     <para>
-         이 방식에서는  <function>random()</> 함수나, 
-         <function>CURRENT_TIMESTAMP</>, 시퀀스 값과 같이
+         이 방식에서는  <function>random()</function> 함수나, 
+         <function>CURRENT_TIMESTAMP</function>, 시퀀스 값과 같이
          개별 서버 의존적인 쿼리들에 대해서는
          의도되게 않게 일관성을 유지하지 못 할 수 있다.
          이런 쿼리 들이 자료 변경 작업에 사용된다면, 
@@ -240,8 +240,8 @@ protocol to make nodes agree on a serializable transactional order.
          다른 모든 서버에서도 모두 커밋되어야 그 트랜잭션이 유효하다고 
          처리되어야한다. 특정 서버에서 롤백된다면, 그 트랜잭션은 모든 서버에서 
          롤백되어야한다. 이것을 구현하기 위해서는 미들웨어가 2중 커밋 two-phase commit
-         을 이용할 것이다 (<xref linkend="sql-prepare-transaction">, <xref linkend="sql-commit-prepared"> 명령).
-         이 방식을 이용하는 제품으로는 <productname>Pgpool-II</>와 <productname>Continuent Tungsten</>가 있다.
+         을 이용할 것이다 (<xref linkend="sql-prepare-transaction"/>, <xref linkend="sql-commit-prepared"/> 명령).
+         이 방식을 이용하는 제품으로는 <productname>Pgpool-II</productname>와 <productname>Continuent Tungsten</productname>가 있다.
     </para>
    </listitem>
   </varlistentry>
@@ -278,14 +278,14 @@ protocol to make nodes agree on a serializable transactional order.
          공유 디스크를 사용하기도 한다. 
          자료 관리 입장에서 본다면, 이 방식이 가장 이상적인 
          방식이다. 하나의 자료 결과에 대해서도 서버간 자료가 공유되기 때문에, 
-         <function>random()</> 함수와 같은 것은 문제 없이 사용할 수 있다.
+         <function>random()</function> 함수와 같은 것은 문제 없이 사용할 수 있다.
     </para>
 
     <para>
-         <productname>PostgreSQL</>에서는 이 방식의 복제 기능은 제공하지 않는다.
-         하지만, <productname>PostgreSQL</> 이중 커밋 two-phase commit
-         (<xref linkend="sql-prepare-transaction">, <xref
-                       linkend="sql-commit-prepared">) 명령이 이 방식을 
+         <productname>PostgreSQL</productname>에서는 이 방식의 복제 기능은 제공하지 않는다.
+         하지만, <productname>PostgreSQL</productname> 이중 커밋 two-phase commit
+         (<xref linkend="sql-prepare-transaction"/>, <xref
+                       linkend="sql-commit-prepared"/>) 명령이 이 방식을 
                            구현 하는데 사용될 수 있다.
     </para>
    </listitem>
@@ -296,7 +296,7 @@ protocol to make nodes agree on a serializable transactional order.
    <listitem>
 
     <para>
-     <productname>PostgreSQL</>은 소스가 공개 되어 있고, 쉽게 확장이 가능하기 때문에, 
+     <productname>PostgreSQL</productname>은 소스가 공개 되어 있고, 쉽게 확장이 가능하기 때문에, 
          이것을 가지고, 독자적인 기법으로 장애처리, 복제, 부하 분산 기능을 포함 시켜, 
          소스를 공개하지 않은 채 상용으로 판매 할 수 있다. 이렇게 몇몇 솔루션들이 판매되고 있다.
     </para>
@@ -306,7 +306,7 @@ protocol to make nodes agree on a serializable transactional order.
  </variablelist>
 
  <para>
-  다음 <xref linkend="high-availability-matrix"> 표는
+  다음 <xref linkend="high-availability-matrix"/> 표는
   앞에 언급한 다양한 기능들을 요약한 것이다.
  </para>
 
@@ -484,8 +484,8 @@ protocol to make nodes agree on a serializable transactional order.
          먼저 중앙 서버가 있고, 한 쿼리는 중앙 서버에서 실행되고, 
          중앙 서버는 각각의 하위 서버로 쿼리를 나눠서 보내고, 
          결과를 중앙 서버가 취합해서 사용자에게 보내주는 방식이 사용된다.
-         <productname>Pgpool-II</> 제품이 이런 기능을 사용할 수 있다.
-         <productname>PL/Proxy</> 제품도 이런 방식을 사용할 수 있다.
+         <productname>Pgpool-II</productname> 제품이 이런 기능을 사용할 수 있다.
+         <productname>PL/Proxy</productname> 제품도 이런 방식을 사용할 수 있다.
     </para>
 
    </listitem>
@@ -505,8 +505,8 @@ protocol to make nodes agree on a serializable transactional order.
    정기적으로 대기 서버로 옮기고, 그것을 적용시켜, 
    운영 서버가 장애로 멈추게 되면, 
    대기 서버를 운영해서, 가용성을 향상할 수 있다.
-   이 기능을 <firstterm>warm standby</>, 또는 
-   <firstterm>log shipping</> 기능이라고 한다.
+   이 기능을 <firstterm>warm standby</firstterm>, 또는 
+   <firstterm>log shipping</firstterm> 기능이라고 한다.
   </para>
 
   <para>
@@ -525,7 +525,7 @@ protocol to make nodes agree on a serializable transactional order.
   <para>
    이 방식의 구현 방법은 간단하다. 운영 서버에서 다 쓴 WAL 파일을 
    다른 서버로 운송(shipping) 하는 것 뿐이다.
-   <productname>PostgreSQL</>에서는 그 로그 옮기는 작업은 한 번에 
+   <productname>PostgreSQL</productname>에서는 그 로그 옮기는 작업은 한 번에 
    하나의 로그 파일을 옮길 수 있도록 구현되어 있다.
    WAL 파일(16MB)을 옮기는 작업은 데이터베이스 서버 밖에서 
    관리자가 정의한 방식으로 진행 되기 때문에, 
@@ -535,7 +535,7 @@ protocol to make nodes agree on a serializable transactional order.
    전송량 때문에 운영 서버에 영향을 줄 수도 있다. 이 부분이 염려되면, 
    전송 속도를 제한 할 수 있는 방법도 고려해야할 것이다.
    아니면, 레코드 기반 로그 전달 방식 (스트리밍 복제)을 고려할 수 도 있다.
-   (<xref linkend="streaming-replication"> 참조)
+   (<xref linkend="streaming-replication"/> 참조)
   </para>
 
   <para>
@@ -547,7 +547,7 @@ protocol to make nodes agree on a serializable transactional order.
    지정해 자주 사용하는 WAL 파일을 바꾸고, 그것을 전송하면, 
    되겠지만, 그 파일의 크기가 16MB이기 때문에, 잦은 WAL 파일 전송 작업으로
    네트워크 사용량이 증가할 것이다.
-   스트리밍 복제 방식(<xref linkend="streaming-replication"> 참조)을 
+   스트리밍 복제 방식(<xref linkend="streaming-replication"/> 참조)을 
    이용하면, 이 손실 되는 자료량을 최소화 할 수 있다.
   </para>
 
@@ -563,7 +563,7 @@ protocol to make nodes agree on a serializable transactional order.
    warm standby 방식으로 구현되면, 대기 서버 쪽에서는 
    어떤 쿼리도 사용할 수 없다. 대기 서버 쪽에서 
    읽기 전용 쿼리를 사용하려면, hot standby 방식으로 구축해야한다.
-   이 부분은 <xref linkend="hot-standby">에서 자세히 설명한다.
+   이 부분은 <xref linkend="hot-standby"/>에서 자세히 설명한다.
   </para>
 
   <indexterm zone="high-availability">
@@ -599,7 +599,7 @@ protocol to make nodes agree on a serializable transactional order.
         그 두 서버 환경은 최대한 비슷한 환경으로 구축하는 것이 
         제일 좋다. 물론 하드웨어 사양은 틀려도 크게 문제가 되지 않으나, 
         테이블스페이스 문제를 고려했을 때만 보아도, 
-        운영 서버에서 <xref linkend="sql-createtablespace"> 명령으로
+        운영 서버에서 <xref linkend="sql-createtablespace"/> 명령으로
         테이블스페이스를 조작할 일이 생겼을 때, 
         대기 서버에서도 똑 같은 작업이 정상적으로 진행되려면, 
         운영 서버와 같은 디렉터리 구조를 가지고 있어야한다.
@@ -612,7 +612,7 @@ protocol to make nodes agree on a serializable transactional order.
 
    <para>
     일반적으로 로그 전달 방식 복제는 메이저 버전이 서로 다른 
-        <productname>PostgreSQL</> 서버 간은 구현이 불가능하다.
+        <productname>PostgreSQL</productname> 서버 간은 구현이 불가능하다.
         디스크 자료 저장 포멧이 바뀔 경우에, 
         PostgreSQL 개발 그룹에서는 메이저 버전을 바꾸어 릴리즈하는 것이 
         정책이기 때문이다. 물론 마이너 버전의 서로 틀린 경우는 이 복제 
@@ -635,28 +635,28 @@ protocol to make nodes agree on a serializable transactional order.
         서버는 마스터 서버에서 받는 WAL 파일을 계속해서 자신의 서버에 
         반영하는 작업만 한다. 대기 서버는 운영 서버가 보내는 파일을 보관해 두는 
         디렉터리에 새 WAL 파일이 있는지 확인해서, 새 WAL 파일을 반영하는 방식(warm standby)도 있고
-        (<xref linkend="restore-command"> 참조), 
+        (<xref linkend="restore-command"/> 참조), 
         TCP 연결 방식을 이용해서 운영 서버와 직접 연결하고, 커밋된 트랜잭션을 
         즉시 대기 서버로 반영하는 방식(스트리밍 복제)도 있다.
-        또 내부적으로 보면, 대기 서버의 <filename>pg_wal</> 디렉터리에 있는 
+        또 내부적으로 보면, 대기 서버의 <filename>pg_wal</filename> 디렉터리에 있는 
         WAL 파일을 참조하는 경우도 있다. 이 경우는 스트리밍 복제 환경에서 
         운영 서버에서 보낸 트랜잭션을 미쳐 반영하기 전에 대기 서버가 중지 되었다가 
         다시 실행될 경우에 일어난다. 물론 관리자가 직접
-        <filename>pg_wal</> 디렉터리에 직접 WAL 파일을 두고 서버를 실행할 수도 있다.
+        <filename>pg_wal</filename> 디렉터리에 직접 WAL 파일을 두고 서버를 실행할 수도 있다.
    </para>
 
    <para>
-    대기 서버가 실행되면, 제일 먼저 <varname>restore_command</> 설정값에 지정된
+    대기 서버가 실행되면, 제일 먼저 <varname>restore_command</varname> 설정값에 지정된
         명령어를 진행한다. 적용 해야할 WAL 세그먼트 파일이 아카이브 디렉터리에 
         있는지 확인하고 있으면 차례대로 적용한다. 이 작업이 끝나고 더 이상 
-        적용할 파일이 없으면 <varname>restore_command</> 설정값에 지정된 
+        적용할 파일이 없으면 <varname>restore_command</varname> 설정값에 지정된 
         명령은 실패로 끝나야한다. 그러면, 
         복구 환경이 스트리밍 복제 방식이라면, 운영 서버 쪽으로 접속 해서, 
         운영 서버가 데이터베이스 연결을 통해 보내는 트랜잭션들을 자신의
-        <filename>pg_wal</> 디렉터리 내 해당 WAL 로그 파일에 추가한다.
+        <filename>pg_wal</filename> 디렉터리 내 해당 WAL 로그 파일에 추가한다.
         다음부터는 서버가 알아서 해당 작업을 수행하고, 
         커밋 되었다고 기록하고, 체크포인트 작업을 하는 등 일련의 자료 변경 작업을 수행한다.
-        반면, 복구 환경이 warm standy 방식이라면, <varname>restore_command</> 설정값에 지정된
+        반면, 복구 환경이 warm standy 방식이라면, <varname>restore_command</varname> 설정값에 지정된
     명령이 실패로 끝나면, 원하는 WAL 세그먼트 파일이 새롭게 생길 때까지 기다렸다가 생기면, 
         다시 작업을 하고, 또 더 이상 없으면 실패로 끝나면서 대기하는 작업을 반복한다.
         이 반복 작업은 서버가 중지되거나, 대기 작업을 이제 그만 하고 스스로 독립된 
@@ -664,10 +664,10 @@ protocol to make nodes agree on a serializable transactional order.
    </para>
 
    <para>
-    대기 모드는  <command>pg_ctl promote</> 명령을 실행하거나, 
-        트리거 파일(<varname>trigger_file</> 설정값에 지정한 파일)이 
+    대기 모드는  <command>pg_ctl promote</command> 명령을 실행하거나, 
+        트리거 파일(<varname>trigger_file</varname> 설정값에 지정한 파일)이 
         생기면 끝난다. 물론 적용해야할 WAL 파일이, 
-        아카이브 디렉터리에 아직 있거나, <filename>pg_wal</> 디렉터리 내에 
+        아카이브 디렉터리에 아직 있거나, <filename>pg_wal</filename> 디렉터리 내에 
         있다면, 이것들을 모두 적용하고 대기 모드를 끝낸다.
         이때 스트리밍 복제를 위한 운영 서버와의 연결도 더 이상 재시도하지 않는다.
    </para>
@@ -679,7 +679,7 @@ protocol to make nodes agree on a serializable transactional order.
    <para>
     첫번째 작업은 대기 서버로 보낼 WAL 세그먼트 파일을 그냥 버리지 않고, 
         달리 처리하는 설정을 해야한다. 이 방법에 대한 자세한 이야기는 
-        <xref linkend="continuous-archiving">에서 하고 있다.
+        <xref linkend="continuous-archiving"/>에서 하고 있다.
         그냥 버리지 않고 다르게 처리 한다는 것은 
         그 WAL 세그먼트 파일이 운영 서버가 중지되어도 대기 서버가 
         사용할 수 있는 위치로 옮겨 놓는다는 것을 의미한다. 
@@ -694,15 +694,15 @@ protocol to make nodes agree on a serializable transactional order.
     스트리밍 복제 방식을 사용하려면, 
         대기 서버에서 요청하는 데이터베이스 접속을 허용하도록 설정하는 작업을 해야한다.
         총 세가지 작업인데, 첫번째는 접속 계정의 권한을 복제 기능을 사용할 수 있도록 해야하고, 
-        두번째는 <filename>pg_hba.conf</> 파일에 대기 서버가 운영되는 
-        호스트가 등록되어야하고, 그곳에 데이터베이스 항목은 <literal>replication</>으로 
-        지정되어야하며, 세번째는 서버 환경 설정에서 <varname>max_wal_senders</> 값이 
+        두번째는 <filename>pg_hba.conf</filename> 파일에 대기 서버가 운영되는 
+        호스트가 등록되어야하고, 그곳에 데이터베이스 항목은 <literal>replication</literal>으로 
+        지정되어야하며, 세번째는 서버 환경 설정에서 <varname>max_wal_senders</varname> 값이 
         대기 서버의 연결수 만큼은 지정되어야한다.
    </para>
 
    <para>
     대기 서버를 실행하려면, 먼저 운영서버의 베이스 백업을 준비해야한다.
-        이것에 대한 자세한 이야기는 <xref linkend="backup-base-backup">에서 다룬다.
+        이것에 대한 자세한 이야기는 <xref linkend="backup-base-backup"/>에서 다룬다.
    </para>
   </sect2>
 
@@ -711,14 +711,14 @@ protocol to make nodes agree on a serializable transactional order.
 
    <para>
     대기 서버를 구축하려면, 먼저 운영서버의 베이스 백업 자료를
-        복원해야한다(<xref linkend="backup-pitr-recovery"> 참조).
+        복원해야한다(<xref linkend="backup-pitr-recovery"/> 참조).
         다음 대기 서버의 데이터 클러스터 디렉터리 안에 
-        <filename>recovery.conf</> 파일 파일을 만들고, 그 파일 안에, 
-        <varname>standby_mode</> 값을 on으로 설정하며,
-        <varname>restore_command</> 값으로 대기 서버로 보내진 WAL 세그먼트 
+        <filename>recovery.conf</filename> 파일 파일을 만들고, 그 파일 안에, 
+        <varname>standby_mode</varname> 값을 on으로 설정하며,
+        <varname>restore_command</varname> 값으로 대기 서버로 보내진 WAL 세그먼트 
         파일을 대기 서버에서 사용할 수 있도록 가져오는 명령을 지정한다.
         고가용성을 고려해서, 대기 서버가 여럿 있는 경우는
-        <varname>recovery_target_timeline</> 값으로 <literal>latest</>를 
+        <varname>recovery_target_timeline</varname> 값으로 <literal>latest</literal>를 
         지정한다. 이렇게 해서, 대기 서버 가운데 몇 번 재실행 되었던 
         서버도 정상적으로 운영 서버의 작업 내용을 반영 할 수 있도록 한다.
    </para>
@@ -727,17 +727,17 @@ protocol to make nodes agree on a serializable transactional order.
      <para>
          여기서 설명하는 구축 방법을 사용할 때는, 
          pg_standby나 기타 다른 복제 툴들을 사용하면 안된다.
-         <varname>restore_command</> 설정값으로 지정하는 명령은 
+         <varname>restore_command</varname> 설정값으로 지정하는 명령은 
          작업할 파일이 없을 경우 즉시 종료될 수 있는 것을 사용해야한다.
          서버 쪽에서 이 명령의 재실행 처리를 관리하기 때문이다.
-         pg_standby 명령을 사용하려면, <xref linkend="log-shipping-alternative">을 
+         pg_standby 명령을 사용하려면, <xref linkend="log-shipping-alternative"/>을 
          참조하라.
     </para>
    </note>
 
    <para>
      스트리밍 복제 기능을 사용하려면, 
-         <varname>primary_conninfo</> 설정값을 지정해야한다.
+         <varname>primary_conninfo</varname> 설정값을 지정해야한다.
          이 값은 libpq 라이브러리에서 사용하는 데이터베이스 연결 문자열이다.
          이 값에는 운영서버의 호스트 이름(또는 IP 주소)은 반드시 지정해야하며, 
          그 외 접속에 필요한 정보를 지정한다.
@@ -758,9 +758,9 @@ protocol to make nodes agree on a serializable transactional order.
         archive cleanup command 설정으로 더 이상 필요없는,
                 이미 대기 서버에 반영이 완료된 파일을 지워서, 
                 디스크 공간을 확보 할 수도 있다.
-                이 설정값으로 <application>pg_archivecleanup</> 명령을 이용하면, 
+                이 설정값으로 <application>pg_archivecleanup</application> 명령을 이용하면, 
                 보다 쉽게 이 작업을 할 수 있다.
-                이 명령에 대한 자세한 설명은 <xref linkend="pgarchivecleanup"> 명령
+                이 명령에 대한 자세한 설명은 <xref linkend="pgarchivecleanup"/> 명령
                 도움말을 참조하라.
     반면, 대기 서버가 운영 서버의 백업 용도로 구성한다면, 
         운영 서버의 베이스 백업 뒤로 생긴 모든 WAL 세그먼트 파일을 지우지 않는 것이 
@@ -771,7 +771,7 @@ protocol to make nodes agree on a serializable transactional order.
    </para>
 
    <para>
-    윗 내용을 참고해서, 대기 서버로 구축하기 위한 서버의 <filename>recovery.conf</> 
+    윗 내용을 참고해서, 대기 서버로 구축하기 위한 서버의 <filename>recovery.conf</filename> 
         파일은 일반적으로 아래와 같은 내용으로 구성한다:
 <programlisting>
 standby_mode = 'on'
@@ -783,7 +783,7 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
 
    <para>
     대기 서버는 다중으로 구성할 수 있지만, 스트리밍 복제 방식을 이용한다면, 
-        운영 서버의 <varname>max_wal_senders</> 환경 설정값으로
+        운영 서버의 <varname>max_wal_senders</varname> 환경 설정값으로
         이 대기 서버 모두가 동시에 접속 할 수 있도록 충분한 연결을 확보해야한다.
    </para>
 
@@ -808,21 +808,21 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
 
    <para>
     스트리밍 복제 방식은 기본적으로 비동기식으로 이루워진다. 
-        (<xref linkend="synchronous-replication"> 참조)
+        (<xref linkend="synchronous-replication"/> 참조)
         그래서, 운영 서버와 대기 서버간의 자료 불일치가 약간 있을 수는 있다.
         하지만 대기 서버와 운영 서버 사이의 네트워크 환경이 
         양호하고, 대기 서버의 성능이 좋다면, 파일 기반 로그 전달 방식과는
         비교도 안될 만큼 1초 미만의 지연시간이 생긴다.
         운영 서버와 대기 서버가 같은 네트워크 대역대 안에 있다면, 
         거의 실시간으로 동기화 된다. 스트리밍 복제 환경에서는 
-        <varname>archive_timeout</> 설정값을 짧게 해서, 자료 손실을 줄이겠다는 
+        <varname>archive_timeout</varname> 설정값을 짧게 해서, 자료 손실을 줄이겠다는 
         설정이 필요 없다.
    </para>
 
    <para>
     파일 기반 로그 전달 방식을 함께 사용하지 않고, 
         단지 스트리밍 복제 기능만 사용한다면, 
-        운영 서버에서 반드시  <varname>wal_keep_segments</> 환경설정값을 
+        운영 서버에서 반드시  <varname>wal_keep_segments</varname> 환경설정값을 
         지정해서, 아직 대기 서버로 반영되지 못한 WAL 파일을 남겨두는 최대 
         개수를 지정해 주어야한다. 운영 서버에는 WAL 파일을 재활용하기 때문에, 
         대기 서버의 중지 시간이 길어져, 이 대기 서버로 반영되지 못한 WAL 파일이 
@@ -832,7 +832,7 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
         찾지 못하기 때문에 다시 대기 서버를 구축 해야한다.
     만일 운영 서버 쪽에서 WAL 세그먼트 로그 파일을 대기 서버 쪽으로 보내는 
         설정을 해 두었고, 대기 서버 쪽에서 그 파일을 사용할 수 있는 환경이라면, 
-        <varname>wal_keep_segments</> 설정은 굳이 필요가 없다. 
+        <varname>wal_keep_segments</varname> 설정은 굳이 필요가 없다. 
         대기 서버 쪽으로 처리되어야할 WAL 로그 파일들은 로그 전달 설정을 통해서 
         이미 대기 서버 쪽으로 옮겨졌기 때문에, 충분히 운영 서버의 자료와 
         동기화 할 수 있을 것이다.
@@ -841,33 +841,33 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
    <para>
     이런 이유로, 스트리밍 복제 기능을 이용 할 때도, 
         먼저 대기 서버에서 파일 기반 로그 전달 기능도 함께 설정 하는 것이 
-        좋다. 자세한 것은 <xref linkend="warm-standby">에서 설명하고 있다.
+        좋다. 자세한 것은 <xref linkend="warm-standby"/>에서 설명하고 있다.
         파일 기반 로그 전달 방식에서 스트리밍 복제 방식으로 바뀌려면, 
-        <filename>recovery.conf</> 파일에서 <varname>primary_conninfo</>
+        <filename>recovery.conf</filename> 파일에서 <varname>primary_conninfo</varname>
         설정값에 접속할 운영 서버의 정보를 지정하면 된다.
         운영 서버에서는 대기 서버가 접속할 수 있도록
-        <xref linkend="guc-listen-addresses"> 환경설정값이 바뀌어야하며, 
-        <filename>pg_hba.conf</> 파일에 대기 서버에서의 접속을 허용할 
-        있도록 지정하며, 그 때 사용할 데이터베이스 이름은 <literal>replication</>
-        으로 지정한다. 자세한 사항은 <xref linkend="streaming-replication-authentication">
+        <xref linkend="guc-listen-addresses"/> 환경설정값이 바뀌어야하며, 
+        <filename>pg_hba.conf</filename> 파일에 대기 서버에서의 접속을 허용할 
+        있도록 지정하며, 그 때 사용할 데이터베이스 이름은 <literal>replication</literal>
+        으로 지정한다. 자세한 사항은 <xref linkend="streaming-replication-authentication"/>
         을 참조하라.
    </para>
 
    <para>
     또한, 운영 서버 입장에서  클라이언트의 TCP 연결이 끊겼을 경우, 
         빠르게 그 소켓을 정리해서, TCP 연결을 원할하게 하기 위해, 
-        <xref linkend="guc-tcp-keepalives-idle">, <xref linkend="guc-tcp-keepalives-interval">,
-        <xref linkend="guc-tcp-keepalives-count"> 설정값을 조정할 수도 있다.
+        <xref linkend="guc-tcp-keepalives-idle"/>, <xref linkend="guc-tcp-keepalives-interval"/>,
+        <xref linkend="guc-tcp-keepalives-count"/> 설정값을 조정할 수도 있다.
    </para>
 
    <para>
     또한 대기 서버의 최대 동시 연결수도 지정해야한다.
-    (<xref linkend="guc-max-wal-senders"> 환경설정값 항목을 참조).
+    (<xref linkend="guc-max-wal-senders"/> 환경설정값 항목을 참조).
    </para>
 
    <para>
     대기서버는 먼저 운영 서버에서 넘겨 받은 WAL 세그먼트 파일을 모두 
-        자신의 서버에 적용하면, <varname>primary_conninfo</> 설정값에 지정한 
+        자신의 서버에 적용하면, <varname>primary_conninfo</varname> 설정값에 지정한 
         운영 서버로 접속한다. 이 접속이 성공하면, 대기 서버는 
         walreceiver 프로세스를 만들어 운영 서버의 walsender 프로세스에서 
         보내는 트랜잭션 정보를 하나씩 받아서 자신의 서버에 적용한다.
@@ -877,9 +877,9 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
     <title>인증</title>
     <para>
          WAL 스트리밍 정보는 보안상 슈퍼유저나  인증된 데이터베이스 사용자만 
-         사용할 수 있어야한다. 이 권한을 부여하려면, <literal>REPLICATION</> 권한을 
+         사용할 수 있어야한다. 이 권한을 부여하려면, <literal>REPLICATION</literal> 권한을 
          부여한다. 그래서, 대기 서버에서 운영 서버로 접속하는 데이터베이스 
-         사용자는 <literal>LOGIN</> 권한과, <literal>REPLICATION</>
+         사용자는 <literal>LOGIN</literal> 권한과, <literal>REPLICATION</literal>
          권한을 반드시 지정해야한다. 이 리플리케이션 전용 사용자는 운영 서버의 자료를
          조작할 수 없도록 슈퍼유저가 아닌 별개의 사용자를 만들어 사용하는 것이 
          보안상 안전하다. 
@@ -887,10 +887,10 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
 
     <para>
          스트리밍 복제 기능을 이용하기 위한 운영 서버의 클라이언트 인증은 
-         <filename>pg_hba.conf</> 파일에서 해당 데이터베이스 이름으로 
-         <literal>replication</> 이라는 예약어를 지정해야한다.
-         예를 들어서, 대기 서버의 IP가 <literal>192.168.1.100</> 이라면, 
-         운영 서버의 <filename>pg_hba.conf</> 파일은 다음과 같은 
+         <filename>pg_hba.conf</filename> 파일에서 해당 데이터베이스 이름으로 
+         <literal>replication</literal> 이라는 예약어를 지정해야한다.
+         예를 들어서, 대기 서버의 IP가 <literal>192.168.1.100</literal> 이라면, 
+         운영 서버의 <filename>pg_hba.conf</filename> 파일은 다음과 같은 
          형식으로 지정한다:
 
 <programlisting>
@@ -904,15 +904,15 @@ host    replication     foo             192.168.1.100/32        md5
     </para>
     <para>
          대기 서버 입장에서 접속할 운영 서버 접속 정보는 
-         <filename>recovery.conf</> 파일에서 지정한다.
+         <filename>recovery.conf</filename> 파일에서 지정한다.
          접속할 데이터베이스 사용자의 비밀번호는 
          이 파일에 지정해도 되고, 대기 서버를 실행하는 시스템 사용자의 
-         홈 디렉터리에 있는 <filename>~/.pgpass</> 파일에서 지정해도 된다.
-         (이 때 데이터베이스 이름으로 <literal>replication</> 예약어를 사용한다.)
-         예를 들어, 운영 서버의 IP는 <literal>192.168.1.50</>,
+         홈 디렉터리에 있는 <filename>~/.pgpass</filename> 파일에서 지정해도 된다.
+         (이 때 데이터베이스 이름으로 <literal>replication</literal> 예약어를 사용한다.)
+         예를 들어, 운영 서버의 IP는 <literal>192.168.1.50</literal>,
          포트는 <literal>5432</literal>, 데이터베이스 사용자는 
-         <literal>foo</>, 그 사용자의 비밀번호는 <literal>foopass</>인 경우,
-         대기 서버에서 사용하는 <filename>recovery.conf</> 파일에 
+         <literal>foo</literal>, 그 사용자의 비밀번호는 <literal>foopass</literal>인 경우,
+         대기 서버에서 사용하는 <filename>recovery.conf</filename> 파일에 
          다음과 같이 지정한다:
 
 <programlisting>
@@ -932,25 +932,32 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
          이 작업은 운영 서버의 현재 WAL 쓸 위치와, 
          대기 서버의 마지막 처리된 WAL 쓸 위치 차이를 계산하는 방식을 
          이용하면 된다. 이 작업을 위해서, 
-         운영 서버에서는 <function>pg_current_wal_lsn</>, 
-         대기 서버에서는 <function>pg_last_wal_receive_lsn</> 두 함수를
+         운영 서버에서는 <function>pg_current_wal_lsn</function>, 
+         대기 서버에서는 <function>pg_last_wal_receive_lsn</function> 두 함수를
          사용한다. (이 함수의 구체적인 사용법은 
-         <xref linkend="functions-admin-backup-table">,
-         <xref linkend="functions-recovery-info-table">에서 다룬다.)
+         <xref linkend="functions-admin-backup-table"/>,
+         <xref linkend="functions-recovery-info-table"/>에서 다룬다.)
          대기 서버에서 마지막 받은 WAL 위치는 OS의 프로세스를 확인하는 
-         <command>ps</> 명령으로 출력되는 WAL receiver 프로세스의 
+         <command>ps</command> 명령으로 출력되는 WAL receiver 프로세스의 
          이름에서도 확인할 수 있다. (프로세스 모니터링에 대한 자세한 이야기는
-         <xref linkend="monitoring-ps">을 참조)
+         <xref linkend="monitoring-ps"/>을 참조)
     </para>
     <para>
          또한 운영 서버에서 사용하는 WAL sender 프로세스의 정보는 
-         <link linkend="pg-stat-replication-view"><literal>pg_stat_replication</></link> 뷰로 확인할 수 있다.
-         이 뷰에서 <function>pg_current_wal_lsn</> 값과, 
-         <literal>sent_lsn</> 값이 차이가 많이 나면, 
+         <xref linkend="pg-stat-replication-view"/> 뷰로 확인할 수 있다.
+         이 뷰에서 <function>pg_current_wal_lsn</function> 값과, 
+         <literal>sent_lsn</literal> 값이 차이가 많이 나면, 
          운영 서버가 많이 바쁜 상황이고, 
-         <literal>sent_lsn</> 값과, <function>pg_last_wal_receive_lsn</>
+         <literal>sent_lsn</literal> 값과, <function>pg_last_wal_receive_lsn</function>
          값이 차이가 많이 나면, 대기 서버가 많이 바쁘거나, 
          네트워크 상황이 좋지 않은 경우다.
+    </para>
+    <para>
+     On a hot standby, the status of the WAL receiver process can be retrieved
+     via the <xref linkend="pg-stat-wal-receiver-view"/> view.  A large
+     difference between <function>pg_last_wal_replay_lsn</function> and the
+     view's <literal>received_lsn</literal> indicates that WAL is being
+     received faster than it can be replayed.
     </para>
    </sect3>
   </sect2>
@@ -969,28 +976,28 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     대기 서버가 운영 서버로부터 복제 해야 할 내용을 미처 다 복제 하기도 전에
     운영 서버가 자신의 트랜잭션 로그를 버리는 문제를 막을 수 있는 방법으로
     복제 슬롯을 이용하면 된다.  또한 대기 서버와 운영 서버간 연결이 끊겨서
-    <link linkend="hot-standby-conflict">복구 충돌</>이 발생하는 상황에서도 
+    <link linkend="hot-standby-conflict">복구 충돌</link>이 발생하는 상황에서도 
     운영 서버의 자료가 지워지는 것을 방지 할 때 이 기능을 이용할 수 있다.
    </para>
    <para>
     이전 버전(9.3 이하)까지는 대기 서버로 전달 할 트랜잭션
     로그를 전달하지 못할 경우
-    최대 <xref linkend="guc-wal-keep-segments"> 환경 설정값에 지정된 개수 만큼만    더 보관하고 있어 더 오래된 트랜잭션 로그를 대기 서버가 필요로 하는 경우
+    최대 <xref linkend="guc-wal-keep-segments"/> 환경 설정값에 지정된 개수 만큼만    더 보관하고 있어 더 오래된 트랜잭션 로그를 대기 서버가 필요로 하는 경우
     대기 서버를 다시 구축해야 했었다.  또한 
-    <xref linkend="guc-archive-command"> 환경 설정값에 지정된 명령어로 
+    <xref linkend="guc-archive-command"/> 환경 설정값에 지정된 명령어로 
     트랜잭션 로그를 보관하는 부분에서도 마찬가지였다.
     이제 복제 슬롯을 이용하면, 장시간 트랜잭션 로그를 전달 받지 못해 대기
     서버를 다시 만들어야 하는 문제를 피해 갈 수 있게 되었다. 
     하지만, 이 방법을 이용하게 되면 예상치 않게 트랜잭션 로그 파일의 개수가
     많아질 수도 있다. 물론 대기 서버와 동기화를 위한 옛 트랜잭션 로그만 보관
-    하지만,  이 기능을 사용하고 할 때는 <literal>pg_wal</> 디렉터리의
+    하지만,  이 기능을 사용하고 할 때는 <literal>pg_wal</literal> 디렉터리의
     여유 공간을 충분히 확보해야 할 것이다. 현재로써는 트랜잭션 로그를 남기면서
     이 디렉터리의 여유 공간을 항상 일정하게 유지할 수 있는 방법은 없다.
    </para>
    <para>
     비슷하게, 이전 버전에서도 제공하고 있던
-    <xref linkend="guc-hot-standby-feedback"> 또는
-    <xref linkend="guc-vacuum-defer-cleanup-age"> 설정 값을 이용해서
+    <xref linkend="guc-hot-standby-feedback"/> 또는
+    <xref linkend="guc-vacuum-defer-cleanup-age"/> 설정 값을 이용해서
     vacuum 작업으로 인한 관계된 자료가 지워지는 문제점을 막을 수는 있었지만,
     대기 서버 단절 시간이 길어 질 때는 방법이 없었다. 
     복제 슬롯은 이런 단점을 극복했다.
@@ -1007,8 +1014,8 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
      뷰에서 제공한다.
     </para>
     <para>
-     슬롯은 스트리밍 복제 프로토콜(<xref linkend="protocol-replication"> 참조)
-     과 SQL 함수(<xref linkend="functions-replication"> 참조) 로 만들거나 
+     슬롯은 스트리밍 복제 프로토콜(<xref linkend="protocol-replication"/> 참조)
+     과 SQL 함수(<xref linkend="functions-replication"/> 참조) 로 만들거나 
      삭제 할 수 있다.
     </para>
    </sect3>
@@ -1028,8 +1035,8 @@ postgres=# SELECT slot_name, slot_type, active FROM pg_replication_slots;
  node_a_slot | physical  | f
 (1 row)
 </programlisting>
-     다음은 대기 서버의 <filename>recovery.conf</> 파일에, 
-     아래와 같이 그 슬롯 이름을 <varname>primary_slot_name</>
+     다음은 대기 서버의 <filename>recovery.conf</filename> 파일에, 
+     아래와 같이 그 슬롯 이름을 <varname>primary_slot_name</varname>
      설정 값으로 지정한다:
 <programlisting>
 standby_mode = 'on'
@@ -1078,30 +1085,30 @@ primary_slot_name = 'node_a_slot'
 
    <para>
     순차적 복제 기능은 현재 비동기식으로 구현되었다. 동기식 복제
-    설정(<xref linkend="synchronous-replication"> 참조)을 하더라도 
+    설정(<xref linkend="synchronous-replication"/> 참조)을 하더라도 
     순차적 복제 기능을 이용한다면, 그 설정은 무시된다.
    </para>
 
    <para>
-    대기 서버의 <varname>hot_standby_feedback</> 설정은 순차적 복제 환경에서도
+    대기 서버의 <varname>hot_standby_feedback</varname> 설정은 순차적 복제 환경에서도
     그대로 작동 한다.
    </para>
 
    <para>
     업스트림 대기 서버가 새로운 운영 서버가 된다면, 
-    다운스트림 대기 서버의 <varname>recovery_target_timeline</>
-    설정값이 <literal>'latest'</>이면 새 운영 서버로부터 복제를 
+    다운스트림 대기 서버의 <varname>recovery_target_timeline</varname>
+    설정값이 <literal>'latest'</literal>이면 새 운영 서버로부터 복제를 
     계속한다.
    </para>
 
    <para>
     순차적 복제 기능을 사용하려면, 업스트림 서버 쪽에서는 
     기본적인 복제 기능을 위해 운영 서버 쪽에서 설정했던 것을 
-    그대로 설정하며 (<xref linkend="guc-max-wal-senders">,
-    <xref linkend="guc-hot-standby"> 설정값 조정하고,
+    그대로 설정하며 (<xref linkend="guc-max-wal-senders"/>,
+    <xref linkend="guc-hot-standby"/> 설정값 조정하고,
     <link linkend="auth-pg-hba-conf">호스트 기반 인증</link>
     설정을 한다), 다운스트림 대기 서버는 기존 대기서버 설정과 같이
-    하면서 <varname>primary_conninfo</> 설정에서 업스트림 대기 서버
+    하면서 <varname>primary_conninfo</varname> 설정에서 업스트림 대기 서버
     정보를 지정하면 된다.
    </para>
   </sect2>
@@ -1118,7 +1125,7 @@ primary_slot_name = 'node_a_slot'
    </indexterm>
 
    <para>
-    <productname>PostgreSQL</> 스트리밍 복제 기능은 
+    <productname>PostgreSQL</productname> 스트리밍 복제 기능은 
         기본이 비동기식이다. 이 말은 
         운영 서버가 장애로 멈추어, 
         대기 서버가 운영 서버로 역할 전환 작업(failover, 장애처리)을 
@@ -1131,7 +1138,7 @@ primary_slot_name = 'node_a_slot'
         그 결과를 운영 서버가 확인하는 방식이다. 
         이 방식은 트랜잭션 커밋으로 제공하는 기본 자료 안정성을 더 확장한 것이다.
         이것을 컴퓨터 과학 이론에서는 이중 안전 복제라 하고,
-        <varname>synchronous_commit</> 설정값이 <literal>remote_write</>
+        <varname>synchronous_commit</varname> 설정값이 <literal>remote_write</literal>
         인 경우는 그룹 안전, 또는 단일 안전 복제라한다.
    </para>
 
@@ -1174,19 +1181,19 @@ primary_slot_name = 'node_a_slot'
 
    <para>
     이미 복제 기능을 사용하고 있는데, 
-        동기식 복제 방식으로 변경하려면, <xref linkend="guc-synchronous-standby-names"> 
+        동기식 복제 방식으로 변경하려면, <xref linkend="guc-synchronous-standby-names"/> 
         설정값을 비워두지 않으면 된다. 
-        <varname>synchronous_commit</> 설정값도 <literal>on</>이어야하지만, 
+        <varname>synchronous_commit</varname> 설정값도 <literal>on</literal>이어야하지만, 
         이 값이 기본값이 때문에 실질적으로는 윗 환경설정 파라미터만 지정하면 된다.
-        (<xref linkend="runtime-config-wal-settings">과 <xref linkend="runtime-config-replication-master"> 참조)
+        (<xref linkend="runtime-config-wal-settings"/>과 <xref linkend="runtime-config-replication-master"/> 참조)
         동기식 복제 사용하는 대기 서버를 지정하면, 
         그 대기 서버로 보내는 모든 커밋 작업은 대기 서버에서도
         커밋 작업을 완료했다는 응답을 기다린다. 이 응답을 확인 해야 
         운영 서버의 다음 커밋 작업을 진행한다.
-        <varname>synchronous_standby_names</> 설정값은 쉼표 구분 여러 개의 
+        <varname>synchronous_standby_names</varname> 설정값은 쉼표 구분 여러 개의 
         대기 서버 이름을 지정할 수 있으며, 여기 등록되지 않은 대기 서버는 
         동기식 복제를 하지 않는다.
-        <varname>synchronous_commit</> 설정은 환경 설정 파일에서 변경할 수 
+        <varname>synchronous_commit</varname> 설정은 환경 설정 파일에서 변경할 수 
         있을 뿐만 아니라,
         각 트랜잭션에 대한 각각의 내구성 보장 방법을 개별적으로 설정할 수 있도록
         개별 사용자나, 특정 데이터베이스나, 아니면, 특정 응용 프로그램에서 
@@ -1197,12 +1204,12 @@ primary_slot_name = 'node_a_slot'
     커밋 레코드가 운영 서버 WAL 세그먼트 파일에 기록된 뒤에, 
         그 레코드를 대기 서버로 보낸다.
         대기 서버는 그 레코드를 자신의 WAL 세그먼트 파일에 기록한 뒤에, 
-        <varname>wal_receiver_status_interval</> 환경설정 값이 0으로
+        <varname>wal_receiver_status_interval</varname> 환경설정 값이 0으로
         지정되어 있지 않으면, 운영 서버로 작업을 완료했다고 메시지를 보낸다.
-    <varname>synchronous_commit</> 설정값이 <literal>remote_apply</>로
+    <varname>synchronous_commit</varname> 설정값이 <literal>remote_apply</literal>로
     지정한 경우, 대기서버는 커밋 트랜잭션을 적용해서,
     해당 트랜잭션이 완료되었음을 알리는 내용을 운영 서버 쪽으로 보낸다.
-    운영 서버에서 <varname>synchronous_standby_names</> 설정값으로
+    운영 서버에서 <varname>synchronous_standby_names</varname> 설정값으로
     지정한 동기식 대기서버 우선순위 목록에서 동기화 대상 대기 서버로
     선정되면, 그 대기 서버에서 보내는 응답 메시지는 
     다른 동기식 대기 서버에서 보내는 응답 메시지와 함께 고려해서, 
@@ -1218,11 +1225,11 @@ primary_slot_name = 'node_a_slot'
    </para>
 
    <para>
-    <varname>synchronous_commit</> 설정값을 <literal>remote_write</>로 하면, 
+    <varname>synchronous_commit</varname> 설정값을 <literal>remote_write</literal>로 하면, 
         대기 서버의 OS 차원에서 해당 자료가 디스크에 기록되었다는 것까지만 확인하다.
         실재로 OS가 디스크 버퍼 내용을 물리적으로 디스크에 기록했다는 것에 대해서는
-        확인하지 않는다. 이 설정은 <literal>on</>으로 설정했을 때 보다는 
-        자료를 안전하게 동기화 하지는 못한다. <productname>PostgreSQL</> 서버 장애가 
+        확인하지 않는다. 이 설정은 <literal>on</literal>으로 설정했을 때 보다는 
+        자료를 안전하게 동기화 하지는 못한다. <productname>PostgreSQL</productname> 서버 장애가 
         아니라, OS 장애가 생겼을 경우에는 대기서버 측 자료 손실이 발생할 수도 
         있기 때문이다. 하지만, 동기화 작업 시간은 그 만큼 줄어들기 때문에, 
         특수 환경에서는 유용하게 사용될 수도 있다. 
@@ -1231,7 +1238,7 @@ primary_slot_name = 'node_a_slot'
    </para>
 
    <para>
-    <varname>synchronous_commit</> 설정값이 <literal>remote_apply</>인 경우는
+    <varname>synchronous_commit</varname> 설정값이 <literal>remote_apply</literal>인 경우는
     대기 서버에서도 해당 트랜잭션이 모두 반영되어 사용자가 반영된 
     트랜잭션을 볼 수 있는 상태가 되었음을 대기 서버가 알릴 때까지 
     운영 서버는 기다린다.
@@ -1256,12 +1263,12 @@ primary_slot_name = 'node_a_slot'
     transactions will wait until all the standby servers which are considered
     as synchronous confirm receipt of their data. The number of synchronous
     standbys that transactions must wait for replies from is specified in
-    <varname>synchronous_standby_names</>. This parameter also specifies
-    a list of standby names and the method (<literal>FIRST</> and
-    <literal>ANY</>) to choose synchronous standbys from the listed ones.
+    <varname>synchronous_standby_names</varname>. This parameter also specifies
+    a list of standby names and the method (<literal>FIRST</literal> and
+    <literal>ANY</literal>) to choose synchronous standbys from the listed ones.
    </para>
    <para>
-    The method <literal>FIRST</> specifies a priority-based synchronous
+    The method <literal>FIRST</literal> specifies a priority-based synchronous
     replication and makes transaction commits wait until their WAL records are
     replicated to the requested number of synchronous standbys chosen based on
     their priorities. The standbys whose names appear earlier in the list are
@@ -1272,36 +1279,36 @@ primary_slot_name = 'node_a_slot'
     next-highest-priority standby.
    </para>
    <para>
-    An example of <varname>synchronous_standby_names</> for
+    An example of <varname>synchronous_standby_names</varname> for
     a priority-based multiple synchronous standbys is:
 <programlisting>
 synchronous_standby_names = 'FIRST 2 (s1, s2, s3)'
 </programlisting>
-    In this example, if four standby servers <literal>s1</>, <literal>s2</>,
-    <literal>s3</> and <literal>s4</> are running, the two standbys
-    <literal>s1</> and <literal>s2</> will be chosen as synchronous standbys
+    In this example, if four standby servers <literal>s1</literal>, <literal>s2</literal>,
+    <literal>s3</literal> and <literal>s4</literal> are running, the two standbys
+    <literal>s1</literal> and <literal>s2</literal> will be chosen as synchronous standbys
     because their names appear early in the list of standby names.
-    <literal>s3</> is a potential synchronous standby and will take over
-    the role of synchronous standby when either of <literal>s1</> or
-    <literal>s2</> fails. <literal>s4</> is an asynchronous standby since
+    <literal>s3</literal> is a potential synchronous standby and will take over
+    the role of synchronous standby when either of <literal>s1</literal> or
+    <literal>s2</literal> fails. <literal>s4</literal> is an asynchronous standby since
     its name is not in the list.
    </para>
    <para>
-    The method <literal>ANY</> specifies a quorum-based synchronous
+    The method <literal>ANY</literal> specifies a quorum-based synchronous
     replication and makes transaction commits wait until their WAL records
-    are replicated to <emphasis>at least</> the requested number of
+    are replicated to <emphasis>at least</emphasis> the requested number of
     synchronous standbys in the list.
    </para>
    <para>
-    An example of <varname>synchronous_standby_names</> for
+    An example of <varname>synchronous_standby_names</varname> for
     a quorum-based multiple synchronous standbys is:
 <programlisting>
 synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
 </programlisting>
-    In this example, if four standby servers <literal>s1</>, <literal>s2</>,
-    <literal>s3</> and <literal>s4</> are running, transaction commits will
-    wait for replies from at least any two standbys of <literal>s1</>,
-    <literal>s2</> and <literal>s3</>. <literal>s4</> is an asynchronous
+    In this example, if four standby servers <literal>s1</literal>, <literal>s2</literal>,
+    <literal>s3</literal> and <literal>s4</literal> are running, transaction commits will
+    wait for replies from at least any two standbys of <literal>s1</literal>,
+    <literal>s2</literal> and <literal>s3</literal>. <literal>s4</literal> is an asynchronous
     standby since its name is not in the list.
    </para>
    <para>
@@ -1323,7 +1330,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    </para>
 
    <para>
-    <productname>PostgreSQL</>에서는 
+    <productname>PostgreSQL</productname>에서는 
         응용 프로그램 개발자가 복제 작업에서의 
         커밋 트랜잭션 작업에 대한 운영 서버의 확인 수준을 결정할 수 있도록 
         제공한다. 이 수준 조정 작업은 시스템 전체를 대상으로 할 수도 있고, 
@@ -1357,10 +1364,10 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
     <title>고가용성을 고려한 계획</title>
 
    <para>
-    운영 서버에서 <varname>synchronous_commit</> 설정을
-    <literal>on</>, <literal>remote_apply</>,
-    <literal>remote_write</> 로 지정했고, 
-    <varname>synchronous_standby_names</> 설정값으로 지정한 
+    운영 서버에서 <varname>synchronous_commit</varname> 설정을
+    <literal>on</literal>, <literal>remote_apply</literal>,
+    <literal>remote_write</literal> 로 지정했고, 
+    <varname>synchronous_standby_names</varname> 설정값으로 지정한 
     동기식 대기 서버 수와 그 서버 이름으로 등록한 서버가 
     있는 경우, 그 동기화 될 대기 서버 모두 해당 트랜잭션이 
     반영 되어야 운영 서버는 트랜잭션이 완료되었음 응용프로그램에게
@@ -1371,7 +1378,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    <para>
     고가용성을 구현하는 가장 좋은 방법은 요구되는 모든 동기식 대기 서버가
         장애로 멈추지 않게 만드는 것이다.  운영 서버의 환경설정에서 
-        <varname>synchronous_standby_names</> 변수의 값으로 동기시 방식을 이용할 
+        <varname>synchronous_standby_names</varname> 변수의 값으로 동기시 방식을 이용할 
         대기 서버들을 나열해서 이것을 구현할 수 있다.
    </para>
 
@@ -1393,8 +1400,8 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
     대기 서버가 처음으로 실행되어 운영 서버로 접속하는 시점에는
         대기 서버는 아직까지는 운영 서버와 동기화가 되지 않았을 것이다.
         이 때, 대기 서버는 운영 서버 동기화를 위해, 더 이상 동기화를 할 필요가 없는 
-        상태가 될 때까지 계속 <literal>스트리밍</> 방식으로 자료를 동기화 할 것이다.
-        이런 일련의 상태를 <literal>따라잡기 catchup</> 상태라고 한다.
+        상태가 될 때까지 계속 <literal>스트리밍</literal> 방식으로 자료를 동기화 할 것이다.
+        이런 일련의 상태를 <literal>따라잡기 catchup</literal> 상태라고 한다.
         이 상태의 기간은 대기 서버와 운영 서버의 자료 동기화 간격(차이가 나는 WAL 레코드 수)을 
         좁혀서, 최종적으로는 동기화 간격을 없게 만드는 시간이다.
         달리 말하면, 운영 서버에서는 반영되었으나, 대기 서버에는 아직 반영되지 않은 WAL 레코드들을
@@ -1421,7 +1428,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    </para>
 
    <para>
-    <varname>synchronous_standby_names</> 환경 변수값에 등록된 모든 
+    <varname>synchronous_standby_names</varname> 환경 변수값에 등록된 모든 
         대기 서버들이 모두 커밋 완료 응답을 보내지 않아, 운영 서버의 커밋 작업이
         멈춰 있는 상태라면, 이 변수의 값에서 동기화 될 서버 개수를 줄이거나, 
         동기식 복제를 포기하는 설정(빈문자열)으로 바꾸고
@@ -1440,7 +1447,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
         새로운 대기 서버를 만들어야할 상황이라면, 
         pg_start_backup(), pg_stop_backup() 함수를 사용해서, 
         일반 베이스 백업을 만드는 방식으로 만들면 되나, 
-        이 때 이 작업을 하는 세션은 반드시, <varname>synchronous_commit</> = <literal>off</>
+        이 때 이 작업을 하는 세션은 반드시, <varname>synchronous_commit</varname> = <literal>off</literal>
         환경으로 작업을 진행해야한다.
         그렇지 않으면, 윗 함수들 조차 대기 서버의 응답을 기다리게 되어 
         동기화 하고 있는 대기 서버의 문제가 풀릴 때까지 무한 대기 상태가 되어버린다.
@@ -1477,7 +1484,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    </para>
 
    <para>
-     <varname>archive_mode</varname> 설정값이 <literal>on</>으로 지정하면,
+     <varname>archive_mode</varname> 설정값이 <literal>on</literal>으로 지정하면,
      대기 서버로 실행되고 있는 경우나, 운영 전 복구 모드인 경우 
      트랜잭션 로그 아카이브 작업은 하지 않는다.
      대기 서버가 운영 서버로 전환되면, 그때부터 아카이브 작업을 시작한다. 
@@ -1515,7 +1522,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
     장애처리 작업이 일어나서 새로운 운영 서버가 그 역할을 하기 시작했는데,
         장애가 생겼던 옛 운영 서버가 다시 실행되는 경우라면, 
         클라이언트가 그 옛 운영 서버를 사용할 수 없도록 조치할 필요가 있다.
-        이것을 흔히 <acronym>STONITH</> (Shoot The Other Node In The Head)
+        이것을 흔히 <acronym>STONITH</acronym> (Shoot The Other Node In The Head)
         기능이라고 한다.
     두 개의 운영 서버가 실행 되고, 서로 자신이 운영 역할을 하기 때문에, 
         심각한 경우는 자료 손실이 일어난다. 이 문제를 어떻게 막을 것인지를 
@@ -1548,7 +1555,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
         아무도 모르기 때문에, 이 생각은 위험하다. 
         만일 하드웨어 장애였다면, 그것을 고치고, 대기 서버로 새로 구축해서, 
         대기 서버로 실행해야하기 때문에, 꽤 많은 시간을 운영 서버 혼자 감당해야한다.
-        <xref linkend="app-pgrewind"> 명령을 이용하면, 하드웨어 장애가 아닌 경우, 
+        <xref linkend="app-pgrewind"/> 명령을 이용하면, 하드웨어 장애가 아닌 경우, 
         대용량 클러스터 시스템에서 대기 서버 구축 시간을 단축 시킬 수 있다.
         운영적인 입장에서는 이런 경우 어떻게 최소한의 비용으로 빠르게 
         대기 서버를 구축할 것인가도 준비해야한다. 
@@ -1569,12 +1576,12 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    <para>
     로그 전달 방식을 이용한 대기 서버환경이면, 
         이 대기 서버가 운영 서버 역할을 하게 하려면, 
-        <command>pg_ctl promote</> 명령을 실행하거나, 
-        <filename>recovery.conf</> 파일에 있는
-        <varname>trigger_file</> 설정값으로 지정한 파일을 
+        <command>pg_ctl promote</command> 명령을 실행하거나, 
+        <filename>recovery.conf</filename> 파일에 있는
+        <varname>trigger_file</varname> 설정값으로 지정한 파일을 
         만들어주면 된다.
-    <command>pg_ctl promote</> 명령을 사용할 경우에는 
-        <varname>trigger_file</> 설정값이 지정되어 있지 않아도 된다.
+    <command>pg_ctl promote</command> 명령을 사용할 경우에는 
+        <varname>trigger_file</varname> 설정값이 지정되어 있지 않아도 된다.
     고가용성을 고려한 구축이 아니라, 
         그냥 읽기 전용 쿼리를 사용하기 위해서 구축한 로그 전달 방식의 
         대기 서버라면, 굳이 이 작업을 하지 않고, 그냥 
@@ -1588,7 +1595,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    <para>
     운영 서버에서 사용했던 로그를 대기 서버로 보내서 
         복제 기능을 구현하는 방법은
-        <varname>restore_command</> 설정값으로 지정한 명령으로 
+        <varname>restore_command</varname> 설정값으로 지정한 명령으로 
         전달 된 파일을 자기 서버에 적용하고, 
         적용할 파일이 없으면, 그 명령을 계속 반복하는 식이다.
         이 부분은 앞 장에서 구체적으로 설명했다. 
@@ -1596,9 +1603,9 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
         데이터베이스 복구 기능을 이용해서 독자적인 
         로그 전달 복제 기법을 설명한다.
         이렇게 하려면, 대기 모드로 실행하지 않고, 
-        단순 복구 모드로 실행하도록 <varname>standby_mode</> 설정값을
+        단순 복구 모드로 실행하도록 <varname>standby_mode</varname> 설정값을
         off로 지정해야한다.
-        <xref linkend="pgstandby"> 모듈이 이 독자적인 복제 기능을 
+        <xref linkend="pgstandby"/> 모듈이 이 독자적인 복제 기능을 
         구현해 놓은 것이다.
    </para>
 
@@ -1611,7 +1618,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
         WAL 파일 적용 간격에 차이 때문에, 자료가 정확하게 운영 서버와 같지 
         않다는 점도 기억해야한다. 
         이 대기 서버로의 자료 반영 지연 현상을 줄이려면, 
-        <varname>archive_timeout</> 설정값을 짧게 하면 된다.
+        <varname>archive_timeout</varname> 설정값을 짧게 하면 된다.
         또한 이 방식으로 구현하면, 스트리밍 방식 복제를 사용할 수 없다는 점도
         기억해야한다.
    </para>
@@ -1629,9 +1636,9 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    </para>
 
    <para>
-    복제 기능을 독자적으로 구현하는 열쇠는 <varname>restore_command</> 
+    복제 기능을 독자적으로 구현하는 열쇠는 <varname>restore_command</varname> 
         설정값에 있다. 이 값은 대기 서버가 실행할 때 사용하는 
-        <filename>recovery.conf</> 파일안에 <varname>restore_command</>
+        <filename>recovery.conf</filename> 파일안에 <varname>restore_command</varname>
         서버 환경 변수 매개 변수 값으로 지정한다.
         여기서 사용하는 명령은 서버가 처리해야하는 파일이 없으면, 
         0 아닌 값을 리턴해서, 복구 모드를 종료하고, 
@@ -1640,7 +1647,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
         이 명령은 원하는 파일이 없으면, 그 파일이 생길 때까지(운영 서버가 
         대기 서버로 보내줄 때까지) 기다리고 있다가, 생기면 
         다시 대기 서버가 복구 작업을 계속 할 수 있어야한다.
-        또한 <literal>.history</>이 운영 서버로부터 
+        또한 <literal>.history</literal>이 운영 서버로부터 
         넘어 오면 그 파일은 무시하고, 0 아닌 값을 리턴하면서 이 명령을 끝내야한다.
         이렇게 설명한 모든 부분을 사용자가 직접 프로그래밍 해야한다.
         이 프로그램은 아울러, 장애처리를 위한 운영 역할로 전환할 수 있는 
@@ -1648,7 +1655,7 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
    </para>
 
    <para>
-    <varname>restore_command</> 설정값으로 사용될 프로그램의 의사코드는 다음과 같다:
+    <varname>restore_command</varname> 설정값으로 사용될 프로그램의 의사코드는 다음과 같다:
 <programlisting>
 triggered = false;
 while (!NextWALFileReady() &amp;&amp; !triggered)
@@ -1663,7 +1670,7 @@ if (!triggered)
    </para>
 
    <para>
-    이런 방식으로 구현된 실재 프로그램을 <xref linkend="pgstandby"> 모듈에서 
+    이런 방식으로 구현된 실재 프로그램을 <xref linkend="pgstandby"/> 모듈에서 
         제공한다.
         이 모듈은 위에서 설명한 구현 요소들을 모두 구현했다. 
         이 모듈과 함께 사용자 정의 스크립트들을 사용해서 구축할 수도 있을 것이다.
@@ -1671,7 +1678,7 @@ if (!triggered)
 
    <para>
     어떻게 대기 서버가 운영 서버로 바뀔 것인가에 대한 설계는 
-        꽤 중요한 부분이다. 이 또한 <varname>restore_command</> 설정값으로 지정하는 
+        꽤 중요한 부분이다. 이 또한 <varname>restore_command</varname> 설정값으로 지정하는 
         명령어에서 담당한다.
         단순하게 이 명령어의 리턴값이 0 아닌 값으로 종료되면 된다.
         0 아닌 값으로 종료되는 상황은 
@@ -1682,7 +1689,7 @@ if (!triggered)
         서버 데몬과 달리 시그널 처리를 하기 힘들다. 그렇기 때문에, 
         어떤 특정 파일을 만들어 장애처리 신호로 사용하겠다면, 
         그 파일은 다른 프로세스가 만드는 것이 타당하다.
-        한편, 운영 서버의  <varname>archive_timeout</> 값을 참조해서, 
+        한편, 운영 서버의  <varname>archive_timeout</varname> 값을 참조해서, 
         원하는 WAL 파일이 넘어오지 않을 경우 다음 작업을 할 수 있는 
         시간 제한 기능을 둘 수도 있으나, 이 때 네트워크 상태나, 운영 서버의 부하 상태도 함께 고려해야한다.
     그렇지 않으면, 의도 되지 않게 장애처리 기능이 작동해서, 
@@ -1698,28 +1705,28 @@ if (!triggered)
      <listitem>
       <para>
        운영 서버와 대기 서버의 시스템을 최대한 똑같이 설정 하고, 각자 동일한 버전의 
-       <productname>PostgreSQL</>을 사용한다. 
+       <productname>PostgreSQL</productname>을 사용한다. 
       </para>
      </listitem>
      <listitem>
       <para>
        운영 서버에서 대기 서버의 WAL 아카이브 디렉터리로 연속적인 아카이빙을 설정하라. 
-       <xref linkend="guc-archive-mode">,
-       <xref linkend="guc-archive-command">
-       <xref linkend="guc-archive-timeout">
-       가 운영 서버에 적절하게 설정되도록 확인한다(<xref linkend="backup-archiving-wal">을 참조).
+       <xref linkend="guc-archive-mode"/>,
+       <xref linkend="guc-archive-command"/>
+       <xref linkend="guc-archive-timeout"/>
+       가 운영 서버에 적절하게 설정되도록 확인한다(<xref linkend="backup-archiving-wal"/>을 참조).
       </para>
      </listitem>
      <listitem>
       <para>
        운영 서버의 기본 백업을 만들고(<xref
-       linkend="backup-base-backup">을 참조), 대기 서버에 데이터를 적재하라.
+       linkend="backup-base-backup"/>을 참조), 대기 서버에 데이터를 적재하라.
       </para>
      </listitem>
      <listitem>
       <para>
-       이전에 설명한 것처럼(<xref linkend="backup-pitr-recovery">을 참조)
-       <varname>restore_command</>가 명시된 <filename>recovery.conf</>로 지역 WAL 아카이브에서 대기 서버로의 복구 작업을 시작하라.
+       이전에 설명한 것처럼(<xref linkend="backup-pitr-recovery"/>을 참조)
+       <varname>restore_command</varname>가 명시된 <filename>recovery.conf</filename>로 지역 WAL 아카이브에서 대기 서버로의 복구 작업을 시작하라.
       </para>
      </listitem>
     </orderedlist>
@@ -1742,17 +1749,17 @@ if (!triggered)
    </para>
 
    <para>
-    <function>pg_walfile_name_offset()</> 함수 (<xref linkend="functions-admin"> 참조)
+    <function>pg_walfile_name_offset()</function> 함수 (<xref linkend="functions-admin"/> 참조)
     를 호출해서 파일명과 현재 마지막 WAL의 정확한 바이트 오프셋을 구할 수 있다. 
     pg_xlogfile_name_offset 함수는 WAL 파일에 직접 접근할 수 있고 WAL 파일 마지막 데이터를 대기 서버에 복사할 수 있다. 
     이 방법을 쓰면 데이터 손실은 프로그램을 복사하는 폴링polling 순환 시기에 발생하는데, 손실은 매우 적고, 부분적으로 사용되는 세그먼트 파일을 강제로 아카이빙할 때 낭비하는 대역폭은 없다. 대
-    기 서버의 <varname>restore_command</> 스크립트는 전체 WAL 파일을 다루므로, 점차적으로 복사된 데이터는 보통 대기 서버에서 사용할 수 없다. 
+    기 서버의 <varname>restore_command</varname> 스크립트는 전체 WAL 파일을 다루므로, 점차적으로 복사된 데이터는 보통 대기 서버에서 사용할 수 없다. 
     이 데이터는 운영 서버가 죽었을 때만 사용되는데, 마지막 WAL 파일 부분이 대기 서버에 쓰이게 된다. 
-    이 프로세스를 정확하게 실행하려면 데이터 복사 프로그램과 <varname>restore_command</> 스크립트의 조합이 필요하다.
+    이 프로세스를 정확하게 실행하려면 데이터 복사 프로그램과 <varname>restore_command</varname> 스크립트의 조합이 필요하다.
    </para>
 
    <para>
-    <productname>PostgreSQL</> 9.0 버전 이상은 스트리밍 리플리케이션(<xref linkend="streaming-replication">을 참조)으로 편리하게 할 수 있다.
+    <productname>PostgreSQL</productname> 9.0 버전 이상은 스트리밍 리플리케이션(<xref linkend="streaming-replication"/>을 참조)으로 편리하게 할 수 있다.
    </para>
   </sect2>
  </sect1>
@@ -1791,7 +1798,7 @@ if (!triggered)
    <title>사용자 측면 개요</title>
 
    <para>
-    대기 서버에서 <xref linkend="guc-hot-standby"> 매개 변수의 값이 true로 설정되면, 복구 작업으로 시스템이 일관성 있는 상태가 되었을 때 연결을 허용하게 된다. 
+    대기 서버에서 <xref linkend="guc-hot-standby"/> 매개 변수의 값이 true로 설정되면, 복구 작업으로 시스템이 일관성 있는 상태가 되었을 때 연결을 허용하게 된다. 
     모든 연결은 무조건 읽기 전용이다. 임시 테이블도 쓰기를 허용하지 않는다. 
    </para>
 
@@ -1800,7 +1807,7 @@ if (!triggered)
     따라서 운영 서버와 대기 서버에 거의 동시에 같은 쿼리를 수행하는 것은 다른 결과를 가져올 수 있다. 
     We say that data on the standby is <firstterm>eventually consistent</firstterm> with the primary. 
     트랜잭션에 커밋된 레코드가 대기 서버에서 리플레이되면, 트랜잭션 변경 사항이 스냅샷에 보인다. 
-    스냅샷은 각 쿼리 혹은 트랜잭션이 시작될 때 찍히는데, 현재 트랜잭션의 고립 수준에 따라 다르다(자세한 정보는 <xref linkend="transaction-iso">을 참조). 
+    스냅샷은 각 쿼리 혹은 트랜잭션이 시작될 때 찍히는데, 현재 트랜잭션의 고립 수준에 따라 다르다(자세한 정보는 <xref linkend="transaction-iso"/>을 참조). 
    </para>
 
    <para>
@@ -1809,17 +1816,17 @@ if (!triggered)
     <itemizedlist>
      <listitem>
       <para>
-       쿼리 접근 - <command>SELECT</>, <command>COPY TO</>
+       쿼리 접근 - <command>SELECT</command>, <command>COPY TO</command>
       </para>
      </listitem>
      <listitem>
       <para>
-       커서 명령어 - <command>DECLARE</>, <command>FETCH</>, <command>CLOSE</>
+       커서 명령어 - <command>DECLARE</command>, <command>FETCH</command>, <command>CLOSE</command>
       </para>
      </listitem>
      <listitem>
       <para>
-       매개 변수 - <command>SHOW</>, <command>SET</>, <command>RESET</>
+       매개 변수 - <command>SHOW</command>, <command>SET</command>, <command>RESET</command>
       </para>
      </listitem>
      <listitem>
@@ -1828,17 +1835,17 @@ if (!triggered)
         <itemizedlist>
          <listitem>
           <para>
-           <command>BEGIN</>, <command>END</>, <command>ABORT</>, <command>START TRANSACTION</>
+           <command>BEGIN</command>, <command>END</command>, <command>ABORT</command>, <command>START TRANSACTION</command>
           </para>
          </listitem>
          <listitem>
           <para>
-           <command>SAVEPOINT</>, <command>RELEASE</>, <command>ROLLBACK TO SAVEPOINT</>
+           <command>SAVEPOINT</command>, <command>RELEASE</command>, <command>ROLLBACK TO SAVEPOINT</command>
           </para>
          </listitem>
          <listitem>
           <para>
-           <command>EXCEPTION</> 블록과 그 외 내부적인 하위트랜잭션들
+           <command>EXCEPTION</command> 블록과 그 외 내부적인 하위트랜잭션들
           </para>
          </listitem>
         </itemizedlist>
@@ -1846,19 +1853,19 @@ if (!triggered)
      </listitem>
      <listitem>
       <para>
-       <command>LOCK TABLE</>(
-       <literal>ACCESS SHARE</>, <literal>ROW SHARE</>, <literal>ROW EXCLUSIVE</> 중 한 모드에 있을 때)
+       <command>LOCK TABLE</command>(
+       <literal>ACCESS SHARE</literal>, <literal>ROW SHARE</literal>, <literal>ROW EXCLUSIVE</literal> 중 한 모드에 있을 때)
       </para>
      </listitem>
      <listitem>
       <para>
-       계획과 리소스 - <command>PREPARE</>, <command>EXECUTE</>,
-       <command>DEALLOCATE</>, <command>DISCARD</>
+       계획과 리소스 - <command>PREPARE</command>, <command>EXECUTE</command>,
+       <command>DEALLOCATE</command>, <command>DISCARD</command>
       </para>
      </listitem>
      <listitem>
       <para>
-       플러그인과 확장 모듈 - <command>LOAD</>
+       플러그인과 확장 모듈 - <command>LOAD</command>
       </para>
      </listitem>
     </itemizedlist>
@@ -1870,37 +1877,37 @@ if (!triggered)
     <itemizedlist>
      <listitem>
       <para>
-       데이터 조작어 (DML) - <command>INSERT</>,
-       <command>UPDATE</>, <command>DELETE</>, <command>COPY FROM</>,
-       <command>TRUNCATE</>.
+       데이터 조작어 (DML) - <command>INSERT</command>,
+       <command>UPDATE</command>, <command>DELETE</command>, <command>COPY FROM</command>,
+       <command>TRUNCATE</command>.
        복구하는 동안 트리거를 실행할 수는 없다. 임시 테이블도 마찬가지인데, 테이블 로우는 트랜잭션 ID 없이 읽거나 쓸 수 없기 때문이다. 이 기능은 아직 Hot Standby 환경에 구현되지 않았다.
       </para>
      </listitem>
      <listitem>
       <para>
-       데이터 정의 언어 (DDL) - <command>CREATE</>,
-       <command>DROP</>, <command>ALTER</>, <command>COMMENT</>.
+       데이터 정의 언어 (DDL) - <command>CREATE</command>,
+       <command>DROP</command>, <command>ALTER</command>, <command>COMMENT</command>.
        이 규칙은 임시 테이블에도 적용되는데, 이 작업들을 수행하려면 시스템 카탈로그 테이블도 수정해야 하기 때문이다.
       </para>
      </listitem>
      <listitem>
       <para>
-       <command>SELECT ... FOR SHARE | UPDATE</>, 로우 잠금을 하기 위해서 데이터 파일을 수정해야 할 때도 있기 때문이다.
+       <command>SELECT ... FOR SHARE | UPDATE</command>, 로우 잠금을 하기 위해서 데이터 파일을 수정해야 할 때도 있기 때문이다.
       </para>
      </listitem>
      <listitem>
       <para>
-       DML 명령어를 생성하는 <command>SELECT</> 문에 대한 규칙
+       DML 명령어를 생성하는 <command>SELECT</command> 문에 대한 규칙
       </para>
      </listitem>
      <listitem>
       <para>
-        <literal>ROW EXCLUSIVE MODE</>보다 높은 모드를 명시적으로 요청하는 <command>LOCK</>.
+        <literal>ROW EXCLUSIVE MODE</literal>보다 높은 모드를 명시적으로 요청하는 <command>LOCK</command>.
       </para>
      </listitem>
      <listitem>
       <para>
-       <literal>ACCESS EXCLUSIVE MODE</>를 요청하는 축약된 디폴트 형태의 <command>LOCK</>.
+       <literal>ACCESS EXCLUSIVE MODE</literal>를 요청하는 축약된 디폴트 형태의 <command>LOCK</command>.
       </para>
      </listitem>
      <listitem>
@@ -1909,19 +1916,19 @@ if (!triggered)
         <itemizedlist>
          <listitem>
           <para>
-            <command>BEGIN READ WRITE</>,
-            <command>START TRANSACTION READ WRITE</>
+            <command>BEGIN READ WRITE</command>,
+            <command>START TRANSACTION READ WRITE</command>
           </para>
          </listitem>
          <listitem>
           <para>
-            <command>SET TRANSACTION READ WRITE</>,
-            <command>SET SESSION CHARACTERISTICS AS TRANSACTION READ WRITE</>
+            <command>SET TRANSACTION READ WRITE</command>,
+            <command>SET SESSION CHARACTERISTICS AS TRANSACTION READ WRITE</command>
           </para>
          </listitem>
          <listitem>
           <para>
-           <command>SET transaction_read_only = off</>
+           <command>SET transaction_read_only = off</command>
           </para>
          </listitem>
         </itemizedlist>
@@ -1929,38 +1936,38 @@ if (!triggered)
      </listitem>
      <listitem>
       <para>
-       두 단계의 커밋 명령어 - <command>PREPARE TRANSACTION</>,
-       <command>COMMIT PREPARED</>, <command>ROLLBACK PREPARED</>
+       두 단계의 커밋 명령어 - <command>PREPARE TRANSACTION</command>,
+       <command>COMMIT PREPARED</command>, <command>ROLLBACK PREPARED</command>
        읽기전용의 트랜잭션도 준비 단계에서 WAL에 쓰기 작업을 해야 하기 때문이다(두 단계중 첫 번째 커밋 단계).
       </para>
      </listitem>
      <listitem>
       <para>
-       시퀀스 업데이트 - <function>nextval()</>, <function>setval()</>
+       시퀀스 업데이트 - <function>nextval()</function>, <function>setval()</function>
       </para>
      </listitem>
      <listitem>
       <para>
-       <command>LISTEN</>, <command>UNLISTEN</>, <command>NOTIFY</>
+       <command>LISTEN</command>, <command>UNLISTEN</command>, <command>NOTIFY</command>
       </para>
      </listitem>
     </itemizedlist>
    </para>
 
    <para>
-    보통은 <quote>읽기 전용</> 트랜잭션이 <command>LISTEN</>, 
-    <command>UNLISTEN</>, <command>NOTIFY</>를 사용하기 때문에
+    보통은 <quote>읽기 전용</quote> 트랜잭션이 <command>LISTEN</command>, 
+    <command>UNLISTEN</command>, <command>NOTIFY</command>를 사용하기 때문에
     Hot Standby 세션들이 정상적인 읽기 전용 세션보다 조금 더
     엄격하게 작업해야 한다. 추후 버전에선 이런 점이 완화될 수도 있다.
    </para>
 
    <para>
-    hot standby 시점에 <varname>transaction_read_only</> 매개 변수는 항상 true로 지속될 수 있다. 데이터베이스를 수정하려는 시도가 없는 한 hot standby 연결은 다른 데이터베이스 연결과 별반 다르지 않을 것이다. 장애처리failover나 스위치오버switchover가 발생하면 데이터베이스는 정상적인 프로세싱 모드로 전환된다. 세션은 서버 모드가 변경 돼도 연결된 상태를 유지한다. hot standby가 종료되면 읽기-쓰기 트랜잭션이 초기화될 수 있다(hot standby에서 시작된 세션조차도).
+    hot standby 시점에 <varname>transaction_read_only</varname> 매개 변수는 항상 true로 지속될 수 있다. 데이터베이스를 수정하려는 시도가 없는 한 hot standby 연결은 다른 데이터베이스 연결과 별반 다르지 않을 것이다. 장애처리failover나 스위치오버switchover가 발생하면 데이터베이스는 정상적인 프로세싱 모드로 전환된다. 세션은 서버 모드가 변경 돼도 연결된 상태를 유지한다. hot standby가 종료되면 읽기-쓰기 트랜잭션이 초기화될 수 있다(hot standby에서 시작된 세션조차도).
    </para>
 
    <para>
-    사용자는 <command>SHOW transaction_read_only</>를 실행해서 읽기 전용 여부를 판별할 수 있다. 
-    사용자는 함수 집합(<xref linkend="functions-recovery-info-table">)을 통해 대기 서버 정보에 접근할 수 있다. 
+    사용자는 <command>SHOW transaction_read_only</command>를 실행해서 읽기 전용 여부를 판별할 수 있다. 
+    사용자는 함수 집합(<xref linkend="functions-recovery-info-table"/>)을 통해 대기 서버 정보에 접근할 수 있다. 
     함수들을 사용해서 현재 데이터베이스와 연결된 프로그램을 쓸 수 있다. 
     복구 절차를 모니터링하거나 데이터베이스를 특정 상태로 복원하는 복잡한 프로그램을 쓸 수 있다.
    </para>
@@ -1986,14 +1993,14 @@ if (!triggered)
     다음은 대기 서버에서 발생할 수 있는 자료 충돌 종류들이다.
     이런 충돌을 해결 하기 위해서는 어떤 경우는 실행 되고 있는 쿼리를 
     중지 하는 경우도 있고, 또는 세션을 중지해야 하는 경우도 발생할 것이다. 
-    이런 의미에서 이런 충돌은 <emphasis>강한 충돌</>이라고 한다.
+    이런 의미에서 이런 충돌은 <emphasis>강한 충돌</emphasis>이라고 한다.
     사용자는 이런 충돌을 잘 이해해서 각 상황에 맞는 조치를 취해야 한다:
 
       <itemizedlist>
        <listitem>
         <para>
-         운영 서버에서 <command>LOCK</> 명령을 사용했거나, 
-         다양한 <acronym>DDL</> 구문에 의해서 발생하는 
+         운영 서버에서 <command>LOCK</command> 명령을 사용했거나, 
+         다양한 <acronym>DDL</acronym> 구문에 의해서 발생하는 
          배타적 접근 잠금 Access Exclusive Lock 에 대해서, 
          대기 서버는 그것에 대한 정확한 상태를 유지하지 못한다. 즉, 
          운영 서버에서 해당 객체가 잠겨도 대기 서버에서는 접근이 가능하다.
@@ -2039,7 +2046,7 @@ if (!triggered)
    </para>
 
    <para>
-    그 한 예로 운영 서버에서 <command>DROP TABLE</> 명령으로 한 테이블을
+    그 한 예로 운영 서버에서 <command>DROP TABLE</command> 명령으로 한 테이블을
     삭제 한다면, 대기 서버에서 아직 삭제 되지 않은 그 테이블을 조회하는 쿼리는
     운영 서버에서 전달 받은 이 트랜잭션이 감지 되면 자동으로 취소 된다.
     일반적으로 단독 서버 환경이면, 조회 작업이 먼저 진행 중이고, 
@@ -2059,8 +2066,8 @@ if (!triggered)
     그냥 대기서버도 운영 서버 방식을 취하는 것이 바람직할 것이다.  하지만, 
     대기 서버의 조회 작업이 오래 지속된다면, 트랜잭션 로그 동기화는 그만큼 
     지연 될 것이고, 이에 따른 다른 객체들까지 영향을 받을 것이다. 
-    그래서, <xref linkend="guc-max-standby-archive-delay">, <xref
-    linkend="guc-max-standby-streaming-delay"> 환경 설정 매개 변수로
+    그래서, <xref linkend="guc-max-standby-archive-delay"/>, <xref
+    linkend="guc-max-standby-streaming-delay"/> 환경 설정 매개 변수로
     이런 최대 지연 시간을 지정해서 이 지연 시간을 넘으면 대기 서버의 작업을 
     중지 하도록 설정 한다.  이렇게 함으로 최대한 대기 서버의 상태를 
     운영 서버와 같도록 한다. 이 두 환경 설정 매개 변수는 아카이브 로그 파일 
@@ -2074,8 +2081,8 @@ if (!triggered)
    </para>
 
    <para>
-    <varname>max_standby_archive_delay</> 혹은
-    <varname>max_standby_streaming_delay</> 로 지정된 시간을 초과하면 충돌 쿼리는 취소된다. 그러면 취소 에러만 발생하는데, <command>DROP DATABASE</>를 실행할 경우 전체 충돌 세션이 종료된다. 휴지 상태인 트랜잭션의 잠금이 충돌 원인일 때 충돌 세션은 종료된다(이 방법은 향후 바뀔 수 있음).
+    <varname>max_standby_archive_delay</varname> 혹은
+    <varname>max_standby_streaming_delay</varname> 로 지정된 시간을 초과하면 충돌 쿼리는 취소된다. 그러면 취소 에러만 발생하는데, <command>DROP DATABASE</command>를 실행할 경우 전체 충돌 세션이 종료된다. 휴지 상태인 트랜잭션의 잠금이 충돌 원인일 때 충돌 세션은 종료된다(이 방법은 향후 바뀔 수 있음).
    </para>
 
    <para>
@@ -2087,33 +2094,33 @@ if (!triggered)
    </para>
 
    <para>
-    대기 서버 쿼리와 WAL 리플레이 충돌의 원인으로 가장 잘 알려진 것은 <quote>조기 청소early cleanup</>이다.  보통 <productname>PostgreSQL</>에서는 MVCC 규칙에 따라 데이터의 가시성을 정하기 위해, 트랜잭션이 보지 않는 이전 로우 버전들을 청소할 수 있다. 하지만 이 규칙은 마스터에서 수행하는 트랜잭션에만 해당된다. 그러므로 마스터에서 청소하면 대기서버의 트랜잭션이 보고 있는 로우 버전들이 삭제될 수도 있다.
+    대기 서버 쿼리와 WAL 리플레이 충돌의 원인으로 가장 잘 알려진 것은 <quote>조기 청소early cleanup</quote>이다.  보통 <productname>PostgreSQL</productname>에서는 MVCC 규칙에 따라 데이터의 가시성을 정하기 위해, 트랜잭션이 보지 않는 이전 로우 버전들을 청소할 수 있다. 하지만 이 규칙은 마스터에서 수행하는 트랜잭션에만 해당된다. 그러므로 마스터에서 청소하면 대기서버의 트랜잭션이 보고 있는 로우 버전들이 삭제될 수도 있다.
    </para>
 
    <para>
     숙련된 사용자는 로우 버전 청소와 로우 버전 동결freezing이 대기 서버 쿼리들과 충돌할 수 있다는 것을 안다.
-    <command>VACUUM FREEZE</>를 수동적으로 실행하면 로우가 업데이트되거나 삭제되지 않은 테이블에도 충돌을 일으킬 수 있다.
+    <command>VACUUM FREEZE</command>를 수동적으로 실행하면 로우가 업데이트되거나 삭제되지 않은 테이블에도 충돌을 일으킬 수 있다.
    </para>
 
    <para>
-    운영 서버에서 정기적으로 대량 업데이트 된 테이블은 대기 서버에서 장시간 수행되는 쿼리를 급하게 취소할 수 있다. 이런 경우에 <varname>max_standby_archive_delay</>나
-    <varname>max_standby_streaming_delay</>에 한정적인 값을 설정하면 <varname>statement_timeout</>을 설정하는 것과 비슷한 역할을 한다.
+    운영 서버에서 정기적으로 대량 업데이트 된 테이블은 대기 서버에서 장시간 수행되는 쿼리를 급하게 취소할 수 있다. 이런 경우에 <varname>max_standby_archive_delay</varname>나
+    <varname>max_standby_streaming_delay</varname>에 한정적인 값을 설정하면 <varname>statement_timeout</varname>을 설정하는 것과 비슷한 역할을 한다.
    </para>
 
    <para>
     대기 서버 쿼리를 취소하는 횟수가 많아질 때를 대비하는 방법도 있다. 첫 번째 방법은 
-    <varname>hot_standby_feedback</> 매개 변수를 설정하는 것인데, 최근 삭제된 로우들에 <command>VACUUM</>을 수행하는 것을 막아서 청소 충돌을 방지하는 것이다. 
+    <varname>hot_standby_feedback</varname> 매개 변수를 설정하는 것인데, 최근 삭제된 로우들에 <command>VACUUM</command>을 수행하는 것을 막아서 청소 충돌을 방지하는 것이다. 
     운영 서버에서 삭제된 로우들에 대한 청소를 지연하여 테이블이 원치 않게 커질 수가 있다. 하지만 운영 서버에서 직접 대기 서버 쿼리를 실행하고 있을 때 대기 서버에서도 수행되는 경우보다는 나을 수도 있다. 이 경우, 지연된 WAL 파일에 대기 서버 쿼리와 충돌할 엔트리가 포함됐을 수 있으므로, 
-    <varname>max_standby_archive_delay</>가 항상 큰 값으로 유지되어야 한다.
+    <varname>max_standby_archive_delay</varname>가 항상 큰 값으로 유지되어야 한다.
    </para>
 
    <para>
-    또 다른 방법은 운영 서버에서 <xref linkend="guc-vacuum-defer-cleanup-age">
-    를 증가시켜서 삭제된 로우가 평소보다 빨리 청소되는 것을 막는 것이다. <varname>max_standby_streaming_delay</>를 높게 설정하지 않아도 대기 서버에서 쿼리들이 취소되기 전에 수행될 시간을 더 준다. 하지만 특정 수행 시간을 보장할 수는 없는데, 운영 서버에서 실행된 트랜잭션에 <varname>vacuum_defer_cleanup_age</>가 반영되기 때문이다. 
+    또 다른 방법은 운영 서버에서 <xref linkend="guc-vacuum-defer-cleanup-age"/>
+    를 증가시켜서 삭제된 로우가 평소보다 빨리 청소되는 것을 막는 것이다. <varname>max_standby_streaming_delay</varname>를 높게 설정하지 않아도 대기 서버에서 쿼리들이 취소되기 전에 수행될 시간을 더 준다. 하지만 특정 수행 시간을 보장할 수는 없는데, 운영 서버에서 실행된 트랜잭션에 <varname>vacuum_defer_cleanup_age</varname>가 반영되기 때문이다. 
    </para>
 
    <para>
-    쿼리 취소 횟수와 취소 원인은 대기 서버의 <structname>pg_stat_database_conflicts</> 시스템 뷰로 확인할 수 있다. <structname>pg_stat_database</> 시스템 뷰에는 요약 정보도 포함돼 있다.
+    쿼리 취소 횟수와 취소 원인은 대기 서버의 <structname>pg_stat_database_conflicts</structname> 시스템 뷰로 확인할 수 있다. <structname>pg_stat_database</structname> 시스템 뷰에는 요약 정보도 포함돼 있다.
    </para>
   </sect2>
 
@@ -2121,8 +2128,8 @@ if (!triggered)
    <title>관리자 측면 개요</title>
 
    <para>
-    <filename>postgresql.conf</>에서 <varname>hot_standby</> 상태가
-    <literal>on</>이고(기본값),  <filename>recovery.conf</> 파일이
+    <filename>postgresql.conf</filename>에서 <varname>hot_standby</varname> 상태가
+    <literal>on</literal>이고(기본값),  <filename>recovery.conf</filename> 파일이
     존재하면, 서버는 Hot Standby 모드로 실행될 것이다.  
     그러나 Hot Standby 접속이 허용되려면 시간이 꽤 걸릴 수도 있다.  서버가
     일관적으로 어떤 쿼리를 실행하기 위해 복구를 끝낼 때까지 연결을
@@ -2141,7 +2148,7 @@ LOG:  database system is ready to accept read only connections
 </programlisting>
 
     일관성에 대한 정보는 운영 서버에 체크 포인트당 한 번 기록된다.  
-    <varname>wal_level</>이 운영 서버의 <literal>replica</> 또는 <literal>logical</>로
+    <varname>wal_level</varname>이 운영 서버의 <literal>replica</literal> 또는 <literal>logical</literal>로
     설정돼 있지 않을 때 쓰여진 WAL을 읽으면 hot standby를 켤 수 없다.  
     일관적인 상태는 아래 두 조건이 충족되면 지연될 수 있다.
 
@@ -2157,11 +2164,15 @@ LOG:  database system is ready to accept read only connections
         </para>
        </listitem>
       </itemizedlist>
-    파일 기반의 로그 전달(“warm standby”)을 수행할 때 그 다음 WAL 파일이 도착할 때까지 기다려야 할 수도 있는데, 운영 서버에서 <varname>archive_timeout</>에 설정해 놓은 만큼 기다릴 수 있다.  
+    파일 기반의 로그 전달(“warm standby”)을 수행할 때 그 다음 WAL 파일이 도착할 때까지 기다려야 할 수도 있는데, 운영 서버에서 <varname>archive_timeout</varname>에 설정해 놓은 만큼 기다릴 수 있다.  
    </para>
 
    <para>
     대기 서버에서 설정한 일부 매개 변수들은 운영 서버에서 변경 되면 재설정되어야 한다.  
+    Therefore, if you want to increase these values, you should do so on all
+    standby servers first, before applying the changes to the primary server.
+    Conversely, if you want to decrease these values, you should do so on the
+    primary server first, before applying the changes to all standby servers.
     이 매개 변수들에 대한 대기 서버의 값은 운영 서버에서의 값보다 크거나 같다.  
     이 매개 변수들이 높게 설정돼 있지 않으면 대기 서버에서 실행할 수 없다. 
     높게 설정 되면 서버가 복구를 위해 재시작한다. 매개 변수들은 다음과 같다.
@@ -2169,30 +2180,30 @@ LOG:  database system is ready to accept read only connections
       <itemizedlist>
        <listitem>
         <para>
-         <varname>max_connections</>
+         <varname>max_connections</varname>
         </para>
        </listitem>
        <listitem>
         <para>
-         <varname>max_prepared_transactions</>
+         <varname>max_prepared_transactions</varname>
         </para>
        </listitem>
        <listitem>
         <para>
-         <varname>max_locks_per_transaction</>
+         <varname>max_locks_per_transaction</varname>
         </para>
        </listitem>
        <listitem>
         <para>
-         <varname>max_worker_processes</>
+         <varname>max_worker_processes</varname>
         </para>
        </listitem>
       </itemizedlist>
    </para>
 
    <para>
-    관리자가 <xref linkend="guc-max-standby-archive-delay">와 <xref
-    linkend="guc-max-standby-streaming-delay">에 적절한 설정을 해주는 것이 중요하다.  
+    관리자가 <xref linkend="guc-max-standby-archive-delay"/>와 <xref
+    linkend="guc-max-standby-streaming-delay"/>에 적절한 설정을 해주는 것이 중요하다.  
     최적의 설정 방법은 비즈니스 우선순위에 따라 다르다.  
     예를 들어, 서버가 주로 고 가용성 서버로서의 임무를 맡으면 지연 값을 낮추는 것이 좋다.  극단적으로 0도 가능하다.  
     대기 서버가 decision support 쿼리를 위해 추가된 서버일 경우, 최대 지연 값을 장시간 혹은 쿼리가 끝날 때까지인 -1로 설정할 수 있다.  
@@ -2212,19 +2223,19 @@ LOG:  database system is ready to accept read only connections
       <itemizedlist>
        <listitem>
         <para>
-         Data Definition Language (DDL) - e.g. <command>CREATE INDEX</>
+         Data Definition Language (DDL) - e.g. <command>CREATE INDEX</command>
         </para>
        </listitem>
        <listitem>
         <para>
-         Privilege and Ownership - <command>GRANT</>, <command>REVOKE</>,
-         <command>REASSIGN</>
+         Privilege and Ownership - <command>GRANT</command>, <command>REVOKE</command>,
+         <command>REASSIGN</command>
         </para>
        </listitem>
        <listitem>
         <para>
-         Maintenance commands - <command>ANALYZE</>, <command>VACUUM</>,
-         <command>CLUSTER</>, <command>REINDEX</>
+         Maintenance commands - <command>ANALYZE</command>, <command>VACUUM</command>,
+         <command>CLUSTER</command>, <command>REINDEX</command>
         </para>
        </listitem>
       </itemizedlist>
@@ -2240,33 +2251,33 @@ LOG:  database system is ready to accept read only connections
    </para>
 
    <para>
-    <function>pg_cancel_backend()</>와 <function>pg_terminate_backend()</>는 사용자 백엔드에서 작동하고, 복구 작업을 하는 스타트업Startup 프로세스에서는 작동하지 않는다.  
+    <function>pg_cancel_backend()</function>와 <function>pg_terminate_backend()</function>는 사용자 백엔드에서 작동하고, 복구 작업을 하는 스타트업Startup 프로세스에서는 작동하지 않는다.  
     <structname>pg_stat_activity</structname>는 이 복구 작업 중인 세션 정보는
     보여 주지 않는다.  즉, <structname>pg_prepared_xacts</structname>는 복구 중에 항상 비어 있다.  
-    prepared transaction을 분석하려면, 운영 서버에 있는 <literal>pg_prepared_xacts</>을 보고 명령어를 실행해서 트랜잭션을 분석해야 한다.
+    prepared transaction을 분석하려면, 운영 서버에 있는 <literal>pg_prepared_xacts</literal>을 보고 명령어를 실행해서 트랜잭션을 분석해야 한다.
    </para>
 
    <para>
     <structname>pg_locks</structname>는 백엔드가 사용하는 잠금을 보여준다.  
     <structname>pg_locks</structname> also shows a virtual transaction managed by the Startup process that owns all
-    <literal>AccessExclusiveLocks</> held by transactions being replayed by recovery.
-    스타트업 프로세스는 데이터베이스를 변경할 때 잠금을 사용하지 않으므로 <literal>AccessExclusiveLocks</>
+    <literal>AccessExclusiveLocks</literal> held by transactions being replayed by recovery.
+    스타트업 프로세스는 데이터베이스를 변경할 때 잠금을 사용하지 않으므로 <literal>AccessExclusiveLocks</literal>
     외의 잠금은 <structname>pg_locks</structname>에 표시되지 않는다.  잠금이 존재한다고 추정할 수밖에 없다.
    </para>
 
    <para>
-    <productname>Nagios</> 플러그인 <productname>check_pgsql</> 은 간단한 정보를 확인하기 위해 작동한다. 
-    <productname>check_postgres</> 모니터링 스크립트는 일부 예상과 다르거나 혼동되는 수치를 보여주기도 한다.  
+    <productname>Nagios</productname> 플러그인 <productname>check_pgsql</productname> 은 간단한 정보를 확인하기 위해 작동한다. 
+    <productname>check_postgres</productname> 모니터링 스크립트는 일부 예상과 다르거나 혼동되는 수치를 보여주기도 한다.  
     예를 들어 vacuum은 대기 서버에서 작동하지 않으므로, 최근 vacuum 시간은 보존 되지 않는다.  
     운영 서버에서 실행되는 vacuum은 대기 서버에 변경 사항을 전달한다.
    </para>
 
    <para>
-    WAL 파일을 조절하는 명령어는 복구 중에 작동하지 않는다.  예를 들면 <function>pg_start_backup</>, <function>pg_switch_wal</> 등이 있다.
+    WAL 파일을 조절하는 명령어는 복구 중에 작동하지 않는다.  예를 들면 <function>pg_start_backup</function>, <function>pg_switch_wal</function> 등이 있다.
    </para>
 
    <para>
-    동적으로 적재 가능한 모듈에는 <structname>pg_stat_statements</>가 있다.  
+    동적으로 적재 가능한 모듈에는 <structname>pg_stat_statements</structname>가 있다.  
    </para>
 
    <para>
@@ -2276,13 +2287,13 @@ LOG:  database system is ready to accept read only connections
    </para>
 
    <para>
-    <productname>Slony</>나 <productname>Londiste</>, <productname>Bucardo</>같은 트리거 기반의 리플리케이션 시스템은 대기 서버에서 절대 실행될 수 없다.  
+    <productname>Slony</productname>나 <productname>Londiste</productname>, <productname>Bucardo</productname>같은 트리거 기반의 리플리케이션 시스템은 대기 서버에서 절대 실행될 수 없다.  
     대기 서버에 변경 사항이 전달되지 않는 한, 운영 서버에서 잘 실행될 것이다.  
     WAL 리플레이는 트리거 기반이 아니므로, 대기 서버에서 추가적인 데이터베이스 쓰기 작업을 요구하거나 트리거 쓰임에 의존하는 시스템에 전달될 수 없다.  
    </para>
 
    <para>
-    새로운 OID들은 할당되지 않으나, <acronym>UUID</> 생성자generator는 데이터베이스에 새로운 상태를 쓰지 않으면 사용 가능하다.  
+    새로운 OID들은 할당되지 않으나, <acronym>UUID</acronym> 생성자generator는 데이터베이스에 새로운 상태를 쓰지 않으면 사용 가능하다.  
    </para>
 
    <para>
@@ -2290,23 +2301,23 @@ LOG:  database system is ready to accept read only connections
    </para>
 
    <para>
-    <command>DROP TABLESPACE</>는 테이블스페이스가 비어 있을 때만 쓸 수 있다.  
-    일부 대기 서버 사용자들은 <varname>temp_tablespaces</>로 테이블스페이스를 자주 사용하는 경우가 있다.  
+    <command>DROP TABLESPACE</command>는 테이블스페이스가 비어 있을 때만 쓸 수 있다.  
+    일부 대기 서버 사용자들은 <varname>temp_tablespaces</varname>로 테이블스페이스를 자주 사용하는 경우가 있다.  
     If there are temporary files in the tablespace, all active queries are canceled to ensure that temporary files are removed, so the tablespace can be removed and WAL replay can continue.  
    </para>
 
    <para>
-    운영 서버에서 <command>DROP DATABASE</> 혹은 
-    <command>ALTER DATABASE ... SET TABLESPACE</>를 실행하면 대기 서버에서 이 데이터베이스에 연결된 모든 사용자들의 연결을 강제로 끊는 WAL 엔트리가 생성된다.  
-    이는 <varname>max_standby_streaming_delay</>와 상관 없이 바로 발생한다.  
-    <command>ALTER DATABASE ... RENAME</>은 사용자와의 연결을 끊지 않는다.  
+    운영 서버에서 <command>DROP DATABASE</command> 혹은 
+    <command>ALTER DATABASE ... SET TABLESPACE</command>를 실행하면 대기 서버에서 이 데이터베이스에 연결된 모든 사용자들의 연결을 강제로 끊는 WAL 엔트리가 생성된다.  
+    이는 <varname>max_standby_streaming_delay</varname>와 상관 없이 바로 발생한다.  
+    <command>ALTER DATABASE ... RENAME</command>은 사용자와의 연결을 끊지 않는다.  
     데이터베이스명에 의존하는 프로그램의 경우에는 혼동이 생길 수 있다.  
    </para>
 
    <para>
-    정상(미복원) 모드에서 연결된 사용자에 대해 <command>DROP USER</>나 <command>DROP ROLE</>을 실행하면 연결이 끊어지지 않는다.  
+    정상(미복원) 모드에서 연결된 사용자에 대해 <command>DROP USER</command>나 <command>DROP ROLE</command>을 실행하면 연결이 끊어지지 않는다.  
     그러나 재연결은 불가능하다.  복구 시에도 마찬가지로, 운영 서버에서 
-    <command>DROP USER</>를 실행하면 대기 서버 사용자의 연결이 끊어지지 않는다.  
+    <command>DROP USER</command>를 실행하면 대기 서버 사용자의 연결이 끊어지지 않는다.  
    </para>
 
    <para>
@@ -2322,7 +2333,7 @@ LOG:  database system is ready to accept read only connections
    <para>
     background writer는 복구 중에 활성화 되고, restartpoint를 수행 하고(운영 서버의 체크포인트와 비슷함), 정상적인 블록 청소 활동을 시작한다.  
     또 대기 서버에 저장된 hint bit 정보에 대한 업데이트도 한다.  
-    <command>CHECKPOINT</> 명령어는 복구 중에 수행되는데, 새로운 체크포인트가 아닌 restartpoint를 수행한다.  
+    <command>CHECKPOINT</command> 명령어는 복구 중에 수행되는데, 새로운 체크포인트가 아닌 restartpoint를 수행한다.  
    </para>
   </sect2>
 
@@ -2330,21 +2341,21 @@ LOG:  database system is ready to accept read only connections
    <title>상시 대기 관련 환경 설정 매개 변수 설명</title>
 
    <para>
-    <xref linkend="hot-standby-conflict">과 <xref linkend="hot-standby-admin">에서 다양한 매개 변수가 언급되었다.  
+    <xref linkend="hot-standby-conflict"/>과 <xref linkend="hot-standby-admin"/>에서 다양한 매개 변수가 언급되었다.  
    </para>
 
    <para>
-    운영 서버에서 <xref linkend="guc-wal-level">과
-    <xref linkend="guc-vacuum-defer-cleanup-age">를 사용할 수 있다.  
-    <xref linkend="guc-max-standby-archive-delay">와
-    <xref linkend="guc-max-standby-streaming-delay">는 운영 서버에서 쓸 수 없다.  
+    운영 서버에서 <xref linkend="guc-wal-level"/>과
+    <xref linkend="guc-vacuum-defer-cleanup-age"/>를 사용할 수 있다.  
+    <xref linkend="guc-max-standby-archive-delay"/>와
+    <xref linkend="guc-max-standby-streaming-delay"/>는 운영 서버에서 쓸 수 없다.  
    </para>
 
    <para>
-    대기 서버에서 <xref linkend="guc-hot-standby">와
-    <xref linkend="guc-max-standby-archive-delay">,
-    <xref linkend="guc-max-standby-streaming-delay">를 사용할 수 있다.  
-    <xref linkend="guc-vacuum-defer-cleanup-age">는 대기 서버 모드가 아니면 쓸 수 없고, 대기 서버가 운영 서버가 되면 쓸 수 있다.  
+    대기 서버에서 <xref linkend="guc-hot-standby"/>와
+    <xref linkend="guc-max-standby-archive-delay"/>,
+    <xref linkend="guc-max-standby-streaming-delay"/>를 사용할 수 있다.  
+    <xref linkend="guc-vacuum-defer-cleanup-age"/>는 대기 서버 모드가 아니면 쓸 수 없고, 대기 서버가 운영 서버가 되면 쓸 수 있다.  
    </para>
   </sect2>
 
@@ -2370,15 +2381,15 @@ LOG:  database system is ready to accept read only connections
    </listitem>
    <listitem>
     <para>
-     복구 마지막 단계에서 prepared transaction이 사용한 <literal>AccessExclusiveLocks</>은 평소 잠금 테이블 엔트리 수의 두 배가 필요하다.  
-     <literal>AccessExclusiveLocks</>이 필요한 동시적 prepared transaction을 여러 개 수행하거나 여러 <literal>AccessExclusiveLocks</>이 필요한 transaction을 수행하면 <varname>max_locks_per_transaction</>를 크게 설정하는 것이 좋다.  
-     운영 서버의 <varname>max_locks_per_transaction</>의 두 배도 좋다.  <varname>max_prepared_transactions</>의 값이 0이면 이를 전혀 고려하지 않아도 된다.  
+     복구 마지막 단계에서 prepared transaction이 사용한 <literal>AccessExclusiveLocks</literal>은 평소 잠금 테이블 엔트리 수의 두 배가 필요하다.  
+     <literal>AccessExclusiveLocks</literal>이 필요한 동시적 prepared transaction을 여러 개 수행하거나 여러 <literal>AccessExclusiveLocks</literal>이 필요한 transaction을 수행하면 <varname>max_locks_per_transaction</varname>를 크게 설정하는 것이 좋다.  
+     운영 서버의 <varname>max_locks_per_transaction</varname>의 두 배도 좋다.  <varname>max_prepared_transactions</varname>의 값이 0이면 이를 전혀 고려하지 않아도 된다.  
     </para>
    </listitem>
    <listitem>
     <para>
-     Serializable transaction isolation level은 hot standby에서 아직 사용할 수 없다(자세한 정보는 <xref linkend="xact-serializable">와
-     <xref linkend="serializable-consistency">를 참조).  트랜잭션을 hot standby 모드에서 serializable isolation level로 설정하면 에러가 발생한다. 
+     Serializable transaction isolation level은 hot standby에서 아직 사용할 수 없다(자세한 정보는 <xref linkend="xact-serializable"/>와
+     <xref linkend="serializable-consistency"/>를 참조).  트랜잭션을 hot standby 모드에서 serializable isolation level로 설정하면 에러가 발생한다. 
     </para>
    </listitem>
   </itemizedlist>

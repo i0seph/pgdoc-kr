@@ -3,7 +3,7 @@ doc/src/sgml/ref/abort.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ABORT">
+<refentry id="sql-abort">
  <indexterm zone="sql-abort">
   <primary>ABORT</primary>
  </indexterm>
@@ -31,7 +31,7 @@ ABORT [ WORK | TRANSACTION ]
   <para>
    <command>ABORT</command> 명령은 현재 트랜잭션 내에서 작업한 
    모든 것을 취소하고 트랜잭션을 마친다. 
-   이 명령은 <xref linkend="SQL-ROLLBACK"> <acronym>SQL</acronym>
+   이 명령은 <xref linkend="sql-rollback"/> <acronym>SQL</acronym>
    명령어와 같은 작업을 한다. 단지, 역사적인 이유로 
    아직 이 명령을 지원하고 있다.
   </para>
@@ -58,7 +58,7 @@ ABORT [ WORK | TRANSACTION ]
 
   <para>
    현재 트랜잭션 내 작업한 것을 모두 적용하고 마치려면
-   <xref linkend="SQL-COMMIT"> 명령을 이용한다.
+   <xref linkend="sql-commit"/> 명령을 이용한다.
   </para>
 
   <para>
@@ -91,9 +91,9 @@ ABORT;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-begin"></member>
-   <member><xref linkend="sql-commit"></member>
-   <member><xref linkend="sql-rollback"></member>
+   <member><xref linkend="sql-begin"/></member>
+   <member><xref linkend="sql-commit"/></member>
+   <member><xref linkend="sql-rollback"/></member>
   </simplelist>
  </refsect1>
 </refentry>

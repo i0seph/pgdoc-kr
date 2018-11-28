@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_sequence.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERSEQUENCE">
+<refentry id="sql-altersequence">
  <indexterm zone="sql-altersequence">
   <primary>ALTER SEQUENCE</primary>
  </indexterm>
@@ -29,7 +29,7 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
     [ RESTART [ [ WITH ] <replaceable class="parameter">재시작값</replaceable> ] ]
     [ CACHE <replaceable class="parameter">캐시</replaceable> ] [ [ NO ] CYCLE ]
     [ OWNED BY { <replaceable class="parameter">테이블이름</replaceable>.<replaceable class="parameter">칼럼이름</replaceable> | NONE } ]
-ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
 </synopsis>
@@ -45,11 +45,11 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
   </para>
 
   <para>
-   <command>ALTER SEQUENCE</> 명령은 그 시퀀스의 소유주가 실행할 수 있다.
-   스키마를 바꾸는 경우, 새 스키마에 대한 <literal>CREATE</> 권한이 있어야 한다.
+   <command>ALTER SEQUENCE</command> 명령은 그 시퀀스의 소유주가 실행할 수 있다.
+   스키마를 바꾸는 경우, 새 스키마에 대한 <literal>CREATE</literal> 권한이 있어야 한다.
    소유주를 바꾸는 경우, 현재 소유주는 직간접적으로 새 소유주의 
    구성원이어야 하며, 새 소유주는 해당 스키마에 대해서
-   <literal>CREATE</> 권한이 있어야 한다. (새 사용자가 
+   <literal>CREATE</literal> 권한이 있어야 한다. (새 사용자가 
    그 시퀀스를 지우거나, 새로 만들 수 있어야 하기 때문이다. 
    슈퍼유저는 이런 제한 없이 작업할 수 있다.)
   </para>
@@ -157,8 +157,8 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
         <literal>START WITH <replaceable
         class="parameter">시작값</replaceable></literal> 구문은
         시퀀스 시작값을 지정한다.
-        이 설정은 시퀀스의 <emphasis>현재값</>을 바꾸지는 않는다.
-        단지 <command>ALTER SEQUENCE RESTART</> 명령으로 
+        이 설정은 시퀀스의 <emphasis>현재값</emphasis>을 바꾸지는 않는다.
+        단지 <command>ALTER SEQUENCE RESTART</command> 명령으로 
         기본 시작값으로 시퀀스를 재 설정할 때만 사용된다.
        </para>
       </listitem>
@@ -171,14 +171,14 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
         <literal>RESTART [ WITH <replaceable
         class="parameter">재시작값</replaceable> ]</literal> 구문은
         시퀀스 현재 값을 바꾼다.
-        이 작업은 <function>setval</> 함수를 <literal>is_called</literal> =
-        <literal>false</> 인자값으로 실행한 결과와 비슷하다.
-        여기서 지정한 재시작값은 다음 <function>nextval</> 함수의
+        이 작업은 <function>setval</function> 함수를 <literal>is_called</literal> =
+        <literal>false</literal> 인자값으로 실행한 결과와 비슷하다.
+        여기서 지정한 재시작값은 다음 <function>nextval</function> 함수의
         결과값으로 사용된다.
-        <literal>RESTART</> 에서 <replaceable
-        class="parameter">재시작값</>을 지정하지 않고 사용하면, 
-        <command>CREATE SEQUENCE</> 명령으로 시퀀스를 만들 때 사용한
-        시작값이나, <command>ALTER SEQUENCE START WITH</> 명령으로
+        <literal>RESTART</literal> 에서 <replaceable
+        class="parameter">재시작값</replaceable>을 지정하지 않고 사용하면, 
+        <command>CREATE SEQUENCE</command> 명령으로 시퀀스를 만들 때 사용한
+        시작값이나, <command>ALTER SEQUENCE START WITH</command> 명령으로
         그 시작값을 바꾼 시작값으로 재시작한다.
        </para>
 
@@ -186,7 +186,7 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
         <function>setval</function> 함수를 사용하는 것과 달리
         <literal>RESTART</literal> 작업은 트랜잭션 내 시퀀스 잠금을 
         한다.  이런 잠금에 따른 다른 세션의 대기를 피하려면,
-        <function>setval</> 함수를 사용해야 한다. (물론
+        <function>setval</function> 함수를 사용해야 한다. (물론
         이 경우 트랜잭션 작업으로 얻을 수 있는 장점들은 포기한다. - 옮긴이)
        </para>
       </listitem>
@@ -249,7 +249,7 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
       해당 시퀀스의 바뀔 새 소유주 이름.
@@ -284,14 +284,14 @@ ALTER SEQUENCE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
 
   <para>
    <command>ALTER SEQUENCE</command> 명령의 결과가 
-   모든 세션의 <function>nextval</> 작업에 바로 영향을 미칠 것이라고
+   모든 세션의 <function>nextval</function> 작업에 바로 영향을 미칠 것이라고
    생각하면 안된다.  시퀀스는 캐시가 있기 때문에, 이 작업을 한 
    세션이 아니라면, 각자 자신의 캐시에 있는 시퀀스 정보를 사용한다.
    물론 명령을 수행하는 그 세션은 바로 반영된다.
   </para>
 
   <para>
-   <command>ALTER SEQUENCE</command> 명령은 시퀀스의 <function>currval</>
+   <command>ALTER SEQUENCE</command> 명령은 시퀀스의 <function>currval</function>
    상태에 아무런 영향을 주지 않는다 (<productname>PostgreSQL</productname>
    8.3 이전에는 영향을 줬다.)
   </para>
@@ -326,8 +326,8 @@ ALTER SEQUENCE serial RESTART WITH 105;
 
   <para>
    <command>ALTER SEQUENCE</command> 구문은 표준 <acronym>SQL</acronym>
-   구문이다.  <literal>AS</literal>, <literal>START WITH</>,
-   <literal>OWNED BY</>, <literal>OWNER TO</>, <literal>RENAME TO</>,
+   구문이다.  <literal>AS</literal>, <literal>START WITH</literal>,
+   <literal>OWNED BY</literal>, <literal>OWNER TO</literal>, <literal>RENAME TO</literal>,
    <literal>SET SCHEMA</literal> 옵션은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
@@ -337,8 +337,8 @@ ALTER SEQUENCE serial RESTART WITH 105;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createsequence"></member>
-   <member><xref linkend="sql-dropsequence"></member>
+   <member><xref linkend="sql-createsequence"/></member>
+   <member><xref linkend="sql-dropsequence"/></member>
   </simplelist>
  </refsect1>
 

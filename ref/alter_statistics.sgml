@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_statistics.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERSTATISTICS">
+<refentry id="sql-alterstatistics">
  <indexterm zone="sql-alterstatistics">
   <primary>ALTER STATISTICS</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER STATISTICS <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER STATISTICS <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 ALTER STATISTICS <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
 </synopsis>
@@ -38,9 +38,9 @@ ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA 
   </para>
 
   <para>
-   <command>ALTER STATISTICS</> 명령은 해당 통계정보 개체의 소유주가
+   <command>ALTER STATISTICS</command> 명령은 해당 통계정보 개체의 소유주가
    사용할 수 있다.  스키마가 바뀔 경우는 새 스키마에 대해서
-   <literal>CREATE</> 권한이 있어야 한다.
+   <literal>CREATE</literal> 권한이 있어야 한다.
    새 소유주를 지정하는 경우, 기존 소유주가 새 소유주의 소속이어야 하며,
    새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이 
    있어야한다.  (새 소유주가
@@ -65,7 +65,7 @@ ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA 
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">새소유주</replaceable></term>
+      <term><replaceable class="parameter">새소유주</replaceable></term>
       <listitem>
        <para>
         해당 통계정보 개체의 새 소유주 이름.
@@ -107,8 +107,8 @@ ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA 
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createstatistics"></member>
-   <member><xref linkend="sql-dropstatistics"></member>
+   <member><xref linkend="sql-createstatistics"/></member>
+   <member><xref linkend="sql-dropstatistics"/></member>
   </simplelist>
  </refsect1>
 

@@ -3,7 +3,7 @@ doc/src/sgml/ref/clusterdb.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="APP-CLUSTERDB">
+<refentry id="app-clusterdb">
  <indexterm zone="app-clusterdb">
   <primary>clusterdb</primary>
  </indexterm>
@@ -62,7 +62,7 @@ PostgreSQL documentation
 
   <para>
    <application>clusterdb</application> 명령은
-   <xref linkend="SQL-CLUSTER"> SQL 명령어를 내부적으로 실행하는
+   <xref linkend="sql-cluster"/> SQL 명령어를 내부적으로 실행하는
    응용 프로그램이다.
    데이터베이스 서버에 접속해서 이 SQL 명령어를 이용해서 작업하나, 
    이 응용 프로그램을 이용하나 작업 결과는 같다.
@@ -83,8 +83,8 @@ PostgreSQL documentation
 
     <variablelist>
      <varlistentry>
-      <term><option>-a</></term>
-      <term><option>--all</></term>
+      <term><option>-a</option></term>
+      <term><option>--all</option></term>
       <listitem>
        <para>
         Cluster all databases.
@@ -93,8 +93,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option><optional>-d</> <replaceable class="parameter">dbname</replaceable></></term>
-      <term><option><optional>--dbname=</><replaceable class="parameter">dbname</replaceable></></term>
+      <term><option><optional>-d</optional> <replaceable class="parameter">dbname</replaceable></option></term>
+      <term><option><optional>--dbname=</optional><replaceable class="parameter">dbname</replaceable></option></term>
       <listitem>
        <para>
         Specifies the name of the database to be clustered.
@@ -108,8 +108,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-e</></term>
-      <term><option>--echo</></term>
+      <term><option>-e</option></term>
+      <term><option>--echo</option></term>
       <listitem>
        <para>
         Echo the commands that <application>clusterdb</application> generates
@@ -119,8 +119,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-q</></term>
-      <term><option>--quiet</></term>
+      <term><option>-q</option></term>
+      <term><option>--quiet</option></term>
       <listitem>
        <para>
         Do not display progress messages.
@@ -129,20 +129,20 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-t <replaceable class="parameter">table</replaceable></></term>
-      <term><option>--table=<replaceable class="parameter">table</replaceable></></term>
+      <term><option>-t <replaceable class="parameter">table</replaceable></option></term>
+      <term><option>--table=<replaceable class="parameter">table</replaceable></option></term>
       <listitem>
        <para>
         Cluster <replaceable class="parameter">table</replaceable> only.
         Multiple tables can be clustered by writing multiple
-        <option>-t</> switches.
+        <option>-t</option> switches.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>-v</></term>
-      <term><option>--verbose</></term>
+      <term><option>-v</option></term>
+      <term><option>--verbose</option></term>
       <listitem>
        <para>
         Print detailed information during processing.
@@ -151,8 +151,8 @@ PostgreSQL documentation
      </varlistentry>
 
     <varlistentry>
-      <term><option>-V</></term>
-      <term><option>--version</></term>
+      <term><option>-V</option></term>
+      <term><option>--version</option></term>
       <listitem>
       <para>
       Print the <application>clusterdb</application> version and exit.
@@ -161,8 +161,8 @@ PostgreSQL documentation
     </varlistentry>
 
     <varlistentry>
-      <term><option>-?</></term>
-      <term><option>--help</></term>
+      <term><option>-?</option></term>
+      <term><option>--help</option></term>
       <listitem>
       <para>
       Show help about <application>clusterdb</application> command line
@@ -180,8 +180,8 @@ PostgreSQL documentation
 
     <variablelist>
      <varlistentry>
-      <term><option>-h <replaceable class="parameter">host</replaceable></></term>
-      <term><option>--host=<replaceable class="parameter">host</replaceable></></term>
+      <term><option>-h <replaceable class="parameter">host</replaceable></option></term>
+      <term><option>--host=<replaceable class="parameter">host</replaceable></option></term>
       <listitem>
        <para>
         Specifies the host name of the machine on which the server is
@@ -192,8 +192,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-p <replaceable class="parameter">port</replaceable></></term>
-      <term><option>--port=<replaceable class="parameter">port</replaceable></></term>
+      <term><option>-p <replaceable class="parameter">port</replaceable></option></term>
+      <term><option>--port=<replaceable class="parameter">port</replaceable></option></term>
       <listitem>
        <para>
         Specifies the TCP port or local Unix domain socket file
@@ -204,8 +204,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-U <replaceable class="parameter">username</replaceable></></term>
-      <term><option>--username=<replaceable class="parameter">username</replaceable></></term>
+      <term><option>-U <replaceable class="parameter">username</replaceable></option></term>
+      <term><option>--username=<replaceable class="parameter">username</replaceable></option></term>
       <listitem>
        <para>
         User name to connect as.
@@ -214,8 +214,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-w</></term>
-      <term><option>--no-password</></term>
+      <term><option>-w</option></term>
+      <term><option>--no-password</option></term>
       <listitem>
        <para>
         Never issue a password prompt.  If the server requires
@@ -229,8 +229,8 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
-      <term><option>-W</></term>
-      <term><option>--password</></term>
+      <term><option>-W</option></term>
+      <term><option>--password</option></term>
       <listitem>
        <para>
         Force <application>clusterdb</application> to prompt for a
@@ -243,14 +243,14 @@ PostgreSQL documentation
         for a password if the server demands password authentication.
         However, <application>clusterdb</application> will waste a
         connection attempt finding out that the server wants a password.
-        In some cases it is worth typing <option>-W</> to avoid the extra
+        In some cases it is worth typing <option>-W</option> to avoid the extra
         connection attempt.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><option>--maintenance-db=<replaceable class="parameter">dbname</replaceable></></term>
+      <term><option>--maintenance-db=<replaceable class="parameter">dbname</replaceable></option></term>
       <listitem>
        <para>
          Specifies the name of the database to connect to discover what other
@@ -284,9 +284,9 @@ PostgreSQL documentation
   </variablelist>
 
   <para>
-   This utility, like most other <productname>PostgreSQL</> utilities,
-   also uses the environment variables supported by <application>libpq</>
-   (see <xref linkend="libpq-envars">).
+   This utility, like most other <productname>PostgreSQL</productname> utilities,
+   also uses the environment variables supported by <application>libpq</application>
+   (see <xref linkend="libpq-envars"/>).
   </para>
 
  </refsect1>
@@ -296,8 +296,8 @@ PostgreSQL documentation
   <title>진단</title>
 
   <para>
-   In case of difficulty, see <xref linkend="SQL-CLUSTER">
-   and <xref linkend="APP-PSQL"> for
+   In case of difficulty, see <xref linkend="sql-cluster"/>
+   and <xref linkend="app-psql"/> for
    discussions of potential problems and error messages.
    The database server must be running at the
    targeted host.  Also, any default connection settings and environment
@@ -332,7 +332,7 @@ PostgreSQL documentation
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-cluster"></member>
+   <member><xref linkend="sql-cluster"/></member>
   </simplelist>
  </refsect1>
 

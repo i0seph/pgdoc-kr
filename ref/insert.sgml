@@ -3,7 +3,7 @@ doc/src/sgml/ref/insert.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-INSERT">
+<refentry id="sql-insert">
  <indexterm zone="sql-insert">
   <primary>INSERT</primary>
  </indexterm>
@@ -22,25 +22,25 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 [ WITH [ RECURSIVE ] <replaceable class="parameter">with_query</replaceable> [, ...] ]
-INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replaceable class="parameter">alias</replaceable> ] [ ( <replaceable class="PARAMETER">column_name</replaceable> [, ...] ) ]
+INSERT INTO <replaceable class="parameter">table_name</replaceable> [ AS <replaceable class="parameter">alias</replaceable> ] [ ( <replaceable class="parameter">column_name</replaceable> [, ...] ) ]
     [ OVERRIDING { SYSTEM | USER} VALUE ]
-    { DEFAULT VALUES | VALUES ( { <replaceable class="PARAMETER">expression</replaceable> | DEFAULT } [, ...] ) [, ...] | <replaceable class="PARAMETER">query</replaceable> }
+    { DEFAULT VALUES | VALUES ( { <replaceable class="parameter">expression</replaceable> | DEFAULT } [, ...] ) [, ...] | <replaceable class="parameter">query</replaceable> }
     [ ON CONFLICT [ <replaceable class="parameter">conflict_target</replaceable> ] <replaceable class="parameter">conflict_action</replaceable> ]
     [ RETURNING * | <replaceable class="parameter">output_expression</replaceable> [ [ AS ] <replaceable class="parameter">output_name</replaceable> ] [, ...] ]
 
 <phrase><replaceable class="parameter">conflict_target</replaceable>은 다음 중 하나이다:</phrase>
 
-    ( { <replaceable class="parameter">index_column_name</replaceable> | ( <replaceable class="parameter">index_expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ...] ) [ WHERE <replaceable class="PARAMETER">index_predicate</replaceable> ]
-    ON CONSTRAINT <replaceable class="PARAMETER">constraint_name</replaceable>
+    ( { <replaceable class="parameter">index_column_name</replaceable> | ( <replaceable class="parameter">index_expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ...] ) [ WHERE <replaceable class="parameter">index_predicate</replaceable> ]
+    ON CONSTRAINT <replaceable class="parameter">constraint_name</replaceable>
 
 <phrase><replaceable class="parameter">conflict_action</replaceable>은 다음 중 하나이다:</phrase>
 
     DO NOTHING
-    DO UPDATE SET { <replaceable class="PARAMETER">column_name</replaceable> = { <replaceable class="PARAMETER">expression</replaceable> | DEFAULT } |
-                    ( <replaceable class="PARAMETER">column_name</replaceable> [, ...] ) = [ ROW ] ( { <replaceable class="PARAMETER">expression</replaceable> | DEFAULT } [, ...] ) |
-                    ( <replaceable class="PARAMETER">column_name</replaceable> [, ...] ) = ( <replaceable class="PARAMETER">sub-SELECT</replaceable> )
+    DO UPDATE SET { <replaceable class="parameter">column_name</replaceable> = { <replaceable class="parameter">expression</replaceable> | DEFAULT } |
+                    ( <replaceable class="parameter">column_name</replaceable> [, ...] ) = [ ROW ] ( { <replaceable class="parameter">expression</replaceable> | DEFAULT } [, ...] ) |
+                    ( <replaceable class="parameter">column_name</replaceable> [, ...] ) = ( <replaceable class="parameter">sub-SELECT</replaceable> )
                   } [, ...]
-              [ WHERE <replaceable class="PARAMETER">condition</replaceable> ]
+              [ WHERE <replaceable class="parameter">condition</replaceable> ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -55,9 +55,9 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
   <para>
    대상 칼럼명은 임의의 순서대로 나열할 수 있다. 칼럼명을 지정하지 않는다면,
    기본적으로 테이블의 모든 칼럼을 선언된 순서대로,
-   또는 <literal>VALUES</> 절이나 <replaceable>query</>에서 제공되는 칼럼이 <replaceable>N</>개 뿐이라면,
-   앞에서 부터 <replaceable>N</>개의 칼럼명을 사용한다.
-   <literal>VALUES</>절이나 <replaceable>query</>에서 제공되는 값은 왼쪽부터 오른쪽의 순서대로
+   또는 <literal>VALUES</literal> 절이나 <replaceable>query</replaceable>에서 제공되는 칼럼이 <replaceable>N</replaceable>개 뿐이라면,
+   앞에서 부터 <replaceable>N</replaceable>개의 칼럼명을 사용한다.
+   <literal>VALUES</literal>절이나 <replaceable>query</replaceable>에서 제공되는 값은 왼쪽부터 오른쪽의 순서대로
    명시적 또는 암시적 칼럼 목록과 연결된다.
   </para>
 
@@ -70,41 +70,41 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
   </para>
 
   <para>
-   <literal>ON CONFLICT</>는 unique 제약이나 exclusion 제약 위배 오류를 해소하기 위한,
+   <literal>ON CONFLICT</literal>는 unique 제약이나 exclusion 제약 위배 오류를 해소하기 위한,
    대체 액션을 지정하기 위해 사용된다. (아래에 있는 <xref linkend="sql-on-conflict"
-   endterm="sql-on-conflict-title">를 참고하라.)
+   endterm="sql-on-conflict-title"/>를 참고하라.)
   </para>
 
   <para>
-   선택적인 <literal>RETURNING</> 절은 causes <command>INSERT</>로 하여금, 
-   실제 삽입된 (또는, <literal>ON CONFLICT DO UPDATE</> 절이 사용된 경우, 업데이트 된)
+   선택적인 <literal>RETURNING</literal> 절은 causes <command>INSERT</command>로 하여금, 
+   실제 삽입된 (또는, <literal>ON CONFLICT DO UPDATE</literal> 절이 사용된 경우, 업데이트 된)
    각 행을 기반으로하는 값을 계산하고 반환하게 만든다.
    이는 주로, 일련 번호와 같이 기본값으로 제공되는 값들을 알고 싶을 때 유용하다.
    게다가, 테이블의 칼럼을 이용한 어떠한 표현식이든 가능하다.
-   <literal>RETURNING</> 목록의 문법은 <command>SELECT</>의 출력 목록과 동일하다.
+   <literal>RETURNING</literal> 목록의 문법은 <command>SELECT</command>의 출력 목록과 동일하다.
    성공적으로 삽입되거나 업데이트 된 행만 반환된다.
    예를 들어, <literal>ON CONFLICT DO UPDATE ... WHERE</literal>절의
-   <replaceable class="PARAMETER">condition</replaceable>을 충족시키지 못해서
+   <replaceable class="parameter">condition</replaceable>을 충족시키지 못해서
    행이 잠겨졌지만 업데이트가 되지 않았을 경우, 해당 행은 반환되지 않는다.
   </para>
 
   <para>
    테이블에 삽입하려면 해당 테이블에 대한 <literal>INSERT</literal> 권한이 있어야 한다.
-   또한, <literal>ON CONFLICT DO UPDATE</>가 존재한다면 <literal>UPDATE</literal> 권한도 있어야 한다.
+   또한, <literal>ON CONFLICT DO UPDATE</literal>가 존재한다면 <literal>UPDATE</literal> 권한도 있어야 한다.
   </para>
 
   <para>
    칼럼 목록이 지정된 경우, 나열된 칼럼에 대한 <literal>INSERT</literal> 권한만 있으면 된다.
-   이와 유사하게, <literal>ON CONFLICT DO UPDATE</>가 지정된 경우, 업데이트 될 칼럼에 대한
-   <literal>UPDATE</> 권한만 있으면 된다. 다만, <literal>ON CONFLICT DO UPDATE</>의 경우,
-   <literal>ON CONFLICT DO UPDATE</> 표현식이나 <replaceable>condition</>에서 값을 읽어야 하는 칼럼에 대한
-   <literal>SELECT</> 권한 또한 필요하다.
+   이와 유사하게, <literal>ON CONFLICT DO UPDATE</literal>가 지정된 경우, 업데이트 될 칼럼에 대한
+   <literal>UPDATE</literal> 권한만 있으면 된다. 다만, <literal>ON CONFLICT DO UPDATE</literal>의 경우,
+   <literal>ON CONFLICT DO UPDATE</literal> 표현식이나 <replaceable>condition</replaceable>에서 값을 읽어야 하는 칼럼에 대한
+   <literal>SELECT</literal> 권한 또한 필요하다.
   </para>
 
   <para>
-   <literal>RETURNING</> 절을 사용하려면 <literal>RETURNING</>에 언급된 모든 칼럼에 대한
-   <literal>SELECT</> 권한이 필요하다.
-   물론, 쿼리로부터 행을 삽입하기 위해 <replaceable class="PARAMETER">query</replaceable> 절을 사용하는 경우라면,
+   <literal>RETURNING</literal> 절을 사용하려면 <literal>RETURNING</literal>에 언급된 모든 칼럼에 대한
+   <literal>SELECT</literal> 권한이 필요하다.
+   물론, 쿼리로부터 행을 삽입하기 위해 <replaceable class="parameter">query</replaceable> 절을 사용하는 경우라면,
    쿼리 내에서 사용되는 모든 테이블과 칼럼에 대한 <literal>SELECT</literal> 권한이 필요하다.
   </para>
  </refsect1>
@@ -112,7 +112,7 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
  <refsect1>
   <title>매개 변수</title>
 
-  <refsect2 id="SQL-INSERTING-PARAMS">
+  <refsect2 id="sql-inserting-params">
    <title id="sql-inserting-params-title">Inserting</title>
 
    <para>
@@ -126,9 +126,9 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
       <term><replaceable class="parameter">with_query</replaceable></term>
       <listitem>
        <para>
-        <literal>WITH</literal> 절은, <command>INSERT</> 쿼리 내에서 이름으로 참조될 수 있는,
+        <literal>WITH</literal> 절은, <command>INSERT</command> 쿼리 내에서 이름으로 참조될 수 있는,
         하나 이상의 서브쿼리를 지정할 수 있게 한다.
-        자세한 내용은 <xref linkend="queries-with"> 와 <xref linkend="sql-select">를 참고하라.
+        자세한 내용은 <xref linkend="queries-with"/> 와 <xref linkend="sql-select"/>를 참고하라.
        </para>
        <para>
         <replaceable class="parameter">query</replaceable> (<command>SELECT</command> 문) 또한
@@ -141,7 +141,7 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">table_name</replaceable></term>
+      <term><replaceable class="parameter">table_name</replaceable></term>
       <listitem>
        <para>
         존재하는 (선택적으로 schema-qualified 된) 테이블의 이름.
@@ -153,7 +153,7 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
       <term><replaceable class="parameter">alias</replaceable></term>
       <listitem>
        <para>        
-        <replaceable class="PARAMETER">table_name</replaceable>을 대체하는 이름.
+        <replaceable class="parameter">table_name</replaceable>을 대체하는 이름.
         별칭이 제공되면, 테이블의 실제 이름을 완전히 숨기게 된다.
         이는 특히 <literal>ON CONFLICT DO UPDATE</literal>가 <varname>excluded</varname>로
         명명된 테이블을 대상으로 할 때,
@@ -164,18 +164,18 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
 
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">column_name</replaceable></term>
+      <term><replaceable class="parameter">column_name</replaceable></term>
       <listitem>
        <para>
         <replaceable
-        class="PARAMETER">table_name</replaceable>으로 명명된 테이블에 있는 칼럼명.
+        class="parameter">table_name</replaceable>으로 명명된 테이블에 있는 칼럼명.
         해당 칼럼명은, 필요한 경우 서브필드 명이나 array subscript로 제한될 수 있다.
         (복합 필드의 몇몇 필드에만 삽입하면 나머지 필드는 null로 채워진다.)
-        <literal>ON CONFLICT DO UPDATE</>로 칼럼을 참조하는 경우,
+        <literal>ON CONFLICT DO UPDATE</literal>로 칼럼을 참조하는 경우,
         대상 칼럼을 지정할 때 테이블 명을 포함하면 안된다.
         예를 들어, <literal>INSERT INTO table_name ... ON CONFLICT DO UPDATE
-        SET table_name.col = 1</>은
-        유효하지 않다. (이는 <command>UPDATE</>의 일반적인 동작에 따른 것이다.)
+        SET table_name.col = 1</literal>은
+        유효하지 않다. (이는 <command>UPDATE</command>의 일반적인 동작에 따른 것이다.)
         </para>
       </listitem>
      </varlistentry>
@@ -222,7 +222,7 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">expression</replaceable></term>
+      <term><replaceable class="parameter">expression</replaceable></term>
       <listitem>
        <para>
         연관 칼럼에 할당할 수식이나 값.
@@ -242,29 +242,29 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">query</replaceable></term>
+      <term><replaceable class="parameter">query</replaceable></term>
       <listitem>
        <para>
         삽입될 행을 제공하는 쿼리 (<command>SELECT</command> 문).
-        문법에 대한 설명은 <xref linkend="sql-select">문을 참고하라.
+        문법에 대한 설명은 <xref linkend="sql-select"/>문을 참고하라.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">output_expression</replaceable></term>
+      <term><replaceable class="parameter">output_expression</replaceable></term>
       <listitem>
        <para>
-        각 행이 삽입되거나 업데이트 된 뒤, <command>INSERT</> 명령에 의해 계산되어 반횐될 표현식.
-        해당 표현식은 <replaceable class="PARAMETER">table_name</replaceable>에 명명된 테이블에 있는
+        각 행이 삽입되거나 업데이트 된 뒤, <command>INSERT</command> 명령에 의해 계산되어 반횐될 표현식.
+        해당 표현식은 <replaceable class="parameter">table_name</replaceable>에 명명된 테이블에 있는
         어떠한 칼럼명이라도 사용할 수 있다.
-        삽입되거나 업데이트 된 모든 칼럼을 반환하려면 <literal>*</>를 기입하라.
+        삽입되거나 업데이트 된 모든 칼럼을 반환하려면 <literal>*</literal>를 기입하라.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">output_name</replaceable></term>
+      <term><replaceable class="parameter">output_name</replaceable></term>
       <listitem>
        <para>
         반환된 칼럼에 사용할 이름.
@@ -276,10 +276,10 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
 
   <refsect2 id="sql-on-conflict">
    <title id="sql-on-conflict-title"><literal>ON CONFLICT</literal> Clause</title>
-   <indexterm zone="SQL-INSERT">
+   <indexterm zone="sql-insert">
     <primary>UPSERT</primary>
    </indexterm>
-   <indexterm zone="SQL-INSERT">
+   <indexterm zone="sql-insert">
     <primary>ON CONFLICT</primary>
    </indexterm>
    <para>
@@ -294,13 +294,13 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
 
    <para>
     <parameter>conflict_target</parameter>은 <emphasis>unique 인덱스 inference</emphasis>을 수행할 수 있다.
-    inference을 수행할 때, 이는 하나 이상의 <replaceable class="PARAMETER">index_column_name</replaceable> 칼럼과
-    <replaceable class="PARAMETER">index_expression</replaceable> 표현식, 그리고
-    <replaceable class="PARAMETER">index_predicate</replaceable>로 구성된다.
+    inference을 수행할 때, 이는 하나 이상의 <replaceable class="parameter">index_column_name</replaceable> 칼럼과
+    <replaceable class="parameter">index_expression</replaceable> 표현식, 그리고
+    <replaceable class="parameter">index_predicate</replaceable>로 구성된다.
     <parameter>conflict_target</parameter>에서 지정한 칼럼/표현식을, 순서와 관계없이 정확히 포함하는
-    모든 <replaceable class="PARAMETER">table_name</replaceable> unique 인덱스는,
+    모든 <replaceable class="parameter">table_name</replaceable> unique 인덱스는,
     arbiter 인덱스로서 inferred (선택)된다
-    <replaceable class="PARAMETER">index_predicate</replaceable>가 지정되면,
+    <replaceable class="parameter">index_predicate</replaceable>가 지정되면,
     inference을 위한 추후 요구사항으로서, arbiter 인덱스를 충족해야 한다.
     이는, 그 외의 모든 조건을 만족하는 인덱스가 존재한다면
     non-partial unique 인덱스 (predicate가 없는 unique index)가 inferred 될 
@@ -344,7 +344,7 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
         <literal>WHERE</literal>절은 테이블명 (또는 별칭)을 이용해서 기존 행에 접근하거나, 
         특별한 <varname>excluded</varname> 테이블을 이용해서, 삽입을 위한 행에 접근할 수 있다.
         관련된 <varname>excluded</varname> 칼럼을 읽어올 대상 테이블에 있는 모든 칼럼에 대해
-        <literal>SELECT</> 권한이 필요하다.
+        <literal>SELECT</literal> 권한이 필요하다.
        </para>
        <para>
         Note that the effects of all per-row <literal>BEFORE
@@ -356,37 +356,37 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">index_column_name</replaceable></term>
+      <term><replaceable class="parameter">index_column_name</replaceable></term>
       <listitem>
        <para>
-        <replaceable class="PARAMETER">table_name</replaceable> column의 이름.
+        <replaceable class="parameter">table_name</replaceable> column의 이름.
         arbiter 인덱스를 infer 하기 위해 사용된다.
         <command>CREATE INDEX</command> 포맷을 따른다. 
-        <replaceable class="PARAMETER">index_column_name</replaceable>에 대한 <literal>SELECT</> 권한이 필요하다.
+        <replaceable class="parameter">index_column_name</replaceable>에 대한 <literal>SELECT</literal> 권한이 필요하다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">index_expression</replaceable></term>
+      <term><replaceable class="parameter">index_expression</replaceable></term>
       <listitem>
        <para>
-        <replaceable class="PARAMETER">index_column_name</replaceable>과 유사하나,
-        (단순 칼럼이 아닌) 인덱스 정의 내에 나타나는, <replaceable class="PARAMETER">table_name</replaceable> 칼럼에 있는
+        <replaceable class="parameter">index_column_name</replaceable>과 유사하나,
+        (단순 칼럼이 아닌) 인덱스 정의 내에 나타나는, <replaceable class="parameter">table_name</replaceable> 칼럼에 있는
         infer 표현식에 사용된다.
         <command>CREATE INDEX</command> 포맷을 따른다.
-        <replaceable class="PARAMETER">index_expression</replaceable>에 나타나는 모든 칼럼에 대한
-        <literal>SELECT</> 권한이 필요하다.
+        <replaceable class="parameter">index_expression</replaceable>에 나타나는 모든 칼럼에 대한
+        <literal>SELECT</literal> 권한이 필요하다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">collation</replaceable></term>
+      <term><replaceable class="parameter">collation</replaceable></term>
       <listitem>
        <para>
-        지정되면, 관련된 <replaceable class="PARAMETER">index_column_name</replaceable>이나
-        <replaceable class="PARAMETER">index_expression</replaceable>이 inference 도중 일치하는 쌍을 찾을 때에
+        지정되면, 관련된 <replaceable class="parameter">index_column_name</replaceable>이나
+        <replaceable class="parameter">index_expression</replaceable>이 inference 도중 일치하는 쌍을 찾을 때에
         특정 collation을 사용하도록 지시한다.
         collations이 제약 위배가 발생하던 안하던 영향을 받지 않기 때문에, 일반적으로 생략된다.
         <command>CREATE INDEX</command> 포맷을 따른다.
@@ -395,11 +395,11 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">opclass</replaceable></term>
+      <term><replaceable class="parameter">opclass</replaceable></term>
       <listitem>
        <para>
-        지정되면, 관련된 <replaceable class="PARAMETER">index_column_name</replaceable>이나
-        <replaceable class="PARAMETER">index_expression</replaceable>이 
+        지정되면, 관련된 <replaceable class="parameter">index_column_name</replaceable>이나
+        <replaceable class="parameter">index_expression</replaceable>이 
         inference 도중 일치하는 쌍을 찾기위해 특정 연산자 클래스를 사용하도록 지시한다.
         <emphasis>동등</emphasis> semantics가 자료형의 연산자 클래스를 통틀어서 거의 동일하기 때문에,
         또한 정의된 unique 인덱스에 동등성에 대한 적절한 정의가 되어 있다고 충분히 신뢰할 수 있기 때문에
@@ -410,20 +410,20 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">index_predicate</replaceable></term>
+      <term><replaceable class="parameter">index_predicate</replaceable></term>
       <listitem>
        <para>
         partial unique 인덱스의 inference를 허용하기 위해 사용된다.
         예측을 만족하는 (partial 인덱스일 필요는 없는) 모든 인덱는 inferred 될 수 있다.
         <command>CREATE INDEX</command> 포맷을 따른다.
-        <replaceable class="PARAMETER">index_predicate</replaceable> 내에 나타나는 모든 칼럼에
-        대한 <literal>SELECT</> 권한이 필요하다.
+        <replaceable class="parameter">index_predicate</replaceable> 내에 나타나는 모든 칼럼에
+        대한 <literal>SELECT</literal> 권한이 필요하다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">constraint_name</replaceable></term>
+      <term><replaceable class="parameter">constraint_name</replaceable></term>
       <listitem>
        <para>
         제약이나 인덱스를 inferring 하는 대신에, 이름으로 arbiter <emphasis>constraint</emphasis>를 명시적으로 지정한다.
@@ -432,11 +432,11 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
      </varlistentry>
 
      <varlistentry>
-      <term><replaceable class="PARAMETER">condition</replaceable></term>
+      <term><replaceable class="parameter">condition</replaceable></term>
       <listitem>
        <para>
         <type>boolean</type> 자료형의 값을 반환하는 표현식
-        <literal>ON CONFLICT DO UPDATE</> 액션이 취해질 때 모든 행이 잠겨지더라도,
+        <literal>ON CONFLICT DO UPDATE</literal> 액션이 취해질 때 모든 행이 잠겨지더라도,
         이 표현식으로 true가 반환되는 행만 업데이트 된다.
         어떠한 충돌이 업데이트 후보로 식별된 이후,
         <replaceable>condition</replaceable>이 마지막으로 계산된다는 점에 주의하라.
@@ -450,17 +450,25 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
    </para>
 
    <para>
-    <literal>ON CONFLICT DO UPDATE</> 절이 들어간 <command>INSERT</command>는
+    <literal>ON CONFLICT DO UPDATE</literal> 절이 들어간 <command>INSERT</command>는
     <quote>deterministic</quote> 문장이다.
     이는 해당 명령이, 존재하는 어떠한 단일 행에 대해 두번이상 영향을 줄수 없다는 걸 의미한다.
     이러한 상황이 발생하면 cardinality violation error가 발생할 것이다.
     삽입하려는 행은 arbiter 인덱스나 제약조건에 의해 제약된 속성의 측면에서,
     서로 중복되어서는 안된다.
    </para>
+
+   <para>
+    Note that it is currently not supported for the
+    <literal>ON CONFLICT DO UPDATE</literal> clause of an
+    <command>INSERT</command> applied to a partitioned table to update the
+    partition key of a conflicting row such that it requires the row be moved
+    to a new partition.
+   </para>
    <tip>
     <para>
      <literal>ON CONFLICT ON CONSTRAINT</literal>
-     <replaceable class="PARAMETER"> constraint_name</replaceable>으로 제약조건을 직접 명명하는 것보다
+     <replaceable class="parameter"> constraint_name</replaceable>으로 제약조건을 직접 명명하는 것보다
      unique 인덱스 inference 를 사용하는 편이 더 좋다.
      Inference 는, 덮어쓰는 방식으로,
      예를 들면 교체될 인덱스를 drop하기 전에 <literal>CREATE UNIQUE INDEX ...  CONCURRENTLY</literal>를 사용하는 식으로,
@@ -475,7 +483,7 @@ INSERT INTO <replaceable class="PARAMETER">table_name</replaceable> [ AS <replac
   <title>Outputs</title>
 
   <para>
-   성공적으로 완료되면, <command>INSERT</> 명령은 아래 형식의 명령 태그를 반환한다.
+   성공적으로 완료되면, <command>INSERT</command> 명령은 아래 형식의 명령 태그를 반환한다.
 <screen>
 INSERT <replaceable>oid</replaceable> <replaceable class="parameter">count</replaceable>
 </screen>
@@ -487,9 +495,9 @@ INSERT <replaceable>oid</replaceable> <replaceable class="parameter">count</repl
   </para>
 
   <para>
-   <command>INSERT</> 명령에 <literal>RETURNING</> 절이 포함되어 있다면,
+   <command>INSERT</command> 명령에 <literal>RETURNING</literal> 절이 포함되어 있다면,
    그 결과는, 해당 명령에서 삽입되거나 업데이트 되는 행에 대해 계산된 값이며,
-   <literal>RETURNING</> 목록에 정의된 칼럼 및 값을 포함하는<command>SELECT</>문의 결과와 유사하다.
+   <literal>RETURNING</literal> 목록에 정의된 칼럼 및 값을 포함하는<command>SELECT</command>문의 결과와 유사하다.
   </para>
  </refsect1>
 
@@ -543,7 +551,7 @@ INSERT INTO films DEFAULT VALUES;
 </programlisting></para>
 
   <para>
-   다행 <command>VALUES</> 문법을 사용하여 다수의 행을 삽입한다:
+   다행 <command>VALUES</command> 문법을 사용하여 다수의 행을 삽입한다:
 
 <programlisting>
 INSERT INTO films (code, title, did, date_prod, kind) VALUES
@@ -595,7 +603,7 @@ INSERT INTO employees_log SELECT *, current_timestamp FROM upd;
   <para>
    새distributors를 적절하게 삽입 또는 업데이트 한다.
    <literal>did</literal> 칼럼에 나타나는 값을 제약하는 unique 인덱스가 정의되었다고 가정한다.
-   삽입에 사용되는 값을 참조하기 위해 특별한 <varname>excluded</> 테이블이 사용되었음에 주의하라:
+   삽입에 사용되는 값을 참조하기 위해 특별한 <varname>excluded</varname> 테이블이 사용되었음에 주의하라:
 <programlisting>
 INSERT INTO distributors (did, dname)
     VALUES (5, 'Gizmo Transglobal'), (6, 'Associated Computing, Inc')
@@ -615,7 +623,7 @@ INSERT INTO distributors (did, dname) VALUES (7, 'Redline GmbH')
    신규 distributors를 적절하게 삽입 또는 업데이트 한다.
    예제에서는, <literal>did</literal> 칼럼에 나타나는 값을 제약하는
    unique 인덱스가 정의되어있다고 가정한다.
-   실제 업데이트 되는 행을 제한하기 위해 <literal>WHERE</> 절이 사용되었다.
+   실제 업데이트 되는 행을 제한하기 위해 <literal>WHERE</literal> 절이 사용되었다.
    (그렇더라도, 업데이트 되지 않은 기존의 행은 여전히 잠겨있을 것이다):
 <programlisting>
 -- 특정 ZIP code에 기반해서 기존 distributor는 업데이트 하지 않는다.
@@ -651,12 +659,12 @@ INSERT INTO distributors (did, dname) VALUES (10, 'Conrad International')
 
   <para>
    <command>INSERT</command>는
-   <literal>RETURNING</> 절이 <productname>PostgreSQL</productname> 확장이며,
-   <command>INSERT</>에 <literal>WITH</>를 사용할 수 있고,
-   <literal>ON CONFLICT</>에 대체 액션을 지정할 수 있다는 점을 제외하면,
+   <literal>RETURNING</literal> 절이 <productname>PostgreSQL</productname> 확장이며,
+   <command>INSERT</command>에 <literal>WITH</literal>를 사용할 수 있고,
+   <literal>ON CONFLICT</literal>에 대체 액션을 지정할 수 있다는 점을 제외하면,
    SQL 표준을 따른다.
    또한, 칼럼 명 목록이 생략될 경우
-   모든 칼럼이 <literal>VALUES</> 절이나 <replaceable>query</>로
+   모든 칼럼이 <literal>VALUES</literal> 절이나 <replaceable>query</replaceable>로
    채워지진 않는다는 점은, 표준에서 허용되지 않는 점이다.
   </para>
 
@@ -668,8 +676,8 @@ INSERT INTO distributors (did, dname) VALUES (10, 'Conrad International')
   </para>
 
   <para>
-   <replaceable class="PARAMETER">query</replaceable>의 제약사항은
-   <xref linkend="sql-select">에 문서화 되어 있다.
+   <replaceable class="parameter">query</replaceable>의 제약사항은
+   <xref linkend="sql-select"/>에 문서화 되어 있다.
   </para>
  </refsect1>
 </refentry>

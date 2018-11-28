@@ -3,7 +3,7 @@ doc/src/sgml/ref/execute.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-EXECUTE">
+<refentry id="sql-execute">
  <indexterm zone="sql-execute">
   <primary>EXECUTE</primary>
  </indexterm>
@@ -25,7 +25,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-EXECUTE <replaceable class="PARAMETER">name</replaceable> [ ( <replaceable class="PARAMETER">parameter</replaceable> [, ...] ) ]
+EXECUTE <replaceable class="parameter">name</replaceable> [ ( <replaceable class="parameter">parameter</replaceable> [, ...] ) ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -51,7 +51,7 @@ EXECUTE <replaceable class="PARAMETER">name</replaceable> [ ( <replaceable class
 
   <para>
    For more information on the creation and usage of prepared statements,
-   see <xref linkend="sql-prepare">.
+   see <xref linkend="sql-prepare"/>.
   </para>
  </refsect1>
 
@@ -60,7 +60,7 @@ EXECUTE <replaceable class="PARAMETER">name</replaceable> [ ( <replaceable class
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="PARAMETER">name</replaceable></term>
+    <term><replaceable class="parameter">name</replaceable></term>
     <listitem>
      <para>
       The name of the prepared statement to execute.
@@ -69,7 +69,7 @@ EXECUTE <replaceable class="PARAMETER">name</replaceable> [ ( <replaceable class
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">parameter</replaceable></term>
+    <term><replaceable class="parameter">parameter</replaceable></term>
     <listitem>
      <para>
       The actual value of a parameter to the prepared statement.  This
@@ -86,16 +86,16 @@ EXECUTE <replaceable class="PARAMETER">name</replaceable> [ ( <replaceable class
   <title>출력</title>
    <para>
    The command tag returned by <command>EXECUTE</command>
-   is that of the prepared statement, and not <literal>EXECUTE</>.
+   is that of the prepared statement, and not <literal>EXECUTE</literal>.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Examples</>
+  <title>Examples</title>
   <para>
     Examples are given in the <xref linkend="sql-prepare-examples"
-    endterm="sql-prepare-examples-title"> section of the <xref
-    linkend="sql-prepare"> documentation.
+    endterm="sql-prepare-examples-title"/> section of the <xref
+    linkend="sql-prepare"/> documentation.
    </para>
  </refsect1>
 
@@ -114,8 +114,8 @@ EXECUTE <replaceable class="PARAMETER">name</replaceable> [ ( <replaceable class
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-deallocate"></member>
-   <member><xref linkend="sql-prepare"></member>
+   <member><xref linkend="sql-deallocate"/></member>
+   <member><xref linkend="sql-prepare"/></member>
   </simplelist>
  </refsect1>
 </refentry>

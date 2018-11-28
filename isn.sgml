@@ -26,7 +26,7 @@
   <title>자료형</title>
 
   <para>
-   <xref linkend="isn-datatypes">에서 <filename>isn</filename> 
+   <xref linkend="isn-datatypes"/>에서 <filename>isn</filename> 
    모듈에 포함된 자료형들을 설명한다.
   </para>
 
@@ -118,7 +118,7 @@
    </listitem>
    <listitem>
     <para>UPC 번호는 EAN13 번호의 부분집합이다. (기본적으로
-    EAN13 번호에서 첫 숫자 <literal>0</>을 없앤 것이다.)</para>
+    EAN13 번호에서 첫 숫자 <literal>0</literal>을 없앤 것이다.)</para>
    </listitem>
    <listitem>
     <para>모든 UPC, ISBN, ISMN, ISSN 번호는 EAN13 번호로 다시 나타낼
@@ -135,7 +135,7 @@
   </para>
 
   <para>
-   <type>ISBN</>, <type>ISMN</>, <type>ISSN</> 자료형은 출력이 가능하다면,
+   <type>ISBN</type>, <type>ISMN</type>, <type>ISSN</type> 자료형은 출력이 가능하다면,
    옛 10자리 짧은 형식으로 출력할 수 있고, 이렇게 출력할 수 없다면,
    13자리 번호로 출력한다.
    <type>EAN13</type>, <type>ISBN13</type>, <type>ISMN13</type>, 
@@ -147,7 +147,7 @@
   <title>자료형 변환</title>
 
   <para>
-   <filename>isn</> 모듈은 아래와 같은 자료형 바꾸기를 지원한다.
+   <filename>isn</filename> 모듈은 아래와 같은 자료형 바꾸기를 지원한다.
   </para>
 
   <itemizedlist>
@@ -204,7 +204,7 @@
   </itemizedlist>
 
   <para>
-   <type>EAN13</> 자료형을 다른 자료형으로 바꿀 때에는 
+   <type>EAN13</type> 자료형을 다른 자료형으로 바꿀 때에는 
    바뀔 자료형 유효성 검사가 통과 될 때만 바뀐다. 그렇지 않을 때는
    오류를 낸다.  그 외 다른 형변환은 단순하게 출력 형식 변경으로
    항상 성공한다.
@@ -215,15 +215,15 @@
   <title>함수와 연산자들</title>
 
   <para>
-   <filename>isn</> 모듈은 지원하는 자료형에 대해서, 
+   <filename>isn</filename> 모듈은 지원하는 자료형에 대해서, 
    표준 비교 연산자와 B-트리, 해시 인덱스를 지원한다.  추가로,
    아래 함수들은 해당 자료형을 사용할 때 특별하게 사용할 수 있다.
-   <xref linkend="isn-functions"> 참조.
-   아래 <type>isn</>으로 표현한 자료형은 이 모듈에서 제공하는 모든 자료형을 뜻한다.
+   <xref linkend="isn-functions"/> 참조.
+   아래 <type>isn</type>으로 표현한 자료형은 이 모듈에서 제공하는 모든 자료형을 뜻한다.
   </para>
 
   <table id="isn-functions">
-   <title><filename>isn</> 함수들</title>
+   <title><filename>isn</filename> 함수들</title>
    <tgroup cols="3">
     <thead>
      <row>
@@ -279,19 +279,19 @@
 
   <para>
    weak 모드에서 테이블로 자료를 입력할 때, 잘못된 확인 숫자는 
-   바르게 변경되어 저장되지만, 그 값을 출력하면, 끝에 느낌표(<literal>!</>)가
-   붙는다. 예, <literal>0-11-000322-5!</>.  이 잘못된 자료는 
-   <function>is_valid</> 함수로 확인 할 수 있고, <function>make_valid</>
+   바르게 변경되어 저장되지만, 그 값을 출력하면, 끝에 느낌표(<literal>!</literal>)가
+   붙는다. 예, <literal>0-11-000322-5!</literal>.  이 잘못된 자료는 
+   <function>is_valid</function> 함수로 확인 할 수 있고, <function>make_valid</function>
    함수로 바르게 정리할 수 있다.
   </para>
 
   <para>
-   weak 모드가 아닌 경우는 사용자가 강제로 자료값에 <literal>!</>
+   weak 모드가 아닌 경우는 사용자가 강제로 자료값에 <literal>!</literal>
    문자를 추가해서 자료를 입력할 수도 있다.
   </para>
 
   <para>
-   또 다른 특별 기능으로 확인 숫자를 물음표(<literal>?</>)로 
+   또 다른 특별 기능으로 확인 숫자를 물음표(<literal>?</literal>)로 
    바꾸어 입력하면, 자동으로 그 자리 숫자를 계산해서 바른 숫자로 
    바꾸어 저장할 수 있다.
   </para>
@@ -347,19 +347,19 @@ SELECT isbn13(id) FROM test;
   <para>
    각종 번호들에 대한 정보는 아래 사이트를 참조 했음:
    <itemizedlist>
-    <listitem><para><ulink url="http://www.isbn-international.org/"></ulink></para></listitem>
+    <listitem><para><ulink url="https://www.isbn-international.org/"></ulink></para></listitem>
     <listitem><para><ulink url="http://www.issn.org/"></ulink></para></listitem>
-    <listitem><para><ulink url="http://www.ismn-international.org/"></ulink></para></listitem>
-    <listitem><para><ulink url="http://www.wikipedia.org/"></ulink></para></listitem>
+    <listitem><para><ulink url="https://www.ismn-international.org/"></ulink></para></listitem>
+    <listitem><para><ulink url="https://www.wikipedia.org/"></ulink></para></listitem>
    </itemizedlist>
 
    유효성 검사와 하이픈 처리를 위한 소스에 포함된 접두사 목록은 다음 사이트를 참조 했음:
    <itemizedlist>
-    <listitem><para><ulink url="http://www.gs1.org/productssolutions/idkeys/support/prefix_list.html"></ulink></para></listitem>
-    <listitem><para><ulink url="http://en.wikipedia.org/wiki/List_of_ISBN_identifier_groups"></ulink></para></listitem>
+    <listitem><para><ulink url="https://www.gs1.org/productssolutions/idkeys/support/prefix_list.html"></ulink></para></listitem>
+    <listitem><para><ulink url="https://en.wikipedia.org/wiki/List_of_ISBN_identifier_groups"></ulink></para></listitem>
     <listitem><para><ulink url="https://www.isbn-international.org/content/isbn-users-manual"></ulink></para></listitem>
-    <listitem><para><ulink url="http://en.wikipedia.org/wiki/International_Standard_Music_Number"></ulink></para></listitem>
-    <listitem><para><ulink url="http://www.ismn-international.org/ranges.html"></ulink></para></listitem>
+    <listitem><para><ulink url="https://en.wikipedia.org/wiki/International_Standard_Music_Number"></ulink></para></listitem>
+    <listitem><para><ulink url="https://www.ismn-international.org/ranges.html"></ulink></para></listitem>
    </itemizedlist>
 
    여기서 제공하는 유효성 검사, 하이픈 처리 알고리즘은 
@@ -375,7 +375,7 @@ SELECT isbn13(id) FROM test;
   </para>
 
   <para>
-   이 모듈은  Garrett A. Wollman의  <filename>isbn_issn</> 
+   이 모듈은  Garrett A. Wollman의  <filename>isbn_issn</filename> 
    코드에서 영감을 받았다.
   </para>
  </sect2>

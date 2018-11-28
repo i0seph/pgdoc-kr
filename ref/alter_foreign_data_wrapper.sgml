@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_foreign_data_wrapper.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERFOREIGNDATAWRAPPER">
+<refentry id="sql-alterforeigndatawrapper">
  <indexterm zone="sql-alterforeigndatawrapper">
   <primary>ALTER FOREIGN DATA WRAPPER</primary>
  </indexterm>
@@ -24,7 +24,7 @@ PostgreSQL documentation
 ALTER FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable>
     [ HANDLER <replaceable class="parameter">핸들러함수</replaceable> | NO HANDLER ]
     [ VALIDATOR <replaceable class="parameter">요효성검사함수</replaceable> | NO VALIDATOR ]
-    [ OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">옵션</replaceable> ['<replaceable class="PARAMETER">값</replaceable>'] [, ... ]) ]
+    [ OPTIONS ( [ ADD | SET | DROP ] <replaceable class="parameter">옵션</replaceable> ['<replaceable class="parameter">값</replaceable>'] [, ... ]) ]
 ALTER FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 ALTER FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 </synopsis>
@@ -93,9 +93,9 @@ ALTER FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable> R
       이렇게 해서 유효성 검사 함수가 바뀌면, 
       기존에 있던 이 외부 자료 싸개를 사용하는 서버, 사용자 맵핑, 외부 테이블
       등이 정상 작동 하지 않을 수 있음을 기억해야 한다.
-      <productname>PostgreSQL</> 서버는 이 바꾸기를 할 때 이 모든 것들이
+      <productname>PostgreSQL</productname> 서버는 이 바꾸기를 할 때 이 모든 것들이
       정상 작동 하는지 확인하지 않는다.  <command>ALTER FOREIGN DATA
-      WRAPPER</> 명령을 사용할 때는 반드시 이 외부 자료 싸개를 사용하고 
+      WRAPPER</command> 명령을 사용할 때는 반드시 이 외부 자료 싸개를 사용하고 
       있는 모든 개체들의 영향도 분석은 필요하다.
      </para>
     </listitem>
@@ -111,13 +111,13 @@ ALTER FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable> R
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="PARAMETER">option</replaceable> ['<replaceable class="PARAMETER">value</replaceable>'] [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( [ ADD | SET | DROP ] <replaceable class="parameter">option</replaceable> ['<replaceable class="parameter">value</replaceable>'] [, ... ] )</literal></term>
     <listitem>
      <para>
       외부 자료 싸개 옵션을 바꾼다. 
-      <literal>ADD</>, <literal>SET</>, <literal>DROP</>
+      <literal>ADD</literal>, <literal>SET</literal>, <literal>DROP</literal>
       지정은 각 작업 방법을 뜻하며, 이것이 생략되면,
-      <literal>ADD</> 작업을 한다. 옵션 이름은 유일해야 하며, 
+      <literal>ADD</literal> 작업을 한다. 옵션 이름은 유일해야 하며, 
       이 옵션 이름과 그 값의 요효성 검사는 외부 자료 싸개 유효성 검사 
       함수가 담당한다.
      </para>
@@ -125,7 +125,7 @@ ALTER FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable> R
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
       지정한 외부 자료 싸개의 바뀐 새 소유주 이름.
@@ -148,17 +148,17 @@ ALTER FOREIGN DATA WRAPPER <replaceable class="parameter">이름</replaceable> R
   <title>예제</title>
 
   <para>
-   <literal>dbi</> 이름의 외부 자료 싸개에서
-   <literal>foo</> 옵션을 추가하고, 
-   <literal>bar</> 옵션을 빼는 경우:
+   <literal>dbi</literal> 이름의 외부 자료 싸개에서
+   <literal>foo</literal> 옵션을 추가하고, 
+   <literal>bar</literal> 옵션을 빼는 경우:
 <programlisting>
 ALTER FOREIGN DATA WRAPPER dbi OPTIONS (ADD foo '1', DROP 'bar');
 </programlisting>
   </para>
 
   <para>
-   <literal>dbi</> 외부 자료 싸개의 유효성 검사기를
-   <literal>bob.myvalidator</>로 지정하는 경우:
+   <literal>dbi</literal> 외부 자료 싸개의 유효성 검사기를
+   <literal>bob.myvalidator</literal>로 지정하는 경우:
 <programlisting>
 ALTER FOREIGN DATA WRAPPER dbi VALIDATOR bob.myvalidator;
 </programlisting></para>
@@ -170,7 +170,7 @@ ALTER FOREIGN DATA WRAPPER dbi VALIDATOR bob.myvalidator;
   <para>
    <command>ALTER FOREIGN DATA WRAPPER</command> 구문은 ISO/IEC
    9075-9 (SQL/MED) 규약을 따른다. 다만 <literal>HANDLER</literal>,
-   <literal>VALIDATOR</>, <literal>OWNER TO</>, <literal>RENAME</literal>
+   <literal>VALIDATOR</literal>, <literal>OWNER TO</literal>, <literal>RENAME</literal>
    구문은 확장 기능이다.
   </para>
  </refsect1>
@@ -179,8 +179,8 @@ ALTER FOREIGN DATA WRAPPER dbi VALIDATOR bob.myvalidator;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createforeigndatawrapper"></member>
-   <member><xref linkend="sql-dropforeigndatawrapper"></member>
+   <member><xref linkend="sql-createforeigndatawrapper"/></member>
+   <member><xref linkend="sql-dropforeigndatawrapper"/></member>
   </simplelist>
  </refsect1>
 

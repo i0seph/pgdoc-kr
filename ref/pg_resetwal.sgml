@@ -3,7 +3,7 @@ doc/src/sgml/ref/pg_resetwal.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="APP-PGRESETWAL">
+<refentry id="app-pgresetwal">
  <indexterm zone="app-pgresetwal">
   <primary>pg_resetwal</primary>
  </indexterm>
@@ -23,18 +23,30 @@ PostgreSQL documentation
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>pg_resetwal</command>
-   <arg choice="opt"><option>-f</option></arg>
-   <arg choice="opt"><option>-n</option></arg>
+   <group choice="opt">
+    <arg choice="plain"><option>--force</option></arg>
+    <arg choice="plain"><option>-f</option></arg>
+   </group>
+   <group choice="opt">
+    <arg choice="plain"><option>--dry-run</option></arg>
+    <arg choice="plain"><option>-n</option></arg>
+   </group>
    <arg rep="repeat"><replaceable>옵션</replaceable></arg>
-   <arg choice="req"><arg choice="opt"><option>-D</option></arg> <replaceable class="parameter">데이터디렉터리</replaceable></arg>
+   <group choice="plain">
+    <group choice="opt">
+     <arg choice="plain"><option>--pgdata</option></arg>
+     <arg choice="plain"><option>-D</option></arg>
+    </group>
+    <replaceable class="parameter"> 데이터디렉터리</replaceable>
+   </group>
   </cmdsynopsis>
  </refsynopsisdiv>
 
- <refsect1 id="R1-APP-PGRESETWAL-1">
+ <refsect1 id="r1-app-pgresetwal-1">
   <title>설명</title>
   <para>
    <command>pg_resetwal</command> 명령은 미리-쓰기 로그를 깨끗하게 정리하고,
-   더불어 <filename>pg_control</> 파일에 저장된 여러 제어 정보를 
+   더불어 <filename>pg_control</filename> 파일에 저장된 여러 제어 정보를 
    재설정한다.  이 작업은 앞에서 설명한 파일들이 깨졌을 때, 복구하기 
    위해서 필요하다.  이 명령은 서버를 실행 할 수 없을 때, 
    마지막 조치로 사용되어야 한다.
@@ -44,7 +56,7 @@ PostgreSQL documentation
    이 명령을 사용하고 난 뒤, 서버가 잘 실행 된다고 해도, 
    트랜잭션 처리의 불완전한 복구로 자료 정합성이 맞지 않을 가능성이 높다.
    그래서, 서버가 실행 되면, 모든 자료를 덤프하고, 
-   <command>initdb</> 명령으로 새 클러스터를 만들어, 그곳에 
+   <command>initdb</command> 명령으로 새 클러스터를 만들어, 그곳에 
    다시 복원해서, 필요하다면, 자료 정합성을 맞추는 작업을 해야 한다.
    (공식 설명서에서는 이렇게 권고한다. - 옮긴이)
   </para>
@@ -52,26 +64,26 @@ PostgreSQL documentation
   <para>
    이 명령은 서버가 다루는 파일을 다루기 때문에, 서버를 실행한 
    OS 사용자 계정으로 실행해야 한다.  안전상  <command>pg_resetwal</command>
-   명령은 <envar>PGDATA</> 환경 변수를 사용하지 않는다. 반드시 데이터 디렉터리를
+   명령은 <envar>PGDATA</envar> 환경 변수를 사용하지 않는다. 반드시 데이터 디렉터리를
    지정해야 한다.
   </para>
 
   <para>
    <command>pg_resetwal</command> 명령을 실행할 때, 
-   <filename>pg_control</> 파일에 저장된 정보가 바르지 않다고, 
+   <filename>pg_control</filename> 파일에 저장된 정보가 바르지 않다고, 
    오류 메시지를 보게 된다면, 이런 오류를 무시하고, 강제로
-   작업을 진행할 수 있다.  이때는 <option>-f</> (force) 옵션을 
+   작업을 진행할 수 있다.  이때는 <option>-f</option> (force) 옵션을 
    사용한다.  이렇게 하면, 그 잘못된 정보를 고치는데, 
    그럴싸한 값을 사용한다.  이렇게 사용하는 그럴싸한 값은 대부분의 경우
    정확한 값이겠지만, 다음 OID, 다음 트랜잭션 ID, 다음 시간, 
-   다음 다중 트랜잭션 ID, 위치 값은 사용자가 직접 그 값을 지정해야
+   다음 다중 트랜잭션 ID, WAL 시작 위치 값은 사용자가 직접 그 값을 지정해야
    하는 경우도 있다.  이런 값들은 아래에서 설명하는 옵션으로 지정한다. 
    이런 값들을 모두 정확하게 알지 못한다면, 결국 
-   <option>-f</> 옵션을 사용할 수 밖에 없다.  이렇게 되면, 
+   <option>-f</option> 옵션을 사용할 수 밖에 없다.  이렇게 되면, 
    복구된 데이터베이스 서버가 완벽하게 정상 상태일 가능성이 적다.  그렇기
    때문에, 이 상태의 데이터베이스 서버에 자료 조작 명령을 내리는 것은
-   <emphasis>아주 위험하다</>.  서버가 실행되면, 즉시 자료 덤프를 하고, 
-   그 덤프한 것을 복원해서 사용하는 것이 안전하다.  <option>-f</>
+   <emphasis>아주 위험하다</emphasis>.  서버가 실행되면, 즉시 자료 덤프를 하고, 
+   그 덤프한 것을 복원해서 사용하는 것이 안전하다.  <option>-f</option>
    옵션을 사용해서 복구 하고 그냥 그 서버를 사용하는 것은 자료를 더 
    손상시키는 결과를 만들 수 있다.
   </para>
@@ -83,9 +95,10 @@ PostgreSQL documentation
   <variablelist>
    <varlistentry>
     <term><option>-f</option></term>
+    <term><option>--force</option></term>
     <listitem>
      <para>
-      <filename>pg_control</> 파일에 저장된 정보가 바르지 않은 경우에도
+      <filename>pg_control</filename> 파일에 저장된 정보가 바르지 않은 경우에도
       강제로 작업을 진행한다.  위에서 자세히 설명했다.
      </para>
     </listitem>
@@ -93,9 +106,10 @@ PostgreSQL documentation
 
    <varlistentry>
     <term><option>-n</option></term>
+    <term><option>--dry-run</option></term>
     <listitem>
      <para>
-      <filename>pg_control</> 파일의 정보를 어떻게 바꿀 것인지, 
+      <filename>pg_control</filename> 파일의 정보를 어떻게 바꿀 것인지, 
       작업 계획만 보여주고, 실제 작업은 하지 않는다. (no operation)
       이 옵션은 문제점 추적용으로 사용되지만, <command>pg_resetwal</command>
       명령을 실행해서 어떤 일이 생길지 확인하는 용도로도 유용하게 사용된다.
@@ -118,7 +132,7 @@ PostgreSQL documentation
 
   <para>
    다음 옵션들은 <command>pg_resetwal</command> 명령을 사용할 때
-   <filename>pg_control</> 파일의 정보가 올바르지 않을 때 
+   <filename>pg_control</filename> 파일의 정보가 올바르지 않을 때 
    사용하는 옵션이다.  안전한 값은 아래에서 설명하는 것처럼
    결정될 수 있다.  옵션 값으로 숫자를 지정하는 경우, 
    <literal>0x</literal> 문자로 시작하면, 16진수로 간주한다.
@@ -126,14 +140,15 @@ PostgreSQL documentation
 
   <variablelist>
    <varlistentry>
-    <term><option>-c</option> <replaceable class="parameter">xid</replaceable>,<replaceable class="parameter">xid</replaceable></term>
+    <term><option>-c <replaceable class="parameter">xid</replaceable>,<replaceable class="parameter">xid</replaceable></option></term>
+    <term><option>--commit-timestamp-ids=<replaceable class="parameter">xid</replaceable>,<replaceable class="parameter">xid</replaceable></option></term>
     <listitem>
      <para>
       직접 제일 오래된 트랜잭션 ID, 가장 최신의 트랜잭션 ID를 지정한다.
      </para>
 
      <para>
-      안전한 값은 데이터 디렉터리 안 <filename>pg_commit_ts</> 디렉터리 안에
+      안전한 값은 데이터 디렉터리 안 <filename>pg_commit_ts</filename> 디렉터리 안에
       있는 그 파일 이름 기준으로 가장 오래된 파일의 트랜잭션 ID를 
       제일 오래된 트랜잭션 ID로 사용하며, 가장 최신의 트랜잭션 ID는 
       반대로 그 디렉터리에 있는 가장 최근의 파일에 있는 트랜잭션 ID를 
@@ -143,7 +158,8 @@ PostgreSQL documentation
    </varlistentry>
 
    <varlistentry>
-    <term><option>-e</option> <replaceable class="parameter">xid_epoch</replaceable></term>
+    <term><option>-e <replaceable class="parameter">xid_epoch</replaceable></option></term>
+    <term><option>--epoch=<replaceable class="parameter">xid_epoch</replaceable></option></term>
     <listitem>
      <para>
       다음 트랜잭션ID epoch(유닉스 타임스탬프값)를 지정한다.
@@ -152,40 +168,48 @@ PostgreSQL documentation
      <para>
       트랜잭션 ID epoch 값은 데이터베이스 어디에도 저장되지 않는다. 즉
       사용자가 지정하는 그 값을 그대로 사용한다.  이 옵션은
-      <application>Slony-I</> 또는  <application>Skytools</>  응용 프로그램이
+      <application>Slony-I</application> 또는  <application>Skytools</application>  응용 프로그램이
       바르게 작동하도록 하기 위해 사용하는 옵션이다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><option>-l</option> <replaceable class="parameter">WAL파일</replaceable></term>
+    <term><option>-l <replaceable class="parameter">walfile</replaceable></option></term>
+    <term><option>--next-wal-file=<replaceable class="parameter">walfile</replaceable></option></term>
     <listitem>
      <para>
-      WAL 시작 주소를 지정.
+      다음 WAL 조각 파일의 이름을 지정해서 WAL 시작 위치를 임의로 지정한다.
      </para>
 
      <para>
-      여기서 지정하는 값은 <filename>pg_wal</> 디렉터리 내 있는 
+      여기서 지정하는 값은 <filename>pg_wal</filename> 디렉터리 내 있는 
       WAL 조각 파일의 이름보다 큰 값이어야 한다.
-      이 조각 파일 이름은 세 부분으로 구성 되는데, 
-      가장 앞부분은 <quote>타임라인ID</>이며, 이 부분은 그대로 
-      사용한다.  예를 들어, <filename>00000001000000320000004A</>
+      이 다음 WAL 조각 파일 이름은 세 부분으로 구성 되는데, 
+      가장 앞부분은 <quote>타임라인ID</quote>이며, 이 부분은 그대로 
+      사용한다.  예를 들어, <filename>00000001000000320000004A</filename>
       파일이 그 디렉터리에 있다면, 이 옵션 사용법은
-      <literal>-l 00000001000000320000004B</> 또는 이 보다 큰
+      <literal>-l 00000001000000320000004B</literal> 또는 이 보다 큰
       값을 지정해야 한다.
+     </para>
+
+     <para>
+      Note that when using nondefault WAL segment sizes, the numbers in the WAL
+      file names are different from the LSNs that are reported by system
+      functions and system views.  This option takes a WAL file name, not an
+      LSN.
      </para>
 
      <note>
       <para>
        <command>pg_resetwal</command> 명령은 
-       특별한 경우가 아니면,  <option>-l</> 옵션을 기본적으로
+       특별한 경우가 아니면,  <option>-l</option> 옵션을 기본적으로
        사용하며, 그 값은 해당 디렉터리 안에 있는 파일을 찾아서
        그 보다 큰 값을 사용한다.  따라서, 이 옵션을
-       의도적으로 쓰는 경우는 <filename>pg_wal</> 디렉터리 
+       의도적으로 쓰는 경우는 <filename>pg_wal</filename> 디렉터리 
        안에 있는 파일을 무시하고, 의도적으로 어떤 파일로 
        지정하려고 할 때 사용한다.  대표적인 경우가, 
-       아카이브 파일을 다시 만들어야 하거나, <filename>pg_wal</>
+       아카이브 파일을 다시 만들어야 하거나, <filename>pg_wal</filename>
        디렉토리 내 특정 파일이 반드시 있어야 하는 경우다.
       </para>
      </note>
@@ -193,16 +217,17 @@ PostgreSQL documentation
    </varlistentry>
 
    <varlistentry>
-    <term><option>-m</option> <replaceable class="parameter">mxid</replaceable>,<replaceable class="parameter">mxid</replaceable></term>
+    <term><option>-m <replaceable class="parameter">mxid</replaceable>,<replaceable class="parameter">mxid</replaceable></option></term>
+    <term><option>--multixact-ids=<replaceable class="parameter">mxid</replaceable>,<replaceable class="parameter">mxid</replaceable></option></term>
     <listitem>
      <para>
       다음 멀티트랜잭션ID와 제일 오래된 멀티트랜잭션ID  지정.
      </para>
 
      <para>
-      <option>-m</> 옵션값으로 쉼표로 구분한 두 16진수를 지정하는데,
+      <option>-m</option> 옵션값으로 쉼표로 구분한 두 16진수를 지정하는데,
       앞부분은 다음 멀티트랜잭션ID, 뒷부분은 제일 오래된 멀티트랜잭션ID다.
-      각 값들은 <filename>pg_multixact/offsets</> 디렉터리 내 있는 
+      각 값들은 <filename>pg_multixact/offsets</filename> 디렉터리 내 있는 
       파일을 참조해서, 가장 큰 값에 하나를 더해, 65536 (0x10000) 곱해서
       앞부분에 사용하고, 가장 작은 값에 65536 곱해서 뒷부분에
       사용한다.  이 값은 16진수를 사용하며, 
@@ -212,7 +237,8 @@ PostgreSQL documentation
    </varlistentry>
 
    <varlistentry>
-    <term><option>-o</option> <replaceable class="parameter">oid</replaceable></term>
+    <term><option>-o <replaceable class="parameter">oid</replaceable></option></term>
+    <term><option>--next-oid=<replaceable class="parameter">oid</replaceable></option></term>
     <listitem>
      <para>
       다음 OID 지정.
@@ -227,14 +253,15 @@ PostgreSQL documentation
    </varlistentry>
 
    <varlistentry>
-    <term><option>-O</option> <replaceable class="parameter">mxoff</replaceable></term>
+    <term><option>-O <replaceable class="parameter">mxoff</replaceable></option></term>
+    <term><option>--multixact-offset=<replaceable class="parameter">mxoff</replaceable></option></term>
     <listitem>
      <para>
       다음 멀티트랜잭션 위치 지정.
      </para>
 
      <para>
-      안전한 값은 <filename>pg_multixact/members</> 디렉터리 안에 있는
+      안전한 값은 <filename>pg_multixact/members</filename> 디렉터리 안에 있는
       파일들 가운데, 그 이름이 가장 큰 것을 찾고, 그 값에 1을 더하고,
       52352 (0xCC80)를 곱한 값이다.
       이 값은 16진수를 사용한다.  There is no simple recipe such as
@@ -244,18 +271,41 @@ PostgreSQL documentation
    </varlistentry>
 
    <varlistentry>
-    <term><option>-x</option> <replaceable class="parameter">xid</replaceable></term>
+    <term><option>--wal-segsize=<replaceable class="parameter">wal_segment_size</replaceable></option></term>
+    <listitem>
+     <para>
+      Set the new WAL segment size, in megabytes.  The value must be set to a
+      power of 2 between 1 and 1024 (megabytes).  See the same option of <xref
+      linkend="app-initdb"/> for more information.
+     </para>
+
+     <note>
+      <para>
+       While <command>pg_resetwal</command> will set the WAL starting address
+       beyond the latest existing WAL segment file, some segment size changes
+       can cause previous WAL file names to be reused.  It is recommended to
+       use <option>-l</option> together with this option to manually set the
+       WAL starting address if WAL file name overlap will cause problems with
+       your archiving strategy.
+      </para>
+     </note>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><option>-x <replaceable class="parameter">xid</replaceable></option></term>
+    <term><option>--next-transaction-id=<replaceable class="parameter">xid</replaceable></option></term>
     <listitem>
      <para>
       다음 트랜잭션 ID 지정.
      </para>
 
      <para>
-      안전한 값은 <filename>pg_xact</> 디렉터리 안에 있는 파일들 가운데, 
+      안전한 값은 <filename>pg_xact</filename> 디렉터리 안에 있는 파일들 가운데, 
       그 이름이 가장 큰것을 찾아 그 값에 1을 더하고, 1048576 (0x100000)을
       곱해서 사용한다.  파일 이름은 16진수를 사용한다.  
-      예를 들어, 가장 큰 파일이 <filename>0011</> 이면,
-      <literal>-x 0x1200000</> 옵션을 사용한다.
+      예를 들어, 가장 큰 파일이 <filename>0011</filename> 이면,
+      <literal>-x 0x1200000</literal> 옵션을 사용한다.
      </para>
     </listitem>
    </varlistentry>
@@ -285,7 +335,7 @@ PostgreSQL documentation
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="app-pgcontroldata"></member>
+   <member><xref linkend="app-pgcontroldata"/></member>
   </simplelist>
  </refsect1>
 </refentry>

@@ -21,21 +21,21 @@
   <itemizedlist>
    <listitem>
     <para>
-     <xref linkend="tutorial"> : 처음 PostgreSQL을 사용하는 이들을 위한 자습서
+     <xref linkend="tutorial"/> : 처음 PostgreSQL을 사용하는 이들을 위한 자습서
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <xref linkend="sql"> : <acronym>SQL</acronym> 쿼리 언어 환경에 대한 문서들.
+     <xref linkend="sql"/> : <acronym>SQL</acronym> 쿼리 언어 환경에 대한 문서들.
      여기서는 자료형, 함수, 일반 사용자 차원의 성능 개선 방법등을 다룬다.
-     <productname>PostgreSQL</>을 사용하는 모든 사용자는 이 부분을 꼭 읽으시길.
+     <productname>PostgreSQL</productname>을 사용하는 모든 사용자는 이 부분을 꼭 읽으시길.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <xref linkend="admin"> : 서버 설치 및 관리에 관한 문서들. 
+     <xref linkend="admin"/> : 서버 설치 및 관리에 관한 문서들. 
      <productname>PostgreSQL</productname> 서버를 운영하는 모든 사용자는 
      이 부분을 꼭 읽으시길.
     </para>
@@ -43,7 +43,7 @@
 
    <listitem>
     <para>
-     <xref linkend="client-interfaces"> : 
+     <xref linkend="client-interfaces"/> : 
      <productname>PostgreSQL</productname> 클라이언트 프로그램 개발에 
      필요한 프로그래밍 인터페이스에 대한 문서들.
     </para>
@@ -52,7 +52,7 @@
 
    <listitem>
     <para>
-     <xref linkend="server-programming"> : 
+     <xref linkend="server-programming"/> : 
      서버 기능을 확장하려고 하는 고급 사용자들을 위한 문서들.
      여기서는 사용자 정의 자료형, 함수 등을 구현하는 방법을 다루고 있다.
     </para>
@@ -60,7 +60,7 @@
 
    <listitem>
     <para>
-     <xref linkend="reference"> : 
+     <xref linkend="reference"/> : 
 SQL 명령어, 클라이언트, 서버 응용 프로그램들에 대한 자세한 설명서들을 다룬다.
 여기 문서들은 다른 부분의 문서들을 읽는데 그 기반이 되는 자세한 설명들을 다룬다.
     </para>
@@ -68,8 +68,8 @@ SQL 명령어, 클라이언트, 서버 응용 프로그램들에 대한 자세�
 
    <listitem>
     <para>
-     <xref linkend="internals"> : 
-<productname>PostgreSQL</> 개발에 관심 있는 이들에게 관계된 정보들을 다룬다.
+     <xref linkend="internals"/> : 
+<productname>PostgreSQL</productname> 개발에 관심 있는 이들에게 관계된 정보들을 다룬다.
     </para>
    </listitem>
   </itemizedlist>

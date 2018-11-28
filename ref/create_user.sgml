@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_user.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEUSER">
+<refentry id="sql-createuser">
  <indexterm zone="sql-createuser">
   <primary>CREATE USER</primary>
  </indexterm>
@@ -21,9 +21,9 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE USER <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <replaceable class="PARAMETER">옵션</replaceable> [ ... ] ]
+CREATE USER <replaceable class="parameter">이름</replaceable> [ [ WITH ] <replaceable class="parameter">옵션</replaceable> [ ... ] ]
 
-<phrase><replaceable class="PARAMETER">옵션</replaceable>에서 사용할 수 있는 것:</phrase>
+<phrase><replaceable class="parameter">옵션</replaceable>에서 사용할 수 있는 것:</phrase>
 
       SUPERUSER | NOSUPERUSER
     | CREATEDB | NOCREATEDB
@@ -32,15 +32,15 @@ CREATE USER <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
     | LOGIN | NOLOGIN
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
-    | CONNECTION LIMIT <replaceable class="PARAMETER">connlimit</replaceable>
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="PARAMETER">비밀번호</replaceable>'
-    | VALID UNTIL '<replaceable class="PARAMETER">timestamp</replaceable>'
-    | IN ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | IN GROUP <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | ROLE <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | ADMIN <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | USER <replaceable class="PARAMETER">롤이름</replaceable> [, ...]
-    | SYSID <replaceable class="PARAMETER">uid</replaceable>
+    | CONNECTION LIMIT <replaceable class="parameter">connlimit</replaceable>
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>'
+    | VALID UNTIL '<replaceable class="parameter">timestamp</replaceable>'
+    | IN ROLE <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | IN GROUP <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | ROLE <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | ADMIN <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | USER <replaceable class="parameter">롤이름</replaceable> [, ...]
+    | SYSID <replaceable class="parameter">uid</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -49,11 +49,11 @@ CREATE USER <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
 
   <para>
    <command>CREATE USER</command> 명령은
-   <xref linkend="sql-createrole"> 명령의 별칭이다.
+   <xref linkend="sql-createrole"/> 명령의 별칭이다.
    <command>CREATE USER</command> 명령의 다른점은 
-   기본적으로 <literal>LOGIN</> 옵션이 추가된다는 점이다.
+   기본적으로 <literal>LOGIN</literal> 옵션이 추가된다는 점이다.
    <command>CREATE ROLE</command> 명령은 기본적으로
-   <literal>NOLOGIN</> 옵션의 롤이 만들어진다.
+   <literal>NOLOGIN</literal> 옵션의 롤이 만들어진다.
   </para>
  </refsect1>
 
@@ -71,7 +71,7 @@ CREATE USER <replaceable class="PARAMETER">이름</replaceable> [ [ WITH ] <repl
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createrole"></member>
+   <member><xref linkend="sql-createrole"/></member>
   </simplelist>
  </refsect1>
 </refentry>

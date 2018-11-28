@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_materialized_view.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERMATERIALIZEDVIEW">
+<refentry id="sql-altermaterializedview">
  <indexterm zone="sql-altermaterializedview">
   <primary>ALTER MATERIALIZED VIEW</primary>
  </indexterm>
@@ -21,30 +21,30 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
-    <replaceable class="PARAMETER">작업</replaceable> [, ... ]
-ALTER MATERIALIZED VIEW <replaceable class="PARAMETER">이름</replaceable>
-    DEPENDS ON EXTENSION <replaceable class="PARAMETER">확장모듈</replaceable>
-ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
-    RENAME [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> TO <replaceable class="PARAMETER">새칼럼이름</replaceable>
+ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
+    <replaceable class="parameter">작업</replaceable> [, ... ]
+ALTER MATERIALIZED VIEW <replaceable class="parameter">이름</replaceable>
+    DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈</replaceable>
+ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
+    RENAME [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> TO <replaceable class="parameter">새칼럼이름</replaceable>
 ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
     RENAME TO <replaceable class="parameter">새이름</replaceable>
 ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
     SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
-ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름</replaceable> [ OWNED BY <replaceable class="PARAMETER">롤이름</replaceable> [, ... ] ]
-    SET TABLESPACE <replaceable class="PARAMETER">새테이블스페이스</replaceable> [ NOWAIT ]
+ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름</replaceable> [ OWNED BY <replaceable class="parameter">롤이름</replaceable> [, ... ] ]
+    SET TABLESPACE <replaceable class="parameter">새테이블스페이스</replaceable> [ NOWAIT ]
 
-<phrase><replaceable class="PARAMETER">작업</replaceable> 자리에는:</phrase>
+<phrase><replaceable class="parameter">작업</replaceable> 자리에는:</phrase>
 
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET STATISTICS <replaceable class="PARAMETER">정수</replaceable>
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET ( <replaceable class="PARAMETER">속성옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> RESET ( <replaceable class="PARAMETER">속성옵션</replaceable> [, ... ] )
-    ALTER [ COLUMN ] <replaceable class="PARAMETER">칼럼이름</replaceable> SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }
-    CLUSTER ON <replaceable class="PARAMETER">인덱스이름</replaceable>
+    ALTER [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> SET STATISTICS <replaceable class="parameter">정수</replaceable>
+    ALTER [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> SET ( <replaceable class="parameter">속성옵션</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] )
+    ALTER [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> RESET ( <replaceable class="parameter">속성옵션</replaceable> [, ... ] )
+    ALTER [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }
+    CLUSTER ON <replaceable class="parameter">인덱스이름</replaceable>
     SET WITHOUT CLUSTER
-    SET ( <replaceable class="PARAMETER">스토리지옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] )
-    RESET ( <replaceable class="PARAMETER">스토리지옵션</replaceable> [, ... ] )
-    OWNER TO { <replaceable class="PARAMETER">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+    SET ( <replaceable class="parameter">스토리지옵션</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] )
+    RESET ( <replaceable class="parameter">스토리지옵션</replaceable> [, ... ] )
+    OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 </synopsis>
  </refsynopsisdiv>
 
@@ -57,9 +57,9 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
   </para>
 
   <para>
-   <command>ALTER MATERIALIZED VIEW</> 명령은 해당 개체의 소유주가 
+   <command>ALTER MATERIALIZED VIEW</command> 명령은 해당 개체의 소유주가 
    사용할 수 있다.  스키마를 바꾸는 경우, 새 스키마에 대해서
-   <literal>CREATE</> 권한이 있어야 한다.
+   <literal>CREATE</literal> 권한이 있어야 한다.
    소유주를 바꾸는 경우, 기존 소유주는 새 소유주의 소속원이어야하며,
    새 소유주는 해당 스키마에 대해서 <literal>CREATE</literal> 권한이
    있어야 한다.  (새 소유주가 해당 개체를 삭제하거나 다시 만들 수 
@@ -78,7 +78,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
    <command>ALTER MATERIALIZED VIEW</command> 명령의 여러 구문과
    구체적인 작업들은 <command>ALTER TABLE</command> 명령에서 
    사용하는 것과 같다.
-   자세한 설명은 <xref linkend="sql-altertable"> 명령 설명서에서 다룬다.
+   자세한 설명은 <xref linkend="sql-altertable"/> 명령 설명서에서 다룬다.
   </para>
  </refsect1>
 
@@ -97,7 +97,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">칼럼이름</replaceable></term>
+     <term><replaceable class="parameter">칼럼이름</replaceable></term>
      <listitem>
       <para>
        작업 대상 칼럼 이름.
@@ -106,7 +106,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">확장모듈</replaceable></term>
+     <term><replaceable class="parameter">확장모듈</replaceable></term>
      <listitem>
       <para>
        해당 구체화한 뷰를 구성 요소로 하는 확장 모듈 이름.
@@ -115,7 +115,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     </varlistentry>
 
     <varlistentry>
-     <term><replaceable class="PARAMETER">새칼럼이름</replaceable></term>
+     <term><replaceable class="parameter">새칼럼이름</replaceable></term>
      <listitem>
       <para>
        바뀔 새 칼럼 이름.
@@ -124,7 +124,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">새소유주</replaceable></term>
+    <term><replaceable class="parameter">새소유주</replaceable></term>
     <listitem>
      <para>
       해당 구체화한 뷰의 바뀔 새 소유주 이름.
@@ -176,9 +176,9 @@ ALTER MATERIALIZED VIEW foo RENAME TO bar;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-creatematerializedview"></member>
-   <member><xref linkend="sql-dropmaterializedview"></member>
-   <member><xref linkend="sql-refreshmaterializedview"></member>
+   <member><xref linkend="sql-creatematerializedview"/></member>
+   <member><xref linkend="sql-dropmaterializedview"/></member>
+   <member><xref linkend="sql-refreshmaterializedview"/></member>
   </simplelist>
  </refsect1>
 </refentry>

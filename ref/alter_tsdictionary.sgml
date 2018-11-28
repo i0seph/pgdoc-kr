@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_tsdictionary.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERTSDICTIONARY">
+<refentry id="sql-altertsdictionary">
  <indexterm zone="sql-altertsdictionary">
   <primary>ALTER TEXT SEARCH DICTIONARY</primary>
  </indexterm>
@@ -40,7 +40,7 @@ ALTER TEXT SEARCH DICTIONARY <replaceable>이름</replaceable> SET SCHEMA <repla
   </para>
 
   <para>
-   <command>ALTER TEXT SEARCH DICTIONARY</> 명령은 해당 사전의 소유주만
+   <command>ALTER TEXT SEARCH DICTIONARY</command> 명령은 해당 사전의 소유주만
    사용할 수 있다.
   </para>
  </refsect1>
@@ -124,7 +124,7 @@ ALTER TEXT SEARCH DICTIONARY my_dict ( StopWords = newrussian );
 </programlisting>
 
   <para>
-   다음은 언어는 독일어 <literal>dutch</>로, 멈춤단어 목록은 사용하지 
+   다음은 언어는 독일어 <literal>dutch</literal>로, 멈춤단어 목록은 사용하지 
    않도록 바꾸는 명령:
   </para>
 
@@ -134,7 +134,7 @@ ALTER TEXT SEARCH DICTIONARY my_dict ( language = dutch, StopWords );
 
   <para>
    다음은 아무런 속성 변경 없이 단지 해당 사전의 정의를
-   <quote>새로고치는</> 예제:
+   <quote>새로고치는</quote> 예제:
 
 <programlisting>
 ALTER TEXT SEARCH DICTIONARY my_dict ( dummy );
@@ -144,7 +144,7 @@ ALTER TEXT SEARCH DICTIONARY my_dict ( dummy );
    반영할 때 사용하는 기법이다.
    (The reason this works is that the option removal code doesn't complain
    if there is no such option.)  This trick is useful when changing
-   configuration files for the dictionary: the <command>ALTER</> will
+   configuration files for the dictionary: the <command>ALTER</command> will
    force existing database sessions to re-read the configuration files,
    which otherwise they would never do if they had read them earlier.
   </para>
@@ -163,8 +163,8 @@ ALTER TEXT SEARCH DICTIONARY my_dict ( dummy );
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createtsdictionary"></member>
-   <member><xref linkend="sql-droptsdictionary"></member>
+   <member><xref linkend="sql-createtsdictionary"/></member>
+   <member><xref linkend="sql-droptsdictionary"/></member>
   </simplelist>
  </refsect1>
 </refentry>

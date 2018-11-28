@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_tablespace.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATETABLESPACE">
+<refentry id="sql-createtablespace">
  <indexterm zone="sql-createtablespace">
   <primary>CREATE TABLESPACE</primary>
  </indexterm>
@@ -24,7 +24,7 @@ PostgreSQL documentation
 CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</replaceable>
     [ OWNER { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER } ]
     LOCATION '<replaceable class="parameter">디렉터리</replaceable>'
-    [ WITH ( <replaceable class="PARAMETER">테이블스페이스옵션</replaceable> = <replaceable class="PARAMETER">값</replaceable> [, ... ] ) ]
+    [ WITH ( <replaceable class="parameter">테이블스페이스옵션</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -44,10 +44,10 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
   </para>
 
   <para>
-   <replaceable class="parameter">테이블스페이스이름</>으로 
+   <replaceable class="parameter">테이블스페이스이름</replaceable>으로 
    지정한 테이블스페이스를 
-   <command>CREATE DATABASE</>, <command>CREATE TABLE</>,
-   <command>CREATE INDEX</> 또는 <command>ADD CONSTRAINT</>  명령에서
+   <command>CREATE DATABASE</command>, <command>CREATE TABLE</command>,
+   <command>CREATE INDEX</command> 또는 <command>ADD CONSTRAINT</command>  명령에서
    테이블스페이스를 지정한다면, 그 위치에 자료를 쓸 수 있도록
    적당한 권한이 명령을 실행하는 사용자에게 부여되어 있어야 한다.
   </para>
@@ -55,7 +55,7 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
   <warning>
    <para>
     테이블스페이스는 해당 클러스터와 분리해서 독립적으로 
-    사용될 수 없다.  <xref linkend="manage-ag-tablespaces"> 참고.
+    사용될 수 없다.  <xref linkend="manage-ag-tablespaces"/> 참고.
    </para>
   </warning>
 
@@ -93,7 +93,7 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
        <para>
         해당 테이블스페이스와 연결 될 디렉터리 경로 이름.
         이 디렉터리 안에는 아무 것도 없어야 하며, 
-        그 디렉터리의 OS 소유주는 <productname>PostgreSQL</> 서버를
+        그 디렉터리의 OS 소유주는 <productname>PostgreSQL</productname> 서버를
         실행하는 OS 사용자와 같아야 한다.  경로 이름은 절대경로 여야 한다.
        </para>
       </listitem>
@@ -104,15 +104,15 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
       <listitem>
        <para>
         해당 테이블스페이스에 대한 옵션을 지정.
-        현재 지원하는 옵션은 <varname>seq_page_cost</>,
-        <varname>random_page_cost</>, <varname>effective_io_concurrency</>
+        현재 지원하는 옵션은 <varname>seq_page_cost</varname>,
+        <varname>random_page_cost</varname>, <varname>effective_io_concurrency</varname>
         세가지다.
         이 설정들은 실행 계획기가 페이지 읽기 비용을 예상할 때 
         그 개체가 이 테이블스페이스가 있다면 여기서 지정한 값을 사용해서
         비용을 계산하도록 한다.
-        (각 <xref linkend="guc-seq-page-cost">,
-        <xref linkend="guc-random-page-cost">,
-        <xref linkend="guc-effective-io-concurrency"> 환경 설정 변수 참조).
+        (각 <xref linkend="guc-seq-page-cost"/>,
+        <xref linkend="guc-random-page-cost"/>,
+        <xref linkend="guc-effective-io-concurrency"/> 환경 설정 변수 참조).
         이 옵션들은 해당 디렉터리가 기본 디렉터리와 다른 I/O 성능으로 
         운영 될 때 유용하게 사용된다.
        </para>
@@ -129,7 +129,7 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
   </para>
 
    <para>
-    <command>CREATE TABLESPACE</> 명령은 트랜잭션 블럭 안에서는 사용할 수 없다.
+    <command>CREATE TABLESPACE</command> 명령은 트랜잭션 블럭 안에서는 사용할 수 없다.
    </para>
  </refsect1>
 
@@ -137,7 +137,7 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
   <title>예제</title>
 
   <para>
-   <literal>/data/dbs</> 디렉터리를 <literal>dbspace</> 이름의 테이블스페이스로
+   <literal>/data/dbs</literal> 디렉터리를 <literal>dbspace</literal> 이름의 테이블스페이스로
    만드는 경우:
 <programlisting>
 CREATE TABLESPACE dbspace LOCATION '/data/dbs';
@@ -145,9 +145,9 @@ CREATE TABLESPACE dbspace LOCATION '/data/dbs';
   </para>
 
   <para>
-   <literal>/data/indexes</> 디렉터리를
-   <literal>indexspace</> 이름의 테이블스페이스로, 소유주는
-   <literal>genevieve</>로 만드는 경우:
+   <literal>/data/indexes</literal> 디렉터리를
+   <literal>indexspace</literal> 이름의 테이블스페이스로, 소유주는
+   <literal>genevieve</literal>로 만드는 경우:
 <programlisting>
 CREATE TABLESPACE indexspace OWNER genevieve LOCATION '/data/indexes';
 </programlisting></para>
@@ -157,7 +157,7 @@ CREATE TABLESPACE indexspace OWNER genevieve LOCATION '/data/indexes';
   <title>호환성</title>
 
   <para>
-   <command>CREATE TABLESPACE</command> 구문은 <productname>PostgreSQL</>
+   <command>CREATE TABLESPACE</command> 구문은 <productname>PostgreSQL</productname>
    확장형이다.
   </para>
  </refsect1>
@@ -166,11 +166,11 @@ CREATE TABLESPACE indexspace OWNER genevieve LOCATION '/data/indexes';
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createdatabase"></member>
-   <member><xref linkend="sql-createtable"></member>
-   <member><xref linkend="sql-createindex"></member>
-   <member><xref linkend="sql-droptablespace"></member>
-   <member><xref linkend="sql-altertablespace"></member>
+   <member><xref linkend="sql-createdatabase"/></member>
+   <member><xref linkend="sql-createtable"/></member>
+   <member><xref linkend="sql-createindex"/></member>
+   <member><xref linkend="sql-droptablespace"/></member>
+   <member><xref linkend="sql-altertablespace"/></member>
   </simplelist>
  </refsect1>
 

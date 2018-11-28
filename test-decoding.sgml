@@ -8,14 +8,14 @@
  </indexterm>
 
  <para>
-  <filename>test_decoding</> 모듈은 
+  <filename>test_decoding</filename> 모듈은 
   논리 디코딩 출력용 플러그인 예제다.
   이 모듈은 특별히 쓰일 곳은 없지만, 개발자 스스로 
   출력 디코더를 개발하려고 할 때, 참고가 될 것이다.
  </para>
 
  <para>
-  <filename>test_decoding</> 모듈은 
+  <filename>test_decoding</filename> 모듈은 
   논리 디코딩 기능에 따라 트랜잭션 로그를 받아서
   그 작업 내역을 사람이 읽을 수 있는 문장으로 바꿔 준다.
  </para>

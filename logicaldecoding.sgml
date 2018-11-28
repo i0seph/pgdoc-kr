@@ -23,17 +23,17 @@
    명령으로 만들어지는 개별 새로운 로우와, 
    <command>UPDATE</command>, <command>DELETE</command> 명령으로
    처리된 삭제 처리할 로우 정보 (이것은 해당 테이블의
-   <xref linkend="SQL-CREATETABLE-REPLICA-IDENTITY">  옵션에서
+   <xref linkend="sql-createtable-replica-identity"/>  옵션에서
    지정한다)를 다룰 수 있다.
   </para>
 
   <para>
    자료 변경분은 복제 프로토콜
-   을 이용해서 전달하거나(<xref linkend="protocol-replication">, 
-   <xref linkend="logicaldecoding-walsender"> 참조),
-   SQL(<xref linkend="logicaldecoding-sql"> 참조) 구문으로
+   을 이용해서 전달하거나(<xref linkend="protocol-replication"/>, 
+   <xref linkend="logicaldecoding-walsender"/> 참조),
+   SQL(<xref linkend="logicaldecoding-sql"/> 참조) 구문으로
    사용할 수 있다.  또한 직접 그 변경분을 사용하는 
-   플러그인을 만들 수 도 있다. (<xref linkend="logicaldecoding-writer"> 참조)
+   플러그인을 만들 수 도 있다. (<xref linkend="logicaldecoding-writer"/> 참조)
   </para>
 
   <sect1 id="logicaldecoding-example">
@@ -44,9 +44,9 @@
    </para>
 
    <para>
-    논리적 디코딩을 사용하려면, 먼저 <xref linkend="guc-wal-level">
+    논리적 디코딩을 사용하려면, 먼저 <xref linkend="guc-wal-level"/>
     환경 설정값을 <literal>logical</literal>로,
-    <xref linkend="guc-max-replication-slots"> 설정값은 1이상으로
+    <xref linkend="guc-max-replication-slots"/> 설정값은 1이상으로
     설정 되어 있어야 한다.  다음 대상 데이터베이스(아래 예제에서는
     <literal>postgres</literal>)는 
     슈퍼유저로 접속 해야 한다.
@@ -142,27 +142,27 @@ postgres=# SELECT pg_drop_replication_slot('regression_slot');
 </programlisting>
 
    <para>
-    다음 예제는 <xref linkend="app-pgrecvlogical"> 프로그램을 이용한
+    다음 예제는 <xref linkend="app-pgrecvlogical"/> 프로그램을 이용한
     서버 외부에서 변경 자료를 활용하는 방법이다.  이 프로그램은
     PostgreSQL 배포판에 포함되어 있으며, 이때 자료를 전달하는 기법은 
     스트리밍 복제 프로토콜을 이용한다.  이 때는
     해당 프로그램이 스트리밍 복제를 위해 해당 데이터베이스에
     접속할 수 있어야 하며
-    (<xref linkend="streaming-replication-authentication"> 참조),
+    (<xref linkend="streaming-replication-authentication"/> 참조),
     해당 서버의 <varname>max_wal_senders</varname> 설정값이 
     그 접속 세션 수 보다는 커야한다.
    </para>
 <programlisting>
-$ pg_recvlogical -d postgres --slot test --create-slot
-$ pg_recvlogical -d postgres --slot test --start -f -
-<keycombo action="simul"><keycap>Control</><keycap>Z</></>
+$ pg_recvlogical -d postgres --slot=test --create-slot
+$ pg_recvlogical -d postgres --slot=test --start -f -
+<keycombo action="simul"><keycap>Control</keycap><keycap>Z</keycap></keycombo>
 $ psql -d postgres -c "INSERT INTO data(data) VALUES('4');"
 $ fg
 BEGIN 693
 table public.data: INSERT: id[integer]:4 data[text]:'4'
 COMMIT 693
-<keycombo action="simul"><keycap>Control</><keycap>C</></>
-$ pg_recvlogical -d postgres --slot test --drop-slot
+<keycombo action="simul"><keycap>Control</keycap><keycap>C</keycap></keycombo>
+$ pg_recvlogical -d postgres --slot=test --drop-slot
 </programlisting>
   </sect1>
 
@@ -208,7 +208,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
 
     <note>
      <para><productname>PostgreSQL</productname>에는 스트리밍 복제
-     (<xref linkend="streaming-replication"> 참조) 슬롯도
+     (<xref linkend="streaming-replication"/> 참조) 슬롯도
      있지만 서로 다르게 사용된다.
      </para>
     </note>
@@ -249,7 +249,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
      슬롯 상태 변경은 하나의 응용프로그램만 해야 할 것이다.
     </para>
 
-    <note>
+    <caution>
      <para>
       복제 슬롯은 서버 장애 상황에서도 안전하게 유지되도록 설계되었으며, 
       그 슬롯을 사용하는 응용프로그램의 상태는 알 수 없다.  따라서, 
@@ -257,9 +257,11 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
       반영하지 않은(응용프로그램에서 사용하지 않은) WAL 파일을 
       계속 보관하고, 데이터 파일의 폐기된 로우에 대해서도
       <command>VACUUM</command> 작업에서 제외된다.
+      이 대로 계속 유지된다면, 트랜잭션 ID 겹침 방지 정책에 따라 
+      데이터베이스 사용을 더 이상 못하게 된다.
       이런 이유로 사용하지 않는 슬롯은 반드시 삭제 되어야 한다.
      </para>
-    </note>
+    </caution>
    </sect2>
 
    <sect2>
@@ -275,8 +277,8 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
    <sect2>
     <title>스냅샷 추출</title>
     <para>
-     스트리밍 복제 인터페이스(<xref linkend="protocol-replication-create-slot"> 참조)를 이용해서 새로운 복제 슬롯이 만들어질 때,
-     스냅샷이 추출된다(<xref linkend="functions-snapshot-synchronization"> 참조).
+     스트리밍 복제 인터페이스(<xref linkend="protocol-replication-create-slot"/> 참조)를 이용해서 새로운 복제 슬롯이 만들어질 때,
+     스냅샷이 추출된다(<xref linkend="functions-snapshot-synchronization"/> 참조).
      슬롯이 만들어지는 시점 이후부터 데이터베이스의 변경 사항을 보관함을 
      의미한다.  이 기능은 <link linkend="sql-set-transaction"><literal>SET TRANSACTION
      SNAPSHOT</literal></link> 명령을 사용해서 새로운 
@@ -287,7 +289,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
     <para>
      Creation of a snapshot is not always possible.  In particular, it will
      fail when connected to a hot standby.  Applications that do not require
-     snapshot export may suppress it with the <literal>NOEXPORT_SNAPSHOT</>
+     snapshot export may suppress it with the <literal>NOEXPORT_SNAPSHOT</literal>
      option.
     </para>
    </sect2>
@@ -304,7 +306,7 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
      </listitem>
 
      <listitem>
-      <para><literal>DROP_REPLICATION_SLOT <replaceable>slot_name</replaceable></literal> <optional> <literal>WAIT</> </></para>
+      <para><literal>DROP_REPLICATION_SLOT <replaceable>slot_name</replaceable></literal> <optional> <literal>WAIT</literal> </optional></para>
      </listitem>
 
      <listitem>
@@ -313,11 +315,11 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
     </itemizedlist>
     각각 슬롯을 만들고, 지우고, 복제를 시작하는 역할을 한다.  이 명령은 
     SQL 구문이 아니라, 복제용 접속 상태에서 사용 가능한 것들이다.
-    이 명령에 대한 자세한 설명은 <xref linkend="protocol-replication">에서 다룬다.
+    이 명령에 대한 자세한 설명은 <xref linkend="protocol-replication"/>에서 다룬다.
    </para>
 
    <para>
-    <xref linkend="app-pgrecvlogical"> 프로그램이 
+    <xref linkend="app-pgrecvlogical"/> 프로그램이 
     스트리밍 복제 접속을 하며, 내부적으로 이런 명령을 사용한다.
    </para>
   </sect1>
@@ -327,11 +329,11 @@ $ pg_recvlogical -d postgres --slot test --drop-slot
 
    <para>
      논리적 디코딩 처리를 위한 SQL-수준의 AIP는 
-     <xref linkend="functions-replication">절에서 자세히 다룬다.
+     <xref linkend="functions-replication"/>절에서 자세히 다룬다.
    </para>
 
    <para>
-    동기식 복제(<xref linkend="synchronous-replication"> 참조)는
+    동기식 복제(<xref linkend="synchronous-replication"/> 참조)는
     이 SQL 방식으로는 구현이 불가능하며, 스트리밍 복제 인터페이스로만 가능하다.
     함수 인터페이스, 추가적이고, 비핵심적인 인터페이스는
     동기식 복제를 지원하지 않는다.
@@ -380,6 +382,7 @@ typedef struct OutputPluginCallbacks
     LogicalDecodeStartupCB startup_cb;
     LogicalDecodeBeginCB begin_cb;
     LogicalDecodeChangeCB change_cb;
+    LogicalDecodeTruncateCB truncate_cb;
     LogicalDecodeCommitCB commit_cb;
     LogicalDecodeMessageCB message_cb;
     LogicalDecodeFilterByOriginCB filter_by_origin_cb;
@@ -391,8 +394,10 @@ typedef void (*LogicalOutputPluginInit) (struct OutputPluginCallbacks *cb);
      The <function>begin_cb</function>, <function>change_cb</function>
      and <function>commit_cb</function> callbacks are required,
      while <function>startup_cb</function>,
-     <function>filter_by_origin_cb</function>
+     <function>filter_by_origin_cb</function>, <function>truncate_cb</function>,
      and <function>shutdown_cb</function> are optional.
+     If <function>truncate_cb</function> is not set but a
+     <command>TRUNCATE</command> is to be decoded, the action will be ignored.
     </para>
    </sect2>
 
@@ -425,12 +430,12 @@ CREATE TABLE another_catalog_table(data text) WITH (user_catalog_table = true);
      data in a data type that can contain arbitrary data (e.g., <type>bytea</type>) is
      cumbersome. If the output plugin only outputs textual data in the
      server's encoding, it can declare that by
-     setting <literal>OutputPluginOptions.output_type</>
-     to <literal>OUTPUT_PLUGIN_TEXTUAL_OUTPUT</> instead
-     of <literal>OUTPUT_PLUGIN_BINARY_OUTPUT</> in
+     setting <literal>OutputPluginOptions.output_type</literal>
+     to <literal>OUTPUT_PLUGIN_TEXTUAL_OUTPUT</literal> instead
+     of <literal>OUTPUT_PLUGIN_BINARY_OUTPUT</literal> in
      the <link linkend="logicaldecoding-output-plugin-startup">startup
-     callback</>. In that case, all the data has to be in the server's encoding
-     so that a <type>text</> datum can contain it. This is checked in assertion-enabled
+     callback</link>. In that case, all the data has to be in the server's encoding
+     so that a <type>text</type> datum can contain it. This is checked in assertion-enabled
      builds.
     </para>
    </sect2>
@@ -483,12 +488,17 @@ typedef void (*LogicalDecodeStartupCB) (struct LogicalDecodingContext *ctx,
 typedef struct OutputPluginOptions
 {
     OutputPluginOutputType output_type;
+    bool        receive_rewrites;
 } OutputPluginOptions;
 </programlisting>
       <literal>output_type</literal> has to either be set to
       <literal>OUTPUT_PLUGIN_TEXTUAL_OUTPUT</literal>
       or <literal>OUTPUT_PLUGIN_BINARY_OUTPUT</literal>. See also
-      <xref linkend="logicaldecoding-output-mode">.
+      <xref linkend="logicaldecoding-output-mode"/>.
+      If <literal>receive_rewrites</literal> is true, the output plugin will
+      also be called for changes made by heap rewrites during certain DDL
+      operations.  These are of interest to plugins that handle DDL
+      replication, but they require special handling.
      </para>
 
      <para>
@@ -575,11 +585,33 @@ typedef void (*LogicalDecodeChangeCB) (struct LogicalDecodingContext *ctx,
      <note>
       <para>
        Only changes in user defined tables that are not unlogged
-       (see <xref linkend="SQL-CREATETABLE-UNLOGGED">) and not temporary
-       (see <xref linkend="SQL-CREATETABLE-TEMPORARY">) can be extracted using
+       (see <xref linkend="sql-createtable-unlogged"/>) and not temporary
+       (see <xref linkend="sql-createtable-temporary"/>) can be extracted using
        logical decoding.
       </para>
      </note>
+    </sect3>
+
+    <sect3 id="logicaldecoding-output-plugin-truncate">
+     <title>Truncate Callback</title>
+
+     <para>
+      The <function>truncate_cb</function> callback is called for a
+      <command>TRUNCATE</command> command.
+<programlisting>
+typedef void (*LogicalDecodeTruncateCB) (struct LogicalDecodingContext *ctx,
+                                         ReorderBufferTXN *txn,
+                                         int nrelations,
+                                         Relation relations[],
+                                         ReorderBufferChange *change);
+</programlisting>
+      The parameters are analogous to the <function>change_cb</function>
+      callback.  However, because <command>TRUNCATE</command> actions on
+      tables connected by foreign keys need to be executed together, this
+      callback receives an array of relations instead of just a single one.
+      See the description of the <xref linkend="sql-truncate"/> statement for
+      details.
+     </para>
     </sect3>
 
      <sect3 id="logicaldecoding-output-plugin-filter-origin">
@@ -684,7 +716,7 @@ OutputPluginWrite(ctx, true);
     <filename>src/backend/replication/logical/logicalfuncs.c</filename>.
     Essentially, three functions need to be provided: one to read WAL, one to
     prepare writing output, and one to write the output
-    (see <xref linkend="logicaldecoding-output-plugin-output">).
+    (see <xref linkend="logicaldecoding-output-plugin-output"/>).
    </para>
   </sect1>
 
@@ -697,9 +729,9 @@ OutputPluginWrite(ctx, true);
     replication</link> solutions with the same user interface as synchronous
     replication for <link linkend="streaming-replication">streaming
     replication</link>.  To do this, the streaming replication interface
-    (see <xref linkend="logicaldecoding-walsender">) must be used to stream out
+    (see <xref linkend="logicaldecoding-walsender"/>) must be used to stream out
     data. Clients have to send <literal>Standby status update (F)</literal>
-    (see <xref linkend="protocol-replication">) messages, just like streaming
+    (see <xref linkend="protocol-replication"/>) messages, just like streaming
     replication clients do.
    </para>
 

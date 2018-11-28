@@ -3,7 +3,7 @@ doc/src/sgml/ref/create_extension.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-CREATEEXTENSION">
+<refentry id="sql-createextension">
  <indexterm zone="sql-createextension">
   <primary>CREATE EXTENSION</primary>
  </indexterm>
@@ -41,7 +41,7 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
   <para>
    이 명령을 실행하면, 해당 확장 모듈 설치용 스크립트가 실행된다.
    그 스크립트에는 일반적으로
-   함수, 자료형, 연산자, 인덱스에서 쓰는 접근 방법 같은 <acronym>SQL</>
+   함수, 자료형, 연산자, 인덱스에서 쓰는 접근 방법 같은 <acronym>SQL</acronym>
    개체들을 만드는 명령어들이 있다.
    <command>CREATE EXTENSION</command> 명령은
    추가로 이렇게 만들어지는 개체들의 OID 값을 기록해 둔다.
@@ -66,7 +66,7 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
 
     <variablelist>
      <varlistentry>
-      <term><literal>IF NOT EXISTS</></term>
+      <term><literal>IF NOT EXISTS</literal></term>
       <listitem>
        <para>
         이미 해당 확장 모듈이 설치 되어 있어도, 오류로 처리하지 않고
@@ -100,11 +100,11 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
        </para>
 
        <para>
-        이 <literal>SCHEMA</> 옵션을 사용해서 스키마를 지정했는데, 
+        이 <literal>SCHEMA</literal> 옵션을 사용해서 스키마를 지정했는데, 
         해당 확장 모듈 제어 파일에도 스키마를 지정했고, 
         서로 다르다면, 스키마 이름 충돌로 오류 처리된다.
         반면, 
-        <literal>CASCADE</> 옵션을 추가하면, 이런 경우
+        <literal>CASCADE</literal> 옵션을 추가하면, 이런 경우
         <replaceable class="parameter">스키마이름</replaceable> 설정이
         무시된다.  <replaceable class="parameter">스키마이름</replaceable>을
         지정하는 경우는, 일반적으로 해당 확장 모듈이 특정 스키마를 
@@ -136,13 +136,13 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
       <term><replaceable class="parameter">옛버전</replaceable></term>
       <listitem>
        <para>
-        <literal>FROM</> <replaceable class="parameter">옛버전</>
+        <literal>FROM</literal> <replaceable class="parameter">옛버전</replaceable>
         구문은 엄격히 말하면, 확장 모듈을 설치하는 것이 아니라, 
         옛날 형식으로 설치된 해당 확장 모듈 소속 개체들을 
         지정한 확장 모듈 개체 소속으로 지정하는 일을 한다.
         이 작업에는 해당 확장 모듈의 대체 설치 스크립트가 사용된다.
         이 때는 기존 소속 개체들을 포함하는 스키마를 
-        <literal>SCHEMA</> 옵션으로 지정해야 한다.
+        <literal>SCHEMA</literal> 옵션으로 지정해야 한다.
        </para>
 
        <para>
@@ -151,21 +151,21 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
         제작자에 의해 결정되며, 새 확장 모듈로 업그레이드 할 수있는
         옛날 방식 모듈의 버전이 두 개 이상 있는 경우 달라질 수 있다.
         9.1 이전 버전에서 설치된 확장 모듈이 옛 버전인 경우는
-        이 값으로 <literal>unpackaged</>를 사용한다.
+        이 값으로 <literal>unpackaged</literal>를 사용한다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term><literal>CASCADE</></term>
+      <term><literal>CASCADE</literal></term>
       <listitem>
        <para>
         이 옵션을 사용하면 설치하려는 확장 모듈을 사용하기 위해 
         필요한 상위 확장 모듈들 가운데 아직 설치되지 않은 확장 모들을
         재귀적으로 모두 설치한다.
         이 때,
-        <literal>SCHEMA</> 옵션이 있으면, 같이 설치되는 모든 확장 모듈에도
-        <literal>SCHEMA</> 옵션을 적용한다.  그외 다른 옵션들은
+        <literal>SCHEMA</literal> 옵션이 있으면, 같이 설치되는 모든 확장 모듈에도
+        <literal>SCHEMA</literal> 옵션을 적용한다.  그외 다른 옵션들은
         이렇게 함께 설치 되는 확장 모듈에는 적용되지 않으며, 
         버전은 각 확장 모듈의 기본 버전이 설치된다.
        </para>
@@ -178,7 +178,7 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
   <title>참고</title>
 
   <para>
-   <command>CREATE EXTENSION</> 명령으로 한 확장 모듈 설치하려면, 먼저
+   <command>CREATE EXTENSION</command> 명령으로 한 확장 모듈 설치하려면, 먼저
    그 설치 작업을 어떻게 할지를 지정한 해당 확장 모듈 지원 파일들이 
    먼저 해당 서버에 있어야 한다.
    <productname>PostgreSQL</productname> 확장 모듈을 어떻게 설치하고,
@@ -194,7 +194,7 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
 
   <para>
    새 확장 모듈을 직접 만들고자 할 때 필요한 정보는
-   <xref linkend="extend-extensions">에서 다룬다.
+   <xref linkend="extend-extensions"/>에서 다룬다.
   </para>
  </refsect1>
 
@@ -210,13 +210,13 @@ CREATE EXTENSION hstore;
   </para>
 
   <para>
-   9.1 버전 이전에 이미 설치된 <literal>hstore</> 소속을 개체들을
+   9.1 버전 이전에 이미 설치된 <literal>hstore</literal> 소속을 개체들을
    하나의 확장 모듈로 묶는 경우:
    extension style:
 <programlisting>
 CREATE EXTENSION hstore SCHEMA public FROM unpackaged;
 </programlisting>
-   이 때는 그 <literal>hstore</> 소속 개체들이 어느 스키마에 있는지
+   이 때는 그 <literal>hstore</literal> 소속 개체들이 어느 스키마에 있는지
    꼭 확인하고, 그 스키마 이름을 지정해 주어야 한다.
   </para>
  </refsect1>
@@ -225,7 +225,7 @@ CREATE EXTENSION hstore SCHEMA public FROM unpackaged;
   <title>호환성</title>
 
   <para>
-   <command>CREATE EXTENSION</command> 구문은 <productname>PostgreSQL</>
+   <command>CREATE EXTENSION</command> 구문은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -234,8 +234,8 @@ CREATE EXTENSION hstore SCHEMA public FROM unpackaged;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterextension"></member>
-   <member><xref linkend="sql-dropextension"></member>
+   <member><xref linkend="sql-alterextension"/></member>
+   <member><xref linkend="sql-dropextension"/></member>
   </simplelist>
  </refsect1>
 

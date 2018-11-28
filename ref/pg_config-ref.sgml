@@ -13,7 +13,7 @@
 
  <refnamediv>
   <refname>pg_config</refname>
-  <refpurpose><productname>PostgreSQL</> 설치된 버전에 대한 여러
+  <refpurpose><productname>PostgreSQL</productname> 설치된 버전에 대한 여러
   정보들을 보여줌</refpurpose>
  </refnamediv>
 
@@ -25,11 +25,11 @@
  </refsynopsisdiv>
 
  <refsect1>
-  <title>설명</>
+  <title>설명</title>
   <para>
-   <application>pg_config</> 도구는 설치된 <productname>PostgreSQL</>
+   <application>pg_config</application> 도구는 설치된 <productname>PostgreSQL</productname>
    여러 정보들을 보여 준다.  예를 들어, 필요한 헤더 파일과 라이브러리를
-   쉽게 찾을 수 있도록 해서 <productname>PostgreSQL</> 제반 패키지를 
+   쉽게 찾을 수 있도록 해서 <productname>PostgreSQL</productname> 제반 패키지를 
    보다 쉽게 만들 수 있도록 한다.
   </para>
  </refsect1>
@@ -39,21 +39,21 @@
   <title>옵션</title>
 
   <para>
-   <application>pg_config</> 명령은 다음 여러 옵션과 함께 사용한다:
+   <application>pg_config</application> 명령은 다음 여러 옵션과 함께 사용한다:
    <variablelist>
     <varlistentry>
-     <term><option>--bindir</option></>
+     <term><option>--bindir</option></term>
      <listitem>
       <para>
-       실행 파일들이 있는 디렉터리를 보여준다.  예를 들어 <command>psql</>
-       명령어가 어느 디렉터리에 있는지 알려 준다.  결국 <filename>pg_config</>
+       실행 파일들이 있는 디렉터리를 보여준다.  예를 들어 <command>psql</command>
+       명령어가 어느 디렉터리에 있는지 알려 준다.  결국 <filename>pg_config</filename>
        이 프로그램이 있는 위치를 알려 주는 셈이다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--docdir</option></>
+     <term><option>--docdir</option></term>
      <listitem>
       <para>
        문서 파일이 있는 디렉터리를 보여준다.
@@ -62,7 +62,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--htmldir</option></>
+     <term><option>--htmldir</option></term>
      <listitem>
       <para>
        HTML 문서 파일이 있는 디렉터리를 보여준다.
@@ -71,7 +71,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--includedir</option></>
+     <term><option>--includedir</option></term>
      <listitem>
       <para>
        C 언어 응용 프로그램을 만들 때 필요한 헤더 파일이 있는 디렉터리를
@@ -81,7 +81,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--pkgincludedir</option></>
+     <term><option>--pkgincludedir</option></term>
      <listitem>
       <para>
        기타 C 헤더 파일이 있는 디렉터리를 보여준다.
@@ -90,7 +90,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--includedir-server</option></>
+     <term><option>--includedir-server</option></term>
      <listitem>
       <para>
        서버 확장 기능을 C 언어로 만들 때 필요한 헤더 파일이 있는 
@@ -100,7 +100,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--libdir</option></>
+     <term><option>--libdir</option></term>
      <listitem>
       <para>
        서버 실행에 필요한 라이브러리가 있는 디렉터리를 보여준다.
@@ -109,7 +109,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--pkglibdir</option></>
+     <term><option>--pkglibdir</option></term>
      <listitem>
       <para>
        동적 로딩 라이브러리나, 기타 서버에서 필요한 라이브러리가
@@ -120,18 +120,18 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--localedir</option></>
+     <term><option>--localedir</option></term>
      <listitem>
       <para>
        로케일 관련 파일들이 있는 디렉터리를 보여준다.  (여기서는 
-       <productname>PostgreSQL</>이 빌드 될 때 로케일 지원을 안하도록
+       <productname>PostgreSQL</productname>이 빌드 될 때 로케일 지원을 안하도록
        지정했다면 빈 문자열을 출력한다.)
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--mandir</option></>
+     <term><option>--mandir</option></term>
      <listitem>
       <para>
        맨 페이지 위지를 보여준다.
@@ -140,7 +140,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--sharedir</option></>
+     <term><option>--sharedir</option></term>
      <listitem>
       <para>
        OS에 독립적인 여러 파일들이 있는 디렉터리를 보여준다.
@@ -149,7 +149,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--sysconfdir</option></>
+     <term><option>--sysconfdir</option></term>
      <listitem>
       <para>
        OS 전역 환경 설정 파필이 있는 디렉터리를 보여준다.
@@ -158,7 +158,7 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--pgxs</option></>
+     <term><option>--pgxs</option></term>
      <listitem>
       <para>
        확장 모듈 개발용 makefile 절대 경로를 보여준다.
@@ -167,10 +167,10 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--configure</option></>
+     <term><option>--configure</option></term>
      <listitem>
       <para>
-       <productname>PostgreSQL</> 빌드 할 때 사용한 <filename>configure</>
+       <productname>PostgreSQL</productname> 빌드 할 때 사용한 <filename>configure</filename>
        명령의 옵션을 보여준다.  이 옵션은 같은 환경으로 빌드하려고 
        할때 유용하게 사용되며, 현재 사용하려고 하는 소프트웨어가 
        어떤 환경에서 만들어졌는지 확인하는데 유용하다.  (OS 배포판에서는
@@ -181,44 +181,44 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--cc</option></>
+     <term><option>--cc</option></term>
      <listitem>
       <para>
-       <productname>PostgreSQL</> 빌드 할 때 사용한 <varname>CC</varname>
+       <productname>PostgreSQL</productname> 빌드 할 때 사용한 <varname>CC</varname>
        변수 값.  빌드 할 때 사용한 C 컴파일러를 알려 준다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--cppflags</option></>
+     <term><option>--cppflags</option></term>
      <listitem>
       <para>
-       <productname>PostgreSQL</> 빌드 할 때 사용한 
+       <productname>PostgreSQL</productname> 빌드 할 때 사용한 
        <varname>CPPFLAGS</varname> 변수 값.  이 출력은
        일반적으로 헤더 파일이 있는 디렉터리를 지정하는
-       <literal>-I</> 옵션 값을 보여준다.
+       <literal>-I</literal> 옵션 값을 보여준다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--cflags</option></>
+     <term><option>--cflags</option></term>
      <listitem>
       <para>
-       <productname>PostgreSQL</> 빌드 할 때 사용한 
+       <productname>PostgreSQL</productname> 빌드 할 때 사용한 
        <varname>CFLAGS</varname> 변수 값.  이 출력은
        일반적으로 헤더 파일이 있는 디렉터리를 지정하는
-       <literal>-I</> 옵션 값을 보여준다.
+       <literal>-I</literal> 옵션 값을 보여준다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--cflags_sl</option></>
+     <term><option>--cflags_sl</option></term>
      <listitem>
       <para>
-       <productname>PostgreSQL</>에서 사용하는
+       <productname>PostgreSQL</productname>에서 사용하는
        공유 라이브러리 파일 만드는데 필요한 옵션인
        <varname>CFLAGS_SL</varname> 변수 값.
       </para>
@@ -226,60 +226,60 @@
     </varlistentry>
 
     <varlistentry>
-     <term><option>--ldflags</option></>
+     <term><option>--ldflags</option></term>
      <listitem>
       <para>
-       <productname>PostgreSQL</> 빌드에 필요한 링크 옵션
+       <productname>PostgreSQL</productname> 빌드에 필요한 링크 옵션
        <varname>LDFLAGS</varname> 변수 값.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--ldflags_ex</option></>
+     <term><option>--ldflags_ex</option></term>
      <listitem>
       <para>
        Print the value of the <varname>LDFLAGS_EX</varname> variable that was used for building
-       <productname>PostgreSQL</>.  This shows linker switches
+       <productname>PostgreSQL</productname>.  This shows linker switches
        used for building executables only.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--ldflags_sl</option></>
+     <term><option>--ldflags_sl</option></term>
      <listitem>
       <para>
        Print the value of the <varname>LDFLAGS_SL</varname> variable that was used for building
-       <productname>PostgreSQL</>.  This shows linker switches
+       <productname>PostgreSQL</productname>.  This shows linker switches
        used for building shared libraries only.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--libs</option></>
+     <term><option>--libs</option></term>
      <listitem>
       <para>
-       <productname>PostgreSQL</> 빌드에 필요한 라이브러리 옵션
+       <productname>PostgreSQL</productname> 빌드에 필요한 라이브러리 옵션
        <varname>LIBS</varname> 변수 값.
-       이 값은 일반적으로 <literal>-l</> 옵션으로 출력된다.
+       이 값은 일반적으로 <literal>-l</literal> 옵션으로 출력된다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>--version</option></>
+     <term><option>--version</option></term>
      <listitem>
       <para>
-       이 <productname>PostgreSQL</> 버전을 보여준다.
+       이 <productname>PostgreSQL</productname> 버전을 보여준다.
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>-?</></term>
-     <term><option>--help</></term>
+     <term><option>-?</option></term>
+     <term><option>--help</option></term>
       <listitem>
        <para>
         <application>pg_config</application> 명령행 옵션 도움말을
@@ -300,7 +300,7 @@
 
   <para>
    <option>--includedir</option> 옵션과 함께, 
-   <productname>PostgreSQL</> 7.2 버전부터
+   <productname>PostgreSQL</productname> 7.2 버전부터
    <option>--includedir-server</option> 옵션도 함께 제공한다.
    두 옵션을 함께 사용하는 경우는 먼저 최신 옵션을 지정하고, 
    그 명령이 정상적으로 끝났는지, 명령 반환 값을 확인해야 한다.
@@ -313,15 +313,15 @@
    <option>--cc</option>, <option>--cppflags</option>,
    <option>--cflags</option>, <option>--cflags_sl</option>,
    <option>--ldflags</option>, <option>--ldflags_sl</option>,
-   and <option>--libs</option> 옵션들은 <productname>PostgreSQL</> 8.1
+   and <option>--libs</option> 옵션들은 <productname>PostgreSQL</productname> 8.1
    버전에서 추가 되었다.  <option>--htmldir</option> 옵션은
-   <productname>PostgreSQL</> 8.4 버전에서 추가 되었다.
-   <option>--ldflags_ex</option> 옵션은 <productname>PostgreSQL</> 9.0
+   <productname>PostgreSQL</productname> 8.4 버전에서 추가 되었다.
+   <option>--ldflags_ex</option> 옵션은 <productname>PostgreSQL</productname> 9.0
    버전에서 추가 되었다.
   </para>
 
   <para>
-   In releases prior to <productname>PostgreSQL</> 7.1, before
+   In releases prior to <productname>PostgreSQL</productname> 7.1, before
    <command>pg_config</command> came to be, a method for finding the
    equivalent configuration information did not exist.
   </para>

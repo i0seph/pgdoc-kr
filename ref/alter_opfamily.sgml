@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_opfamily.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTEROPFAMILY">
+<refentry id="sql-alteropfamily">
  <indexterm zone="sql-alteropfamily">
   <primary>ALTER OPERATOR FAMILY</primary>
  </indexterm>
@@ -57,12 +57,12 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
   <para>
    <command>ALTER OPERATOR FAMILY</command> 명령을 이용해서
    연산자 가족에 연산자나 지원 함수를 추가하면, 그 가족에 속한
-   특정 연산자 클래스에 속하지는 않는다.  이를 <quote>느슨한</>
+   특정 연산자 클래스에 속하지는 않는다.  이를 <quote>느슨한</quote>
    구성이라 한다.  즉, 이 연산자와 함수들이 해당 가족이라는 
    의미는 있지만, 특정 인덱스에서 이 연산자들과 함수들을 
    바르게 사용한다는 보장은 없다.  (이것을 원한다면,
    그 연산자와 함수를 연산자 클래스로 정의해야 한다.
-   <xref linkend="sql-createopclass"> 참조)
+   <xref linkend="sql-createopclass"/> 참조)
    <productname>PostgreSQL</productname>에서는
    이런 느슨하게 구성된 구성원들(연산자, 함수)은 그 가족에서
    언제든지 삭제할 수 있지만, 연산자 클래스의 구성원이 되면, 
@@ -75,7 +75,7 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
   </para>
 
   <para>
-   <command>ALTER OPERATOR FAMILY</> 명령은 슈퍼유저 전용이다.
+   <command>ALTER OPERATOR FAMILY</command> 명령은 슈퍼유저 전용이다.
    (이 작업은 잘못 작업하면 서버가 중지될 수도 있기 때문에, 엄격하게
    제한 한다.)
   </para>
@@ -88,7 +88,7 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
   </para>
 
   <para>
-   더 자세한 정보는 <xref linkend="xindex">에서 다룬다.
+   더 자세한 정보는 <xref linkend="xindex"/>에서 다룬다.
   </para>
  </refsect1>
 
@@ -136,14 +136,14 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
     <term><replaceable class="parameter">연산자자료형</replaceable></term>
     <listitem>
      <para>
-      <literal>OPERATOR</> 옵션에서 사용하는 해당 연산자의 
-      왼쪽 오른쪽 자료형. 단항 연산자면, 없는 쪽은 <literal>NONE</>.
-      <command>CREATE OPERATOR CLASS</> 명령과 달리 여기서는 반드시
+      <literal>OPERATOR</literal> 옵션에서 사용하는 해당 연산자의 
+      왼쪽 오른쪽 자료형. 단항 연산자면, 없는 쪽은 <literal>NONE</literal>.
+      <command>CREATE OPERATOR CLASS</command> 명령과 달리 여기서는 반드시
       자료형을 지정해야 한다.
      </para>
 
      <para>
-      <literal>ADD FUNCTION</> 옵션에서 
+      <literal>ADD FUNCTION</literal> 옵션에서 
       그 함수의 입력 인자 자료형과 다른 반환 자료형을 사용한다면, 
       그 자료형을 연산자 자료형으로 지정한다.
       B-tree 비교 함수와 해시 함수는 항상 일정한 값을 사용하기 때문에, 
@@ -153,7 +153,7 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
      </para>
 
      <para>
-      <literal>DROP FUNCTION</> 옵션에서는 그 함수를 식별할 필요가 
+      <literal>DROP FUNCTION</literal> 옵션에서는 그 함수를 식별할 필요가 
       있는 경우 적당한 연산자 자료형을 지정해서 사용한다.
      </para>
     </listitem>
@@ -168,8 +168,8 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
      </para>
 
      <para>
-      <literal>FOR SEARCH</>, <literal>FOR ORDER BY</> 두 예약어 모두
-      사용하지 않았다면, <literal>FOR SEARCH</> 로 간주한다.
+      <literal>FOR SEARCH</literal>, <literal>FOR ORDER BY</literal> 두 예약어 모두
+      사용하지 않았다면, <literal>FOR SEARCH</literal> 로 간주한다.
      </para>
     </listitem>
    </varlistentry>
@@ -232,7 +232,7 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
  </variablelist>
 
   <para>
-   <literal>OPERATOR</> ,  <literal>FUNCTION</>
+   <literal>OPERATOR</literal> ,  <literal>FUNCTION</literal>
    순서는 상관 없다.
   </para>
 
@@ -243,10 +243,10 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
 
   <para>
    연산자 가족에서
-   <literal>DROP</> 작업은 해당 연산자의 전략 번호나 함수의 지원 번호와
+   <literal>DROP</literal> 작업은 해당 연산자의 전략 번호나 함수의 지원 번호와
    그 연산자 자료형을 지정해서 진행됨을 기억해야 한다.
    연산자나 함수의 이름을 지정해서 지우지 않는다.  또한 
-   <literal>DROP FUNCTION</> 작업인 경우는 그 함수의 연산자 자료형을
+   <literal>DROP FUNCTION</literal> 작업인 경우는 그 함수의 연산자 자료형을
    지정한다.  GiST, SP-GiST, GIN 인덱스 용 연산자 가족인 경우는
    함수의 입력 인자 자료형은 아무런 영향을 주지 않는다.
   </para>
@@ -267,8 +267,8 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
   </para>
 
   <para>
-   <productname>PostgreSQL</productname> 8.4 버전까지는 <literal>OPERATOR</>
-   구문에  <literal>RECHECK</> 옵션이 있었다.  이제는
+   <productname>PostgreSQL</productname> 8.4 버전까지는 <literal>OPERATOR</literal>
+   구문에  <literal>RECHECK</literal> 옵션이 있었다.  이제는
    이 검사 기능을 쿼리가 실행 될 때마다 항상 사용하기에 이제는 지원하지 않는다.
    This allows efficient handling of
    cases where an operator might or might not be lossy.
@@ -279,7 +279,7 @@ ALTER OPERATOR FAMILY <replaceable>이름</replaceable> USING <replaceable class
   <title>예제</title>
 
   <para>
-   아래 예제는 <type>int4</>, <type>int2</> 간 서로 다른 자료형을 
+   아래 예제는 <type>int4</type>, <type>int2</type> 간 서로 다른 자료형을 
    사용해도 이 연산자 가족을 이용해서 만들어진 인덱스를 
    사용해서 자료 검색을 하려고 할 때 다음과 같이 연산자 가족을 
    바꾼 것이다.
@@ -342,11 +342,11 @@ ALTER OPERATOR FAMILY integer_ops USING btree DROP
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createopfamily"></member>
-   <member><xref linkend="sql-dropopfamily"></member>
-   <member><xref linkend="sql-createopclass"></member>
-   <member><xref linkend="sql-alteropclass"></member>
-   <member><xref linkend="sql-dropopclass"></member>
+   <member><xref linkend="sql-createopfamily"/></member>
+   <member><xref linkend="sql-dropopfamily"/></member>
+   <member><xref linkend="sql-createopclass"/></member>
+   <member><xref linkend="sql-alteropclass"/></member>
+   <member><xref linkend="sql-dropopclass"/></member>
   </simplelist>
  </refsect1>
 </refentry>

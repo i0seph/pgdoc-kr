@@ -13,7 +13,7 @@
  </indexterm>
 
  <para>
-  <filename>pgcrypto</> 모듈은 <productname>PostgreSQL</>에서
+  <filename>pgcrypto</filename> 모듈은 <productname>PostgreSQL</productname>에서
   사용할 수 있는 암호화 관련 함수를 제공한다.
  </para>
 
@@ -33,20 +33,20 @@ digest(data bytea, type text) returns bytea
 </synopsis>
 
    <para>
-    입력한 <parameter>data</>의 해시 이진값을 구한다.
-    <parameter>type</> 인자는 해시 알고리즘이다.
+    입력한 <parameter>data</parameter>의 해시 이진값을 구한다.
+    <parameter>type</parameter> 인자는 해시 알고리즘이다.
     표준 알고리즘은 <literal>md5</literal>, <literal>sha1</literal>,
     <literal>sha224</literal>, <literal>sha256</literal>,
     <literal>sha384</literal>, <literal>sha512</literal> 이다.
-    <filename>pgcrypto</> 모듈이 OpenSSL 라이브러리를 이용해서
-    빌드 되었다면, <xref linkend="pgcrypto-with-without-openssl">에서
+    <filename>pgcrypto</filename> 모듈이 OpenSSL 라이브러리를 이용해서
+    빌드 되었다면, <xref linkend="pgcrypto-with-without-openssl"/>에서
     제공하는 것보다 많은 알고리즘을 사용할 수 있다. 
    </para>
 
    <para>
     함수 반환값의 자료형이 bytea 형이다. 이것을 사용자가
     읽을 수 있는 16진수 문자열로 변환하려면, 
-    <function>encode()</> 함수를 사용한다.
+    <function>encode()</function> 함수를 사용한다.
     사용 예:
 <programlisting>
 CREATE OR REPLACE FUNCTION sha1(bytea) returns text AS $$
@@ -69,14 +69,14 @@ hmac(data bytea, key bytea, type text) returns bytea
 </synopsis>
 
    <para>
-    입력한 <parameter>data</> 값을 입력한 <parameter>key</> 값으로
+    입력한 <parameter>data</parameter> 값을 입력한 <parameter>key</parameter> 값으로
     MAC 해시 값을 구한다.
-    <parameter>type</> 인자는 <function>digest()</> 함수에서
+    <parameter>type</parameter> 인자는 <function>digest()</function> 함수에서
     사용하는 것과 같다.
    </para>
 
    <para>
-    <function>digest()</> 함수와 같으나, 키 값으로 한 번 더 계산한다.
+    <function>digest()</function> 함수와 같으나, 키 값으로 한 번 더 계산한다.
     이 기능은 누군가가 자료를 변경하고 그에 대응하는 해시 값도 
     바꾸는 문제점을 막는다.
    </para>
@@ -92,15 +92,15 @@ hmac(data bytea, key bytea, type text) returns bytea
   <title>비밀번호 해시 함수</title>
 
   <para>
-   비밀번호 해시 작업은 <function>crypt()</> 함수와
-   <function>gen_salt()</> 함수로 구현한다.
-   <function>crypt()</> 함수는 해시 작업을 하고, 
-   <function>gen_salt()</> 함수는 해시 작업 알고리즘을 
+   비밀번호 해시 작업은 <function>crypt()</function> 함수와
+   <function>gen_salt()</function> 함수로 구현한다.
+   <function>crypt()</function> 함수는 해시 작업을 하고, 
+   <function>gen_salt()</function> 함수는 해시 작업 알고리즘을 
    지정하는데 사용된다.
   </para>
 
   <para>
-   <function>crypt()</> 함수는 보통 MD5나 SHA1 알고리즘을
+   <function>crypt()</function> 함수는 보통 MD5나 SHA1 알고리즘을
    이용한 해시 작업과 달리, 다음의 장점이 있다:
   </para>
 
@@ -113,7 +113,7 @@ hmac(data bytea, key bytea, type text) returns bytea
    </listitem>
    <listitem>
     <para>
-     이 함수들은 <firstterm>소금</> <firstterm>salt</>라고 하는 값을 이용해서, 사용자의
+     이 함수들은 <firstterm>소금</firstterm> <firstterm>salt</firstterm>라고 하는 값을 이용해서, 사용자의
      같은 입력값에 대해서 다른 암호화된 비밀번호를 만든다.
      그래서 복호화가 불가능하게 한다.
     </para>
@@ -137,11 +137,11 @@ hmac(data bytea, key bytea, type text) returns bytea
 
   <para>
    <function>crypt()</function> 함수에서 지원하는 알고리즘은
-   <xref linkend="pgcrypto-crypt-algorithms">에서 나열하고 있다.
+   <xref linkend="pgcrypto-crypt-algorithms"/>에서 나열하고 있다.
   </para>
 
   <table id="pgcrypto-crypt-algorithms">
-   <title><function>crypt()</> 함수에서 지원하는 알고리즘</title>
+   <title><function>crypt()</function> 함수에서 지원하는 알고리즘</title>
    <tgroup cols="6">
     <thead>
      <row>
@@ -155,7 +155,7 @@ hmac(data bytea, key bytea, type text) returns bytea
     </thead>
     <tbody>
      <row>
-      <entry><literal>bf</></entry>
+      <entry><literal>bf</literal></entry>
       <entry>72</entry>
       <entry>있음</entry>
       <entry>128</entry>
@@ -163,7 +163,7 @@ hmac(data bytea, key bytea, type text) returns bytea
       <entry>Blowfish 기반, variant 2a</entry>
      </row>
      <row>
-      <entry><literal>md5</></entry>
+      <entry><literal>md5</literal></entry>
       <entry>제한없음</entry>
       <entry>없음</entry>
       <entry>48</entry>
@@ -171,7 +171,7 @@ hmac(data bytea, key bytea, type text) returns bytea
       <entry>MD5 기반 암호화</entry>
      </row>
      <row>
-      <entry><literal>xdes</></entry>
+      <entry><literal>xdes</literal></entry>
       <entry>8</entry>
       <entry>있음</entry>
       <entry>24</entry>
@@ -179,7 +179,7 @@ hmac(data bytea, key bytea, type text) returns bytea
       <entry>확장 DES</entry>
      </row>
      <row>
-      <entry><literal>des</></entry>
+      <entry><literal>des</literal></entry>
       <entry>8</entry>
       <entry>없음</entry>
       <entry>12</entry>
@@ -191,7 +191,7 @@ hmac(data bytea, key bytea, type text) returns bytea
   </table>
 
   <sect3>
-   <title><function>crypt()</></title>
+   <title><function>crypt()</function></title>
 
    <indexterm>
     <primary>crypt</primary>
@@ -202,13 +202,13 @@ crypt(password text, salt text) returns text
 </synopsis>
 
    <para>
-    입력한 <parameter>password</> 문자열에 대한
+    입력한 <parameter>password</parameter> 문자열에 대한
     crypt(3) 형태의 해시 값을 계산하는 함수.
-    첫 비밀번호를 만들 때는 <function>gen_salt()</>
-    함수를 이용해 새로운 <parameter>salt</> 값을 만들어 사용하면
+    첫 비밀번호를 만들 때는 <function>gen_salt()</function>
+    함수를 이용해 새로운 <parameter>salt</parameter> 값을 만들어 사용하면
     편하다.
     사용자가 입력한 비밀번호가 올바른지를 확인하는 방법은
-    저장된 값에서 <parameter>salt</> 값을 구해서, 그 값으로 
+    저장된 값에서 <parameter>salt</parameter> 값을 구해서, 그 값으로 
     같은 함수의 소금 인자로 사용하고, 그 반환 값이 저장된 값과 같은가를 
     확인한다.
    </para>
@@ -223,12 +223,12 @@ UPDATE ... SET pswhash = crypt('new password', gen_salt('md5'));
 <programlisting>
 SELECT (pswhash = crypt('entered password', pswhash)) AS pswmatch FROM ... ;
 </programlisting>
-    이 쿼리의 결과가 <literal>true</>면 입력한 비밀번호가 맞다.
+    이 쿼리의 결과가 <literal>true</literal>면 입력한 비밀번호가 맞다.
    </para>
   </sect3>
 
   <sect3>
-   <title><function>gen_salt()</></title>
+   <title><function>gen_salt()</function></title>
 
   <indexterm>
    <primary>gen_salt</primary>
@@ -239,31 +239,31 @@ gen_salt(type text [, iter_count integer ]) returns text
 </synopsis>
 
    <para>
-    <function>crypt()</> 함수에서 사용할 임의의 소금 salt 문자열을 만든다.
-    <function>crypt()</> 함수는 이 문자열을 보고 사용할 알고리즘을 정한다.
+    <function>crypt()</function> 함수에서 사용할 임의의 소금 salt 문자열을 만든다.
+    <function>crypt()</function> 함수는 이 문자열을 보고 사용할 알고리즘을 정한다.
    </para>
 
    <para>
-    <parameter>type</> 인자 값은 해시 알고리즘이다.
+    <parameter>type</parameter> 인자 값은 해시 알고리즘이다.
     사용할 수 있는 알고리즘: <literal>des</literal>, <literal>xdes</literal>,
     <literal>md5</literal>, <literal>bf</literal>.
    </para>
 
    <para>
-    <parameter>iter_count</> 인자 값으로 지정한 알고리즘에서 그 처리 반복 횟수를 
+    <parameter>iter_count</parameter> 인자 값으로 지정한 알고리즘에서 그 처리 반복 횟수를 
     사용자가 지정할 수 있다.
     이 값이 커지면, 비밀번호 해시 작업에 시간이 더 걸린다.  즉, 암호를 깨는데도
     시간이 더 걸린다.  
     이론상으로는 이 값이 크면 해시 작업을 하는데 시간이 몇 년이 걸릴 수도
-    있다 &mdash; 실무에서 쓰지는 않겠지만.  <parameter>iter_count</>
+    있다 &mdash; 실무에서 쓰지는 않겠지만.  <parameter>iter_count</parameter>
     값을 지정하지 않으면, 그 기본값이 사용된다.
-    <parameter>iter_count</> 값으로 허용되는 값은 사용하는 
+    <parameter>iter_count</parameter> 값으로 허용되는 값은 사용하는 
     알고리즘에 따라 다르며, 구체적인 값은 아래
-    <xref linkend="pgcrypto-icfc-table">에 있다.
+    <xref linkend="pgcrypto-icfc-table"/>에 있다.
    </para>
 
    <table id="pgcrypto-icfc-table">
-    <title><function>crypt() 반복 횟수</></title>
+    <title><function>crypt() 반복 횟수</function></title>
     <tgroup cols="4">
      <thead>
       <row>
@@ -275,13 +275,13 @@ gen_salt(type text [, iter_count integer ]) returns text
      </thead>
      <tbody>
       <row>
-       <entry><literal>xdes</></entry>
+       <entry><literal>xdes</literal></entry>
        <entry>725</entry>
        <entry>1</entry>
        <entry>16777215</entry>
       </row>
       <row>
-       <entry><literal>bf</></entry>
+       <entry><literal>bf</literal></entry>
        <entry>6</entry>
        <entry>4</entry>
        <entry>31</entry>
@@ -306,7 +306,7 @@ gen_salt(type text [, iter_count integer ]) returns text
 
    <para>
     여러 해시 알고리즘의 상대적 속도 비교는
-    <xref linkend="pgcrypto-hash-speed-table">에서 소개하고 있다.
+    <xref linkend="pgcrypto-hash-speed-table"/>에서 소개하고 있다.
     평문 비밀번호가 8글자인 경우(소문자만으로 구성된 경우,
     숫자, 대문자가 포함된 경우)  모든 조합을 만드는데 걸리는 시간을
     소개하고 있다.
@@ -322,63 +322,63 @@ gen_salt(type text [, iter_count integer ]) returns text
       <row>
        <entry>알고리즘</entry>
        <entry>해시/초</entry>
-       <entry><literal>[a-z]</> 문자열</entry>
-       <entry><literal>[A-Za-z0-9]</> 문자열</entry>
-       <entry><literal>md5 해시</>와 비교한 속도</entry>
+       <entry><literal>[a-z]</literal> 문자열</entry>
+       <entry><literal>[A-Za-z0-9]</literal> 문자열</entry>
+       <entry><literal>md5 해시</literal>와 비교한 속도</entry>
       </row>
      </thead>
      <tbody>
       <row>
-       <entry><literal>crypt-bf/8</></entry>
+       <entry><literal>crypt-bf/8</literal></entry>
        <entry>1792</entry>
        <entry>4 년</entry>
        <entry>3927 년</entry>
        <entry>10만배</entry>
       </row>
       <row>
-       <entry><literal>crypt-bf/7</></entry>
+       <entry><literal>crypt-bf/7</literal></entry>
        <entry>3648</entry>
        <entry>2 년</entry>
        <entry>1929 년</entry>
        <entry>5만배</entry>
       </row>
       <row>
-       <entry><literal>crypt-bf/6</></entry>
+       <entry><literal>crypt-bf/6</literal></entry>
        <entry>7168</entry>
        <entry>1 년</entry>
        <entry>982 년</entry>
        <entry>2만5천배</entry>
       </row>
       <row>
-       <entry><literal>crypt-bf/5</></entry>
+       <entry><literal>crypt-bf/5</literal></entry>
        <entry>13504</entry>
        <entry>188 일</entry>
        <entry>521 년</entry>
        <entry>12,500배</entry>
       </row>
       <row>
-       <entry><literal>crypt-md5</></entry>
+       <entry><literal>crypt-md5</literal></entry>
        <entry>171584</entry>
        <entry>15 일</entry>
        <entry>41 년</entry>
        <entry>1,000배</entry>
       </row>
       <row>
-       <entry><literal>crypt-des</></entry>
+       <entry><literal>crypt-des</literal></entry>
        <entry>23221568</entry>
        <entry>157.5 분</entry>
        <entry>108 일</entry>
        <entry>7 배</entry>
       </row>
       <row>
-       <entry><literal>sha1</></entry>
+       <entry><literal>sha1</literal></entry>
        <entry>37774272</entry>
        <entry>90 분</entry>
        <entry>68 일</entry>
        <entry>4배</entry>
       </row>
       <row>
-       <entry><literal>md5</> (hash)</entry>
+       <entry><literal>md5</literal> (hash)</entry>
        <entry>150085504</entry>
        <entry>22.5 분</entry>
        <entry>17 일</entry>
@@ -400,18 +400,18 @@ gen_salt(type text [, iter_count integer ]) returns text
     </listitem>
     <listitem>
      <para>
-      <literal>crypt-des</>와 <literal>crypt-md5</> 알고리즘에 대한 수치는
-      John the Ripper v1.6.38 <literal>-test</> 결과를 수집함.
+      <literal>crypt-des</literal>와 <literal>crypt-md5</literal> 알고리즘에 대한 수치는
+      John the Ripper v1.6.38 <literal>-test</literal> 결과를 수집함.
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>md5 hash</> 수치는 mdcrack 1.2 결과를 수집함.
+      <literal>md5 hash</literal> 수치는 mdcrack 1.2 결과를 수집함.
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>sha1</> 수치는 lcrack-20031130-beta 결과를 수집함.
+      <literal>sha1</literal> 수치는 lcrack-20031130-beta 결과를 수집함.
      </para>
     </listitem>
     <listitem>
@@ -420,9 +420,9 @@ gen_salt(type text [, iter_count integer ]) returns text
       있도록 1000개의 8문자 임의 비밀번호를
       반복하는 프로그램을 만들어서 수집함.
       참고: <literal>john
-      -test</literal> 에서는 <literal>crypt-bf/5</> 설정에서
+      -test</literal> 에서는 <literal>crypt-bf/5</literal> 설정에서
       초당 13506번 반복했다.
-      (<filename>pgcrypto</> 모듈에서 구현한 <literal>crypt-bf</literal>
+      (<filename>pgcrypto</filename> 모듈에서 구현한 <literal>crypt-bf</literal>
       해시 기능은 John the Ripper에서 사용한 것과 그 결과의 차이가 미미했다.)
      </para>
     </listitem>
@@ -450,7 +450,7 @@ gen_salt(type text [, iter_count integer ]) returns text
   </para>
 
   <para>
-   암호화된 PGP 메시지는 두 부분 또는 두 패킷 <firstterm>packets</> 으로 구성된다:
+   암호화된 PGP 메시지는 두 부분 또는 두 패킷 <firstterm>packets</firstterm> 으로 구성된다:
   </para>
   <itemizedlist>
    <listitem>
@@ -472,7 +472,7 @@ gen_salt(type text [, iter_count integer ]) returns text
    <listitem>
     <para>
      지정한 비밀번호는 String2Key (S2K) 알고리즘을 이용해 해시 값으로 바꾼다.
-     이 알고리즘은 <function>crypt()</> 알고리즘 &mdash; 
+     이 알고리즘은 <function>crypt()</function> 알고리즘 &mdash; 
      느리고, 임의의 소금용 문자열 사용하는 &mdash; 과 비슷하지만 좀 더 단순하다.
      하지만 이 알고리즘은 비밀번호 전체를 이진 키로 만든다. (crypt() 함수에서
      사용하는 비밀번호의 길이에 대한 것은 윗 부분 참조 - 옮긴이)
@@ -553,8 +553,8 @@ pgp_sym_encrypt(data text, psw text [, options text ]) returns bytea
 pgp_sym_encrypt_bytea(data bytea, psw text [, options text ]) returns bytea
 </synopsis>
    <para>
-    대칭 PGP 키인 <parameter>psw</> 값으로 <parameter>data</> 값을 암호화 한다.
-    <parameter>options</> 값은 아래에서 자세히 설명한다.
+    대칭 PGP 키인 <parameter>psw</parameter> 값으로 <parameter>data</parameter> 값을 암호화 한다.
+    <parameter>options</parameter> 값은 아래에서 자세히 설명한다.
    </para>
   </sect3>
 
@@ -578,13 +578,13 @@ pgp_sym_decrypt_bytea(msg bytea, psw text [, options text ]) returns bytea
    </para>
    <para>
     복호화 되는 자료가 이진 자료라면, 
-    <function>pgp_sym_decrypt</> 함수로는 복호화 할 수 없다.
+    <function>pgp_sym_decrypt</function> 함수로는 복호화 할 수 없다.
     이는 자료에 잘못된 문자가 있어 출력이 안되는 경우를 피하기 위함이다.
     반대로 복호화 되는 자료가 문자열이다면,
-    <function>pgp_sym_decrypt_bytea</> 함수로도 복호화 할 수 있다.
+    <function>pgp_sym_decrypt_bytea</function> 함수로도 복호화 할 수 있다.
    </para>
    <para>
-    <parameter>options</> 값은 아래에서 자세히 설명한다.
+    <parameter>options</parameter> 값은 아래에서 자세히 설명한다.
    </para>
   </sect3>
 
@@ -604,12 +604,12 @@ pgp_pub_encrypt(data text, key bytea [, options text ]) returns bytea
 pgp_pub_encrypt_bytea(data bytea, key bytea [, options text ]) returns bytea
 </synopsis>
    <para>
-    <parameter>data</> 값을 PGP 공개 키인 <parameter>key</> 값으로 
+    <parameter>data</parameter> 값을 PGP 공개 키인 <parameter>key</parameter> 값으로 
     암호화 한다.
     이 함수에 비밀 키를 지정하면 오류를 낸다.
    </para>
    <para>
-    <parameter>options</> 값은 아래에서 자세히 설명 한다.
+    <parameter>options</parameter> 값은 아래에서 자세히 설명 한다.
    </para>
   </sect3>
 
@@ -629,21 +629,21 @@ pgp_pub_decrypt(msg bytea, key bytea [, psw text [, options text ]]) returns tex
 pgp_pub_decrypt_bytea(msg bytea, key bytea [, psw text [, options text ]]) returns bytea
 </synopsis>
    <para>
-    공개 키로 암호화 된 내용을 복호화 한다.  <parameter>key</> 값은
+    공개 키로 암호화 된 내용을 복호화 한다.  <parameter>key</parameter> 값은
     암호화 할 때 사용한 공개 키와 쌍이 되는 비밀 키를 사용한다.
-    그 비밀 키에 비밀번호를 지정했다면, <parameter>psw</> 인자 값으로
-    그 비밀번호를 지정해야 한다.  비밀번호는 없는데, <parameter>options</>
+    그 비밀 키에 비밀번호를 지정했다면, <parameter>psw</parameter> 인자 값으로
+    그 비밀번호를 지정해야 한다.  비밀번호는 없는데, <parameter>options</parameter>
     인자 값을 지정해야 한다면, 비밀번호로 빈 문자열을 지정한다.
    </para>
    <para>
     복호화 되는 자료가 이진 자료라면, 
-    <function>pgp_pub_decrypt</> 함수로는 복호화 할 수 없다.
+    <function>pgp_pub_decrypt</function> 함수로는 복호화 할 수 없다.
     이는 자료에 잘못된 문자가 있어 출력이 안되는 경우를 피하기 위함이다.
     반대로 복호화 되는 자료가 문자열이다면,
-    <function>pgp_pub_decrypt_bytea</> 함수로도 복호화 할 수 있다.
+    <function>pgp_pub_decrypt_bytea</function> 함수로도 복호화 할 수 있다.
    </para>
    <para>
-    <parameter>options</> 값은 아래에서 자세히 설명 한다.
+    <parameter>options</parameter> 값은 아래에서 자세히 설명 한다.
    </para>
   </sect3>
 
@@ -658,7 +658,7 @@ pgp_pub_decrypt_bytea(msg bytea, key bytea [, psw text [, options text ]]) retur
 pgp_key_id(bytea) returns text
 </synopsis>
    <para>
-    <function>pgp_key_id</> 함수는 PGP 공개 키나 비밀 키에서 키 ID를 추출한다.
+    <function>pgp_key_id</function> 함수는 PGP 공개 키나 비밀 키에서 키 ID를 추출한다.
     인자가 암호화 된 메시지라면 그 암호화에 사용된 키 ID를 구한다.
    </para>
    <para>
@@ -667,7 +667,7 @@ pgp_key_id(bytea) returns text
    <itemizedlist>
     <listitem>
      <para>
-      <literal>SYMKEY</>
+      <literal>SYMKEY</literal>
      </para>
      <para>
       대칭 키로 암호화 되었음을 뜻한다.
@@ -675,13 +675,13 @@ pgp_key_id(bytea) returns text
     </listitem>
     <listitem>
      <para>
-      <literal>ANYKEY</>
+      <literal>ANYKEY</literal>
      </para>
      <para>
       공개 키로 암호화를 했지만, 키 ID를 빼버린 경우를 뜻한다.
       이 경우라면, 가지고 있는 모든 비밀 키로 풀릴 때까지 
       복호화를 시도해 보아야 한다.
-      <filename>pgcrypto</> 모듈을 이용해서 암호화를 하는 경우는
+      <filename>pgcrypto</filename> 모듈을 이용해서 암호화를 하는 경우는
       그 자료를 뽑아서 임의로 키 ID를 빼지 않는 이상 임의로 빼지는 
       않는다.
      </para>
@@ -690,7 +690,7 @@ pgp_key_id(bytea) returns text
    <para>
     전혀 다른 키의 ID가 같은 경우가 있을 수도 있음을 기억해야 한다.
     이 경우는 드문 경우이나, 절대로 일어나지 않는 일은 아니다.
-    클라이언트 응용 프로그램에서는 이 경우를 감안 해서, <literal>ANYKEY</>
+    클라이언트 응용 프로그램에서는 이 경우를 감안 해서, <literal>ANYKEY</literal>
     ID인 경우에 대한 적당한 작업을 염두해 두어야 한다.
    </para>
   </sect3>
@@ -716,8 +716,8 @@ dearmor(data text) returns bytea
    </para>
 
    <para>
-    <parameter>keys</>, <parameter>values</> 인자 값으로 사용되는 문자형 배열은
-    <firstterm>armor 헤더</>에 key/value 쌍으로 각각 추가 된다.
+    <parameter>keys</parameter>, <parameter>values</parameter> 인자 값으로 사용되는 문자형 배열은
+    <firstterm>armor 헤더</firstterm>에 key/value 쌍으로 각각 추가 된다.
     두 배열 모두 일차원 배열이어야 하며, 배열의 요수 개수는 같아야 한다.
     key/value 모두 ASCII 문자로만 구성되어야 한다.
    </para>
@@ -734,8 +734,8 @@ dearmor(data text) returns bytea
 pgp_armor_headers(data text, key out text, value out text) returns setof record
 </synopsis>
    <para>
-     <function>pgp_armor_headers()</> 함수는
-    입력한 <parameter>data</>에서 armor 헤더를 추출하는 함수다.
+     <function>pgp_armor_headers()</function> 함수는
+    입력한 <parameter>data</parameter>에서 armor 헤더를 추출하는 함수다.
     리턴 자료형은 집합형으로 key, value 두개의 칼럼으로 구성된다.
     key 또는 value 값으로 ASCII 문자들이 아닌 것이 있다면, 
     UTF-8 인코딩 문자로 간주한다.
@@ -947,7 +947,7 @@ gpg --gen-key
 </programlisting>
   </para>
   <para>
-   선호하는 키 종류는 <quote>DSA와 Elgamal</>이다.
+   선호하는 키 종류는 <quote>DSA와 Elgamal</quote>이다.
   </para>
   <para>
    RSA 암호화를 사용하려면, 먼저 서명 전용 DSA 또는 RSA 키를 
@@ -974,15 +974,15 @@ gpg -a --export-secret-keys KEYID > secret.key
   </para>
   <para>
    ASCII-armor 형식 자료를 PGP 함수에서 사용하려면, 
-   먼저 <function>dearmor()</> 함수를 이용해서 이진 자료로 변환해야 한다.
+   먼저 <function>dearmor()</function> 함수를 이용해서 이진 자료로 변환해야 한다.
    또는 그 자료가 이진 자료였다면, gpg 명령에서 <literal>-a</literal>
    옵션을 빼고 사용해야 한다.
   </para>
   <para>
    자세한 도움말은  <literal>man gpg</literal> 명령을 이용하거나,
-   <ulink url="http://www.gnupg.org/gph/en/manual.html">The GNU
+   <ulink url="https://www.gnupg.org/gph/en/manual.html">The GNU
    Privacy Handbook</ulink> 웹 페이지를 살펴 보거나,
-   <ulink url="http://www.gnupg.org"></ulink> 사이트에 있는 문서를 살펴 보면 된다.
+   <ulink url="https://www.gnupg.org"></ulink> 사이트에 있는 문서를 살펴 보면 된다.
   </para>
  </sect3>
 
@@ -1004,7 +1004,7 @@ gpg -a --export-secret-keys KEYID > secret.key
    <listitem>
     <para>
     여러 개의 하위 키를 사용할 수 없다.  일반적인 상황에서는 문제가 
-    될 것 같지만, 한편으로 생각하면, <filename>pgcrypto</> 모듈에서
+    될 것 같지만, 한편으로 생각하면, <filename>pgcrypto</filename> 모듈에서
     제공하는 함수를 이용해서 일반적인 GPG/PGP 키 조작 처리는 하지 않는다.
     각각의 상황에 맞게 키를 제공하는 응용 프로그램을 통해서 만든다면, 
     별로 문제 될 것도 없다.
@@ -1082,15 +1082,15 @@ decrypt_iv(data bytea, key bytea, iv bytea, type text) returns bytea
    자료를 암복호화한다.  <parameter>type</parameter> 값은 다음 형식이다:
 
 <synopsis>
-<replaceable>알고리즘</> <optional> <literal>-</> <replaceable>모드</> </optional> <optional> <literal>/pad:</> <replaceable>패딩</> </optional>
+<replaceable>알고리즘</replaceable> <optional> <literal>-</literal> <replaceable>모드</replaceable> </optional> <optional> <literal>/pad:</literal> <replaceable>패딩</replaceable> </optional>
 </synopsis>
-   <replaceable>알고리즘</>은 다음 중 하나다:
+   <replaceable>알고리즘</replaceable>은 다음 중 하나다:
 
   <itemizedlist>
    <listitem><para><literal>bf</literal> &mdash; Blowfish</para></listitem>
    <listitem><para><literal>aes</literal> &mdash; AES (Rijndael-128, -192, -256)</para></listitem>
   </itemizedlist>
-   <replaceable>모드</>는 다음 중 하나다:
+   <replaceable>모드</replaceable>는 다음 중 하나다:
   <itemizedlist>
    <listitem>
     <para>
@@ -1103,7 +1103,7 @@ decrypt_iv(data bytea, key bytea, iv bytea, type text) returns bytea
     </para>
    </listitem>
   </itemizedlist>
-   <replaceable>패딩</>은 다음 중 하나다:
+   <replaceable>패딩</replaceable>은 다음 중 하나다:
   <itemizedlist>
    <listitem>
     <para>
@@ -1125,7 +1125,7 @@ encrypt(data, 'fooz', 'bf-cbc/pad:pkcs')
 </programlisting>
   </para>
   <para>
-   <function>encrypt_iv</> 함수와 <function>decrypt_iv</> 함수에서는
+   <function>encrypt_iv</function> 함수와 <function>decrypt_iv</function> 함수에서는
    CBC 모드에서 사용할 초기 백터(initial vector) 값을 사용자가 
    직접 지정할 수 있다. ECB 모드에서는 무시된다.
    초기 백터란 원본의 길이가 이 백터 길이의 배수보다 모자랄 때, 
@@ -1145,7 +1145,7 @@ encrypt(data, 'fooz', 'bf-cbc/pad:pkcs')
 gen_random_bytes(count integer) returns bytea
 </synopsis>
   <para>
-   지정한  <parameter>count</> 값만큼의 이진값 난수를 만든다.
+   지정한  <parameter>count</parameter> 값만큼의 이진값 난수를 만든다.
    최대 1024 바이트의 난수를 만든다.
    이것은 난수 생성기 자원을 모두 다 써버리는 사태를 막기 위함이다.
   </para>
@@ -1169,7 +1169,7 @@ gen_random_uuid() returns uuid
    <title>환경설정</title>
 
    <para>
-    <filename>pgcrypto</> 모듈의 빌드 환경은 PostgreSQL <literal>configure</literal>
+    <filename>pgcrypto</filename> 모듈의 빌드 환경은 PostgreSQL <literal>configure</literal>
     스크립트에서 옵션을 어떻게 지정했느냐에 따라 결정된다.
     관련 옵션은 <literal>--with-zlib</literal> 옵션과
     <literal>--with-openssl</literal> 옵션이다.
@@ -1280,8 +1280,8 @@ gen_random_uuid() returns uuid
    <title>보안 한계점</title>
 
    <para>
-    모든 <filename>pgcrypto</> 함수는 그 데이터베이스 서버 안에서 처리된다.
-    이 말은 원본 자료와 비밀번호가 <filename>pgcrypto</> 함수와
+    모든 <filename>pgcrypto</filename> 함수는 그 데이터베이스 서버 안에서 처리된다.
+    이 말은 원본 자료와 비밀번호가 <filename>pgcrypto</filename> 함수와
     응용 프로그램 사이에서는 일반 문자열로 처리됨을 의미한다.  즉, 
     보다 철저한 보안을 위해서는 다음 작업이 함께 되어야 한다:
    </para>
@@ -1301,9 +1301,9 @@ gen_random_uuid() returns uuid
    </para>
 
    <para>
-    여기서 구현한 함수로는  <ulink url="http://en.wikipedia.org/wiki/Side-channel_attack">부
+    여기서 구현한 함수로는  <ulink url="https://en.wikipedia.org/wiki/Side-channel_attack">부
     채널 공격</ulink>을 막을 수는 없다.  예를 들어, 
-    <filename>pgcrypto</>에서 제공하는 복호화 함수의 처리 시간은 곧
+    <filename>pgcrypto</filename>에서 제공하는 복호화 함수의 처리 시간은 곧
     암호화 되기전 원문의 길이와 비례한다. (이것으로 암호화 기법을 유추해 낸다. - 옮긴이)
    </para>
   </sect3>
@@ -1313,7 +1313,7 @@ gen_random_uuid() returns uuid
 
    <itemizedlist>
     <listitem>
-     <para><ulink url="http://www.gnupg.org/gph/en/manual.html"></ulink></para>
+     <para><ulink url="https://www.gnupg.org/gph/en/manual.html"></ulink></para>
      <para>GNU 개인정보 소책자.</para>
     </listitem>
     <listitem>
@@ -1322,7 +1322,7 @@ gen_random_uuid() returns uuid
     </listitem>
     <listitem>
      <para>
-      <ulink url="http://www.stack.nl/~galactus/remailers/passphrase-faq.html"></ulink>
+      <ulink url="http://www.iusmentis.com/security/passphrasefaq/"></ulink>
      </para>
      <para>좋은 비밀번호 만드는 방법.</para>
     </listitem>
@@ -1357,23 +1357,19 @@ gen_random_uuid() returns uuid
     </listitem>
     <listitem>
      <para>
-      <ulink url="http://www.usenix.org/events/usenix99/provos.html"></ulink>
+      <ulink url="https://www.usenix.org/events/usenix99/provos.html"></ulink>
      </para>
      <para>crypt-des, crypt-md5, bcrypt 알고리즘 비교.</para>
     </listitem>
     <listitem>
      <para>
-      <ulink url="http://en.wikipedia.org/wiki/Fortuna_(PRNG)"></ulink>
+      <ulink url="https://en.wikipedia.org/wiki/Fortuna_(PRNG)"></ulink>
      </para>
      <para>Fortuna 난수 생성기.</para>
     </listitem>
     <listitem>
      <para><ulink url="http://jlcooke.ca/random/"></ulink></para>
-     <para>리눅스용 Jean-Luc Cooke Fortuna-기반 <filename>/dev/random</> 드라이버.</para>
-    </listitem>
-    <listitem>
-     <para><ulink url="http://kodu.ut.ee/~lipmaa/crypto/"></ulink></para>
-     <para>암호학에 대한 이야기 모음.</para>
+     <para>리눅스용 Jean-Luc Cooke Fortuna-기반 <filename>/dev/random</filename> 드라이버.</para>
     </listitem>
    </itemizedlist>
   </sect3>

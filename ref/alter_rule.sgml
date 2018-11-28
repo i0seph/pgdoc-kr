@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_rule.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERRULE">
+<refentry id="sql-alterrule">
  <indexterm zone="sql-alterrule">
   <primary>ALTER RULE</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER RULE <replaceable class="PARAMETER">이름</replaceable> ON <replaceable class="PARAMETER">테이블이름</replaceable> RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
+ALTER RULE <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -44,7 +44,7 @@ ALTER RULE <replaceable class="PARAMETER">이름</replaceable> ON <replaceable c
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
       바꿀 기존 룰 이름.
@@ -53,7 +53,7 @@ ALTER RULE <replaceable class="PARAMETER">이름</replaceable> ON <replaceable c
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">table_name</replaceable></term>
+    <term><replaceable class="parameter">table_name</replaceable></term>
     <listitem>
      <para>
       해당 룰의 대상 테이블이나 뷰 이름(스키마 이름 포함).
@@ -62,7 +62,7 @@ ALTER RULE <replaceable class="PARAMETER">이름</replaceable> ON <replaceable c
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">새이름</replaceable></term>
+    <term><replaceable class="parameter">새이름</replaceable></term>
     <listitem>
      <para>
       새 룰 이름.
@@ -95,8 +95,8 @@ ALTER RULE notify_all ON emp RENAME TO notify_me;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createrule"></member>
-   <member><xref linkend="sql-droprule"></member>
+   <member><xref linkend="sql-createrule"/></member>
+   <member><xref linkend="sql-droprule"/></member>
   </simplelist>
  </refsect1>
 

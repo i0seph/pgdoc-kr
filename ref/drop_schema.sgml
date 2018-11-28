@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_schema.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPSCHEMA">
+<refentry id="sql-dropschema">
  <indexterm zone="sql-dropschema">
   <primary>DROP SCHEMA</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP SCHEMA [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
+DROP SCHEMA [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [, ...] [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -55,7 +55,7 @@ DROP SCHEMA [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [,
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
       삭제 하려는 스키마 이름
@@ -69,7 +69,7 @@ DROP SCHEMA [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [,
      <para>
           해당 스키마 소속 객체들이 있으면 모두 삭제한다. 
 물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -115,7 +115,7 @@ DROP SCHEMA mystuff CASCADE;
   <para>
    <command>DROP SCHEMA</command> 명령은 표준 SQL 구문과 동일하며,
    표준 SQL 구문에서는 여러 개의 스키마를 한 꺼번에 삭제 할 수는 
-   없으며, <literal>IF EXISTS</> 옵션도 함께 사용할 수 없다.
+   없으며, <literal>IF EXISTS</literal> 옵션도 함께 사용할 수 없다.
   </para>
  </refsect1>
 
@@ -123,8 +123,8 @@ DROP SCHEMA mystuff CASCADE;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterschema"></member>
-   <member><xref linkend="sql-createschema"></member>
+   <member><xref linkend="sql-alterschema"/></member>
+   <member><xref linkend="sql-createschema"/></member>
   </simplelist>
  </refsect1>
 

@@ -17,8 +17,8 @@
  </para>
 
  <para>
-  이 모듈을 사용하는 함수를 사용하려면, 반드시 <filename>postgresql.conf</> 파일에서
-   <xref linkend="guc-shared-preload-libraries"> 환경 설정값으로 이 모듈을 지정해야한다.
+  이 모듈을 사용하는 함수를 사용하려면, 반드시 <filename>postgresql.conf</filename> 파일에서
+   <xref linkend="guc-shared-preload-libraries"/> 환경 설정값으로 이 모듈을 지정해야한다.
  </para>
 
  <sect2>
@@ -29,7 +29,7 @@
     <term>
      <varname>auth_delay.milliseconds</varname> (<type>int</type>)
     <indexterm>
-     <primary><varname>auth_delay.milliseconds</> 환경 설정 매개 변수</primary>
+     <primary><varname>auth_delay.milliseconds</varname> 환경 설정 매개 변수</primary>
     </indexterm>
     </term>
     <listitem>
@@ -42,7 +42,7 @@
   </variablelist>
 
   <para>
-   <filename>postgresql.conf</> 파일에서 사용하려면, 
+   <filename>postgresql.conf</filename> 파일에서 사용하려면, 
    일반적인 사용법은 다음과 같다:        
   </para>
 

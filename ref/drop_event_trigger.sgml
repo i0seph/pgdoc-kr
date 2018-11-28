@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_event_trigger.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPEVENTTRIGGER">
+<refentry id="sql-dropeventtrigger">
  <indexterm zone="sql-dropeventtrigger">
   <primary>DROP EVENT TRIGGER</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP EVENT TRIGGER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable> [ CASCADE | RESTRICT ]
+DROP EVENT TRIGGER [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> [ CASCADE | RESTRICT ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -50,7 +50,7 @@ DROP EVENT TRIGGER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replacea
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
       삭제 하려는 이벤트 트리거 이름.
@@ -64,7 +64,7 @@ DROP EVENT TRIGGER [ IF EXISTS ] <replaceable class="PARAMETER">이름</replacea
      <para>
       지정한 이벤트 트리거에 의존적인 객체들도 함게 삭제 한다.
       물론, 삭제될 다른 객제와 관계된 또 다른 객체들도 함께 삭제 한다.
-      (<xref linkend="ddl-depend"> 참조).
+      (<xref linkend="ddl-depend"/> 참조).
      </para>
     </listitem>
    </varlistentry>
@@ -105,8 +105,8 @@ DROP EVENT TRIGGER snitch;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createeventtrigger"></member>
-   <member><xref linkend="sql-altereventtrigger"></member>
+   <member><xref linkend="sql-createeventtrigger"/></member>
+   <member><xref linkend="sql-altereventtrigger"/></member>
   </simplelist>
  </refsect1>
 

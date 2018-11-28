@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_user_mapping.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPUSERMAPPING">
+<refentry id="sql-dropusermapping">
  <indexterm zone="sql-dropusermapping">
   <primary>DROP USER MAPPING</primary>
  </indexterm>
@@ -36,7 +36,7 @@ DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">사용자�
   <para>
    해당 외부 서버 소유주가 그 서버에 등록에 사용자 맵핑 정보를 
    삭제할 수 있다.  또한 그 외부 서버에 대한 
-   <literal>USAGE</> 권한이 있는 사용자는 자신의 사용자 맵핑 정보를
+   <literal>USAGE</literal> 권한이 있는 사용자는 자신의 사용자 맵핑 정보를
    삭제 할 수 있다.
   </para>
  </refsect1>
@@ -59,9 +59,9 @@ DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">사용자�
     <term><replaceable class="parameter">사용자이름</replaceable></term>
     <listitem>
      <para>
-      삭제할 사용자 이름.  <literal>CURRENT_USER</>,
-      <literal>USER</>는 현재 이 명령을 실행하는 사용자를 뜻한다.
-      <literal>PUBLIC</>은 이 외부 서버를 사용하는 범용 사용자를
+      삭제할 사용자 이름.  <literal>CURRENT_USER</literal>,
+      <literal>USER</literal>는 현재 이 명령을 실행하는 사용자를 뜻한다.
+      <literal>PUBLIC</literal>은 이 외부 서버를 사용하는 범용 사용자를
       뜻한다.
      </para>
     </listitem>
@@ -82,8 +82,8 @@ DROP USER MAPPING [ IF EXISTS ] FOR { <replaceable class="parameter">사용자�
   <title>예제</title>
 
   <para>
-   <literal>foo</> 서버에서
-   <literal>bob</> 사용자 맵핑이 있다면 삭제하는 경우:
+   <literal>foo</literal> 서버에서
+   <literal>bob</literal> 사용자 맵핑이 있다면 삭제하는 경우:
 <programlisting>
 DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
 </programlisting></para>
@@ -94,8 +94,8 @@ DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
 
   <para>
    <command>DROP USER MAPPING</command> 명령은 ISO/IEC 9075-9
-   (SQL/MED) 규약을 준수한다.  <literal>IF EXISTS</> 옵션은
-   <productname>PostgreSQL</> 확장형이다.
+   (SQL/MED) 규약을 준수한다.  <literal>IF EXISTS</literal> 옵션은
+   <productname>PostgreSQL</productname> 확장형이다.
   </para>
  </refsect1>
 
@@ -103,8 +103,8 @@ DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createusermapping"></member>
-   <member><xref linkend="sql-alterusermapping"></member>
+   <member><xref linkend="sql-createusermapping"/></member>
+   <member><xref linkend="sql-alterusermapping"/></member>
   </simplelist>
  </refsect1>
 

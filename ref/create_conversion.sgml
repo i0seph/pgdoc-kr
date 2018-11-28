@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/ref/create_conversion.sgml -->
 
-<refentry id="SQL-CREATECONVERSION">
+<refentry id="sql-createconversion">
  <indexterm zone="sql-createconversion">
   <primary>CREATE CONVERSION</primary>
  </indexterm>
@@ -29,7 +29,7 @@ CREATE [ DEFAULT ] CONVERSION <replaceable>이름</replaceable>
   <para>
    <command>CREATE CONVERSION</command> 명령은
    두 인코딩 간 문자 세트 변환 규칙을 만든다.
-   <literal>DEFAULT</> 옵션을 지정해서
+   <literal>DEFAULT</literal> 옵션을 지정해서
    클라이언트와 서버가 변환을 자동으로 할 수 있게 한다.
    이 변환 규칙은 반드시 A에서 B, B에서 A, 쌍방 두 가지 모두 만들어야 한다.
  </para>
@@ -51,7 +51,7 @@ CREATE [ DEFAULT ] CONVERSION <replaceable>이름</replaceable>
 
      <listitem>
       <para>
-       <literal>DEFAULT</> 옵션은 원래 인코딩을 대상 인코딩으로 
+       <literal>DEFAULT</literal> 옵션은 원래 인코딩을 대상 인코딩으로 
        바꿀 때 사용할 이 변환 규칙을 기본으로 설정한다.
        한 스키마 안에서는 이 인코딩 쌍에 대한 기본 변환 규칙은 
        하나만 있어야 한다.
@@ -134,7 +134,7 @@ conv_proc(
   <title>예제</title>
 
   <para>
-   <function>myfunc</> 함수를 이용해서
+   <function>myfunc</function> 함수를 이용해서
    <literal>UTF8</literal>에서 <literal>LATIN1</literal> 인코딩으로
    바꾸는 인코딩 변환 규칙을 만드는 경우:
 <programlisting>
@@ -160,9 +160,9 @@ CREATE CONVERSION myconv FOR 'UTF8' TO 'LATIN1' FROM myfunc;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-alterconversion"></member>
-   <member><xref linkend="sql-createfunction"></member>
-   <member><xref linkend="sql-dropconversion"></member>
+   <member><xref linkend="sql-alterconversion"/></member>
+   <member><xref linkend="sql-createfunction"/></member>
+   <member><xref linkend="sql-dropconversion"/></member>
   </simplelist>
  </refsect1>
 

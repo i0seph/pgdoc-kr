@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_publication.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERPUBLICATION">
+<refentry id="sql-alterpublication">
  <indexterm zone="sql-alterpublication">
   <primary>ALTER PUBLICATION</primary>
  </indexterm>
@@ -21,12 +21,12 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> ADD TABLE [ ONLY ] <replaceable class="PARAMETER">테이블이름</replaceable> [ * ] [, ...]
-ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> SET TABLE [ ONLY ] <replaceable class="PARAMETER">테이블이름</replaceable> [ * ] [, ...]
-ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> DROP TABLE [ ONLY ] <replaceable class="PARAMETER">테이블이름</replaceable> [ * ] [, ...]
-ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> SET ( <replaceable class="parameter">발행_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
-ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
-ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
+ALTER PUBLICATION <replaceable class="parameter">이름</replaceable> ADD TABLE [ ONLY ] <replaceable class="parameter">테이블이름</replaceable> [ * ] [, ...]
+ALTER PUBLICATION <replaceable class="parameter">이름</replaceable> SET TABLE [ ONLY ] <replaceable class="parameter">테이블이름</replaceable> [ * ] [, ...]
+ALTER PUBLICATION <replaceable class="parameter">이름</replaceable> DROP TABLE [ ONLY ] <replaceable class="parameter">테이블이름</replaceable> [ * ] [, ...]
+ALTER PUBLICATION <replaceable class="parameter">이름</replaceable> SET ( <replaceable class="parameter">발행_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
+ALTER PUBLICATION <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable>새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER PUBLICATION <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -51,7 +51,7 @@ ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> RENAME TO 
 
   <para>
    네번째 구문은 발행 속성을 바꾸는 명령이다.  발행 관련 속성은
-   <xref linkend="sql-createpublication"> 설명서에서 자세히 다룬다. 
+   <xref linkend="sql-createpublication"/> 설명서에서 자세히 다룬다. 
    이 명령에서 지정하지 않은 속성들은 기존 설정을 유지한다.
   </para>
 
@@ -87,9 +87,9 @@ ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> RENAME TO 
     <term><replaceable class="parameter">테이블이름</replaceable></term>
     <listitem>
      <para>
-      테이블 이름.  이 이름 앞에 <literal>ONLY</> 예약어를 사용하면, 
+      테이블 이름.  이 이름 앞에 <literal>ONLY</literal> 예약어를 사용하면, 
       해당 테이블만 적용하고, 없으면, 그 테이블과 그 하위 테이블 모두에
-      대해서 적용한다.  선택적으로 <literal>*</> 문자를 사용해서
+      대해서 적용한다.  선택적으로 <literal>*</literal> 문자를 사용해서
       하위 테이블을 포함한다고 명시적으로 표시할 수도 있다.
      </para>
     </listitem>
@@ -99,7 +99,7 @@ ALTER PUBLICATION <replaceable class="PARAMETER">이름</replaceable> RENAME TO 
     <term><literal>SET ( <replaceable class="parameter">발행_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
-      <xref linkend="SQL-CREATEPUBLICATION"> 명령에서 지정했던
+      <xref linkend="sql-createpublication"/> 명령에서 지정했던
       발행 매개 변수 설정을 바꾼다.
       이 변수들의 설명은 해당 명령어 설명서에서 다룬다.
      </para>
@@ -147,7 +147,7 @@ ALTER PUBLICATION mypublication ADD TABLE users, departments;
   <title>호환성</title>
 
   <para>
-   <command>ALTER PUBLICATION</command> 명령은 <productname>PostgreSQL</>
+   <command>ALTER PUBLICATION</command> 명령은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -156,10 +156,10 @@ ALTER PUBLICATION mypublication ADD TABLE users, departments;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createpublication"></member>
-   <member><xref linkend="sql-droppublication"></member>
-   <member><xref linkend="sql-createsubscription"></member>
-   <member><xref linkend="sql-altersubscription"></member>
+   <member><xref linkend="sql-createpublication"/></member>
+   <member><xref linkend="sql-droppublication"/></member>
+   <member><xref linkend="sql-createsubscription"/></member>
+   <member><xref linkend="sql-altersubscription"/></member>
   </simplelist>
  </refsect1>
 </refentry>

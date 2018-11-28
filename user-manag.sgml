@@ -4,10 +4,10 @@
  <title>데이터베이스 role</title>
 
  <para>
-  <productname>PostgreSQL</productname>은 <firstterm>role</>이라는 개념을 사용하여 데이터베이스 액세스 권한을 관리한다. 
+  <productname>PostgreSQL</productname>은 <firstterm>role</firstterm>이라는 개념을 사용하여 데이터베이스 액세스 권한을 관리한다. 
   role은 데이터베이스가 설정된 방법에 따라 데이터베이스 사용자 또는 데이터베이스 사용자 그룹으로 생각할 수 있다. 
   role은 데이터베이스 개체(예: 테이블 또는 함수)를 소유할 수 있으며 해당 개체에 대한 권한을 다른 role에 할당하여 해당 개체에 액세스할 수 있는 사용자를 제어할 수 있다. 
-  또한, role의 <firstterm>멤버십</>을 다른 role에 부여할 수 있으므로 멤버 role이 다른 role에 할당된 권한을 사용하도록 할 수 있다.
+  또한, role의 <firstterm>멤버십</firstterm>을 다른 role에 부여할 수 있으므로 멤버 role이 다른 role에 할당된 권한을 사용하도록 할 수 있다.
  </para>
 
  <para>
@@ -18,7 +18,7 @@
 
  <para>
   이 장에서는 role을 생성 및 관리하는 방법을 설명한다. 
-  다양한 데이터베이스 개체에 대한 role 권한의 효과에 대한 내용은 <xref linkend="ddl-priv">을 참조할 수 있다.
+  다양한 데이터베이스 개체에 대한 role 권한의 효과에 대한 내용은 <xref linkend="ddl-priv"/>을 참조할 수 있다.
  </para>
 
  <sect1 id="database-roles">
@@ -45,13 +45,13 @@
    사실, 대응 관계를 유지하는 것이 편리할 수 있지만, 그럴 필요는 없다. 
    데이터베이스 role은 데이터베이스 클러스터 설치 간에 전역적이다(데이터베이스에 개별적이지 않음). 
    role을 생성하려면 <xref
-   linkend="sql-createrole"> SQL 명령을 사용해야 한다.
+   linkend="sql-createrole"/> SQL 명령을 사용해야 한다.
 <synopsis>
 CREATE ROLE <replaceable>name</replaceable>;
 </synopsis>
    <replaceable>name</replaceable>은 SQL 식별자에 대한 규칙(특수 문자 또는 큰따옴표 사용 안함)을 준수한다. 
-   (실제로는 <literal>LOGIN</> 같은 옵션을 명령에 추가하고 싶을 수도 있다. 자세한 내용이 아래에 나와 있다.) 
-   기존 role을 삭제하려면 유사한 <xref linkend="sql-droprole"> 명령을 사용해야 한다.
+   (실제로는 <literal>LOGIN</literal> 같은 옵션을 명령에 추가하고 싶을 수도 있다. 자세한 내용이 아래에 나와 있다.) 
+   기존 role을 삭제하려면 유사한 <xref linkend="sql-droprole"/> 명령을 사용해야 한다.
 <synopsis>
 DROP ROLE <replaceable>name</replaceable>;
 </synopsis>
@@ -66,7 +66,7 @@ DROP ROLE <replaceable>name</replaceable>;
   </indexterm>
 
   <para>
-   편의상, 프로그램 <xref linkend="app-createuser"> 및 <xref linkend="app-dropuser">는 쉘 명령줄에서 호출할 수 있는 이러한 SQL 명령의 래퍼(wrapper)로 제공된다.
+   편의상, 프로그램 <xref linkend="app-createuser"/> 및 <xref linkend="app-dropuser"/>는 쉘 명령줄에서 호출할 수 있는 이러한 SQL 명령의 래퍼(wrapper)로 제공된다.
 <synopsis>
 createuser <replaceable>name</replaceable>
 dropuser <replaceable>name</replaceable>
@@ -74,12 +74,12 @@ dropuser <replaceable>name</replaceable>
   </para>
 
   <para>
-   기존 role 집합을 판단하려면 <structname>pg_roles</> 시스템 카탈로그를 검사해야 한다. 
+   기존 role 집합을 판단하려면 <structname>pg_roles</structname> 시스템 카탈로그를 검사해야 한다. 
    예를 들면,
 <synopsis>
 SELECT rolname FROM pg_roles;
 </synopsis>
-   <xref linkend="app-psql"> 프로그램의 <literal>\du</> 메타 명령도 기존 role을 나열할 때 유용하다.
+   <xref linkend="app-psql"/> 프로그램의 <literal>\du</literal> 메타 명령도 기존 role을 나열할 때 유용하다.
   </para>
 
   <para>
@@ -92,13 +92,13 @@ SELECT rolname FROM pg_roles;
    데이터베이스 서버에 대한 모든 연결은 일부 특정 role의 이름이 사용되며, 이러한 role은 해당 연결에서 실행된 명령에 대한 초기 액세스 권한을 결정한다. 
    특정 데이터베이스 연결에 사용할 role 이름은 애플리케이션 특정 방식의 연결 요청을 초기화하는 클라이언트에 의해 표시된다. 
    예를 들면, <command>psql</command> 프로그램은 <option>-U</option> 옵션을 사용하여 연결할 role을 표시한다. 
-   다수의 애플리케이션이 기본적으로 현재 운영 체제 시스템 사용자의 이름을 가정한다(<command>createuser</> 및 <command>psql</> 포함). 
+   다수의 애플리케이션이 기본적으로 현재 운영 체제 시스템 사용자의 이름을 가정한다(<command>createuser</command> 및 <command>psql</command> 포함). 
    따라서 role 및 운영 체제 사용자 간에 네이밍 연관성을 유지하는 것이 편리하다.
   </para>
 
   <para>
    주어진 클라이언트 연결을 할 수 있는 데이터베이스 role 집합은
-   <xref linkend="client-authentication">에서 설명된 대로 클라이언트 인증 설정에
+   <xref linkend="client-authentication"/>에서 설명된 대로 클라이언트 인증 설정에
    의해 결정된다.  (따라서, 로그인 이름이 꼭 그 사람의 실명과 일치해야 할 필요가
    없는 것처럼, 클라이언트를 운영 체제 사용자와 일치하는 role로 연결해야만
    하는 것은 아니다.)  role ID는 연결된 클라이언트에서 가능한 권한 집합을
@@ -113,23 +113,23 @@ SELECT rolname FROM pg_roles;
     데이터베이스 role은 권한을 정의하는 속성이 다수 있으며, 클라이언트 인증 시스템과 인터랙션한다.
     <variablelist>
      <varlistentry>
-      <term>로그인 권한<indexterm><primary>로그인 권한</></></term>
+      <term>로그인 권한<indexterm><primary>로그인 권한</primary></indexterm></term>
       <listitem>
        <para>
-        데이터베이스 연결을 위한 초기 role 이름으로 <literal>LOGIN</> 속성이 있는 role만 사용할 수 있다. 
-        <literal>LOGIN</> 속성이 있는 role은 <quote>데이터베이스 사용자</>와 동일한 것으로 간주될 수 있다. 
+        데이터베이스 연결을 위한 초기 role 이름으로 <literal>LOGIN</literal> 속성이 있는 role만 사용할 수 있다. 
+        <literal>LOGIN</literal> 속성이 있는 role은 <quote>데이터베이스 사용자</quote>와 동일한 것으로 간주될 수 있다. 
         로그인 권한이 있는 role을 생성하려면 다음 중 하나를 사용해야 한다.
 <programlisting>
 CREATE ROLE <replaceable>name</replaceable> LOGIN;
 CREATE USER <replaceable>name</replaceable>;
 </programlisting>
-        (<command>CREATE USER</>는 디폴트로 <literal>LOGIN</> 권한을 준다는 점에서 <command>CREATE ROLE</>과 다르다.)
+        (<command>CREATE USER</command>는 디폴트로 <literal>LOGIN</literal> 권한을 준다는 점에서 <command>CREATE ROLE</command>과 다르다.)
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term>수퍼유저 상태<indexterm><primary>수퍼유저</></></term>
+      <term>수퍼유저 상태<indexterm><primary>수퍼유저</primary></indexterm></term>
       <listitem>
        <para>
         데이터베이스 수퍼유저는 로그인 권한을 제외한 모든 권한 검사를 건너 뛴다. 
@@ -141,7 +141,7 @@ CREATE USER <replaceable>name</replaceable>;
      </varlistentry>
 
      <varlistentry>
-      <term>데이터베이스 생성<indexterm><primary>데이터베이스</><secondary>생성 권한</></></term>
+      <term>데이터베이스 생성<indexterm><primary>데이터베이스</primary><secondary>생성 권한</secondary></indexterm></term>
       <listitem>
        <para>
         데이터베이스를 생성하려면 권한이 명시적으로 role에 주어져야 한다(모든 권한 검사를 건너 뛰는 수퍼유저인 경우 제외). 
@@ -152,24 +152,24 @@ CREATE USER <replaceable>name</replaceable>;
      </varlistentry>
 
      <varlistentry>
-      <term>role 생성<indexterm><primary>role</><secondary>생성 권한</></></term>
+      <term>role 생성<indexterm><primary>role</primary><secondary>생성 권한</secondary></indexterm></term>
       <listitem>
        <para>
         role을 추가적으로 생성하려면 권한이 명시적으로 role에 주어져야 한다(모든 권한 검사를 건너 뛰는 수퍼유저인 경우 제외). 
         이러한 role을 생성하려면 <literal>CREATE ROLE
         <replaceable>name</replaceable> CREATEROLE</literal>을 사용해야 한다. 
-        <literal>CREATEROLE</> 권한이 있는 role은 다른 role을 변경 및 삭제할 수 있으며, 멤버십을 부여 또는 취소할 수도 있다. 
-        단, 수퍼유저 role의 멤버십을 생성, 변경(alter), 삭제 또는 변경(change)하려면 수퍼유저 상태가 필요하다. <literal>CREATEROLE</>로는 부족하다.
+        <literal>CREATEROLE</literal> 권한이 있는 role은 다른 role을 변경 및 삭제할 수 있으며, 멤버십을 부여 또는 취소할 수도 있다. 
+        단, 수퍼유저 role의 멤버십을 생성, 변경(alter), 삭제 또는 변경(change)하려면 수퍼유저 상태가 필요하다. <literal>CREATEROLE</literal>로는 부족하다.
        </para>
       </listitem>
      </varlistentry>
 
      <varlistentry>
-      <term>복제 초기화<indexterm><primary>role</><secondary>복제 초기화 권한</></></term>
+      <term>복제 초기화<indexterm><primary>role</primary><secondary>복제 초기화 권한</secondary></indexterm></term>
       <listitem>
        <para>
         streaming replication을 초기화하려면 권한이 명시적으로 role에 주어져야 한다(모든 권한 검사를 건너 뛰는 수퍼유저인 경우 제외). 
-        streaming replication에 사용되는 role은 <literal>LOGIN</> 권한이 있어야 한다. 
+        streaming replication에 사용되는 role은 <literal>LOGIN</literal> 권한이 있어야 한다. 
         이러한 role을 생성하려면 <literal>CREATE ROLE <replaceable>name</replaceable> REPLICATION
         LOGIN</literal>을 사용해야 한다.
        </para>
@@ -177,41 +177,41 @@ CREATE USER <replaceable>name</replaceable>;
      </varlistentry>
 
      <varlistentry>
-      <term>패스워드<indexterm><primary>패스워드</></></term>
+      <term>패스워드<indexterm><primary>패스워드</primary></indexterm></term>
       <listitem>
        <para>
         패스워드는 데이터베이스에 연결할 때 사용자가 패스워드를 입력해야 하는 클라이언트 인증 방법인 경우에만 중요하다. 
-        <option>password</> 및 <option>md5</> 인증 방법은 패스워드를 이용한다. 데이터베이스 패스워드는 운영 체제 사용자 패스워드와 구분된다. 
+        <option>password</option> 및 <option>md5</option> 인증 방법은 패스워드를 이용한다. 데이터베이스 패스워드는 운영 체제 사용자 패스워드와 구분된다. 
         role 생성 시 패스워드 지정은 <literal>CREATE ROLE
-        <replaceable>name</replaceable> PASSWORD '<replaceable>string</>'</literal>을 사용해야 한다.
+        <replaceable>name</replaceable> PASSWORD '<replaceable>string</replaceable>'</literal>을 사용해야 한다.
        </para>
       </listitem>
      </varlistentry>
     </variablelist>
 
-    role의 속성은 <command>ALTER ROLE</command><indexterm><primary>ALTER ROLE</></>로 생성한 후 수정할 수 있다. 
-    자세한 내용은 <xref linkend="sql-createrole">
-    및 <xref linkend="sql-alterrole"> 명령에 대한 참고 페이지를 참조 바란다.
+    role의 속성은 <command>ALTER ROLE</command><indexterm><primary>ALTER ROLE</primary></indexterm>로 생성한 후 수정할 수 있다. 
+    자세한 내용은 <xref linkend="sql-createrole"/>
+    및 <xref linkend="sql-alterrole"/> 명령에 대한 참고 페이지를 참조 바란다.
    </para>
 
   <tip>
    <para>
-    수퍼유저는 아니지만 <literal>CREATEDB</> 및 <literal>CREATEROLE</> 권한이 있는 role을 생성하고, 데이터베이스와 role의 모든 루틴 관리에 대해 이 role을 사용하는 것이 좋다. 
+    수퍼유저는 아니지만 <literal>CREATEDB</literal> 및 <literal>CREATEROLE</literal> 권한이 있는 role을 생성하고, 데이터베이스와 role의 모든 루틴 관리에 대해 이 role을 사용하는 것이 좋다. 
     이러한 방법으로 실제로 수퍼유저 권한이 불필요한 작업을 수퍼유저로 실행하는 위험이 방지된다.
    </para>
   </tip>
 
   <para>
    role은 <xref
-   linkend="runtime-config">에 설명된 여러 가지 런타임 구성 설정에 대해 role별 기본값을 가질 수도 있다. 
+   linkend="runtime-config"/>에 설명된 여러 가지 런타임 구성 설정에 대해 role별 기본값을 가질 수도 있다. 
    예를 들면, 연결할 때 인덱스 스캔을 비활성화하려면, 다음과 같이 할 수 있다.
 <programlisting>
 ALTER ROLE myname SET enable_indexscan TO off;
 </programlisting>
    이것은 설정을 저장한다(그러나 즉시 설정되지는 않음). 
    <literal>SET enable_indexscan TO off</literal>가 세션 시작 직전에 실행되었더라도 추후 이 role이 연결할 때 이것이 나타난다. 
-   세션 중에 이 설정을 변경할 수 있으며, 이것은 기본값에 불과하다. role별 기본 설정을 삭제하려면 <literal>ALTER ROLE <replaceable>rolename</> RESET <replaceable>varname</></literal>을 사용해야 한다. 
-   <literal>LOGIN</> 권한 없이 role에 연결된 role별 기본값은 절대 호출되지 않으므로 아무 쓸모가 없다는 점에 유의해야 한다.
+   세션 중에 이 설정을 변경할 수 있으며, 이것은 기본값에 불과하다. role별 기본 설정을 삭제하려면 <literal>ALTER ROLE <replaceable>rolename</replaceable> RESET <replaceable>varname</replaceable></literal>을 사용해야 한다. 
+   <literal>LOGIN</literal> 권한 없이 role에 연결된 role별 기본값은 절대 호출되지 않으므로 아무 쓸모가 없다는 점에 유의해야 한다.
   </para>
  </sect1>
 
@@ -219,12 +219,12 @@ ALTER ROLE myname SET enable_indexscan TO off;
   <title>role 멤버십</title>
 
   <indexterm zone="role-membership">
-   <primary>role</><secondary>멤버십 in</>
+   <primary>role</primary><secondary>멤버십 in</secondary>
   </indexterm>
 
   <para>
    권한 관리의 편의상 사용자를 그룹으로 묶는 것이 편리할 수 있다. 이렇게 하면 권한을 그룹 단위로 부여하거나 취소할 수 있다. 
-   <productname>PostgreSQL</productname>에서 이것은 그룹을 나타내는 role을 생성한 다음, 그룹 role의 <firstterm>멤버십</>을 개별 사용자 role에 부여하면 된다.
+   <productname>PostgreSQL</productname>에서 이것은 그룹을 나타내는 role을 생성한 다음, 그룹 role의 <firstterm>멤버십</firstterm>을 개별 사용자 role에 부여하면 된다.
   </para>
 
   <para>
@@ -232,11 +232,11 @@ ALTER ROLE myname SET enable_indexscan TO off;
 <synopsis>
 CREATE ROLE <replaceable>name</replaceable>;
 </synopsis>
-   일반적으로 그룹으로 사용되는 role은 <literal>LOGIN</> 속성이 없으며, 원하면 설정은 할 수 있다.
+   일반적으로 그룹으로 사용되는 role은 <literal>LOGIN</literal> 속성이 없으며, 원하면 설정은 할 수 있다.
   </para>
 
   <para>
-   그룹 role이 존재하는 경우 <xref linkend="sql-grant"> 및 <xref linkend="sql-revoke"> 명령을 사용하여 멤버를 추가 및 삭제할 수 있다.
+   그룹 role이 존재하는 경우 <xref linkend="sql-grant"/> 및 <xref linkend="sql-revoke"/> 명령을 사용하여 멤버를 추가 및 삭제할 수 있다.
 <synopsis>
 GRANT <replaceable>group_role</replaceable> TO <replaceable>role1</replaceable>, ... ;
 REVOKE <replaceable>group_role</replaceable> FROM <replaceable>role1</replaceable>, ... ;
@@ -246,9 +246,9 @@ REVOKE <replaceable>group_role</replaceable> FROM <replaceable>role1</replaceabl
   </para>
 
   <para>
-   그룹 role의 멤버는 두 가지 방법으로 role의 권한을 사용할 수 있다. 첫째, 그룹의 모든 멤버는 명시적으로 <xref linkend="sql-set-role">을 수행하여 일시적으로 그룹 role이 <quote>된다</quote>. 
+   그룹 role의 멤버는 두 가지 방법으로 role의 권한을 사용할 수 있다. 첫째, 그룹의 모든 멤버는 명시적으로 <xref linkend="sql-set-role"/>을 수행하여 일시적으로 그룹 role이 <quote>된다</quote>. 
    이 상태에서 데이터베이스 세션은 원래의 로그인 role이 아닌 그룹 role에 대한 액세스 권한을 가지며, 생성된 데이터베이스 개체는 로그인 role이 아닌 그룹 role이 소유하는 것으로 간주된다. 
-   둘째, <literal>INHERIT</> 속성이 있는 멤버 role은 해당 role에서 상속된 모든 권한을 비롯하여 멤버로서 role의 권한을 자동으로 갖는다. 예를 들면, 다음을 실행했다고 가정하자.
+   둘째, <literal>INHERIT</literal> 속성이 있는 멤버 role은 해당 role에서 상속된 모든 권한을 비롯하여 멤버로서 role의 권한을 자동으로 갖는다. 예를 들면, 다음을 실행했다고 가정하자.
 <programlisting>
 CREATE ROLE joe LOGIN INHERIT;
 CREATE ROLE admin NOINHERIT;
@@ -256,16 +256,16 @@ CREATE ROLE wheel NOINHERIT;
 GRANT admin TO joe;
 GRANT wheel TO admin;
 </programlisting>
-   <literal>joe</> role로 연결한 직후에 데이터베이스 세션은 <literal>joe</>에 직접 부여된 권한 외에도, <literal>joe</>는 <literal>admin</>의 권한을 <quote>상속 받기</> 때문에 <literal>admin</>에 부여된 권한도 사용한다. 
-   그러나, <literal>joe</>가 간접적으로 <literal>wheel</>의 멤버지만 이 멤버십은 <literal>NOINHERIT</> 속성을 갖는 <literal>admin</>을 통한 것이므로 wheel에 부여된 권한은 사용할 수 없다. 다음 명령을 실행한 후,
+   <literal>joe</literal> role로 연결한 직후에 데이터베이스 세션은 <literal>joe</literal>에 직접 부여된 권한 외에도, <literal>joe</literal>는 <literal>admin</literal>의 권한을 <quote>상속 받기</quote> 때문에 <literal>admin</literal>에 부여된 권한도 사용한다. 
+   그러나, <literal>joe</literal>가 간접적으로 <literal>wheel</literal>의 멤버지만 이 멤버십은 <literal>NOINHERIT</literal> 속성을 갖는 <literal>admin</literal>을 통한 것이므로 wheel에 부여된 권한은 사용할 수 없다. 다음 명령을 실행한 후,
 <programlisting>
 SET ROLE admin;
 </programlisting>
-   세션은 <literal>admin</>에 부여된 이러한 권한만 사용하고 <literal>joe</>에 부여된 권한은 사용하지 않는다. 다음 명령을 실행한 후,
+   세션은 <literal>admin</literal>에 부여된 이러한 권한만 사용하고 <literal>joe</literal>에 부여된 권한은 사용하지 않는다. 다음 명령을 실행한 후,
 <programlisting>
 SET ROLE wheel;
 </programlisting>
-   세션은 <literal>wheel</>에 부여된 이러한 권한만 사용하고 <literal>joe</> 또는 <literal>admin</>에 부여된 권한은 사용하지 않는다. 
+   세션은 <literal>wheel</literal>에 부여된 이러한 권한만 사용하고 <literal>joe</literal> 또는 <literal>admin</literal>에 부여된 권한은 사용하지 않는다. 
    원래의 권한 상태는 다음 중 하나를 사용하면 복원된다.
 <programlisting>
 SET ROLE joe;
@@ -276,24 +276,24 @@ RESET ROLE;
 
   <note>
    <para>
-    <command>SET ROLE</> 명령은 원래 로그인 role이 직간접적으로 멤버인 모든 role을 선택할 수 있도록 항상 허용한다. 
-    따라서 위의 예시에서, <literal>wheel</>이 되기 전에 꼭 <literal>admin</>이어야 할 필요는 없다.
+    <command>SET ROLE</command> 명령은 원래 로그인 role이 직간접적으로 멤버인 모든 role을 선택할 수 있도록 항상 허용한다. 
+    따라서 위의 예시에서, <literal>wheel</literal>이 되기 전에 꼭 <literal>admin</literal>이어야 할 필요는 없다.
    </para>
   </note>
 
   <note>
    <para>
     SQL 표준에서 사용자와 role은 명확히 구분되며, role은 권한을 자동으로 상속 받지만, 사용자는 그렇지 않다. 
-    이는 SQL 사용자로서 사용되는 role에게는 NOINHERIT 속성을 부여하고, SQL role로 사용되는 role에게는 <literal>INHERIT</> 속성을 부여한다. 
-    그러나, 사용자에게 항상 멤버인 그룹에 부여된 권한이 있는 8.1 릴리스 이전 버전과의 호환성 때문에 <productname>PostgreSQL</productname>은 기본적으로 모든 role에 <literal>INHERIT</> 속성을 부여한다.
+    이는 SQL 사용자로서 사용되는 role에게는 NOINHERIT 속성을 부여하고, SQL role로 사용되는 role에게는 <literal>INHERIT</literal> 속성을 부여한다. 
+    그러나, 사용자에게 항상 멤버인 그룹에 부여된 권한이 있는 8.1 릴리스 이전 버전과의 호환성 때문에 <productname>PostgreSQL</productname>은 기본적으로 모든 role에 <literal>INHERIT</literal> 속성을 부여한다.
    </para>
   </note>
 
   <para>
-   role 속성 <literal>LOGIN</> 및 <literal>SUPERUSER</>,
-   <literal>CREATEDB</>, <literal>CREATEROLE</>은 특수한 권한으로 생각될 수 있지만 데이터베이스 개체의 일상적인 권한으로 상속되지 않는다. 
-   속성을 사용하려면 이러한 속성 중 하나를 보유한 특정 role에 실제로 <command>SET ROLE</>을 해야 한다. 위의 예시에 이어서, <literal>CREATEDB</> 및 <literal>CREATEROLE</>을 <literal>admin</> role에 부여할 수도 있다. 
-   그러면, <literal>joe</> role로 연결하는 세션은 이러한 권한을 즉각 갖지는 못하며, <command>SET ROLE admin</>을 수행한 이후에만 권한이 부여된다.
+   role 속성 <literal>LOGIN</literal> 및 <literal>SUPERUSER</literal>,
+   <literal>CREATEDB</literal>, <literal>CREATEROLE</literal>은 특수한 권한으로 생각될 수 있지만 데이터베이스 개체의 일상적인 권한으로 상속되지 않는다. 
+   속성을 사용하려면 이러한 속성 중 하나를 보유한 특정 role에 실제로 <command>SET ROLE</command>을 해야 한다. 위의 예시에 이어서, <literal>CREATEDB</literal> 및 <literal>CREATEROLE</literal>을 <literal>admin</literal> role에 부여할 수도 있다. 
+   그러면, <literal>joe</literal> role로 연결하는 세션은 이러한 권한을 즉각 갖지는 못하며, <command>SET ROLE admin</command>을 수행한 이후에만 권한이 부여된다.
   </para>
 
   <para>
@@ -301,7 +301,7 @@ RESET ROLE;
 
   <para>
    그룹 role을 소멸하려면 <xref
-   linkend="sql-droprole">을 사용해야 한다.
+   linkend="sql-droprole"/>을 사용해야 한다.
 <synopsis>
 DROP ROLE <replaceable>name</replaceable>;
 </synopsis>
@@ -315,23 +315,23 @@ DROP ROLE <replaceable>name</replaceable>;
   <para>
    Because roles can own database objects and can hold privileges
    to access other objects, dropping a role is often not just a matter of a
-   quick <xref linkend="sql-droprole">.  Any objects owned by the role must
+   quick <xref linkend="sql-droprole"/>.  Any objects owned by the role must
    first be dropped or reassigned to other owners; and any permissions
    granted to the role must be revoked.
   </para>
 
   <para>
    Ownership of objects can be transferred one at a time
-   using <command>ALTER</> commands, for example:
+   using <command>ALTER</command> commands, for example:
 <programlisting>
 ALTER TABLE bobs_table OWNER TO alice;
 </programlisting>
-   Alternatively, the <xref linkend="sql-reassign-owned"> command can be
+   Alternatively, the <xref linkend="sql-reassign-owned"/> command can be
    used to reassign ownership of all objects owned by the role-to-be-dropped
-   to a single other role.  Because <command>REASSIGN OWNED</> cannot access
+   to a single other role.  Because <command>REASSIGN OWNED</command> cannot access
    objects in other databases, it is necessary to run it in each database
    that contains objects owned by the role.  (Note that the first
-   such <command>REASSIGN OWNED</> will change the ownership of any
+   such <command>REASSIGN OWNED</command> will change the ownership of any
    shared-across-databases objects, that is databases or tablespaces, that
    are owned by the role-to-be-dropped.)
   </para>
@@ -339,20 +339,20 @@ ALTER TABLE bobs_table OWNER TO alice;
   <para>
    Once any valuable objects have been transferred to new owners, any
    remaining objects owned by the role-to-be-dropped can be dropped with
-   the <xref linkend="sql-drop-owned"> command.  Again, this command cannot
+   the <xref linkend="sql-drop-owned"/> command.  Again, this command cannot
    access objects in other databases, so it is necessary to run it in each
    database that contains objects owned by the role.  Also, <command>DROP
-   OWNED</> will not drop entire databases or tablespaces, so it is
+   OWNED</command> will not drop entire databases or tablespaces, so it is
    necessary to do that manually if the role owns any databases or
    tablespaces that have not been transferred to new owners.
   </para>
 
   <para>
-   <command>DROP OWNED</> also takes care of removing any privileges granted
+   <command>DROP OWNED</command> also takes care of removing any privileges granted
    to the target role for objects that do not belong to it.
-   Because <command>REASSIGN OWNED</> does not touch such objects, it's
-   typically necessary to run both <command>REASSIGN OWNED</>
-   and <command>DROP OWNED</> (in that order!) to fully remove the
+   Because <command>REASSIGN OWNED</command> does not touch such objects, it's
+   typically necessary to run both <command>REASSIGN OWNED</command>
+   and <command>DROP OWNED</command> (in that order!) to fully remove the
    dependencies of a role to be dropped.
   </para>
 
@@ -374,7 +374,7 @@ DROP ROLE doomed_role;
   </para>
 
   <para>
-   If <command>DROP ROLE</> is attempted while dependent objects still
+   If <command>DROP ROLE</command> is attempted while dependent objects still
    remain, it will issue messages identifying which objects need to be
    reassigned or dropped.
   </para>
@@ -384,7 +384,7 @@ DROP ROLE doomed_role;
   <title>Default Roles</title>
 
   <indexterm zone="default-roles">
-   <primary>role</>
+   <primary>role</primary>
   </indexterm>
 
   <para>
@@ -396,7 +396,7 @@ DROP ROLE doomed_role;
   </para>
 
   <para>
-   The default roles are described in <xref linkend="default-roles-table">.
+   The default roles are described in <xref linkend="default-roles-table"/>.
    Note that the specific permissions for each of the default roles may
    change in the future as additional capabilities are added.  Administrators
    should monitor the release notes for changes.
@@ -432,6 +432,21 @@ DROP ROLE doomed_role;
        <entry>Send signals to other backends (eg: cancel query, terminate).</entry>
       </row>
       <row>
+       <entry>pg_read_server_files</entry>
+       <entry>Allow reading files from any location the database can access on the server with COPY and
+       other file-access functions.</entry>
+      </row>
+      <row>
+       <entry>pg_write_server_files</entry>
+       <entry>Allow writing to files in any location the database can access on the server with COPY and
+       other file-access functions.</entry>
+      </row>
+      <row>
+       <entry>pg_execute_server_program</entry>
+       <entry>Allow executing programs on the database server as the user the database runs as with
+       COPY and other functions which allow executing a server-side program.</entry>
+      </row>
+      <row>
        <entry>pg_monitor</entry>
        <entry>Read/execute various monitoring views and functions.
        This role is a member of <literal>pg_read_all_settings</literal>,
@@ -441,6 +456,16 @@ DROP ROLE doomed_role;
      </tbody>
     </tgroup>
    </table>
+
+  <para>
+  The <literal>pg_read_server_files</literal>, <literal>pg_write_server_files</literal> and
+  <literal>pg_execute_server_program</literal> roles are intended to allow administrators to have
+  trusted, but non-superuser, roles which are able to access files and run programs on the
+  database server as the user the database runs as.  As these roles are able to access any file on
+  the server file system, they bypass all database-level permission checks when accessing files
+  directly and they could be used to gain superuser-level access, therefore care should be taken
+  when granting these roles to users.
+  </para>
 
   <para>
   The <literal>pg_monitor</literal>, <literal>pg_read_all_settings</literal>,
@@ -453,7 +478,8 @@ DROP ROLE doomed_role;
 
   <para>
   Care should be taken when granting these roles to ensure they are only used where
-  needed to perform the desired monitoring.
+  needed and with the understanding that these roles grant access to privileged
+  information.
   </para>
 
   <para>

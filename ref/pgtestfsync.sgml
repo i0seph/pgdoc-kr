@@ -27,8 +27,8 @@
   <title>설명</title>
 
  <para>
-  <application>pg_test_fsync</>은 해당 OS에서 
-  사용할 수 있는 가장 빠른 <xref linkend="guc-wal-sync-method"> 설정값이
+  <application>pg_test_fsync</application>은 해당 OS에서 
+  사용할 수 있는 가장 빠른 <xref linkend="guc-wal-sync-method"/> 설정값이
   무엇인지 조사하는 명령어다.  또한 I/O 문제가 있을 때, 
   이 문제를 풀 정보를 제공한다.
   하지만, 이 <application>pg_test_fsync</application> 명령을 통해 
@@ -38,7 +38,7 @@
   <application>pg_test_fsync</application> 명령은
   각 <literal>wal_sync_method</literal> 종류별로 파일 sync 작업의 평균 수행
   시간을 마이크로초 단위로 보여준다.  또한 이 정보는
-  최적의 <xref linkend="guc-commit-delay"> 값을 찾는데도 도움을 준다.
+  최적의 <xref linkend="guc-commit-delay"/> 값을 찾는데도 도움을 준다.
  </para>
  </refsect1>
 
@@ -57,10 +57,10 @@
       <listitem>
        <para>
         디스크 쓰기 검사 자료로 쓰일 파일 이름을 지정한다.
-        이 옵션에 지정할 파일은 <filename>pg_wal</> 디렉터리가 있는
+        이 옵션에 지정할 파일은 <filename>pg_wal</filename> 디렉터리가 있는
         같은 마운트 위치(같은 파일 시스템)에 있는 파일이어야 한다.
-        (<filename>pg_wal</> 디렉터리에 <acronym>WAL</> 파일을 저장한다.)
-        기본값은 현재 디렉터리 안에 <filename>pg_test_fsync.out</> 이름의
+        (<filename>pg_wal</filename> 디렉터리에 <acronym>WAL</acronym> 파일을 저장한다.)
+        기본값은 현재 디렉터리 안에 <filename>pg_test_fsync.out</filename> 이름의
         파일을 사용한다.
        </para>
       </listitem>
@@ -79,8 +79,8 @@
      </varlistentry>
 
      <varlistentry>
-      <term><option>-V</></term>
-      <term><option>--version</></term>
+      <term><option>-V</option></term>
+      <term><option>--version</option></term>
       <listitem>
        <para>
         <application>pg_test_fsync</application> 버전을 보여주고 마친다.
@@ -89,8 +89,8 @@
      </varlistentry>
 
      <varlistentry>
-      <term><option>-?</></term>
-      <term><option>--help</></term>
+      <term><option>-?</option></term>
+      <term><option>--help</option></term>
       <listitem>
        <para>
         <application>pg_test_fsync</application> 명령행 인자 도움말을
@@ -107,7 +107,7 @@
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="app-postgres"></member>
+   <member><xref linkend="app-postgres"/></member>
   </simplelist>
  </refsect1>
 </refentry>

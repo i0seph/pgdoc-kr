@@ -3,7 +3,7 @@ doc/src/sgml/ref/alter_policy.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-ALTERPOLICY">
+<refentry id="sql-alterpolicy">
  <indexterm zone="sql-alterpolicy">
   <primary>ALTER POLICY</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-ALTER POLICY <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> RENAME TO <replaceable class="PARAMETER">새이름</replaceable>
+ALTER POLICY <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 
 ALTER POLICY <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable>
     [ TO { <replaceable class="parameter">롤이름</replaceable> | PUBLIC | CURRENT_USER | SESSION_USER } [, ...] ]
@@ -103,7 +103,7 @@ ALTER POLICY <replaceable class="parameter">이름</replaceable> ON <replaceable
     <listitem>
      <para>
       <literal>USING</literal> 구문에 사용하는 표현식.
-      <xref linkend="sql-createpolicy"> 참고.
+      <xref linkend="sql-createpolicy"/> 참고.
      </para>
     </listitem>
    </varlistentry>
@@ -113,7 +113,7 @@ ALTER POLICY <replaceable class="parameter">이름</replaceable> ON <replaceable
     <listitem>
      <para>
       <literal>WITH CHECK</literal> 구문에 사용하는 표현식.
-      <xref linkend="sql-createpolicy"> 참고.
+      <xref linkend="sql-createpolicy"/> 참고.
      </para>
     </listitem>
    </varlistentry>
@@ -134,8 +134,8 @@ ALTER POLICY <replaceable class="parameter">이름</replaceable> ON <replaceable
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createpolicy"></member>
-   <member><xref linkend="sql-droppolicy"></member>
+   <member><xref linkend="sql-createpolicy"/></member>
+   <member><xref linkend="sql-droppolicy"/></member>
   </simplelist>
  </refsect1>
 

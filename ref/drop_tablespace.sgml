@@ -3,7 +3,7 @@ doc/src/sgml/ref/drop_tablespace.sgml
 PostgreSQL documentation
 -->
 
-<refentry id="SQL-DROPTABLESPACE">
+<refentry id="sql-droptablespace">
  <indexterm zone="sql-droptablespace">
   <primary>DROP TABLESPACE</primary>
  </indexterm>
@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-DROP TABLESPACE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable>
+DROP TABLESPACE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -37,7 +37,7 @@ DROP TABLESPACE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable
    테이블스페이스를 사용하고 있는 어떠한 객체도 없어야 삭제 할 수 있다.  또한
    현재 접속한 데이터베이스가 이 테이블스페이스를 사용하고 있어도 삭제
    할 수 없다.  또한 <xref
-      linkend="guc-temp-tablespaces"> 설정으로 지정된 테이블스페이스라면
+      linkend="guc-temp-tablespaces"/> 설정으로 지정된 테이블스페이스라면
    다른 접속한 사용자 있어도 그 테이블스페이스를 삭제할 수 없다.
   </para>
  </refsect1>
@@ -57,7 +57,7 @@ DROP TABLESPACE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="PARAMETER">이름</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
           삭제하려는 테이블스페이스 이름.
@@ -71,7 +71,7 @@ DROP TABLESPACE [ IF EXISTS ] <replaceable class="PARAMETER">이름</replaceable
   <title>참고</title>
 
    <para>
-    <command>DROP TABLESPACE</> 명령은 트랜잭션 내에서는 사용할 수 없다.
+    <command>DROP TABLESPACE</command> 명령은 트랜잭션 내에서는 사용할 수 없다.
    </para>
  </refsect1>
 
@@ -90,7 +90,7 @@ DROP TABLESPACE mystuff;
   <title>호환성</title>
 
   <para>
-   <command>DROP TABLESPACE</command> 명령은 <productname>PostgreSQL</>
+   <command>DROP TABLESPACE</command> 명령은 <productname>PostgreSQL</productname>
    확장 기능이다.
   </para>
  </refsect1>
@@ -99,8 +99,8 @@ DROP TABLESPACE mystuff;
   <title>관련 항목</title>
 
   <simplelist type="inline">
-   <member><xref linkend="sql-createtablespace"></member>
-   <member><xref linkend="sql-altertablespace"></member>
+   <member><xref linkend="sql-createtablespace"/></member>
+   <member><xref linkend="sql-altertablespace"/></member>
   </simplelist>
  </refsect1>
 
