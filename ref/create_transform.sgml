@@ -13,12 +13,12 @@
 
  <refnamediv>
   <refname>CREATE TRANSFORM</refname>
-  <refpurpose>define a new transform</refpurpose>
+  <refpurpose>새 transform 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ OR REPLACE ] TRANSFORM FOR <replaceable>type_name</replaceable> LANGUAGE <replaceable>lang_name</replaceable> (
+CREATE [ OR REPLACE ] TRANSFORM FOR <replaceable>자료형이름</replaceable> LANGUAGE <replaceable>언어이름</replaceable> (
     FROM SQL WITH FUNCTION <replaceable>from_sql_function_name</replaceable> [ (<replaceable>argument_type</replaceable> [, ...]) ],
     TO SQL WITH FUNCTION <replaceable>to_sql_function_name</replaceable> [ (<replaceable>argument_type</replaceable> [, ...]) ]
 );
@@ -26,69 +26,67 @@ CREATE [ OR REPLACE ] TRANSFORM FOR <replaceable>type_name</replaceable> LANGUAG
  </refsynopsisdiv>
 
  <refsect1 id="sql-createtransform-description">
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE TRANSFORM</command> defines a new transform.
-   <command>CREATE OR REPLACE TRANSFORM</command> will either create a new
-   transform, or replace an existing definition.
+   <command>CREATE TRANSFORM</command> 명령은 새 transform을 만든다.
+   <command>CREATE OR REPLACE TRANSFORM</command> 명령은 새 transform을 
+   만들거나, 해당 transform이 있다면 그 정의를 바꾼다.
   </para>
 
   <para>
-   A transform specifies how to adapt a data type to a procedural language.
-   For example, when writing a function in PL/Python using
-   the <type>hstore</type> type, PL/Python has no prior knowledge how to
-   present <type>hstore</type> values in the Python environment.  Language
-   implementations usually default to using the text representation, but that
-   is inconvenient when, for example, an associative array or a list would be
-   more appropriate.
+   transform은 데이터베이스 자료형과 프로시져 언어 사이 연결하는 일을 한다.
+   예를 들어, <type>hstore</type> 자료형을 PL/Python에서 사용할 때, 
+   그 자료형을 Python 환경에서 어떤 자료형으로 써야 할 것인지를 
+   정의할 수 없다.  기본적으로는 문자열로 일단 넘겨서 다시, 적당한 
+   자료형 변환을 해서 사용했다.  이런 비효율성을 개선하기 위해
+   transform을 만든다.  예를 들어, 키 이름이 있는 배열, 리스트 자료형 
+   처리를 보다 쉽게 할 수 있게 된다.
   </para>
 
   <para>
-   A transform specifies two functions:
+   하나의 transform에는 두 개의 내부 함수를 지정한다:
    <itemizedlist>
     <listitem>
      <para>
-      A <quote>from SQL</quote> function that converts the type from the SQL
-      environment to the language.  This function will be invoked on the
-      arguments of a function written in the language.
+      SQL 환경에서 해당 언어 환경으로 자료형이 전달 될 때 사용할 
+      <quote>from SQL</quote> 함수.  이 함수는 그 언어로 작성된
+      함수의 입력 인자 자료형을 처리할 때 사용된다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      A <quote>to SQL</quote> function that converts the type from the
-      language to the SQL environment.  This function will be invoked on the
-      return value of a function written in the language.
+      해당 언어 환경에서 SQL 환경으로 자료형이 전달 될 때 사용할 
+      <quote>to SQL</quote> 함수.  이 함수는 그 언어로 작성된
+      함수의 반환 자료형을 처리할 때 사용된다.
      </para>
     </listitem>
    </itemizedlist>
-   It is not necessary to provide both of these functions.  If one is not
-   specified, the language-specific default behavior will be used if
-   necessary.  (To prevent a transformation in a certain direction from
-   happening at all, you could also write a transform function that always
-   errors out.)
+   반드시 이 두 함수 모두를 지정할 필요는 없다.  어느 한 쪽을
+   지정하지 않으면, 언어 별 기본 작동 방식에 따라 의미로 형변환을
+   할 수도 있다.  (한 방향으로만 전환하는 transform을 만들 때는, 
+   역방향에서 사용할 함수가 항상 오류가 나도록 만들어 등록하면 된다.)
   </para>
 
   <para>
-   To be able to create a transform, you must own and
-   have <literal>USAGE</literal> privilege on the type, have
-   <literal>USAGE</literal> privilege on the language, and own and
-   have <literal>EXECUTE</literal> privilege on the from-SQL and to-SQL
-   functions, if specified.
+   transform을 만드려면, 해당 자료형과 해당 언어에 대한 
+   소유주 이거나, <literal>USAGE</literal> 권한이 있어야 한다.
+   또한 지정하는 from-SQL, to-SQL 함수에 대해서, 
+   <literal>EXECUTE</literal> 권한도 있어야 한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
    <variablelist>
     <varlistentry>
-     <term><replaceable>type_name</replaceable></term>
+     <term><replaceable>자료형이름</replaceable></term>
 
      <listitem>
       <para>
-       The name of the data type of the transform.
+       해당 transform에서 처리하는 자료형 이름.
       </para>
      </listitem>
     </varlistentry>
@@ -98,7 +96,7 @@ CREATE [ OR REPLACE ] TRANSFORM FOR <replaceable>type_name</replaceable> LANGUAG
 
      <listitem>
       <para>
-       The name of the language of the transform.
+       해당 transform에서 처리하는 언어 이름.
       </para>
      </listitem>
     </varlistentry>
@@ -108,16 +106,16 @@ CREATE [ OR REPLACE ] TRANSFORM FOR <replaceable>type_name</replaceable> LANGUAG
 
      <listitem>
       <para>
-       The name of the function for converting the type from the SQL
-       environment to the language.  It must take one argument of
-       type <type>internal</type> and return type <type>internal</type>.  The
-       actual argument will be of the type for the transform, and the function
-       should be coded as if it were.  (But it is not allowed to declare an
-       SQL-level function returning <type>internal</type> without at
-       least one argument of type <type>internal</type>.)  The actual return
-       value will be something specific to the language implementation.
-       If no argument list is specified, the function name must be unique in
-       its schema.
+       SQL에서 해당 언어로 만들어지는 함수 쪽으로 넘길 대 사용하는 전환
+       함수.  이 함수의 입력 인자는 <type>internal</type>, 
+       반환 자료형도 <type>internal</type>로 구성한다.
+       실재 인자 값을 해당 자료형으로 쓸 수 있도록 이 함수 내부에서
+       코딩해야 한다.
+       (SQL 레벨에서는 입력도 출력도 모두 하나의 <type>internal</type>
+       형으로 정의해야 한다.)
+       이 함수의 실 반환 자료형은 그 언어에서 쓸 실재 자료형이 된다.
+       인자 목록을 지정하지 않고, 함수 이름만 지정한다면, 
+       그 함수는 해당 스키마 안에 하나만 있어야 한다.
       </para>
      </listitem>
     </varlistentry>
@@ -127,13 +125,12 @@ CREATE [ OR REPLACE ] TRANSFORM FOR <replaceable>type_name</replaceable> LANGUAG
 
      <listitem>
       <para>
-       The name of the function for converting the type from the language to
-       the SQL environment.  It must take one argument of type
-       <type>internal</type> and return the type that is the type for the
-       transform.  The actual argument value will be something specific to the
-       language implementation.
-       If no argument list is specified, the function name must be unique in
-       its schema.
+       해당 언어로 만들어지는 함수 내부에서 사용한 해당 자료형을 SQL 
+       쪽으로 반환할 때 사용할 함수.  이 함수의 반환 자료형은
+       <type>internal</type> 이어야 하며, 그 값은 SQL에서 사용할 
+       해당 자료형이어야 한다.  실재 인자 값은 해당 언어에 
+       처리하는 특정한 것이여야 한다.  이 함수의 인자를 지정하지 않고, 
+       이름을 지정한다면, 그 함수는 해당 스키마 안에 하나만 있어야 한다.
       </para>
      </listitem>
     </varlistentry>
@@ -141,25 +138,25 @@ CREATE [ OR REPLACE ] TRANSFORM FOR <replaceable>type_name</replaceable> LANGUAG
  </refsect1>
 
  <refsect1 id="sql-createtransform-notes">
-  <title>Notes</title>
+  <title>참고</title>
 
   <para>
-   Use <xref linkend="sql-droptransform"/> to remove transforms.
+   transform을 삭제할 때는 <xref linkend="sql-droptransform"/> 명령을 사용한다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createtransform-examples">
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   To create a transform for type <type>hstore</type> and language
-   <literal>plpythonu</literal>, first set up the type and the language:
+   <type>hstore</type> 자료형과 <literal>plpythonu</literal>
+   언어 사이 transform을 만드려면, 먼저 각각 등록한다:
 <programlisting>
 CREATE TYPE hstore ...;
 
 CREATE EXTENSION plpythonu;
 </programlisting>
-   Then create the necessary functions:
+   다음 전환 함수를 등록한다:
 <programlisting>
 CREATE FUNCTION hstore_to_plpython(val internal) RETURNS internal
 LANGUAGE C STRICT IMMUTABLE
@@ -169,36 +166,37 @@ CREATE FUNCTION plpython_to_hstore(val internal) RETURNS hstore
 LANGUAGE C STRICT IMMUTABLE
 AS ...;
 </programlisting>
-   And finally create the transform to connect them all together:
+   마지막으로 이들을 이용해서 transform을 만든다.
 <programlisting>
 CREATE TRANSFORM FOR hstore LANGUAGE plpythonu (
     FROM SQL WITH FUNCTION hstore_to_plpython(internal),
     TO SQL WITH FUNCTION plpython_to_hstore(internal)
 );
 </programlisting>
-   In practice, these commands would be wrapped up in an extension.
+   이 일련의 작업들은 확장 모듈안에 포함되어 있어, 해당 확장 모듈을
+   설치하면 된다.
   </para>
 
   <para>
-   The <filename>contrib</filename> section contains a number of extensions
-   that provide transforms, which can serve as real-world examples.
+   <filename>contrib</filename> 안에 미리 제공하는 몇 transform 
+   확장 모듈이 있다. 그것으로 예제를 살펴 볼 수 있다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createtransform-compat">
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   This form of <command>CREATE TRANSFORM</command> is a
-   <productname>PostgreSQL</productname> extension.  There is a <command>CREATE
-   TRANSFORM</command> command in the <acronym>SQL</acronym> standard, but it
-   is for adapting data types to client languages.  That usage is not supported
-   by <productname>PostgreSQL</productname>.
+   <command>CREATE TRANSFORM</command> 명령은
+   <productname>PostgreSQL</productname> 확장 기능이다.  <command>CREATE
+   TRANSFORM</command> 명령이 <acronym>SQL</acronym> 표준에 있지만,
+   클라이언트 언어를 위한 자료형 연결 용도로,
+   <productname>PostgreSQL</productname>에서는 지원하지 않는다.
   </para>
  </refsect1>
 
  <refsect1 id="sql-createtransform-seealso">
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <para>
    <xref linkend="sql-createfunction"/>,
