@@ -16,83 +16,79 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE USER MAPPING</refname>
-  <refpurpose>define a new mapping of a user to a foreign server</refpurpose>
+  <refpurpose>외부 서버용 새 사용자 맵핑 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE USER MAPPING [ IF NOT EXISTS ] FOR { <replaceable class="parameter">user_name</replaceable> | USER | CURRENT_USER | PUBLIC }
-    SERVER <replaceable class="parameter">server_name</replaceable>
-    [ OPTIONS ( <replaceable class="parameter">option</replaceable> '<replaceable class="parameter">value</replaceable>' [ , ... ] ) ]
+CREATE USER MAPPING [ IF NOT EXISTS ] FOR { <replaceable class="parameter">사용자이름</replaceable> | USER | CURRENT_USER | PUBLIC }
+    SERVER <replaceable class="parameter">서버이름</replaceable>
+    [ OPTIONS ( <replaceable class="parameter">옵션</replaceable> '<replaceable class="parameter">값</replaceable>' [ , ... ] ) ]
 </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>설명</title>
 
   <para>
-   <command>CREATE USER MAPPING</command> defines a mapping of a user
-   to a foreign server.  A user mapping typically encapsulates
-   connection information that a foreign-data wrapper uses together
-   with the information encapsulated by a foreign server to access an
-   external data resource.
+   <command>CREATE USER MAPPING</command> 명령은 외부 서버를 사용하는 
+   사용자 맵핑을 정의한다.  사용자 맵핑이란 외부 서버에 있는 
+   자료를 사용하기 위한 그 서버의 사용자 정보와 로컬 서버 사용자 사이
+   맵핑이다.  이렇게 캡슐화 하여, 로컬 사용자는 외부 서버 접속 관련 
+   사용자 설정에 관여하지 않게 한다.
   </para>
 
   <para>
-   The owner of a foreign server can create user mappings for that
-   server for any user.  Also, a user can create a user mapping for
-   their own user name if <literal>USAGE</literal> privilege on the server has
-   been granted to the user.
+   이 맵핑은 해당 외부 서버 개체의 소유주가 만들 수 있으며, 
+   그 외부 서버에 대한 <literal>USAGE</literal> 권한이 있는 사용자도
+   만들 수 있다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>매개 변수</title>
 
   <variablelist>
   <varlistentry>
     <term><literal>IF NOT EXISTS</literal></term>
     <listitem>
      <para>
-      Do not throw an error if a mapping of the given user to the given foreign
-      server already exists. A notice is issued in this case.  Note that there
-      is no guarantee that the existing user mapping is anything like the one
-      that would have been created.
+      해당 이름의 외부 서버와 사용자 맵핑이 이미 있으면 오류로 처리하지 않고,
+      그냥 알림 메시지만 보이고 작업을 중지한다.  이 처리 기준은
+      단지 같은 이름의 외부 서버와 사용자 이름만을 확인하지, 이미 있는
+      사용자 맵핑이 정확히 같은 것인지는 확인하지 않는다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">user_name</replaceable></term>
+    <term><replaceable class="parameter">사용자이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing user that is mapped to foreign server.
-      <literal>CURRENT_USER</literal> and <literal>USER</literal> match the name of
-      the current user.  When <literal>PUBLIC</literal> is specified, a
-      so-called public mapping is created that is used when no
-      user-specific mapping is applicable.
+      해당 외부 서버를 사용할 로컬 사용자 이름.
+      <literal>CURRENT_USER</literal> 또는 <literal>USER</literal>는
+      현재 접속한 사용자를 뜻하는 예약어다.  <literal>PUBLIC</literal>은
+      해당 데이터베이스를 사용할 수 있는 모든 사용자를 뜻한다.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">server_name</replaceable></term>
+    <term><replaceable class="parameter">서버이름</replaceable></term>
     <listitem>
      <para>
-      The name of an existing server for which the user mapping is
-      to be created.
+      지정한 사용자와 맵핑할 외부 서버 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>OPTIONS ( <replaceable class="parameter">option</replaceable> '<replaceable class="parameter">value</replaceable>' [, ... ] )</literal></term>
+    <term><literal>OPTIONS ( <replaceable class="parameter">옵션</replaceable> '<replaceable class="parameter">값</replaceable>' [, ... ] )</literal></term>
     <listitem>
      <para>
-      This clause specifies the options of the user mapping.  The
-      options typically define the actual user name and password of
-      the mapping.  Option names must be unique.  The allowed option
-      names and values are specific to the server's foreign-data wrapper.
+      여기서는 맵핑 옵션을 지정한다.  일반적으로 외부 서버 접속을 위한
+      외부 서버 사용자 이름, 비밀번호 같은 것들을 여기서 지정한다.  여기서
+      사용할 옵션들은 외부 자료 싸개에서 제공한다.
      </para>
     </listitem>
    </varlistentry>
@@ -100,10 +96,10 @@ CREATE USER MAPPING [ IF NOT EXISTS ] FOR { <replaceable class="parameter">user_
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
 
   <para>
-   Create a user mapping for user <literal>bob</literal>, server <literal>foo</literal>:
+   사용자 <literal>bob</literal>, 서버 <literal>foo</literal> 사용자 맵핑 만들기:
 <programlisting>
 CREATE USER MAPPING FOR bob SERVER foo OPTIONS (user 'bob', password 'secret');
 </programlisting></para>
@@ -111,15 +107,16 @@ CREATE USER MAPPING FOR bob SERVER foo OPTIONS (user 'bob', password 'secret');
  </refsect1>
 
  <refsect1>
-  <title>Compatibility</title>
+  <title>호환성</title>
 
   <para>
-   <command>CREATE USER MAPPING</command> conforms to ISO/IEC 9075-9 (SQL/MED).
+   <command>CREATE USER MAPPING</command> 구문은 ISO/IEC 9075-9 (SQL/MED) 규약을
+   준수한다.
   </para>
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>관련 항목</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-alterusermapping"/></member>
