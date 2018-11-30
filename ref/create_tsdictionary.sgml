@@ -22,7 +22,7 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 CREATE TEXT SEARCH DICTIONARY <replaceable class="parameter">이름</replaceable> (
-    TEMPLATE = <replaceable class="parameter">템플릿</replaceable>
+    TEMPLATE = <replaceable class="parameter">틀</replaceable>
     [, <replaceable class="parameter">옵션</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ]]
 )
 </synopsis>
@@ -34,8 +34,8 @@ CREATE TEXT SEARCH DICTIONARY <replaceable class="parameter">이름</replaceable
   <para>
    <command>CREATE TEXT SEARCH DICTIONARY</command> 명령은 글 찾기용 사전을 
    만든다.  이 글 찾기용 사전은 구문분석기에서 사용하며, 이 사전을 기반으로
-   검색 자료를 만든다.  사전은 글 찾기 템플릿에 의존한다.  이 템플릿에는
-   글 찾기 작업을 할 때 필요한 함수를 정의한다.  일반적으로 템플릿에
+   검색 자료를 만든다.  사전은 글 찾기 틀에 의존한다.  이 틀에는
+   글 찾기 작업을 할 때 필요한 함수를 정의한다.  일반적으로 틀에
    정의한 함수의 세부적인 작동 방식을 지정할 옵션들을 해당 사전에서 제공하고,
    그 옵션을 여기서 지정한다.
   </para>
@@ -70,10 +70,10 @@ CREATE TEXT SEARCH DICTIONARY <replaceable class="parameter">이름</replaceable
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">템플릿</replaceable></term>
+    <term><replaceable class="parameter">틀</replaceable></term>
     <listitem>
      <para>
-      해당 사전의 기본 동작을 정의한 글 찾기 템플릿 이름.
+      해당 사전의 기본 동작을 정의한 글 찾기 틀 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -82,7 +82,7 @@ CREATE TEXT SEARCH DICTIONARY <replaceable class="parameter">이름</replaceable
     <term><replaceable class="parameter">옵션</replaceable></term>
     <listitem>
      <para>
-      해당 사전의 개별적인 템플릿 옵션 이름.
+      해당 사전의 개별적인 틀 옵션 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -91,7 +91,7 @@ CREATE TEXT SEARCH DICTIONARY <replaceable class="parameter">이름</replaceable
     <term><replaceable class="parameter">값</replaceable></term>
     <listitem>
      <para>
-      해당 사전의 개별적인 템플릿 옵션에 대한 값.
+      해당 사전의 개별적인 틀 옵션에 대한 값.
       그 값이 단순 식별자나, 숫자가 아니면, 작은 따옴표로 둘러 쌓야
       한다. (원하면, 그냥 모든 값을 작은 따옴표로 둘러 쌓는 것도 한 방법이다.)
      </para>

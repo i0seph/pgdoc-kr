@@ -16,14 +16,14 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE TEXT SEARCH TEMPLATE</refname>
-  <refpurpose>define a new text search template</refpurpose>
+  <refpurpose>새 글 찾기 틀 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE TEXT SEARCH TEMPLATE <replaceable class="parameter">name</replaceable> (
-    [ INIT = <replaceable class="parameter">init_function</replaceable> , ]
-    LEXIZE = <replaceable class="parameter">lexize_function</replaceable>
+CREATE TEXT SEARCH TEMPLATE <replaceable class="parameter">이름</replaceable> (
+    [ INIT = <replaceable class="parameter">초기화함수</replaceable> , ]
+    LEXIZE = <replaceable class="parameter">낱말화함수</replaceable>
 )
 </synopsis>
  </refsynopsisdiv>
@@ -32,31 +32,30 @@ CREATE TEXT SEARCH TEMPLATE <replaceable class="parameter">name</replaceable> (
   <title>설명</title>
 
   <para>
-   <command>CREATE TEXT SEARCH TEMPLATE</command> creates a new text search
-   template.  Text search templates define the functions that implement
-   text search dictionaries.  A template is not useful by itself, but must
-   be instantiated as a dictionary to be used.  The dictionary typically
-   specifies parameters to be given to the template functions.
+   <command>CREATE TEXT SEARCH TEMPLATE</command> 명령은 새 글 찾기
+   틀을 만든다.  글 찾기 틀은 글 찾기 사전을 구현하는 함수를
+   정의한다.  틀은 그 자체로 바로 쓰이지 않고, 그 틀에서 정의한 
+   사전을 사용해서 글 찾기를 한다.  일반적으로 사전은 
+   틀 함수에서 사용하는 매개 변수를 제공한다.
   </para>
 
   <para>
-   If a schema name is given then the text search template is created in the
-   specified schema.  Otherwise it is created in the current schema.
+   글 찾기 틀 이름 앞에 스키마 이름을 지정하면, 해당 스키마 안에 만들어지며,
+   지정하지 않으면 현재 스키마 안에 만들어진다.
   </para>
 
   <para>
-   You must be a superuser to use <command>CREATE TEXT SEARCH
-   TEMPLATE</command>.  This restriction is made because an erroneous text
-   search template definition could confuse or even crash the server.
-   The reason for separating templates from dictionaries is that a template
-   encapsulates the <quote>unsafe</quote> aspects of defining a dictionary.
-   The parameters that can be set when defining a dictionary are safe for
-   unprivileged users to set, and so creating a dictionary need not be a
-   privileged operation.
+   <command>CREATE TEXT SEARCH TEMPLATE</command> 명령은 슈퍼 유저만
+   사용할 수 있다.  잘못 만들어진 틀을 사용하는 경우, 서버가 중지 될 수
+   있기 때문에, 이런 제한을 둔다.  사전 정의와 틀 정의를 분리하는 이유는
+   사전 사용에 필요한 여러 옵션들을 잘못 사용해서 발생할 수 있는 
+   문제점들을 틀을 사용해서 추상화해서 보다 안전하게 사용할 수 있도록
+   하기 위함이다.  이렇게 해서, 틀을 만들 수 없는 사용자도 자신의 사전을 
+   만들어 사용할 수 있도록 한다.
   </para>
 
   <para>
-   Refer to <xref linkend="textsearch"/> for further information.
+   보다 자세한 정보는 <xref linkend="textsearch"/>에서 다룬다.
   </para>
  </refsect1>
 
@@ -65,43 +64,42 @@ CREATE TEXT SEARCH TEMPLATE <replaceable class="parameter">name</replaceable> (
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of the text search template to be created.  The name can be
-      schema-qualified.
+      새로 만들 글 찾기 틀의 이름.  스키마 이름도 포함할 수 있음.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">init_function</replaceable></term>
+    <term><replaceable class="parameter">초기화함수</replaceable></term>
     <listitem>
      <para>
-      The name of the init function for the template.
+      틀 초기화 함수.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">lexize_function</replaceable></term>
+    <term><replaceable class="parameter">낱말화함수</replaceable></term>
     <listitem>
      <para>
-      The name of the lexize function for the template.
+      틀 낱말화 함수.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
 
   <para>
-   The function names can be schema-qualified if necessary.  Argument types
-   are not given, since the argument list for each type of function is
-   predetermined.  The lexize function is required, but the init function
-   is optional.
+   함수 이름에 필요하다면 스키마 이름을 지정할 수도 있다.  함수를 지정할 
+   때 인자를 지정하지 않는다면, 해당 스키마 안에 하나만 있어야 하며,
+   여러개가 있다면, 정확한 인자를 지정해 주어야 한다.  낱말화 함수는 
+   필수며, 초기화 함수는 선택이다.
   </para>
 
   <para>
-   The arguments can appear in any order, not only the one shown above.
+   두 함수의 지정 순서는 상관 없다.
   </para>
  </refsect1>
 
@@ -109,9 +107,8 @@ CREATE TEXT SEARCH TEMPLATE <replaceable class="parameter">name</replaceable> (
   <title>호환성</title>
 
   <para>
-   There is no
-   <command>CREATE TEXT SEARCH TEMPLATE</command> statement in the SQL
-   standard.
+   SQL 표준에는
+   <command>CREATE TEXT SEARCH TEMPLATE</command> 구문이 없다.
   </para>
  </refsect1>
 
