@@ -16,17 +16,17 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>CREATE TEXT SEARCH PARSER</refname>
-  <refpurpose>define a new text search parser</refpurpose>
+  <refpurpose>새 글 찾기 구문 분석기 정의</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
 <synopsis>
-CREATE TEXT SEARCH PARSER <replaceable class="parameter">name</replaceable> (
-    START = <replaceable class="parameter">start_function</replaceable> ,
-    GETTOKEN = <replaceable class="parameter">gettoken_function</replaceable> ,
-    END = <replaceable class="parameter">end_function</replaceable> ,
-    LEXTYPES = <replaceable class="parameter">lextypes_function</replaceable>
-    [, HEADLINE = <replaceable class="parameter">headline_function</replaceable> ]
+CREATE TEXT SEARCH PARSER <replaceable class="parameter">이름</replaceable> (
+    START = <replaceable class="parameter">시작함수</replaceable> ,
+    GETTOKEN = <replaceable class="parameter">토큰추출함수</replaceable> ,
+    END = <replaceable class="parameter">끝함수</replaceable> ,
+    LEXTYPES = <replaceable class="parameter">낱말종류함수</replaceable>
+    [, HEADLINE = <replaceable class="parameter">헤드라인함수</replaceable> ]
 )
 </synopsis>
  </refsynopsisdiv>
@@ -35,27 +35,28 @@ CREATE TEXT SEARCH PARSER <replaceable class="parameter">name</replaceable> (
   <title>설명</title>
 
   <para>
-   <command>CREATE TEXT SEARCH PARSER</command> creates a new text search
-   parser.  A text search parser defines a method for splitting a text
-   string into tokens and assigning types (categories) to the tokens.
-   A parser is not particularly useful by itself, but must be bound into a
-   text search configuration along with some text search dictionaries
-   to be used for searching.
+   <command>CREATE TEXT SEARCH PARSER</command> 명령은 새 글 찾기 구문
+   분석기를 만든다.  글 찾기 구문 분석기는 글 내용을 분석해서, 
+   글 찾기에서 사용할 각 낱말들을 추출하고, 그 낱말의 종류를 결정한다.
+   이 구문 분석기는 직접 사용되지 않으며, 
+   글 찾기 환경 설정을 만들 때, 글 찾기 사전과 함께 정의하는 한 
+   부분으로 사용된다.  글 찾기 기능을 사용할 때는 그 글 찾기 환경 설정을 
+   지정해서 사용한다.
   </para>
 
   <para>
-   If a schema name is given then the text search parser is created in the
-   specified schema.  Otherwise it is created in the current schema.
+   글 찾기 구문 분석기 이름 앞에 스키마 이름을 지정하면, 해당 스키마
+   안에 만들며, 지정하지 않으면 현재 스키마 안에 만든다.
   </para>
 
   <para>
-   You must be a superuser to use <command>CREATE TEXT SEARCH PARSER</command>.
-   (This restriction is made because an erroneous text search parser
-   definition could confuse or even crash the server.)
+   <command>CREATE TEXT SEARCH PARSER</command> 명령은 슈퍼유저만 사용할 
+   수 있다. (잘못 만든 구문 분석기를 사용하는 경우 서버가 중지 될 수 
+   있기 때문에, 이런 제한을 둔다.)
   </para>
 
   <para>
-   Refer to <xref linkend="textsearch"/> for further information.
+   보다 자세한 정보는 <xref linkend="textsearch"/>에서 다룬다.
   </para>
  </refsect1>
 
@@ -64,38 +65,37 @@ CREATE TEXT SEARCH PARSER <replaceable class="parameter">name</replaceable> (
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="parameter">name</replaceable></term>
+    <term><replaceable class="parameter">이름</replaceable></term>
     <listitem>
      <para>
-      The name of the text search parser to be created.  The name can be
-      schema-qualified.
+      새로 만들 글 찾기 구문 분석기 이름.  스키마 이름을 포함할 수 있음.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">start_function</replaceable></term>
+    <term><replaceable class="parameter">시작함수</replaceable></term>
     <listitem>
      <para>
-      The name of the start function for the parser.
+      분석 작업 시작 함수 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">gettoken_function</replaceable></term>
+    <term><replaceable class="parameter">토큰추출함수</replaceable></term>
     <listitem>
      <para>
-      The name of the get-next-token function for the parser.
+      구문 분석기의 get-next-token 함수 이름.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">end_function</replaceable></term>
+    <term><replaceable class="parameter">끝함수</replaceable></term>
     <listitem>
      <para>
-      The name of the end function for the parser.
+      구문 분석 끝 함수 이름.
      </para>
     </listitem>
    </varlistentry>
@@ -104,31 +104,31 @@ CREATE TEXT SEARCH PARSER <replaceable class="parameter">name</replaceable> (
     <term><replaceable class="parameter">lextypes_function</replaceable></term>
     <listitem>
      <para>
-      The name of the lextypes function for the parser (a function that
-      returns information about the set of token types it produces).
+      구문 분석기에서 사용하는 낱말 종류 결정 함수 이름. (분석 과정에서 
+      뽑힌 각 낱말들이 어떤 종류의 낱말인지를 결정하는 함수.)
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">headline_function</replaceable></term>
+    <term><replaceable class="parameter">헤드라인함수</replaceable></term>
     <listitem>
      <para>
-      The name of the headline function for the parser (a function that
-      summarizes a set of tokens).
+      구문 분석기에서 사용하는 헤드라인 처리 함수 이름. (토큰 요약 함수)
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
 
   <para>
-   The function names can be schema-qualified if necessary.  Argument types
-   are not given, since the argument list for each type of function is
-   predetermined.  All except the headline function are required.
+   여기서 지정하는 함수 이름 앞에 스키마 이름을 사용할 수도 있다.
+   해당 스키마 안에 그 이름의 함수가 하나 뿐이면, 인자 정의 없이 
+   지정할 수 있으며, 여러 개가 있으면 정확한 인자 정의도 필요하다.
+   헤드라인함수를 제외한 모든 함수는 필수 지정 함수다.
   </para>
 
   <para>
-   The arguments can appear in any order, not only the one shown above.
+   각 함수들의 지정 순서는 상관 없다.
   </para>
  </refsect1>
 
@@ -136,9 +136,8 @@ CREATE TEXT SEARCH PARSER <replaceable class="parameter">name</replaceable> (
   <title>호환성</title>
 
   <para>
-   There is no
-   <command>CREATE TEXT SEARCH PARSER</command> statement in the SQL
-   standard.
+   SQL 표준에는
+   <command>CREATE TEXT SEARCH PARSER</command> 구문이 없다.
   </para>
  </refsect1>
 
