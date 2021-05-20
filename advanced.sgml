@@ -215,7 +215,7 @@ UPDATE branches SET balance = balance + 100.00
    </para>
 
    <para>
-    트랙잭션에서 중요한 또 하나의 속성은 하나의 트랜잭션은 다른 트랜잭션에
+    트랜잭션에서 중요한 또 하나의 속성은 하나의 트랜잭션은 다른 트랜잭션에
         의해서 간섭받지 않아야합니다.  즉, 동시에 여러개의 트랜잭션이 발생했을
         때, 각각의 트랜잭션은 다른 트랜잭션에서 변경되고 있는 자료들에 대해서는
         참조하거나 간섭할 수 없어야합니다. (주, 이것을 고립성(isolation)
@@ -233,7 +233,7 @@ UPDATE branches SET balance = balance + 100.00
    <para>
     <productname>PostgreSQL</productname>에서 트랜잭션 작업을 하려면, 
         그 해당 작업 앞뒤로 <command>BEGIN</command> 명령과 <command>COMMIT</command> 명령을
-        지정합니다.  다음과 같은 형태가 트랙잭션을 사용하는 예입니다:
+        지정합니다.  다음과 같은 형태가 트랜잭션을 사용하는 예입니다:
 
 <programlisting>
 BEGIN;
