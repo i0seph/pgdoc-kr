@@ -1317,12 +1317,12 @@ gen_random_uuid() returns uuid
      <para>GNU 개인정보 소책자.</para>
     </listitem>
     <listitem>
-     <para><ulink url="http://www.openwall.com/crypt/"></ulink></para>
+     <para><ulink url="https://www.openwall.com/crypt/"></ulink></para>
      <para>crypt-blowfish 알고리즘 소개.</para>
     </listitem>
     <listitem>
      <para>
-      <ulink url="http://www.iusmentis.com/security/passphrasefaq/"></ulink>
+      <ulink url="https://www.iusmentis.com/security/passphrasefaq/"></ulink>
      </para>
      <para>좋은 비밀번호 만드는 방법.</para>
     </listitem>
@@ -1368,7 +1368,7 @@ gen_random_uuid() returns uuid
      <para>Fortuna 난수 생성기.</para>
     </listitem>
     <listitem>
-     <para><ulink url="http://jlcooke.ca/random/"></ulink></para>
+     <para><ulink url="https://jlcooke.ca/random/"></ulink></para>
      <para>리눅스용 Jean-Luc Cooke Fortuna-기반 <filename>/dev/random</filename> 드라이버.</para>
     </listitem>
    </itemizedlist>

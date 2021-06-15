@@ -55,9 +55,20 @@ PostgreSQL documentation
   <para>
    PostgreSQL 대기 서버에서 사용하는 WAL 수신기와 달리,
    <application>pg_receivewal</application> 명령으로 기록하는 WAL 자료는 
-   그 파일이 닫길 때만 디스크 동기화(flush)를 한다.   이 설정이
-   기본값이며, 이 설정을 바꾸려면, <option>--synchronous</option>
-   옵션을 사용해서 따로 지정해야 한다.
+   그 파일이 닫길 때만 디스크 동기화(flush)를 한다.  이 특성이 
+   기본값이며, 트랜잭션 단위로 그 때 그 때 디스크 동기화를 하려면,
+   <option>--synchronous</option> 옵션을 사용해야 한다.
+   Since <application>pg_receivewal</application> does not
+   apply WAL, you should not allow it to become a synchronous standby when
+   <xref linkend="guc-synchronous-commit"/> equals
+   <literal>remote_apply</literal>. If it does, it will appear to be a
+   standby that never catches up, and will cause transaction commits to
+   block. To avoid this, you should either configure an appropriate value
+   for <xref linkend="guc-synchronous-standby-names"/>, or specify
+   <varname>application_name</varname> for
+   <application>pg_receivewal</application> that does not match it, or
+   change the value of <varname>synchronous_commit</varname> to
+   something other than <literal>remote_apply</literal>.
   </para>
 
   <para>
@@ -245,8 +256,9 @@ PostgreSQL documentation
       <term><option>--dbname=<replaceable class="parameter">연결문자열</replaceable></option></term>
       <listitem>
        <para>
-        서버 접속 문자열을 지정한다.  이 문자열에 대한 자세한 설명은
-        <xref linkend="libpq-connstring"/>에서 다룬다.
+        Specifies parameters used to connect to the server, as a <link
+        linkend="libpq-connstring">connection string</link>;  these
+        will override any conflicting command line options.
        </para>
        <para>
         <literal>--dbname</literal> 옵션은 다른 응용 프로그램의 옵션 이름과 일관성을
@@ -407,6 +419,12 @@ PostgreSQL documentation
    같은 환경 변수를 사용할 수 있다(<xref linkend="libpq-envars"/> 참조).
   </para>
 
+  <para>
+   The environment variable <envar>PG_COLOR</envar> specifies whether to use
+   color in diagnostic messages. Possible values are
+   <literal>always</literal>, <literal>auto</literal> and
+   <literal>never</literal>.
+  </para>
  </refsect1>
 
  <refsect1>

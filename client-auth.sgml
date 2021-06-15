@@ -56,15 +56,19 @@ SQL 환경 내에서 사용 중인 데이터베이스 사용자 이름은 데이
   </para>
 
   <para>
-   레코드는 다음 7가지 형식 중 하나이다.
+   레코드는 다음 여러 형식이다:
 <synopsis>
-local      <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
-host       <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>  <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
-hostssl    <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>  <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
-hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>  <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
-host       <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>  <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
-hostssl    <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>  <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
-hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>  <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+local         <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>auth-method</replaceable> <optional><replaceable>auth-options</replaceable></optional>
+host          <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>     <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostssl       <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>     <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostnossl     <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>     <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostgssenc    <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>     <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostnogssenc  <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>address</replaceable>     <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+host          <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>      <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostssl       <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>      <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostnossl     <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>      <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostgssenc    <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>      <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
+hostnogssenc  <replaceable>database</replaceable>  <replaceable>user</replaceable>  <replaceable>IP-address</replaceable>  <replaceable>IP-mask</replaceable>      <replaceable>auth-method</replaceable>  <optional><replaceable>auth-options</replaceable></optional>
 </synopsis>
    필드의 의미는 다음과 같다.
    <variablelist>
@@ -81,8 +85,11 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
      <term><literal>host</literal></term>
      <listitem>
       <para>
-       이 레코드는 TCP/IP를 사용한 연결 시도와 일치한다. 
-       <literal>host</literal> 레코드는 <acronym>SSL</acronym> 연결 시도 혹은 비 <acronym>SSL</acronym> 연결 시도와 일치한다.
+       This record matches connection attempts made using TCP/IP.
+       <literal>host</literal> records match
+       <acronym>SSL</acronym> or non-<acronym>SSL</acronym> connection
+       attempts as well as <acronym>GSSAPI</acronym> encrypted or
+       non-<acronym>GSSAPI</acronym> encrypted connection attempts.
       </para>
      <note>
       <para>
@@ -115,6 +122,35 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       <para>
        이 레코드 유형은 <literal>hostssl</literal>과는 반대로 동작한다. 
        <acronym>SSL</acronym>을 사용하지 않는 TCP/IP 상의 연결 시도에 대해서만 일치한다.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>hostgssenc</literal></term>
+     <listitem>
+      <para>
+       This record matches connection attempts made using TCP/IP,
+       but only when the connection is made with <acronym>GSSAPI</acronym>
+       encryption.
+      </para>
+
+      <para>
+       To make use of this option the server must be built with
+       <acronym>GSSAPI</acronym> support.  Otherwise,
+       the <literal>hostgssenc</literal> record is ignored except for logging
+       a warning that it cannot match any connections.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>hostnogssenc</literal></term>
+     <listitem>
+      <para>
+       This record type has the opposite behavior of <literal>hostgssenc</literal>;
+       it only matches connection attempts made over
+       TCP/IP that do not use <acronym>GSSAPI</acronym> encryption.
       </para>
      </listitem>
     </varlistentry>
@@ -216,7 +252,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       </para>
 
       <para>
-       이 필드는 <literal>host</literal>, <literal>hostssl</literal> 및 <literal>hostnossl</literal> 레코드에 적용된다.
+       이 필드는 <literal>local</literal> 레코드에는 사용할 수 없다.
       </para>
 
       <note>
@@ -252,7 +288,7 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       </para>
 
       <para>
-       이 필드는 <literal>host</literal> 및 <literal>hostssl</literal>, <literal>hostnossl</literal> 레코드에 적용된다.
+       이 필드는 <literal>local</literal> 레코드에는 사용할 수 없다.
       </para>
      </listitem>
     </varlistentry>
@@ -322,8 +358,10 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
         <term><literal>gss</literal></term>
         <listitem>
          <para>
-          GSSAPI를 사용하여 사용자를 인증한다. 이것은 TCP/IP 연결에서만 사용할 수 있다. 자세한 내용은 <xref
-          linkend="gssapi-auth"/>을 참조 바란다.
+          GSSAPI를 사용하여 사용자를 인증한다.  이것은
+          TCP/IP 연결에서만 사용할 수 있다. 자세한 내용은 <xref
+          linkend="gssapi-auth"/>을 참조 바란다.  이것은
+          GSSAPI 암호화와 함께 사용할 있다.
          </para>
         </listitem>
        </varlistentry>
@@ -423,10 +461,17 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
       <para>
        In addition to the method-specific options listed below, there is one
        method-independent authentication option <literal>clientcert</literal>, which
-       can be specified in any <literal>hostssl</literal> record.  When set
-       to <literal>1</literal>, this option requires the client to present a valid
-       (trusted) SSL certificate, in addition to the other requirements of the
-       authentication method.
+       can be specified in any <literal>hostssl</literal> record.
+       This option can be set to <literal>verify-ca</literal> or
+       <literal>verify-full</literal>. Both options require the client
+       to present a valid (trusted) SSL certificate, while
+       <literal>verify-full</literal> additionally enforces that the
+       <literal>cn</literal> (Common Name) in the certificate matches
+       the username or an applicable mapping.
+       This behavior is similar to the <literal>cert</literal> authentication
+       method (see <xref linkend="auth-cert"/>) but enables pairing
+       the verification of client certificates with any authentication
+       method that supports <literal>hostssl</literal> entries.
       </para>
      </listitem>
     </varlistentry>
@@ -445,7 +490,10 @@ hostnossl  <replaceable>database</replaceable>  <replaceable>user</replaceable> 
 
   <para>
    <filename>pg_hba.conf</filename> 파일은 시작 시 및 메인 서버 프로세스가 <systemitem>SIGHUP</systemitem><indexterm><primary>SIGHUP</primary></indexterm> 신호를 수신하면 읽어오기 된다. 
-   활성 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다(<literal>pg_ctl reload</literal> 또는 <literal>kill -HUP</literal> 사용).
+   활성 시스템에서 파일을 편집하는 경우 파일을 다시
+   읽어오려면 postmaster에 신호를 전송해야 한다
+   (<literal>pg_ctl reload</literal> 또는 <function>pg_reload_conf()</function>
+   SQL 함수 호출 또는  <literal>kill -HUP</literal> 사용).
   </para>
 
   <note>
@@ -531,15 +579,18 @@ host    postgres        all             192.168.12.10/32        scram-sha-256
 host    all             all             .example.com            md5
 host    all             all             .example.com            scram-sha-256
 
-# In the absence of preceding "host" lines, these two lines will
+# In the absence of preceding "host" lines, these three lines will
 # reject all connections from 192.168.54.1 (since that entry will be
-# matched first), but allow GSSAPI connections from anywhere else
-# on the Internet.  The zero mask causes no bits of the host IP
-# address to be considered, so it matches any host.
+# matched first), but allow GSSAPI-encrypted connections from anywhere else
+# on the Internet.  The zero mask causes no bits of the host IP address to
+# be considered, so it matches any host.  Unencrypted GSSAPI connections
+# (which "fall through" to the third line since "hostgssenc" only matches
+# encrypted GSSAPI connections) are allowed, but only from 192.168.12.10.
 #
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 host    all             all             192.168.54.1/32         reject
-host    all             all             0.0.0.0/0               gss
+hostgssenc all          all             0.0.0.0/0               gss
+host    all             all             192.168.12.10/32        gss
 
 # Allow users from 192.168.x.x hosts to connect to any database, if
 # they pass the ident check.  If, for example, ident says the user is
@@ -620,7 +671,9 @@ mymap   /^(.*)@otherdomain\.com$   guest
 
   <para>
    <filename>pg_ident.conf</filename> 파일은 시작 시 및 메인 서버 프로세스가 <systemitem>SIGHUP</systemitem><indexterm><primary>SIGHUP</primary></indexterm> 신호를 수신하면 읽어지게 된다. 
-   활성 중인 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다(<literal>pg_ctl reload</literal> 또는 <literal>kill -HUP</literal> 사용).
+   활성 중인 시스템에서 파일을 편집하는 경우 파일을 다시 읽어오려면 postmaster에 신호를 전송해야 한다
+   (<literal>pg_ctl reload</literal> 또는 <function>pg_reload_conf()</function> 
+   SQL 함수 호출 또는 <literal>kill -HUP</literal> 사용).
   </para>
 
   <para>
@@ -648,6 +701,98 @@ omicron         bryanh                  guest1
 
  <sect1 id="auth-methods">
   <title>인증 방법</title>
+
+  <para>
+   <productname>PostgreSQL</productname> 다음과 같은 다양한
+   사용자 인증 방법을 제공한다:
+
+   <itemizedlist>
+    <listitem>
+     <para>
+      <link linkend="auth-trust">Trust authentication</link>, which
+      simply trusts that users are who they say they are.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-password">Password authentication</link>, which
+      requires that users send a password.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="gssapi-auth">GSSAPI authentication</link>, which
+      relies on a GSSAPI-compatible security library.  Typically this is
+      used to access an authentication server such as a Kerberos or
+      Microsoft Active Directory server.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="sspi-auth">SSPI authentication</link>, which
+      uses a Windows-specific protocol similar to GSSAPI.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-ident">Ident authentication</link>, which
+      relies on an <quote>Identification Protocol</quote> (RFC 1413)
+      service on the client's machine.  (On local Unix-socket connections,
+      this is treated as peer authentication.)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-peer">Peer authentication</link>, which
+      relies on operating system facilities to identify the process at the
+      other end of a local connection.  This is not supported for remote
+      connections.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-ldap">LDAP authentication</link>, which
+      relies on an LDAP authentication server.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-radius">RADIUS authentication</link>, which
+      relies on a RADIUS authentication server.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-cert">Certificate authentication</link>, which
+      requires an SSL connection and authenticates users by checking the
+      SSL certificate they send.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-pam">PAM authentication</link>, which
+      relies on a PAM (Pluggable Authentication Modules) library.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <link linkend="auth-bsd">BSD authentication</link>, which
+      relies on the BSD Authentication framework (currently available
+      only on OpenBSD).
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <para>
+   Peer authentication is usually recommendable for local connections,
+   though trust authentication might be sufficient in some circumstances.
+   Password authentication is the easiest choice for remote connections.
+   All the other options require some kind of external security
+   infrastructure (usually an authentication server or a certificate
+   authority for issuing SSL certificates), or are platform-specific.
+  </para>
+
   <para>
    인증 방법은 다음 장부터 자세히 다룬다.
   </para>
@@ -816,36 +961,67 @@ omicron         bryanh                  guest1
    </indexterm>
 
    <para>
-    <productname>GSSAPI</productname>는 RFC 2743에 정의된 보안 인증을 위한 산업 표준 프로토콜이다. <productname>PostgreSQL</productname>은 RFC 1964에 따라 <productname>Kerberos</productname>를 사용한 <productname>GSSAPI</productname>를 지원한다. 
-    <productname>GSSAPI</productname>은 이것을 지원하는 시스템에 대해 자동 인증(single sign-on)을 제공한다. 
-    인증 자체는 안전하지만, <acronym>SSL</acronym>을 사용하지 않을 경우  데이터베이스 연결을 통해 전송된 데이터는 암호화되지 않은 상태로 전송된다.
+    <productname>GSSAPI</productname> is an industry-standard protocol
+    for secure authentication defined in
+    <ulink url="https://tools.ietf.org/html/rfc2743">RFC 2743</ulink>.
+    <productname>PostgreSQL</productname>
+    supports <productname>GSSAPI</productname> for authentication,
+    communications encryption, or both.
+    <productname>GSSAPI</productname> provides automatic authentication
+    (single sign-on) for systems that support it. The authentication itself is
+    secure.  If <productname>GSSAPI</productname> encryption
+    or <acronym>SSL</acronym> encryption is
+    used, the data sent along the database connection will be encrypted;
+    otherwise, it will not.
    </para>
 
    <para>
-    GSSAPI는 PostgreSQL이 빌드된 경우 활성화되어야 한다. 자세한 내용은 <xref linkend="installation"/>을 참조 바란다.
+    GSSAPI는 PostgreSQL이 빌드된 경우 활성화되어야 한다.  자세한
+    내용은 <xref linkend="installation"/>을 참조 바란다.
    </para>
 
    <para>
-    <productname>GSSAPI</productname>가 <productname>Kerberos</productname>를 사용하는 경우 <literal><replaceable>servicename</replaceable>/<replaceable>hostname</replaceable>@<replaceable>realm</replaceable></literal> 형식으로 표준 보안 주체(principal)가 사용된다. 
-    PostgreSQL 서버가 서버에서 사용되는 키탭에 포함된 보안 주체(principal)를 수용하지만, <literal>krbsrvname</literal> 연결 매개 변수를 사용하여 클라이언트에서 연결을 할 때 올바른 보안 주체(principal) 상세 정보를 지정할 때 특별히 주의해야 한다. 
-    (<xref linkend="libpq-paramkeywords"/>도 참조 바란다.) 설치 기본값은 빌드 시에 <literal>./configure --with-krb-srvnam=</literal><replaceable>whatever</replaceable>를 사용하여 기본값 <literal>postgres</literal>에서 변경 가능하다. 
-    대부분의 환경에서 이 매개 변수는 절대 변경할 필요가 없다. 일부 Kerberos 구현은 서비스 이름이 대문자여야 하는 Microsoft Active Directory처럼 서로 다른 서비스 이름을 요구할 수도 있다(<literal>POSTGRES</literal>).
-   </para>
-   <para>
-    <replaceable>hostname</replaceable>은 서버 머신의 정규화된 호스트 이름이다. 
-    서비스 보안 주체의 영역(principal's realm)은 서버 머신의 기본 설정된 영역(realm)이다.
+    When <productname>GSSAPI</productname> uses
+    <productname>Kerberos</productname>, it uses a standard service
+    principal (authentication identity) name in the format
+    <literal><replaceable>servicename</replaceable>/<replaceable>hostname</replaceable>@<replaceable>realm</replaceable></literal>.
+    The principal name used by a particular installation is not encoded in
+    the <productname>PostgreSQL</productname> server in any way; rather it
+    is specified in the <firstterm>keytab</firstterm> file that the server
+    reads to determine its identity.  If multiple principals are listed in
+    the keytab file, the server will accept any one of them.
+    The server's realm name is the preferred realm specified in the Kerberos
+    configuration file(s) accessible to the server.
    </para>
 
    <para>
-    Client principals can be mapped to different <productname>PostgreSQL</productname>
-    database user names with <filename>pg_ident.conf</filename>.  For example,
+    When connecting, the client must know the principal name of the server
+    it intends to connect to.  The <replaceable>servicename</replaceable>
+    part of the principal is ordinarily <literal>postgres</literal>,
+    but another value can be selected via <application>libpq</application>'s
+    <xref linkend="libpq-connect-krbsrvname"/> connection parameter.
+    The <replaceable>hostname</replaceable> part is the fully qualified
+    host name that <application>libpq</application> is told to connect to.
+    The realm name is the preferred realm specified in the Kerberos
+    configuration file(s) accessible to the client.
+   </para>
+
+   <para>
+    The client will also have a principal name for its own identity
+    (and it must have a valid ticket for this principal).  To
+    use <productname>GSSAPI</productname> for authentication, the client
+    principal must be associated with
+    a <productname>PostgreSQL</productname> database user name.
+    The <filename>pg_ident.conf</filename> configuration file can be used
+    to map principals to user names; for example,
     <literal>pgusername@realm</literal> could be mapped to just <literal>pgusername</literal>.
     Alternatively, you can use the full <literal>username@realm</literal> principal as
     the role name in <productname>PostgreSQL</productname> without any mapping.
    </para>
 
    <para>
-    <productname>PostgreSQL</productname> also supports a parameter to strip the realm from
+    <productname>PostgreSQL</productname> also supports mapping
+    client principals to user names by just stripping the realm from
     the principal.  This method is supported for backwards compatibility and is
     strongly discouraged as it is then impossible to distinguish different users
     with the same user name but coming from different realms.  To enable this,
@@ -859,27 +1035,29 @@ omicron         bryanh                  guest1
    </para>
 
    <para>
-    사용자는 서버 키탭 파일을 <productname>PostgreSQL</productname> 서버 계정으로
-    읽기 가능한지(읽기 가능만, 쓰기 불가) 확인해야 한다. (<xref linkend="postgres-user"/>도
-    참조 바란다.) 키 파일의 위치는 <xref
-    linkend="guc-krb-server-keyfile"/> 환경 설정 매개 변수에 의해 지정된다. 
-    기본값은 <filename>/usr/local/pgsql/etc/krb5.keytab</filename>(또는 빌드 시 <varname>sysconfdir</varname>로 지정된 아무 디렉터리). 보안상의 이유로, 시스템 키탭 파일에 대한 권한을 여는 것보다는 <productname>PostgreSQL</productname> 서버에 대해 별개의 키탭을 사용하는 것이 바람직하다.
+    The location of the server's keytab file is specified by the <xref
+    linkend="guc-krb-server-keyfile"/> configuration parameter.
+    For security reasons, it is recommended to use a separate keytab
+    just for the <productname>PostgreSQL</productname> server rather
+    than allowing the server to read the system keytab file.
+    Make sure that your server keytab file is readable (and preferably
+    only readable, not writable) by the <productname>PostgreSQL</productname>
+    server account.  (See also <xref linkend="postgres-user"/>.)
    </para>
+
    <para>
-    키탭 파일은 Kerberos 소프트웨어에 의해 생성된다. 자세한 내용은 Kerberos 문서를 참조 바란다. 다음 예시는 MIT 호환 Kerberos 5 구현에 대한 것이다.
+    The keytab file is generated using the Kerberos software; see the
+    Kerberos documentation for details. The following example shows
+    doing this using the <application>kadmin</application> tool of
+    MIT-compatible Kerberos 5 implementations:
 <screen>
-<prompt>kadmin% </prompt><userinput>ank -randkey postgres/server.my.domain.org</userinput>
+<prompt>kadmin% </prompt><userinput>addprinc -randkey postgres/server.my.domain.org</userinput>
 <prompt>kadmin% </prompt><userinput>ktadd -k krb5.keytab postgres/server.my.domain.org</userinput>
 </screen>
    </para>
 
    <para>
-    데이터베이스에 연결할 때 요청된 데이터베이스 사용자 이름과 일치하는 보안 주체(principal)에 대한 티켓이 있는지 확인해야 한다. 예를 들면, 데이터베이스 이름 <literal>fred</literal>의 경우 보안 주체(principal) <literal>fred@EXAMPLE.COM</literal>은 연결이 가능하다. 
-    보안 주체(principal) <literal>fred/users.example.com@EXAMPLE.COM</literal>의 연결도 허용하려면 <xref linkend="auth-username-maps"/>에 설명된 대로 사용자 이름 맵을 사용해야 한다.
-   </para>
-
-   <para>
-    다음 환경 설정 옵션이 <productname>GSSAPI</productname>에 대해 지원된다.
+    다음 환경 설정 옵션을 <productname>GSSAPI</productname> 인증용으로 사용할 수 있다:
     <variablelist>
      <varlistentry>
       <term><literal>include_realm</literal></term>
@@ -902,7 +1080,8 @@ omicron         bryanh                  guest1
       <term><literal>map</literal></term>
       <listitem>
        <para>
-        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다. 자세한 내용은 <xref linkend="auth-username-maps"/>을 참조 바란다. 
+        시스템과 데이터베이스 사용자 이름 사이의 매핑을 허용한다.  자세한
+        내용은 <xref linkend="auth-username-maps"/>을 참조 바란다. 
         For a GSSAPI/Kerberos
         principal, such as <literal>username@EXAMPLE.COM</literal> (or, less
         commonly, <literal>username/hostbased@EXAMPLE.COM</literal>), the
@@ -927,6 +1106,15 @@ omicron         bryanh                  guest1
       </listitem>
      </varlistentry>
     </variablelist>
+   </para>
+
+   <para>
+    In addition to these settings, which can be different for
+    different <filename>pg_hba.conf</filename> entries, there is the
+    server-wide <xref linkend="guc-krb-caseins-users"/> configuration
+    parameter.  If that is set to true, client principals are matched to
+    user map entries case-insensitively.  <literal>krb_realm</literal>, if
+    set, is also matched case-insensitively.
    </para>
   </sect1>
 
@@ -1331,6 +1519,15 @@ ldap[s]://<replaceable>host</replaceable>[:<replaceable>port</replaceable>]/<rep
    </para>
 
    <para>
+     If <productname>PostgreSQL</productname> was compiled with
+     <productname>OpenLDAP</productname> as the LDAP client library, the
+     <literal>ldapserver</literal> setting may be omitted.  In that case, a
+     list of host names and ports is looked up via RFC 2782 DNS SRV records.
+     The name <literal>_ldap._tcp.DOMAIN</literal> is looked up, where
+     <literal>DOMAIN</literal> is extracted from <literal>ldapbasedn</literal>.
+   </para>
+
+   <para>
     간단한 바인딩 LDAP 구성의 예시는 다음과 같다.
 <programlisting>
 host ... ldap ldapserver=ldap.example.net ldapprefix="cn=" ldapsuffix=", dc=example, dc=net"
@@ -1367,6 +1564,15 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
 </programlisting>
    </para>
 
+   <para>
+    Here is an example for a search+bind configuration that uses DNS SRV
+    discovery to find the host name(s) and port(s) for the LDAP service for the
+    domain name <literal>example.net</literal>:
+<programlisting>
+host ... ldap ldapbasedn="dc=example,dc=net"
+</programlisting>
+   </para>
+
    <tip>
     <para>
      LDAP는 주로 쉼표와 공백을 사용하여 DN의 서로 다른 부분을 구분하므로 예시에 표시된 대로 LDAP 옵션을 구성할 때 매개 변수를 큰따옴표로 둘러싸야 하는 경우가 있다.
@@ -1389,7 +1595,10 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
 
    <para>
     RADIUS 인증을 사용 중인 경우 구성된 RADIUS 서버로 액세스 요청(Access Request) 메시지가 전송된다. 이 요청은 <literal>Authenticate Only</literal> 유형이며, <literal>user name</literal>, <literal>password</literal>(암호화됨) 및 <literal>NAS Identifier</literal>에 대한 매개 변수가 포함된다. 
-    요청은 서버와 공유되는 비밀을 사용하여 암호화된다. RADIUS 서버는 <literal>Access Accept</literal> 또는 <literal>Access Reject</literal>를 사용하여 이 서버에 응답한다. RADIUS 계정에 대한 지원은 없다.
+    요청은 서버와 공유되는 비밀을 사용하여 암호화된다. RADIUS 
+    서버는 <literal>Access Accept</literal> 또는 
+    <literal>Access Reject</literal>를 사용하여 이 요청에
+    응답한다.  RADIUS 계정에 대한 지원은 없다.
    </para>
 
    <para>
@@ -1397,11 +1606,11 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
     be tried sequentially. If a negative response is received from
     a server, the authentication will fail. If no response is received,
     the next server in the list will be tried. To specify multiple
-    servers, put the names within quotes and separate the server names
-    with a comma. If multiple servers are specified, all other RADIUS
-    options can also be given as a comma separate list, to apply
-    individual values to each server. They can also be specified as
-    a single value, in which case this value will apply to all servers.
+    servers, separate the server names with commas and surround the list
+    with double quotes. If multiple servers are specified, the other
+    RADIUS options can also be given as comma-separated lists, to provide
+    individual values for each server. They can also be specified as
+    a single value, in which case that value will apply to all servers.
    </para>
 
    <para>
@@ -1411,7 +1620,7 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
        <term><literal>radiusservers</literal></term>
        <listitem>
         <para>
-         연결할 RADIUS 서버의 이름 또는 IP 주소. 이 매개 변수는 필수이다. (쉼표 구분으로 여러개 지정 가능)
+         연결할 RADIUS 서버의 DNS 이름 또는 IP 주소. 이 매개 변수는 필수이다. (쉼표 구분으로 여러개 지정 가능)
         </para>
        </listitem>
       </varlistentry>
@@ -1435,7 +1644,7 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
        <term><literal>radiusports</literal></term>
        <listitem>
         <para>
-         연결할 RADIUS 서버의 포트 번호. 포트가 지정되지 않으면 기본 포트 <literal>1812</literal>가 사용된다.
+         연결할 RADIUS 서버의 포트 번호. 포트가 지정되지 않으면 기본 포트(<literal>1812</literal>)가 사용된다.
         </para>
        </listitem>
       </varlistentry>
@@ -1452,6 +1661,16 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
       </varlistentry>
 
      </variablelist>
+   </para>
+
+   <para>
+    If it is necessary to have a comma or whitespace in a RADIUS parameter
+    value, that can be done by putting double quotes around the value, but
+    it is tedious because two layers of double-quoting are now required.
+    An example of putting whitespace into RADIUS secret strings is:
+<programlisting>
+host ... radius radiusservers="server1,server2" radiussecrets="""secret one"",""secret two"""
+</programlisting>
    </para>
   </sect1>
 
@@ -1488,13 +1707,10 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
    </para>
 
    <para>
-    In a <filename>pg_hba.conf</filename> record specifying certificate
-    authentication, the authentication option <literal>clientcert</literal> is
-    assumed to be <literal>1</literal>, and it cannot be turned off since a client
-    certificate is necessary for this method.  What the <literal>cert</literal>
-    method adds to the basic <literal>clientcert</literal> certificate validity test
-    is a check that the <literal>cn</literal> attribute matches the database
-    user name.
+    It is redundant to use the <literal>clientcert</literal> option with
+    <literal>cert</literal> authentication because <literal>cert</literal>
+    authentication is effectively <literal>trust</literal> authentication
+    with <literal>clientcert=verify-full</literal>.
    </para>
   </sect1>
 

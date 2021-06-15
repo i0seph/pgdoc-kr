@@ -219,7 +219,8 @@ CREATE DATABASE <replaceable class="parameter">이름</replaceable>
     템플릿 데이터베이스에 설정된
     데이터베이스 수준의 환경 설정 매개 변수 값은
     복사되지 않는다. (<xref
-    linkend="sql-alterdatabase"/> 명령 설명서 참조)
+    linkend="sql-alterdatabase"/> 명령과 데이터베이스 수준 접근권한 (
+    <xref linkend="sql-grant"/> ) 설명서 참조)
    </para>
 
   <para>

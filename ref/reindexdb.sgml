@@ -28,8 +28,8 @@ PostgreSQL documentation
    <arg choice="plain" rep="repeat">
     <arg choice="opt">
      <group choice="plain">
-      <arg choice="plain"><option>--schema</option></arg>
       <arg choice="plain"><option>-S</option></arg>
+      <arg choice="plain"><option>--schema</option></arg>
      </group>
      <replaceable>스키마</replaceable>
     </arg>
@@ -38,8 +38,8 @@ PostgreSQL documentation
    <arg choice="plain" rep="repeat">
     <arg choice="opt">
      <group choice="plain">
-      <arg choice="plain"><option>--table</option></arg>
       <arg choice="plain"><option>-t</option></arg>
+      <arg choice="plain"><option>--table</option></arg>
      </group>
      <replaceable>테이블</replaceable>
     </arg>
@@ -48,8 +48,8 @@ PostgreSQL documentation
    <arg choice="plain" rep="repeat">
     <arg choice="opt">
      <group choice="plain">
-      <arg choice="plain"><option>--index</option></arg>
       <arg choice="plain"><option>-i</option></arg>
+      <arg choice="plain"><option>--index</option></arg>
      </group>
      <replaceable>인덱스</replaceable>
     </arg>
@@ -64,8 +64,8 @@ PostgreSQL documentation
    <arg rep="repeat"><replaceable>옵션</replaceable></arg>
 
    <group choice="plain">
-    <arg choice="plain"><option>--all</option></arg>
     <arg choice="plain"><option>-a</option></arg>
+    <arg choice="plain"><option>--all</option></arg>
    </group>
   </cmdsynopsis>
 
@@ -75,8 +75,8 @@ PostgreSQL documentation
    <arg rep="repeat"><replaceable>옵션</replaceable></arg>
 
    <group choice="plain">
-    <arg choice="plain"><option>--system</option></arg>
     <arg choice="plain"><option>-s</option></arg>
+    <arg choice="plain"><option>--system</option></arg>
    </group>
    <arg choice="opt"><replaceable>디비이름</replaceable></arg>
   </cmdsynopsis>
@@ -121,6 +121,17 @@ PostgreSQL documentation
       <listitem>
        <para>
         Reindex all databases.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>--concurrently</option></term>
+      <listitem>
+       <para>
+        Use the <literal>CONCURRENTLY</literal> option.  See
+        <xref linkend="sql-reindex"/>, where all the caveats of this option
+        are explained in detail.
        </para>
       </listitem>
      </varlistentry>
@@ -321,10 +332,16 @@ PostgreSQL documentation
       <term><option>--maintenance-db=<replaceable class="parameter">dbname</replaceable></option></term>
       <listitem>
        <para>
-         Specifies the name of the database to connect to discover what other
-         databases should be reindexed. If not specified, the
-         <literal>postgres</literal> database will be used,
-         and if that does not exist, <literal>template1</literal> will be used.
+        Specifies the name of the database to connect to to discover which
+        databases should be reindexed,
+        when <option>-a</option>/<option>--all</option> is used.
+        If not specified, the <literal>postgres</literal> database will be used,
+        or if that does not exist, <literal>template1</literal> will be used.
+        This can be a <link linkend="libpq-connstring">connection
+        string</link>.  If so, connection string parameters will override any
+        conflicting command line options.  Also, connection string parameters
+        other than the database name itself will be re-used when connecting
+        to other databases.
        </para>
       </listitem>
      </varlistentry>
@@ -346,6 +363,17 @@ PostgreSQL documentation
     <listitem>
      <para>
       Default connection parameters
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><envar>PG_COLOR</envar></term>
+    <listitem>
+     <para>
+      Specifies whether to use color in diagnostic messages. Possible values
+      are <literal>always</literal>, <literal>auto</literal> and
+      <literal>never</literal>.
      </para>
     </listitem>
    </varlistentry>

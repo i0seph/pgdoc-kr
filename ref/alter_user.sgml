@@ -33,7 +33,7 @@ ALTER USER <replaceable class="parameter">이름</replaceable> [ WITH ] <replace
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
     | CONNECTION LIMIT <replaceable class="parameter">connlimit</replaceable>
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>'
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>' | PASSWORD NULL
     | VALID UNTIL '<replaceable class="parameter">timestamp</replaceable>'
 
 ALTER USER <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>

@@ -1,7 +1,7 @@
 <!-- doc/src/sgml/xindex.sgml -->
 
 <sect1 id="xindex">
- <title>Interfacing Extensions To Indexes</title>
+ <title>Interfacing Extensions to Indexes</title>
 
  <indexterm zone="xindex">
   <primary>index</primary>
@@ -105,7 +105,7 @@
   </para>
 
    <table tocentry="1" id="xindex-btree-strat-table">
-    <title>B-tree Strategies</title>
+    <title>B-Tree Strategies</title>
     <tgroup cols="2">
      <thead>
       <row>
@@ -410,7 +410,7 @@
   </para>
 
    <table tocentry="1" id="xindex-btree-support-table">
-    <title>B-tree Support Functions</title>
+    <title>B-Tree Support Functions</title>
     <tgroup cols="2">
      <thead>
       <row>
@@ -1242,7 +1242,7 @@ SELECT sum(x) OVER (ORDER BY x RANGE BETWEEN 5 PRECEDING AND 10 FOLLOWING)
   <title>Ordering Operators</title>
 
   <para>
-   Some index access methods (currently, only GiST) support the concept of
+   Some index access methods (currently, only GiST and SP-GiST) support the concept of
    <firstterm>ordering operators</firstterm>.  What we have been discussing so far
    are <firstterm>search operators</firstterm>.  A search operator is one for which
    the index can be searched to find all rows satisfying

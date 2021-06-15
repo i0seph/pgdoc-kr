@@ -33,7 +33,7 @@ ALTER ROLE <replaceable class="parameter">롤명세</replaceable> [ WITH ] <repl
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
     | CONNECTION LIMIT <replaceable class="parameter">접속제한</replaceable>
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>'
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>' | PASSWORD NULL
     | VALID UNTIL '<replaceable class="parameter">타임스탬프</replaceable>'
 
 ALTER ROLE <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable>새이름</replaceable>
@@ -66,8 +66,10 @@ ALTER ROLE { <replaceable class="parameter">롤명세</replaceable> | ALL } [ IN
    <xref linkend="sql-grant"/>, <xref linkend="sql-revoke"/> 명령으로 한다.)
    이 명령에서 따로 지정하지 않는 속성들은 기존 설정을 유지한다.
    데이터베이스 슈퍼유저는 모든 롤의 모든 속성을 바꿀 수 있다.
-   <literal>CREATEROLE</literal> 권한이 있는 롤은
-   슈퍼유저도 아니고, 복제작업용 롤도 아닌 롤에 대해서 변경 작업을 할 수 있다.
+   <literal>CREATEROLE</literal> 권한이 있는 롤은 
+   <literal>SUPERUSER</literal>, <literal>REPLICATION</literal>,
+   <literal>BYPASSRLS</literal> 제외하고 나머지 설정들을 바꿀 수 있다. 물론,
+   이때 그 롤은 슈퍼유저도 아니고, 복제 롤도 아닌 경우에 해당된다.
    일반 롤은 자신의 비밀번호만 바꿀 수 있다.
   </para>
 
@@ -164,7 +166,8 @@ ALTER ROLE { <replaceable class="parameter">롤명세</replaceable> | ALL } [ IN
       <term><literal>BYPASSRLS</literal></term>
       <term><literal>NOBYPASSRLS</literal></term>
       <term><literal>CONNECTION LIMIT</literal> <replaceable class="parameter">connlimit</replaceable></term>
-      <term>[ <literal>ENCRYPTED</literal> ] <literal>PASSWORD</literal> <replaceable class="parameter">비밀번호</replaceable></term>
+      <term>[ <literal>ENCRYPTED</literal> ] <literal>PASSWORD</literal> '<replaceable class="parameter">비밀번호</replaceable>'</term>
+      <term><literal>PASSWORD NULL</literal></term>
       <term><literal>VALID UNTIL</literal> '<replaceable class="parameter">타임스탬프</replaceable>'</term>
       <listitem>
        <para>

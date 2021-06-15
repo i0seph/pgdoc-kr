@@ -48,15 +48,11 @@ PostgreSQL documentation
       <term><option>--dbname=<replaceable class="parameter">디비이름</replaceable></option></term>
       <listitem>
       <para>
-       접속할 데이터베이스 이름
-      </para>
-      <para>
-       이 값이 <symbol>=</symbol> 문자로 시작하거나, 
-       <literal>postgresql://</literal> 또는
-       <literal>postgres://</literal> 문자열로 시작하면, 
-       <parameter>conninfo</parameter> 문자열로 간주한다.
-       이것에 대한 설명은  <xref
-       linkend="libpq-connstring"/>에서 다룬다.
+       접속할 데이터베이스 이름.  The
+       <replaceable>dbname</replaceable> can be a <link
+       linkend="libpq-connstring">connection string</link>.  If so,
+       connection string parameters will override any conflicting command
+       line options.
       </para>
       </listitem>
     </varlistentry>
@@ -160,6 +156,13 @@ PostgreSQL documentation
    여러 <application>libpq</application> 라이브러리를 사용하는 응용 프로그램과 
    마찮가지로 <command>pg_isready</command> 명령도
    그 환경 변수 그대로를 사용한다(<xref linkend="libpq-envars"/> 참조).
+  </para>
+
+  <para>
+   The environment variable <envar>PG_COLOR</envar> specifies whether to use
+   color in diagnostic messages. Possible values are
+   <literal>always</literal>, <literal>auto</literal> and
+   <literal>never</literal>.
   </para>
  </refsect1>
 

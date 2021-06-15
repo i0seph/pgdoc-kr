@@ -74,14 +74,15 @@ DISCARD { ALL | PLANS | TEMPORARY | TEMP }
           이 명령은 현재 다음과 같은 일련의 작업을 하나의 명령으로 
           제공하고 있다:
 <programlisting>
+CLOSE ALL;
 SET SESSION AUTHORIZATION DEFAULT;
 RESET ALL;
 DEALLOCATE ALL;
-CLOSE ALL;
 UNLISTEN *;
 SELECT pg_advisory_unlock_all();
 DISCARD PLANS;
 DISCARD TEMP;
+DISCARD SEQUENCES;
 </programlisting></para>
     </listitem>
    </varlistentry>

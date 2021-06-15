@@ -25,10 +25,10 @@ PostgreSQL documentation
    <arg choice="opt"><replaceable class="parameter">옵션</replaceable></arg>
    <group choice="opt">
     <group choice="opt">
-     <arg choice="plain"><option>--pgdata</option></arg>
      <arg choice="plain"><option>-D</option></arg>
+     <arg choice="plain"><option>--pgdata</option></arg>
     </group>
-    <replaceable class="parameter"> 데이터디렉터리</replaceable>
+    <replaceable class="parameter">데이터디렉터리</replaceable>
    </group>
   </cmdsynopsis>
  </refsynopsisdiv>
@@ -64,6 +64,17 @@ PostgreSQL documentation
     <listitem>
      <para>
           기본 데이터 디렉터리 경로
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><envar>PG_COLOR</envar></term>
+    <listitem>
+     <para>
+      Specifies whether to use color in diagnostic messages. Possible values
+      are <literal>always</literal>, <literal>auto</literal> and
+      <literal>never</literal>.
      </para>
     </listitem>
    </varlistentry>

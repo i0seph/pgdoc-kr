@@ -128,7 +128,8 @@ ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> RENAME TO
          <para>
           처음 복제가 시작 될 때 발행 서버 쪽 해당 테이블에 자료가 있다면,
           그 자료 모두를 가져오고 그 다음부터 복제를 할 것인지를 지정한다.
-          기본값은 <literal>true</literal>다.
+          기본값은 <literal>true</literal>다. (기존 이미 구독 중인 테이블에
+          대해서는 복사하지 않는다.)
          </para>
         </listitem>
        </varlistentry>

@@ -1,5 +1,6 @@
 <!--
 doc/src/sgml/ref/create_function.sgml
+PostgreSQL documentation
 -->
 
 <refentry id="sql-createfunction">
@@ -33,6 +34,7 @@ CREATE [ OR REPLACE ] FUNCTION
     | PARALLEL { UNSAFE | RESTRICTED | SAFE }
     | COST <replaceable class="parameter">실행비용</replaceable>
     | ROWS <replaceable class="parameter">반환로우수</replaceable>
+    | SUPPORT <replaceable class="parameter">support_function</replaceable>
     | SET <replaceable class="parameter">환경설정_매개변수</replaceable> { TO <replaceable class="parameter">값</replaceable> | = <replaceable class="parameter">값</replaceable> | FROM CURRENT }
     | AS '<replaceable class="parameter">정의</replaceable>'
     | AS '<replaceable class="parameter">오브젝트파일</replaceable>', '<replaceable class="parameter">링크_심벌</replaceable>'
@@ -96,6 +98,11 @@ CREATE [ OR REPLACE ] FUNCTION
   <para>
    함수를 만드려면, 그 함수에서 사용하는 입력 인자 자료형과 
    반환 자료형에 대해서 <literal>USAGE</literal> 권한이 있어야 한다.
+  </para>
+
+  <para>
+   Refer to <xref linkend="xfunc"/> for further information on writing
+   functions.
   </para>
  </refsect1>
 
@@ -356,11 +363,6 @@ CREATE [ OR REPLACE ] FUNCTION
        지정하는 것이 안전하다.  그래야 최적화 계산에서 빠지게 된다.
        대표적인 함수가 <literal>setval()</literal> 함수다.
       </para>
-
-      <para>
-       이 속성들에 대한 자세한 설명은 <xref linkend="xfunc-volatility"/>에서
-       다룬다.
-      </para>
      </listitem>
     </varlistentry>
 
@@ -500,6 +502,19 @@ CREATE [ OR REPLACE ] FUNCTION
        그 예상 자료 수를 지정한다.
        이 값은 실행계획기에서 사용한다. 이 옵션은
        다중 로우를 반환하는 함수에서만 쓸 수 있다.  기본 값은 1000 개의 로우다.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>SUPPORT</literal> <replaceable class="parameter">support_function</replaceable></term>
+
+     <listitem>
+      <para>
+       The name (optionally schema-qualified) of a <firstterm>planner support
+       function</firstterm> to use for this function.  See
+       <xref linkend="xfunc-optimization"/> for details.
+       You must be superuser to use this option.
       </para>
      </listitem>
     </varlistentry>
@@ -683,7 +698,6 @@ CREATE FUNCTION foo(int, int default 42) ...
 
   <para>
    여기서는 처음 함수를 만들어 보는 사용자를 위해 여러 예제를 소개한다.
-   <xref linkend="xfunc"/>에서는 좀더 자세한 내용가 예제도 있다.
    다음은 두 정수를 더하는 예제:
 <programlisting>
 CREATE FUNCTION add(integer, integer) RETURNS integer
@@ -811,7 +825,7 @@ $$  LANGUAGE plpgsql
     또 하나 기억해야 할 것은,
     함수를 새로 만들면, 모두(<literal>PUBLIC</literal>)가 그 함수를
     실행할 수 있게 실행 권한이 부여된다는 점이다.(이게 기본값이다)
-    (<xref linkend="sql-grant"/> 명령 설명서 참조)
+    (<xref linkend="ddl-priv"/> 명령 설명서 참조)
     즉, 특정 사용자만 그 함수를 사용하도록 제한하려면, 
     (SECURITY DEFINER 함수는 그럴 필요가 종종 있다 - 옮긴이)
     함수를 만든 뒤 반드시 권한 조정 작업을 해야한다.

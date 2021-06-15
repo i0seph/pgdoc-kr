@@ -29,7 +29,8 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
 ] )
 [ INHERITS ( <replaceable>parent_table</replaceable> [, ... ] ) ]
 [ PARTITION BY { RANGE | LIST | HASH } ( { <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ... ] ) ]
-[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITH OIDS | WITHOUT OIDS ]
+[ USING <replaceable class="parameter">method</replaceable> ]
+[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
 [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
 [ TABLESPACE <replaceable class="parameter">tablespace_name</replaceable> ]
 
@@ -40,7 +41,8 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     [, ... ]
 ) ]
 [ PARTITION BY { RANGE | LIST | HASH } ( { <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ... ] ) ]
-[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITH OIDS | WITHOUT OIDS ]
+[ USING <replaceable class="parameter">method</replaceable> ]
+[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
 [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
 [ TABLESPACE <replaceable class="parameter">tablespace_name</replaceable> ]
 
@@ -51,7 +53,8 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     [, ... ]
 ) ] { FOR VALUES <replaceable class="parameter">partition_bound_spec</replaceable> | DEFAULT }
 [ PARTITION BY { RANGE | LIST | HASH } ( { <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ... ] ) ]
-[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITH OIDS | WITHOUT OIDS ]
+[ USING <replaceable class="parameter">method</replaceable> ]
+[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
 [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
 [ TABLESPACE <replaceable class="parameter">tablespace_name</replaceable> ]
 
@@ -62,11 +65,12 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
   NULL |
   CHECK ( <replaceable class="parameter">expression</replaceable> ) [ NO INHERIT ] |
   DEFAULT <replaceable>default_expr</replaceable> |
+  GENERATED ALWAYS AS ( <replaceable>generation_expr</replaceable> ) STORED |
   GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY [ ( <replaceable>sequence_options</replaceable> ) ] |
   UNIQUE <replaceable class="parameter">index_parameters</replaceable> |
   PRIMARY KEY <replaceable class="parameter">index_parameters</replaceable> |
   REFERENCES <replaceable class="parameter">reftable</replaceable> [ ( <replaceable class="parameter">refcolumn</replaceable> ) ] [ MATCH FULL | MATCH PARTIAL | MATCH SIMPLE ]
-    [ ON DELETE <replaceable class="parameter">action</replaceable> ] [ ON UPDATE <replaceable class="parameter">action</replaceable> ] }
+    [ ON DELETE <replaceable class="parameter">referential_action</replaceable> ] [ ON UPDATE <replaceable class="parameter">referential_action</replaceable> ] }
 [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
 
 <phrase><replaceable class="parameter">table_constraint</replaceable> 자리에는:</phrase>
@@ -77,18 +81,18 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
   PRIMARY KEY ( <replaceable class="parameter">column_name</replaceable> [, ... ] ) <replaceable class="parameter">index_parameters</replaceable> |
   EXCLUDE [ USING <replaceable class="parameter">index_method</replaceable> ] ( <replaceable class="parameter">exclude_element</replaceable> WITH <replaceable class="parameter">operator</replaceable> [, ... ] ) <replaceable class="parameter">index_parameters</replaceable> [ WHERE ( <replaceable class="parameter">predicate</replaceable> ) ] |
   FOREIGN KEY ( <replaceable class="parameter">column_name</replaceable> [, ... ] ) REFERENCES <replaceable class="parameter">reftable</replaceable> [ ( <replaceable class="parameter">refcolumn</replaceable> [, ... ] ) ]
-    [ MATCH FULL | MATCH PARTIAL | MATCH SIMPLE ] [ ON DELETE <replaceable class="parameter">action</replaceable> ] [ ON UPDATE <replaceable class="parameter">action</replaceable> ] }
+    [ MATCH FULL | MATCH PARTIAL | MATCH SIMPLE ] [ ON DELETE <replaceable class="parameter">referential_action</replaceable> ] [ ON UPDATE <replaceable class="parameter">referential_action</replaceable> ] }
 [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
 
 <phrase><replaceable class="parameter">like_option</replaceable> 자리에는:</phrase>
 
-{ INCLUDING | EXCLUDING } { COMMENTS | CONSTRAINTS | DEFAULTS | IDENTITY | INDEXES | STATISTICS | STORAGE | ALL }
+{ INCLUDING | EXCLUDING } { COMMENTS | CONSTRAINTS | DEFAULTS | GENERATED | IDENTITY | INDEXES | STATISTICS | STORAGE | ALL }
 
 <phrase><replaceable class="parameter">partition_bound_spec</replaceable> 자리에는:</phrase>
 
-IN ( { <replaceable class="parameter">numeric_literal</replaceable> | <replaceable class="parameter">string_literal</replaceable> | TRUE | FALSE | NULL } [, ...] ) |
-FROM ( { <replaceable class="parameter">numeric_literal</replaceable> | <replaceable class="parameter">string_literal</replaceable> | TRUE | FALSE | MINVALUE | MAXVALUE } [, ...] )
-  TO ( { <replaceable class="parameter">numeric_literal</replaceable> | <replaceable class="parameter">string_literal</replaceable> | TRUE | FALSE | MINVALUE | MAXVALUE } [, ...] ) |
+IN ( <replaceable class="parameter">partition_bound_expr</replaceable> [, ...] ) |
+FROM ( { <replaceable class="parameter">partition_bound_expr</replaceable> | MINVALUE | MAXVALUE } [, ...] )
+  TO ( { <replaceable class="parameter">partition_bound_expr</replaceable> | MINVALUE | MAXVALUE } [, ...] ) |
 WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REMAINDER <replaceable class="parameter">numeric_literal</replaceable> )
 
 <phrase><literal>UNIQUE</literal>, <literal>PRIMARY KEY</literal>, <literal>EXCLUDE</literal> 제약조건에서 사용하는 <replaceable class="parameter">index_parameters</replaceable> 자리에는:</phrase>
@@ -351,9 +355,6 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
      <para>
       Partitioned tables do not support <literal>EXCLUDE</literal> constraints;
       however, you can define these constraints on individual partitions.
-      Also, while it's possible to define <literal>PRIMARY KEY</literal>
-      constraints on partitioned tables, creating foreign keys that
-      reference a partitioned table is not yet supported.
      </para>
 
      <para>
@@ -371,8 +372,9 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       Creates the table as a <firstterm>partition</firstterm> of the specified
       parent table. The table can be created either as a partition for specific
       values using <literal>FOR VALUES</literal> or as a default partition
-      using <literal>DEFAULT</literal>.  This option is not available for
-      hash-partitioned tables.
+      using <literal>DEFAULT</literal>.  Any indexes, constraints and
+      user-defined row-level triggers that exist in the parent table are cloned
+      on the new partition.
      </para>
 
      <para>
@@ -386,12 +388,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
      </para>
 
      <para>
-      Each of the values specified in
-      the <replaceable class="parameter">partition_bound_spec</replaceable> is
-      a literal, <literal>NULL</literal>, <literal>MINVALUE</literal>, or
-      <literal>MAXVALUE</literal>.  Each literal value must be either a
-      numeric constant that is coercible to the corresponding partition key
-      column's type, or a string literal that is valid input for that type.
+      <replaceable class="parameter">partition_bound_expr</replaceable> is
+      any variable-free expression (subqueries, window functions, aggregate
+      functions, and set-returning functions are not allowed).  Its data type
+      must match the data type of the corresponding partition key column.
+      The expression is evaluated once at table creation time, so it can
+      even contain volatile expressions such as
+      <literal><function>CURRENT_TIMESTAMP</function></literal>.
      </para>
 
      <para>
@@ -462,16 +465,15 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
      <para>
       If <literal>DEFAULT</literal> is specified, the table will be
-      created as a default partition of the parent table. The parent can
-      either be a list or range partitioned table. A partition key value
+      created as the default partition of the parent table.  This option
+      is not available for hash-partitioned tables.  A partition key value
       not fitting into any other partition of the given parent will be
-      routed to the default partition. There can be only one default
-      partition for a given parent table.
+      routed to the default partition.
      </para>
 
      <para>
       When a table has an existing <literal>DEFAULT</literal> partition and
-      a new partition is added to it, the existing default partition must
+      a new partition is added to it, the default partition must
       be scanned to verify that it does not contain any rows which properly
       belong in the new partition.  If the default partition contains a
       large number of rows, this may be slow.  The scan will be skipped if
@@ -505,17 +507,15 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
      <para>
       A partition must have the same column names and types as the partitioned
-      table to which it belongs.  If the parent is specified <literal>WITH
-      OIDS</literal> then all partitions must have OIDs; the parent's OID
-      column will be inherited by all partitions just like any other column.
-      Modifications to the column names or types of a partitioned table, or
-      the addition or removal of an OID column, will automatically propagate
-      to all partitions.  <literal>CHECK</literal> constraints will be inherited
-      automatically by every partition, but an individual partition may specify
-      additional <literal>CHECK</literal> constraints; additional constraints with
-      the same name and condition as in the parent will be merged with the
-      parent constraint.  Defaults may be specified separately for each
-      partition.
+      table to which it belongs. Modifications to the column names or types of
+      a partitioned table will automatically propagate to all partitions.
+      <literal>CHECK</literal> constraints will be inherited automatically by
+      every partition, but an individual partition may specify additional
+      <literal>CHECK</literal> constraints; additional constraints with the
+      same name and condition as in the parent will be merged with the parent
+      constraint.  Defaults may be specified separately for each partition.
+      But note that a partition's default value is not applied when inserting
+      a tuple through a partitioned table.
      </para>
 
      <para>
@@ -548,61 +548,130 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
           신규 테이블에 포함된 데이터를 원본 테이블에서 검색할 수도 없습니다.
      </para>
      <para>
-      특정 칼럼의 초기값 표현식은 <literal>INCLUDING DEFAULTS</literal>
-      구문이 지정된 경우에만 그 초기값 표현식이 복사 된다.
-      이 구문을 생략하면, 원본 테이블의 초기값 설정은 모두 무시된다.
-      <function>nextval</function> 함수와 같은 데이터베이스 자료 조작 함수가
-      초기값으로 지정되었다면, 그것도 그대로 지정된다는 점에 주의해야 한다.
-     </para>
-     <para>
-      Any identity specifications of copied column definitions will only be
-      copied if <literal>INCLUDING IDENTITY</literal> is specified.  A new
-      sequence is created for each identity column of the new table, separate
-      from the sequences associated with the old table.
-     </para>
-     <para>
-      Not-null 제약은 항상 신규 테이블로 복사됩니다.
-          <literal>INCLUDING CONSTRAINTS</literal>가 지정된 경우에만,
-          <literal>CHECK</literal> 제약이 복사됩니다.
-          열 제약과 테이블 제약은 따로 구분하지 않습니다.
-     </para>
-     <para>
-      Extended statistics are copied to the new table if
-      <literal>INCLUDING STATISTICS</literal> is specified.
-     </para>
-     <para>
-      원본 테이블의 인덱스, <literal>PRIMARY KEY</literal>, <literal>UNIQUE</literal>,
-      <literal>EXCLUDE</literal> 제약조건은
-      <literal>INCLUDING INDEXES</literal> 구문을 지정했을 때만 
-      복사된다. 복사해서 새로 만들어지는 각 이름들은 
-      이름 만들기 규칙에 의해서 적당한 이름으로 변경된다. 
-      (이 정책은 새로 만들어지는 인덱스의 이름이 같아서 못 만드는 경우를 
-      방지하기 위함이다.)
-     </para>
-     <para>
-      <literal>INCLUDING STORAGE</literal>를 지정한 경우에만,
-          <literal>STORAGE</literal> 설정이 복사되는 열 정의에 복사됩니다.
-          기본 동작은 <literal>STORAGE</literal> 설정을 제외하는 것으로,
-          이 경우 신규 테이블로 복사된 열은 자료형에 따른 기본 설정을 갖게 됩니다.
-          더 많은 <literal>STORAGE</literal> 설정 정보는 
-          <xref linkend="storage-toast"/>를 참고하십시오.
-     </para>
-     <para>
-          <literal>INCLUDING COMMENTS</literal>를 지정한 경우에만,
-          복사되는 열, 제약, 인덱스에 대한 comment가 복사됩니다.
-          기본 동작은 comment를 제외하는 것으로,
-          이 경우 신규 테이블로 복사된 열과 제약은 comment가 빠집니다.
-     </para>
-     <para>
-          <literal>INCLUDING ALL</literal>은
-          <literal>INCLUDING COMMENTS INCLUDING CONSTRAINTS INCLUDING DEFAULTS INCLUDING IDENTITY INCLUDING INDEXES INCLUDING STATISTICS INCLUDING STORAGE</literal>
-          의 축약형입니다.
-     </para>
-     <para>
       <literal>INHERITS</literal>와 다르게, <literal>LIKE</literal>로 복사되는
           열과 제약조건은 유사한 이름의 열과 제약끼리 병합되지 않는다는 점도 유의하십시오.
           동일한 이름이 명시적으로 지정되거나, 
           동일한 이름이 다른 <literal>LIKE</literal>절에 있는 경우, 에러가 발생합니다.
+     </para>
+     <para>
+      The optional <replaceable>like_option</replaceable> clauses specify
+      which additional properties of the original table to copy.  Specifying
+      <literal>INCLUDING</literal> copies the property, specifying
+      <literal>EXCLUDING</literal> omits the property.
+      <literal>EXCLUDING</literal> is the default.  If multiple specifications
+      are made for the same kind of object, the last one is used.  The
+      available options are:
+
+      <variablelist>
+       <varlistentry>
+        <term><literal>INCLUDING COMMENTS</literal></term>
+        <listitem>
+         <para>
+          Comments for the copied columns, constraints, and indexes will be
+          copied.  The default behavior is to exclude comments, resulting in
+          the copied columns and constraints in the new table having no
+          comments.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING CONSTRAINTS</literal></term>
+        <listitem>
+         <para>
+          <literal>CHECK</literal> constraints will be copied.  No distinction
+          is made between column constraints and table constraints.  Not-null
+          constraints are always copied to the new table.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING DEFAULTS</literal></term>
+        <listitem>
+         <para>
+          Default expressions for the copied column definitions will be
+          copied.  Otherwise, default expressions are not copied, resulting in
+          the copied columns in the new table having null defaults.  Note that
+          copying defaults that call database-modification functions, such as
+          <function>nextval</function>, may create a functional linkage
+          between the original and new tables.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING GENERATED</literal></term>
+        <listitem>
+         <para>
+          Any generation expressions of copied column definitions will be
+          copied.  By default, new columns will be regular base columns.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING IDENTITY</literal></term>
+        <listitem>
+         <para>
+          Any identity specifications of copied column definitions will be
+          copied.  A new sequence is created for each identity column of the
+          new table, separate from the sequences associated with the old
+          table.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING INDEXES</literal></term>
+        <listitem>
+         <para>
+          Indexes, <literal>PRIMARY KEY</literal>, <literal>UNIQUE</literal>,
+          and <literal>EXCLUDE</literal> constraints on the original table
+          will be created on the new table.  Names for the new indexes and
+          constraints are chosen according to the default rules, regardless of
+          how the originals were named.  (This behavior avoids possible
+          duplicate-name failures for the new indexes.)
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING STATISTICS</literal></term>
+        <listitem>
+         <para>
+          Extended statistics are copied to the new table.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING STORAGE</literal></term>
+        <listitem>
+         <para>
+          <literal>STORAGE</literal> settings for the copied column
+          definitions will be copied.  The default behavior is to exclude
+          <literal>STORAGE</literal> settings, resulting in the copied columns
+          in the new table having type-specific default settings.  For more on
+          <literal>STORAGE</literal> settings, see <xref
+          linkend="storage-toast"/>.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>INCLUDING ALL</literal></term>
+        <listitem>
+         <para>
+          <literal>INCLUDING ALL</literal> is an abbreviated form selecting
+          all the available individual options.  (It could be useful to write
+          individual <literal>EXCLUDING</literal> clauses after
+          <literal>INCLUDING ALL</literal> to select all but some specific
+          options.)
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
      </para>
      <para>
       <literal>LIKE</literal> 절은 뷰, 외래 테이블 또는 복합 자료형 들로부터
@@ -664,8 +733,11 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
      </para>
 
      <para>
-      현재, <literal>CHECK</literal> 수식은 서브쿼리를 포함할 수 없으며,
-          현재 행의 열이 아닌 것의 값을 참조할 수도 없습니다.
+      Currently, <literal>CHECK</literal> expressions cannot contain
+      subqueries nor refer to variables other than columns of the
+      current row (see <xref linkend="ddl-constraints-check-constraints"/>).
+      The system column <literal>tableoid</literal>
+      may be referenced, but not any other system column.
      </para>
 
      <para>
@@ -688,14 +760,36 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     <listitem>
      <para>
       <literal>DEFAULT</literal> 절은 이를 정의에 포함하는 열에 대한 기본값을 할당합니다.
-          해당 값은 변하지 않는 어떠한 수식이라도 됩니다.
-          (서브쿼리나 현재 테이블의 다른 열에 대한 상호 참조는 허용되지 않습니다.)
-          기본값 수식의 데이터 자료형은 해당 열의 데이터 자료형과 일치해야 합니다.
+      아무 값이나 지정할 수 있다. 해당 테이블의 다른 칼럼을 지정할 없다.
+      서브 쿼리도 사용할 수 없다. 
+      지정한 값의 자료형은 해당 칼럼의 자료형과 같아야 한다.
      </para>
 
      <para>
       기본값 수식은 해당 열의 값을 지정하지 않은 모든 삽입 작업에 사용될 것입니다.
           열에 기본값이 없는 경우, null이 기본값이 됩니다.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>GENERATED ALWAYS AS ( <replaceable>generation_expr</replaceable> ) STORED</literal><indexterm><primary>generated column</primary></indexterm></term>
+    <listitem>
+     <para>
+      This clause creates the column as a <firstterm>generated
+      column</firstterm>.  The column cannot be written to, and when read the
+      result of the specified expression will be returned.
+     </para>
+
+     <para>
+      The keyword <literal>STORED</literal> is required to signify that the
+      column will be computed on write and will be stored on disk.
+     </para>
+
+     <para>
+      The generation expression can refer to other columns in the table, but
+      not other generated columns.  Any functions and operators used must be
+      immutable.  References to other tables are not allowed.
      </para>
     </listitem>
    </varlistentry>
@@ -708,6 +802,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       column</firstterm>.  It will have an implicit sequence attached to it
       and the column in new rows will automatically have values from the
       sequence assigned to it.
+      Such a column is implicitly <literal>NOT NULL</literal>.
      </para>
 
      <para>
@@ -734,14 +829,18 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    <varlistentry>
     <term><literal>UNIQUE</literal> (column constraint)</term>
     <term><literal>UNIQUE ( <replaceable class="parameter">column_name</replaceable> [, ... ] )</literal>
-    <optional> INCLUDE ( <replaceable class="parameter">column_name</replaceable> [, ...]) </optional> (table constraint)</term>
+    <optional> <literal>INCLUDE ( <replaceable class="parameter">column_name</replaceable> [, ...])</literal> </optional> (table constraint)</term>
 
 
     <listitem>
      <para>
-          <literal>UNIQUE</literal> 제약은 테이블 내에서 고유값만 포함할 수 있는
-          하나 이상의 열 그룹을 지정합니다.
-          Unique 테이블 제약의 동작은 unique 열 제약과 동일하나, 여러 열을 포함할 수 있게 됩니다.
+      <literal>UNIQUE</literal> 제약은 테이블 내에서 고유값만 포함할 수 있는
+      하나 이상의 열 그룹을 지정합니다.
+      The behavior of a unique table constraint
+      is the same as that of a unique column constraint, with the
+      additional capability to span multiple columns.  The constraint
+      therefore enforces that any two rows must differ in at least one
+      of these columns.
      </para>
 
      <para>
@@ -749,9 +848,9 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
      </para>
 
      <para>
-          각 unique 테이블 제약에서 지정한 열 집합은,
+          각 unique 제약에서 지정한 열 집합은,
           다른 unique나 primary key 제약에서 지정한 열 집합과 달라야 합니다.
-          (그렇지 않으면, 단지 같은 제약이 두 번 나열될 뿐입니다.)
+          (중복되면, 유니크 제약조건은 무시 된다.)
      </para>
 
      <para>
@@ -764,11 +863,16 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
      <para>
       Adding a unique constraint will automatically create a unique btree
       index on the column or group of columns used in the constraint.
-      The optional clause <literal>INCLUDE</literal> adds to that index
-      one or more columns on which the uniqueness is not enforced.
-      Note that although the constraint is not enforced on the included columns,
-      it still depends on them.  Consequently, some operations on these columns
-      (e.g. <literal>DROP COLUMN</literal>) can cause cascaded constraint and
+     </para>
+
+     <para>
+      The optional <literal>INCLUDE</literal> clause adds to that index
+      one or more columns that are simply <quote>payload</quote>: uniqueness
+      is not enforced on them, and the index cannot be searched on the basis
+      of those columns.  However they can be retrieved by an index-only scan.
+      Note that although the constraint is not enforced on included columns,
+      it still depends on them.  Consequently, some operations on such columns
+      (e.g., <literal>DROP COLUMN</literal>) can cause cascaded constraint and
       index deletion.
      </para>
     </listitem>
@@ -777,7 +881,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    <varlistentry>
     <term><literal>PRIMARY KEY</literal> (column constraint)</term>
     <term><literal>PRIMARY KEY ( <replaceable class="parameter">column_name</replaceable> [, ... ] )</literal>
-    <optional> INCLUDE ( <replaceable class="parameter">column_name</replaceable> [, ...]) </optional> (table constraint)</term>
+    <optional> <literal>INCLUDE ( <replaceable class="parameter">column_name</replaceable> [, ...])</literal> </optional> (table constraint)</term>
 
     <listitem>
      <para>
@@ -796,27 +900,34 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
      <para>
       <literal>PRIMARY KEY</literal> enforces the same data constraints as
-      a combination of <literal>UNIQUE</literal> and <literal>NOT NULL</literal>, but
+      a combination of <literal>UNIQUE</literal> and <literal>NOT
+      NULL</literal>.  However,
       identifying a set of columns as the primary key also provides metadata
       about the design of the schema, since a primary key implies that other
       tables can rely on this set of columns as a unique identifier for rows.
      </para>
 
      <para>
-      <literal>PRIMARY KEY</literal> constraints share the restrictions that
-      <literal>UNIQUE</literal> constraints have when placed on partitioned
-      tables.
+      When placed on a partitioned table, <literal>PRIMARY KEY</literal>
+      constraints share the restrictions previously described
+      for <literal>UNIQUE</literal> constraints.
      </para>
 
      <para>
       Adding a <literal>PRIMARY KEY</literal> constraint will automatically
       create a unique btree index on the column or group of columns used in the
-      constraint.  The optional <literal>INCLUDE</literal> clause allows a list
-      of columns to be specified which will be included in the non-key portion
-      of the index.  Although uniqueness is not enforced on the included columns,
-      the constraint still depends on them. Consequently, some operations on the
-      included columns (e.g. <literal>DROP COLUMN</literal>) can cause cascaded
-      constraint and index deletion.
+      constraint.
+     </para>
+
+     <para>
+      The optional <literal>INCLUDE</literal> clause adds to that index
+      one or more columns that are simply <quote>payload</quote>: uniqueness
+      is not enforced on them, and the index cannot be searched on the basis
+      of those columns.  However they can be retrieved by an index-only scan.
+      Note that although the constraint is not enforced on included columns,
+      it still depends on them.  Consequently, some operations on such columns
+      (e.g., <literal>DROP COLUMN</literal>) can cause cascaded constraint and
+      index deletion.
      </para>
     </listitem>
    </varlistentry>
@@ -865,13 +976,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    </varlistentry>
 
    <varlistentry>
-    <term><literal>REFERENCES <replaceable class="parameter">reftable</replaceable> [ ( <replaceable class="parameter">refcolumn</replaceable> ) ] [ MATCH <replaceable class="parameter">matchtype</replaceable> ] [ ON DELETE <replaceable class="parameter">action</replaceable> ] [ ON UPDATE <replaceable class="parameter">action</replaceable> ]</literal> (column constraint)</term>
+    <term><literal>REFERENCES <replaceable class="parameter">reftable</replaceable> [ ( <replaceable class="parameter">refcolumn</replaceable> ) ] [ MATCH <replaceable class="parameter">matchtype</replaceable> ] [ ON DELETE <replaceable class="parameter">referential_action</replaceable> ] [ ON UPDATE <replaceable class="parameter">referential_action</replaceable> ]</literal> (column constraint)</term>
 
    <term><literal>FOREIGN KEY ( <replaceable class="parameter">column_name</replaceable> [, ... ] )
     REFERENCES <replaceable class="parameter">reftable</replaceable> [ ( <replaceable class="parameter">refcolumn</replaceable> [, ... ] ) ]
     [ MATCH <replaceable class="parameter">matchtype</replaceable> ]
-    [ ON DELETE <replaceable class="parameter">action</replaceable> ]
-    [ ON UPDATE <replaceable class="parameter">action</replaceable> ]</literal>
+    [ ON DELETE <replaceable class="parameter">referential_action</replaceable> ]
+    [ ON UPDATE <replaceable class="parameter">referential_action</replaceable> ]</literal>
     (table constraint)</term>
 
     <listitem>
@@ -887,9 +998,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       addition of a foreign key constraint requires a
       <literal>SHARE ROW EXCLUSIVE</literal> lock on the referenced table.
       Note that foreign key constraints cannot be defined between temporary
-      tables and permanent tables.  Also note that while it is possible to
-      define a foreign key on a partitioned table, it is not possible to
-      declare a foreign key that references a partitioned table.
+      tables and permanent tables.
      </para>
 
      <para>
@@ -1005,6 +1114,20 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
+   <varlistentry id="sql-createtable-method">
+    <term><literal>USING <replaceable class="parameter">method</replaceable></literal></term>
+    <listitem>
+     <para>
+      This optional clause specifies the table access method to use to store
+      the contents for the new table; the method needs be an access method of
+      type <literal>TABLE</literal>. See <xref linkend="tableam"/> for more
+      information.  If this option is not specified, the default table access
+      method is chosen for the new table. See <xref
+      linkend="guc-default-table-access-method"/> for more information.
+     </para>
+    </listitem>
+   </varlistentry>
+
    <varlistentry>
     <term><literal>WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
     <listitem>
@@ -1012,37 +1135,21 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       이절은 테이블이나 인덱스에 대한 선택적 storage parameter를 지정합니다.
           더 많은 정보는 <xref linkend="sql-createtable-storage-parameters"
       endterm="sql-createtable-storage-parameters-title"/>를 참고하십시오.
-          또한, 테이블에 대한 <literal>WITH</literal> 절은,
-          신규 테이블의 행이 OID(개체 식별자)를 갖도록 지정하는 <literal>OIDS=TRUE</literal> (또는 그냥 <literal>OIDS</literal>)나
-          행이 OID를 가질수 없도록 지정하는 <literal>OIDS=FALSE</literal>를 포함할 수 있습니다.
-          <literal>OIDS</literal>가 지정되지 않으면, 기본 설정은 <xref linkend="guc-default-with-oids"/> 구성 파라미터를 따라갑니다.
-          (신규 테이블이 OID를 갖는 테이블을 상속받는 경우, <literal>OIDS=FALSE</literal>라고 명령을 내려도 강제로 <literal>OID=TRUE</literal>가 됩니다.)
-     </para>
-
-     <para>
-      <literal>OIDS=FALSE</literal>가 지정되거나 암시되면,
-          신규 테이블은 OID를 저장하지 않으며, 해당 테이블에 새로 추가되는 행에도 OID가 할당되지 않게 됩니다.
-          이는 보통 유용한데, OID 소비를 줄이며 32비트 OID 카운터의 꺾어짐(wrap-around)을 지연시키기 때문입니다.
-          카운터가 한번 꺾어지면, OID는 더 이상 고유하지 않게되어, 유용성이 상당히 떨어지게 됩니다.
-          또한, 테이블에서 OID를 제거하면 디스크에 해당 테이블을 저장하기 위한 공간이, 매 행마다 (대부분의 장치에서)4바이트씩 줄어들며,
-          성능 향상에 약간의 도움이 됩니다.
-          </para>
-
-     <para>
-      테이블이 생성된 이후 OID를 제거하려면, <xref
-      linkend="sql-altertable"/>을이용하십시오.
+      For backward-compatibility the <literal>WITH</literal>
+      clause for a table can also include <literal>OIDS=FALSE</literal> to
+      specify that rows of the new table should not contain OIDs (object
+      identifiers), <literal>OIDS=TRUE</literal> is not supported anymore.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>WITH OIDS</literal></term>
     <term><literal>WITHOUT OIDS</literal></term>
     <listitem>
      <para>
-      각각, <literal>WITH (OIDS)</literal> 및 <literal>WITH (OIDS=FALSE)</literal>와 동일한 구식 문법입니다.
-          만약, <literal>OIDS</literal> 설정과 storage parameter를 동시에 지정하고 싶다면,
-          위의 <literal>WITH ( ... )</literal>구문을 사용해야 합니다. 위를 참고하십시오.
+      This is backward-compatible syntax for declaring a table
+      <literal>WITHOUT OIDS</literal>, creating a table <literal>WITH
+      OIDS</literal> is not supported anymore.
      </para>
     </listitem>
    </varlistentry>
@@ -1071,7 +1178,8 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
          <para>
           각 트랜잭션 블록의 끝에서 임시 테이블의 모든 행이 삭제됩니다.
                   본질적으로 각 commit마다 자동으로 <xref
-          linkend="sql-truncate"/>이 행해집니다.
+          linkend="sql-truncate"/>이 행해집니다.  When used on a partitioned table, this
+          is not cascaded to its partitions.
          </para>
         </listitem>
        </varlistentry>
@@ -1080,7 +1188,10 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
         <term><literal>DROP</literal></term>
         <listitem>
          <para>
-          현재 트랜잭션 블록의 끝에서 임시 테이블이 drop 됩니다.
+          현재 트랜잭션 블록의 끝에서 임시 테이블이 drop
+          됩니다.  When used on a partitioned table, this action
+          drops its partitions and when used on tables with inheritance
+          children, it drops the dependent children.
          </para>
         </listitem>
        </varlistentry>
@@ -1088,7 +1199,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-createtable-tablespace">
     <term><literal>TABLESPACE <replaceable class="parameter">tablespace_name</replaceable></literal></term>
     <listitem>
      <para>
@@ -1108,6 +1219,10 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
           또는 <literal>EXCLUDE</literal> 제약과 연관된 인덱스가 생성될 테이블스페이스를 선택할 수 있게 합니다.
           지정하지 않으면 <xref linkend="guc-default-tablespace"/>가 제시되며,
           임시 테이블인 경우엔 <xref linkend="guc-temp-tablespaces"/>가 됩니다.
+      For partitioned tables, since no storage is required for the table itself,
+      the tablespace specified overrides <literal>default_tablespace</literal>
+      as the default tablespace to use for any newly created partitions when no
+      other tablespace is explicitly specified.
      </para>
     </listitem>
    </varlistentry>
@@ -1139,8 +1254,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
    <variablelist>
 
-   <varlistentry>
-    <term><literal>fillfactor</literal> (<type>integer</type>)</term>
+    <varlistentry id="reloption-fillfactor" xreflabel="fillfactor">
+    <term><varname>fillfactor</varname> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>fillfactor</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       테이블에 대한 fillfactor는 10부터 100까지의 백분율입니다.
@@ -1156,15 +1275,20 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>toast_tuple_target</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-toast-tuple-target" xreflabel="toast_tuple_target">
+    <term><literal>toast_tuple_target</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>toast_tuple_target</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       The toast_tuple_target specifies the minimum tuple length required before
-      we try to move long column values into TOAST tables, and is also the
-      target length we try to reduce the length below once toasting begins.
-      This only affects columns marked as either External or Extended
-      and applies only to new tuples - there is no effect on existing rows.
+      we try to compress and/or move long column values into TOAST tables, and
+      is also the target length we try to reduce the length below once toasting
+      begins. This affects columns marked as External (for move),
+      Main (for compression), or Extended (for both) and applies only to new
+      tuples. There is no effect on existing rows.
       By default this parameter is set to allow at least 4 tuples per block,
       which with the default blocksize will be 2040 bytes. Valid values are
       between 128 bytes and the (blocksize - header), by default 8160 bytes.
@@ -1177,8 +1301,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>parallel_workers</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-parallel-workers" xreflabel="parallel_workers">
+    <term><literal>parallel_workers</literal> (<type>integer</type>)
+     <indexterm>
+     <primary><varname>parallel_workers</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블을 조회 할 때 사용할 병렬 처리 작업자 수를 지정한다.  이 값이
@@ -1190,8 +1318,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_enabled</literal>, <literal>toast.autovacuum_enabled</literal> (<type>boolean</type>)</term>
+   <varlistentry id="reloption-autovacuum-enabled" xreflabel="autovacuum_enabled">
+    <term><literal>autovacuum_enabled</literal>, <literal>toast.autovacuum_enabled</literal> (<type>boolean</type>)
+    <indexterm>
+     <primary><varname>autovacuum_enabled</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
      지정 테이블에 대한 autovacuum daemon을 활성화 또는 비활성화 합니다.
@@ -1210,8 +1342,53 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_vacuum_threshold</literal>, <literal>toast.autovacuum_vacuum_threshold</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-vacuum-index-cleanup" xreflabel="vacuum_index_cleanup">
+    <term><literal>vacuum_index_cleanup</literal>, <literal>toast.vacuum_index_cleanup</literal> (<type>boolean</type>)
+    <indexterm>
+     <primary><varname>vacuum_index_cleanup</varname> storage parameter</primary>
+    </indexterm>
+    </term>
+    <listitem>
+     <para>
+      Enables or disables index cleanup when <command>VACUUM</command> is
+      run on this table.  The default value is <literal>true</literal>.
+      Disabling index cleanup can speed up <command>VACUUM</command> very
+      significantly, but may also lead to severely bloated indexes if table
+      modifications are frequent.  The <literal>INDEX_CLEANUP</literal>
+      parameter of <xref linkend="sql-vacuum"/>, if specified, overrides
+      the value of this option.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="reloption-vacuum-truncate" xreflabel="vacuum_truncate">
+    <term><literal>vacuum_truncate</literal>, <literal>toast.vacuum_truncate</literal> (<type>boolean</type>)
+    <indexterm>
+     <primary><varname>vacuum_truncate</varname> storage parameter</primary>
+    </indexterm>
+    </term>
+    <listitem>
+     <para>
+      Enables or disables vacuum to try to truncate off any empty pages
+      at the end of this table. The default value is <literal>true</literal>.
+      If <literal>true</literal>, <command>VACUUM</command> and
+      autovacuum do the truncation and the disk space for
+      the truncated pages is returned to the operating system.
+      Note that the truncation requires <literal>ACCESS EXCLUSIVE</literal>
+      lock on the table. The <literal>TRUNCATE</literal> parameter
+      of <xref linkend="sql-vacuum"/>, if specified, overrides the value
+      of this option.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="reloption-autovacuum-vacuum-threshold" xreflabel="autovacuum_vacuum_threshold">
+    <term><literal>autovacuum_vacuum_threshold</literal>, <literal>toast.autovacuum_vacuum_threshold</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_vacuum_threshold</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-vacuum-threshold"/>
@@ -1220,8 +1397,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_vacuum_scale_factor</literal>, <literal>toast.autovacuum_vacuum_scale_factor</literal> (<type>float4</type>)</term>
+   <varlistentry id="reloption-autovacuum-vacuum-scale-factor" xreflabel="autovacuum_vacuum_scale_factor">
+    <term><literal>autovacuum_vacuum_scale_factor</literal>, <literal>toast.autovacuum_vacuum_scale_factor</literal> (<type>floating point</type>)
+    <indexterm>
+     <primary><varname>autovacuum_vacuum_scale_factor</varname> </primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-vacuum-scale-factor"/>
@@ -1230,8 +1412,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_analyze_threshold</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-analyze-threshold" xreflabel="autovacuum_analyze_threshold">
+    <term><literal>autovacuum_analyze_threshold</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_analyze_threshold</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-analyze-threshold"/>
@@ -1240,8 +1427,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_analyze_scale_factor</literal> (<type>float4</type>)</term>
+   <varlistentry id="reloption-autovacuum-analyze-scale-factor" xreflabel="autovacuum_analyze_scale_factor">
+    <term><literal>autovacuum_analyze_scale_factor</literal> (<type>floating point</type>)
+    <indexterm>
+     <primary><varname>autovacuum_analyze_scale_factor</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별  <xref linkend="guc-autovacuum-analyze-scale-factor"/>
@@ -1250,8 +1442,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_vacuum_cost_delay</literal>, <literal>toast.autovacuum_vacuum_cost_delay</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-vacuum-cost-delay" xreflabel="autovacuum_vacuum_cost_delay">
+    <term><literal>autovacuum_vacuum_cost_delay</literal>, <literal>toast.autovacuum_vacuum_cost_delay</literal> (<type>floating point</type>)
+    <indexterm>
+     <primary><varname>autovacuum_vacuum_cost_delay</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-vacuum-cost-delay"/> 설정
@@ -1259,8 +1456,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_vacuum_cost_limit</literal>, <literal>toast.autovacuum_vacuum_cost_limit</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-vacuum-cost-limit" xreflabel="autovacuum_vacuum_cost_limit">
+    <term><literal>autovacuum_vacuum_cost_limit</literal>, <literal>toast.autovacuum_vacuum_cost_limit</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_vacuum_cost_limit</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-vacuum-cost-limit"/> 설정
@@ -1268,8 +1470,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_freeze_min_age</literal>, <literal>toast.autovacuum_freeze_min_age</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-freeze-min-age" xreflabel="autovacuum_freeze_min_age">
+    <term><literal>autovacuum_freeze_min_age</literal>, <literal>toast.autovacuum_freeze_min_age</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_freeze_min_age</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
          해당 테이블 단위 개별 <xref linkend="guc-vacuum-freeze-min-age"/> 설정.
@@ -1280,8 +1486,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_freeze_max_age</literal>, <literal>toast.autovacuum_freeze_max_age</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-freeze-max-age" xreflabel="autovacuum_freeze_max_age">
+    <term><literal>autovacuum_freeze_max_age</literal>, <literal>toast.autovacuum_freeze_max_age</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_freeze_max_age</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-freeze-max-age"/> 설정.
@@ -1293,8 +1504,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_freeze_table_age</literal>, <literal>toast.autovacuum_freeze_table_age</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-freeze-table-age" xreflabel="autovacuum_freeze_table_age">
+    <term><literal>autovacuum_freeze_table_age</literal>, <literal>toast.autovacuum_freeze_table_age</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_freeze_table_age</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-vacuum-freeze-table-age"/> 설정.
@@ -1302,8 +1517,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_multixact_freeze_min_age</literal>, <literal>toast.autovacuum_multixact_freeze_min_age</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-multixact-freeze-min-age" xreflabel="autovacuum_multixact_freeze_min_age">
+    <term><literal>autovacuum_multixact_freeze_min_age</literal>, <literal>toast.autovacuum_multixact_freeze_min_age</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_multixact_freeze_min_age</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
        해당 테이블 단위 개별 <xref linkend="guc-vacuum-multixact-freeze-min-age"/> 설정.
@@ -1314,8 +1533,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_multixact_freeze_max_age</literal>, <literal>toast.autovacuum_multixact_freeze_max_age</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-multixact-freeze-max-age" xreflabel="autovacuum_multixact_freeze_max_age">
+    <term><literal>autovacuum_multixact_freeze_max_age</literal>, <literal>toast.autovacuum_multixact_freeze_max_age</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_multixact_freeze_max_age</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-multixact-freeze-max-age"/> 설정.
@@ -1327,8 +1551,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>autovacuum_multixact_freeze_table_age</literal>, <literal>toast.autovacuum_multixact_freeze_table_age</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-autovacuum-multixact-freeze-table-age" xreflabel="autovacuum_multixact_freeze_table_age">
+    <term><literal>autovacuum_multixact_freeze_table_age</literal>, <literal>toast.autovacuum_multixact_freeze_table_age</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_multixact_freeze_table_age</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-vacuum-multixact-freeze-table-age"/> 설정.
@@ -1336,8 +1564,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>log_autovacuum_min_duration</literal>, <literal>toast.log_autovacuum_min_duration</literal> (<type>integer</type>)</term>
+   <varlistentry id="reloption-log-autovacuum-min-duration" xreflabel="log_autovacuum_min_duration">
+    <term><literal>log_autovacuum_min_duration</literal>, <literal>toast.log_autovacuum_min_duration</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>log_autovacuum_min_duration</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-log-autovacuum-min-duration"/> 설정.
@@ -1345,8 +1578,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
-    <term><literal>user_catalog_table</literal> (<type>boolean</type>)</term>
+   <varlistentry id="reloption-user-catalog-table" xreflabel="user_catalog_table">
+    <term><literal>user_catalog_table</literal> (<type>boolean</type>)
+    <indexterm>
+     <primary><varname>user_catalog_table</varname> storage parameter</primary>
+    </indexterm>
+    </term>
     <listitem>
      <para>
       논리 복제를 위한 사용자 정의 카탈로그 테이블로 지정.
@@ -1364,24 +1601,6 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
  <refsect1 id="sql-createtable-notes">
   <title>참고</title>
-
-    <para>
-     신규 응용프로그램에 OID를 사용하는 것은 권장하지 않습니다.
-         가능하면, 테이블의 primary key로 식별 칼럼이나 다른 시퀀스 생성기를 사용하는 것을 추천합니다.
-         하지만, 여러분의 응용프로그램이 OID를 테이블의 특정 행을 식별하기 위해 사용한다면,
-         카운터가 꺾어지더라도 테이블에 있는 OID가 실제로 행을 고유하게 식별함을 보장하기 위해,
-         해당 테이블의 <structfield>oid</structfield> 열에 unique 제약을 생성하는 것을 추천합니다.
-         OID가 테이블 전체에서 고유하다고 가정하지 마십시오.
-         데이터베이스 전반에 고유한 식별자가 필요하다면,
-         <structfield>tableoid</structfield>와 행 OID를 조합하여 사용하십시오.
-    </para>
-
-    <tip>
-     <para>
-          Primary key가 없는 테이블에 <literal>OIDS=FALSE</literal>를 사용하는 것은 추천하지 않습니다.
-          OID나 고유 데이터 키 둘다 없기 때문에, 특정 행을 식별하기가 어렵습니다.
-     </para>
-    </tip>
 
     <para>
      <productname>PostgreSQL</productname>은 고유성을 강제하기 위해,
@@ -1721,7 +1940,7 @@ CREATE TABLE cities_partdef
  </refsect1>
 
  <refsect1 id="sql-createtable-compatibility">
-  <title id="sql-createtable-compatibility-title">Compatibility</title>
+  <title id="sql-createtable-compatibility-title">호환성</title>
 
   <para>
    <command>CREATE TABLE</command> 명령은 아래에 나열된 예외를 제외하고,
@@ -1774,7 +1993,7 @@ CREATE TABLE cities_partdef
   </refsect2>
 
   <refsect2>
-   <title>Non-deferred Uniqueness Constraints</title>
+   <title>Non-Deferred Uniqueness Constraints</title>
 
    <para>
     <literal>UNIQUE</literal>나 <literal>PRIMARY KEY</literal> 제약이 not deferrable이면,
@@ -1854,7 +2073,7 @@ CREATE TABLE cities_partdef
   </refsect2>
 
   <refsect2>
-   <title>열이 없는 테이블(Zero-column Table)</title>
+   <title>열이 없는 테이블(Zero-Column Table)</title>
 
    <para>
     <productname>PostgreSQL</productname>는 열이 없는 테이블을 생성할 수 있습니다.
@@ -1881,6 +2100,16 @@ CREATE TABLE cities_partdef
   </refsect2>
 
   <refsect2>
+   <title>Generated Columns</title>
+
+   <para>
+    The option <literal>STORED</literal> is not standard but is also used by
+    other SQL implementations.  The SQL standard does not specify the storage
+    of generated columns.
+   </para>
+  </refsect2>
+
+  <refsect2>
    <title><literal>LIKE</literal> 절</title>
 
    <para>
@@ -1897,7 +2126,7 @@ CREATE TABLE cities_partdef
 
    <para>
     <literal>WITH</literal>절은 <productname>PostgreSQL</productname>의 확장입니다.
-        Storage parameters와 OID 둘 다 표준에는 없습니다.
+        Storage parameters 설정은 표준에는 없습니다.
    </para>
   </refsect2>
 
@@ -1918,8 +2147,7 @@ CREATE TABLE cities_partdef
     Typed table은 SQL 표준의 subset을 구현합니다.
         표준에 따라, typed 테이블은 내재된 복합 자료형과 관련된 열과 더불어,
         <quote>자기-참조 열</quote>과 관련된 열을 하나 더 갖고 있습니다.
-        PostgreSQL은 이 자기-참조열을 명시적으로 지원하지 않지만,
-        OID 기능을 이용하여 동일한 효과를 얻을 수 있습니다.
+        PostgreSQL은 이 자기-참조열을 명시적으로 지원하지 않습니다.
    </para>
   </refsect2>
 

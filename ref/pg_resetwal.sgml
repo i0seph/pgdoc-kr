@@ -24,20 +24,20 @@ PostgreSQL documentation
   <cmdsynopsis>
    <command>pg_resetwal</command>
    <group choice="opt">
-    <arg choice="plain"><option>--force</option></arg>
     <arg choice="plain"><option>-f</option></arg>
+    <arg choice="plain"><option>--force</option></arg>
    </group>
    <group choice="opt">
-    <arg choice="plain"><option>--dry-run</option></arg>
     <arg choice="plain"><option>-n</option></arg>
+    <arg choice="plain"><option>--dry-run</option></arg>
    </group>
    <arg rep="repeat"><replaceable>옵션</replaceable></arg>
    <group choice="plain">
     <group choice="opt">
-     <arg choice="plain"><option>--pgdata</option></arg>
      <arg choice="plain"><option>-D</option></arg>
+     <arg choice="plain"><option>--pgdata</option></arg>
     </group>
-    <replaceable class="parameter"> 데이터디렉터리</replaceable>
+    <replaceable class="parameter">데이터디렉터리</replaceable>
    </group>
   </cmdsynopsis>
  </refsynopsisdiv>
@@ -306,6 +306,23 @@ PostgreSQL documentation
       곱해서 사용한다.  파일 이름은 16진수를 사용한다.  
       예를 들어, 가장 큰 파일이 <filename>0011</filename> 이면,
       <literal>-x 0x1200000</literal> 옵션을 사용한다.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </refsect1>
+
+ <refsect1>
+  <title>Environment</title>
+
+  <variablelist>
+   <varlistentry>
+    <term><envar>PG_COLOR</envar></term>
+    <listitem>
+     <para>
+      Specifies whether to use color in diagnostic messages. Possible values
+      are <literal>always</literal>, <literal>auto</literal> and
+      <literal>never</literal>.
      </para>
     </listitem>
    </varlistentry>

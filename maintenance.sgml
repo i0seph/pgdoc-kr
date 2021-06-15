@@ -142,7 +142,7 @@
     있어도 동시에 사용할 수 있다. (하지만, <command>ALTER TABLE</command>
     명령과 같은 명령은 VACUUM 작업이 실행되고 있는 상황에서는 사용할 수 없다.)
     <command>VACUUM FULL</command> 명령은 해당 테이블에 대한 
-    배타적 잠금(exclusive lock)을 지정하기 때문에, 
+    배타적 잠금(<literal>ACCESS EXCLUSIVE</literal>)을 지정하기 때문에, 
     어떤 작업도 할 수 없게 된다.
     이렇기 때문에, 일반적 상황에서는 관리자는 <command>VACUUM FULL</command> 작업을
     되도록이면 피하고, 표준 <command>VACUUM</command> 작업을 하겠끔 신경 써야한다.
@@ -260,7 +260,8 @@
     <xref linkend="sql-altertable"/> 명령(CLUSTER ON 옵션)을 이용해서, 
     테이블을 아에 새롭게 만드는 방법을 선택할 수 있다.
     이들 명령을 사용할 때는 반드시 주의해야할 사항은 
-    이들 명령은 테이블 대상으로 배타적 잠금을 한다는 점이다.
+    이들 명령은 테이블 대상으로 배타적
+    잠금(<literal>ACCESS EXCLUSIVE</literal>)을 한다는 점이다.
     즉, 이 작업이 완료되기 전까지 그 테이블을 대상으로 하는 
     다른 모든 작업들을 다른 세션에서는 할 수 없게 됨을 염두해 
     두어야 하며, 이들 작업은 작업 도중 원본과 다른 새로운 복사본
@@ -656,15 +657,14 @@ SELECT datname, age(datfrozenxid) FROM pg_database;
    </para>
 
    <para>
-    만일 어떤 알 수 없는 오류로, 
-    autovacuum 작업이 제대로 진행 되지 못하는 경우를 대비 해서,
-    그 데이이터베이스의 가장 오래된 트랜잭션이 
-    위험 수위에 다다르면  - 통상 1천만 트랜잭션 정도 밖에 처리 할 수
-    없는 상황이면, 다음과 같은 서버 경고 메시지를 보여준다:
+    만일 어떤 이유로 한 테이블에서 오래된 XID를 정리하는 
+    작업을 autovacuum에서 실패한다면, 그 XID가 계속 남아 있어, 
+    트랜잭션ID 겹침이 발생할 시점 기준으로 처리 가능한 트랜잭션 수가 
+    1천1백만 정도되면 다음과 같은 서버 경고 메시지를 보여준다:
 
 <programlisting>
-WARNING:  database "mydb" must be vacuumed within 177009986 transactions
-HINT:  To avoid a database shutdown, execute a database-wide VACUUM in "mydb".
+WARNING:  database "mydb" must be vacuumed within 10985967 transactions
+HINT:  To avoid a database shutdown, execute a database-wide VACUUM in that database.
 </programlisting>
 
     (서버 힌트처럼 이런 경우는 관리자가 직접 수동으로 
@@ -905,6 +905,34 @@ analyze 임계치 = analyze 초기 임계치 + analyze 배율값 * 로우수
     또는 <literal>autovacuum_vacuum_cost_limit</literal> 설정은 위 균등 배분 비용 처리 계산에
     포함되지 않는다.
    </para>
+
+   <para>
+    autovacuum worker 프로세스가 하는 작업 때문에, 다른 작업들이 대기
+    상태가 되는 경우는 없다.  만일 그 다른 작업이
+    <literal>SHARE UPDATE EXCLUSIVE</literal> 잠금을 사용하는 경우는
+    autovacuum 작업이 중지 된다.  잠금과 충돌에 따른 대기 상황에 대한
+    자세한 설명은 xref linkend="table-lock-compatibility"/>에서
+    다룬다.  하지만, 
+    트랙잭션 ID 겹침 방지를 위한 autovacuum 작업(예, 
+    <structname>pg_stat_activity</structname> 뷰에서 autovacuum 실행
+    쿼리 끝부분이 <literal>(to prevent wraparound)</literal> 인 경우)은
+    autovacuum 작업이 자동 중지 되지 않는다. 
+    (즉, 사용자의 작업이 대기 상태로 빠진다. - 옮긴이)
+   </para>
+
+   <warning>
+    <para>
+     위에서 설명한 특성 때문에, 
+     <literal>SHARE UPDATE EXCLUSIVE</literal> 잠금을 사용하는 작업
+     (예, ANALYZE)들이 정기적으로 실행된다면, 
+     autovacuum 작업이 계속 중지되면서 해당 테이블의 autovacuum 작업이 
+     정상적으로 완료되지 않을 수 있다. (의역)
+     다음은 영어 원문, 
+     Regularly running commands that acquire locks conflicting with a
+     <literal>SHARE UPDATE EXCLUSIVE</literal> lock (e.g., ANALYZE) can
+     effectively prevent autovacuums from ever completing.
+    </para>
+   </warning>
   </sect2>
  </sect1>
 
@@ -952,24 +980,13 @@ analyze 임계치 = analyze 초기 임계치 + analyze 배율값 * 로우수
   </para>
 
   <para>
-   인덱스를 다시 새롭게 만드는 가장 손쉬운 방법은 
-   <xref linkend="sql-reindex"/> 명령을 이용하는 것이다.
-   하지만, 이 작업은 해당 테이블에 대해서 배타적 잠금을 지정하기 때문에, 
-   새로운 인덱스를 만들고, 옛 인덱스로 바꾸는 여러 작업으로 나누워
-   진행하는 것이 일반적이다.  <xref linkend="sql-createindex"/> 명령을 
-   사용할 때,
-   해당 인덱스가 <literal>CONCURRENTLY</literal> 옵션을 사용 할 수 있다면,
-   이 옵션을 이용하는 것도 한 방법이다.
-   새 인덱스가 정상적으로 만들어졌다면, 
-   옛 인덱스를 <xref linkend="sql-dropindex"/> 명령으로 지우고, 
-   새 인덱스의 이름을  <xref linkend="sql-alterindex"/>
-   명령으로 바꾸면 된다.
-   한편, 인덱스가 유니크나 기본키 제약조건에서 
-   사용된다면, 새로 만들어진 새 인덱스를 <xref linkend="sql-altertable"/>
-   명령을 통해서 제약조건 변경 작업을 하고, 옛 인덱스를 지우는 식으로 
-   진행한다.  여기서 소개한 인덱스 다시 만들기 작업은 
-   반드시 각 작업이 정상적으로 진행되지 못했을 경우 복구할 수 있는 
-   방안에 대해서 꼼꼼히 준비해서 작업해야할 것이다.
+   이런 경우, <xref linkend="sql-reindex"/> 명령을 이용해서, 
+   안전하고 쉽게 인덱스를 새로 만들 수 있다.
+   이 명령은 기본적으로 <literal>ACCESS EXCLUSIVE</literal> 모드로
+   해당 테이블을 잠근다.  인덱스를 다시 만드는 중에도, 
+   자료 변경을 할 수 있도록 하려면, <literal>CONCURRENTLY</literal>
+   옵션을 사용한다.  이 때는 <literal>SHARE UPDATE EXCLUSIVE</literal>
+   모드로 테이블을 잠근다.
   </para>
  </sect1>
 
@@ -1042,6 +1059,36 @@ pg_ctl start | rotatelogs /var/log/pgsql_log 86400
   </para>
 
   <para>
+   You can combine these approaches by setting up <application>logrotate</application>
+   to collect log files produced by <productname>PostgreSQL</productname> built-in
+   logging collector.  In this case, the logging collector defines the names and
+   location of the log files, while <application>logrotate</application>
+   periodically archives these files.  When initiating log rotation,
+   <application>logrotate</application> must ensure that the application
+   sends further output to the new file.  This is commonly done with a
+   <literal>postrotate</literal> script that sends a <literal>SIGHUP</literal>
+   signal to the application, which then reopens the log file.
+   In <productname>PostgreSQL</productname>, you can run <command>pg_ctl</command>
+   with the <literal>logrotate</literal> option instead.  When the server receives
+   this command, the server either switches to a new log file or reopens the
+   existing file, depending on the logging configuration
+   (see <xref linkend="runtime-config-logging-where"/>).
+  </para>
+
+  <note>
+   <para>
+    When using static log file names, the server might fail to reopen the log
+    file if the max open file limit is reached or a file table overflow occurs.
+    In this case, log messages are sent to the old log file until a
+    successful log rotation. If <application>logrotate</application> is
+    configured to compress the log file and delete it, the server may lose
+    the messages logged in this timeframe. To avoid this issue, you can
+    configure the logging collector to dynamically assign log file names
+    and use a <literal>prerotate</literal> script to ignore open log files.
+    </para>
+  </note>
+
+  <para>
    로그 파일을 다루는 또 다른 한가지 방법은, 
    그 출력을 <application>syslog</application> 쪽으로 보내는 것이다. 
    이렇게 하면, <application>syslog</application> 프로그램이 
@@ -1086,7 +1133,7 @@ pg_ctl start | rotatelogs /var/log/pgsql_log 86400
 
   <para>
    아울러 이 로그 파일을 사용하는 몇몇 도구를 소개하면,
-   <ulink url="http://dalibo.github.io/pgbadger/"><productname>pgBadger</productname></ulink>
+   <ulink url="https://pgbadger.darold.net/"><productname>pgBadger</productname></ulink>
    라는 서버가 남긴 로그 파일을 정교하게 분석해서 보여주는 
    외부 프로젝트가 있다.
    <ulink

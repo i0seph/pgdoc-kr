@@ -261,7 +261,9 @@ CREATE [ CONSTRAINT ] TRIGGER <replaceable class="parameter">name</replaceable> 
 UPDATE OF <replaceable>column_name1</replaceable> [, <replaceable>column_name2</replaceable> ... ]
 </synopsis>
       The trigger will only fire if at least one of the listed columns
-      is mentioned as a target of the <command>UPDATE</command> command.
+      is mentioned as a target of the <command>UPDATE</command> command
+      or if one of the listed columns is a generated column that depends on a
+      column that is the target of the <command>UPDATE</command>.
      </para>
 
      <para>
@@ -456,6 +458,12 @@ UPDATE OF <replaceable>column_name1</replaceable> [, <replaceable>column_name2</
   </para>
 
   <para>
+   There are a few built-in trigger functions that can be used to
+   solve common problems without having to write your own trigger code;
+   see <xref linkend="functions-trigger"/>.
+  </para>
+
+  <para>
    In a <literal>BEFORE</literal> trigger, the <literal>WHEN</literal> condition is
    evaluated just before the function is or would be executed, so using
    <literal>WHEN</literal> is not materially different from testing the same
@@ -463,7 +471,7 @@ UPDATE OF <replaceable>column_name1</replaceable> [, <replaceable>column_name2</
    that the <literal>NEW</literal> row seen by the condition is the current value,
    as possibly modified by earlier triggers.  Also, a <literal>BEFORE</literal>
    trigger's <literal>WHEN</literal> condition is not allowed to examine the
-   system columns of the <literal>NEW</literal> row (such as <literal>oid</literal>),
+   system columns of the <literal>NEW</literal> row (such as <literal>ctid</literal>),
    because those won't have been set yet.
   </para>
 
@@ -524,6 +532,7 @@ UPDATE OF <replaceable>column_name1</replaceable> [, <replaceable>column_name2</
    Creating a row-level trigger on a partitioned table will cause identical
    triggers to be created in all its existing partitions; and any partitions
    created or attached later will contain an identical trigger, too.
+   If the partition is detached from its parent, the trigger is removed.
    Triggers on partitioned tables may only be <literal>AFTER</literal>.
   </para>
 

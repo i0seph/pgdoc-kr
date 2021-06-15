@@ -33,7 +33,7 @@ CREATE ROLE <replaceable class="parameter">이름</replaceable> [ [ WITH ] <repl
     | REPLICATION | NOREPLICATION
     | BYPASSRLS | NOBYPASSRLS
     | CONNECTION LIMIT <replaceable class="parameter">접속제한</replaceable>
-    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>'
+    | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">비밀번호</replaceable>' | PASSWORD NULL
     | VALID UNTIL '<replaceable class="parameter">타임스탬프</replaceable>'
     | IN ROLE <replaceable class="parameter">롤이름</replaceable> [, ...]
     | IN GROUP <replaceable class="parameter">롤이름</replaceable> [, ...]
@@ -43,6 +43,11 @@ CREATE ROLE <replaceable class="parameter">이름</replaceable> [ [ WITH ] <repl
     | SYSID <replaceable class="parameter">uid</replaceable>
 </synopsis>
  </refsynopsisdiv>
+
+<!--
+CAUTION: remember to keep create_user.sgml and create_group.sgml
+in sync when changing the above synopsis!
+-->
 
  <refsect1>
   <title>설명</title>
@@ -178,7 +183,8 @@ CREATE ROLE <replaceable class="parameter">이름</replaceable> [ [ WITH ] <repl
         <literal>REPLICATION</literal> 옵션을 사용하는 롤은
         꽤 높은 권한을 가진다.  이렇기 때문에, 복제 용도로만
         사용하는 것이 안전한다.
-        기본값은 <literal>NOREPLICATION</literal>.
+        기본값은 <literal>NOREPLICATION</literal>.  슈퍼유저만
+        <literal>REPLICATION</literal> 새 롤을 만들 수 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -196,8 +202,9 @@ CREATE ROLE <replaceable class="parameter">이름</replaceable> [ [ WITH ] <repl
         만일 <literal>NOBYPASSRLS</literal> 롤(일반 사용자)이 
         로우 단위 보안 정책을 사용하고 있는 테이블을 덤프 하고자 한다면,
         오류로 처리한다.  슈퍼유저와, 
-        <literal>BYPASSRLS</literal> 옵션을 사용하는 옵션은 이 문제를 
-        피할 수 있다.
+        <literal>BYPASSRLS</literal> 옵션을 사용하는 롤은 이 문제를 
+        피할 수 있다.  슈퍼유저만
+        <literal>BYPASSRLS</literal> 새 롤을 만들 수 있다.
        </para>
       </listitem>
      </varlistentry>
@@ -216,7 +223,8 @@ CREATE ROLE <replaceable class="parameter">이름</replaceable> [ [ WITH ] <repl
      </varlistentry>
 
      <varlistentry>
-      <term>[ <literal>ENCRYPTED</literal> ] <literal>PASSWORD</literal> <replaceable class="parameter">password</replaceable></term>
+      <term>[ <literal>ENCRYPTED</literal> ] <literal>PASSWORD</literal> '<replaceable class="parameter">비밀번호</replaceable>'</term>
+      <term><literal>PASSWORD NULL</literal></term>
       <listitem>
        <para>
         해당 롤 비밀번호를 지정한다. 이 비밀번호는 로그인 인증에만

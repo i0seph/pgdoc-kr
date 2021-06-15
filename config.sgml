@@ -46,13 +46,21 @@
  <emphasis>String:</emphasis>
  일반적으로 앞뒤에 작은따옴표가 표시되며, 값 내에서는 작은따옴표가 겹쳐서 사용된다. 
  값이 보통 단순한 숫자 또는 식별자일 경우에는 따옴표를 생략할 수 있다.
+ (값이 SQL 키워드인 경우 몇 문맥에서는 작은 따옴표가 필요할 수도 있다.)
 </para>
  </listitem>
 
  <listitem>
 <para>
  <emphasis>Numeric (integer and floating point):</emphasis>
- 소수점은 floating-point 매개 변수일 때만 허용된다. 천 단위 구분자를 사용하면 안 된다. 따옴표는 불필요하다.
+       Numeric parameters can be specified in the customary integer and
+       floating-point formats; fractional values are rounded to the nearest
+       integer if the parameter is of integer type.  Integer parameters
+       additionally accept hexadecimal input (beginning
+       with <literal>0x</literal>) and octal input (beginning
+       with <literal>0</literal>), but these formats cannot have a fraction.
+       Do not use thousands separators.
+       Quotes are not required, except for hexadecimal input.
 </para>
  </listitem>
 
@@ -76,10 +84,18 @@
 
 <listitem>
  <para>
-유효 시간 단위는 <literal>ms</literal>(밀리초), <literal>s</literal>(초), <literal>min</literal>(분), <literal>h</literal>(시) 및 <literal>d</literal>(일)이다.
+유효 시간 단위는 <literal>us</literal> (microseconds), 
+<literal>ms</literal>(밀리초), <literal>s</literal>(초), <literal>min</literal>(분), <literal>h</literal>(시) 및 <literal>d</literal>(일)이다.
  </para>
 </listitem>
  </itemizedlist>
+
+       If a fractional value is specified with a unit, it will be rounded
+       to a multiple of the next smaller unit if there is one.
+       For example, <literal>30.1 GB</literal> will be converted
+       to <literal>30822 MB</literal> not <literal>32319628902 B</literal>.
+       If the parameter is of integer type, a final rounding to integer
+       occurs after any units conversion.
 </para>
  </listitem>
 
@@ -112,6 +128,8 @@ shared_buffers = 128MB
  공백은 중요하지 않으며(따옴표로 둘러싼 매개 변수 제외), 빈 라인은 무시된다. 
  해시 마크(<literal>#</literal>)는 라인의 나머지가 주석임을 의미한다. 단순 식별자 또는 숫자가 아닌 매개 변수 값은 작은 따옴표를 사용해야 한다. 
  작은 따옴표를 매개 변수 값에 포함하려면 따옴표 2개를 겹치거나 역슬래시와 따옴표를 사용해야 한다.
+     같은 매개 변수 설정이 여러개 있는 경우, 
+     마지막 것을 제외하고 나머지 모두 무시된다.
 </para>
 
 <para>
@@ -133,12 +151,29 @@ shared_buffers = 128MB
 </para>
 
 <para>
- <filename>postgresql.conf</filename> 외에, <productname>PostgreSQL</productname> 데이터 디렉터리에는 <filename>postgresql.auto.conf</filename><indexterm><primary>postgresql.auto.conf</primary></indexterm> 파일이 포함되어 있으며, 
- <filename>postgresql.conf</filename>와 형식은 동일하지만 직접 편집해서는 안 된다. 
- 이 파일에는 <xref linkend="sql-altersystem"/> 명령을 통해 제공되는 설정이 포함되어 있다. 
- <filename>postgresql.conf</filename>가 존재할 때마다 이 파일을 자동으로 읽어오고, 해당 설정이 동일하게 적용된다. 
- <filename>postgresql.auto.conf</filename>의 설정은 <filename>postgresql.conf</filename>의 설정을 오버라이드한다.
+ <filename>postgresql.conf</filename> 외에, 
+ <productname>PostgreSQL</productname> 데이터 디렉터리에는 
+ <filename>postgresql.auto.conf</filename><indexterm><primary>postgresql.auto.conf</primary></indexterm>
+ 파일이 포함되어 있으며, 
+ <filename>postgresql.conf</filename>와 형식은 동일하지만 자동으로 편집됨으로,
+ 직접 편집해서는 안 된다. 
+ 이 파일에는 <xref linkend="sql-altersystem"/> 명령을 통해 설정한 것들이 포함되어 있다. 
+ <filename>postgresql.conf</filename> 파일과 같이 환경 설정을 읽어야 할 때, 
+ 동일하게 읽으며, 
+ 같은 매개 변수 설정이 두 곳 모두 있다면,
+ <filename>postgresql.auto.conf</filename>의 설정이 최종 반영 된다. 
 </para>
+
+    <para>
+     외부 도구들로 <filename>postgresql.auto.conf</filename>
+     파일을 변경할 수는 있다.  하지만, 
+     <command>ALTER SYSTEM</command> 명령으로
+     충분히 그 내용이 바뀔 수 있음으로 서버 실행 중에는 
+     이 파일을 외부 도구로 편집하는 것을 추천하지 않는다.  외부
+     도구들로 새 설정을 맨 밑에 추가하거나, 중복된 설정을 지우거나,
+     주석 처리를 하거나 주석 처리를 취소하거나 할 수 있다. 
+     (<command>ALTER SYSTEM</command> 명령이 하는 것들이다.)
+    </para>
  </sect2>
 
  <sect2 id="config-setting-sql-command-interaction">
@@ -535,8 +570,8 @@ files.
  </para>
 
  <para>
-기본값은 3이고, <varname>max_connections</varname> 빼기
-<xref linkend="guc-max-wal-senders"/> 미만이어야 한다.
+기본값은 3이고, <varname>max_connections</varname> 수
+ 미만이어야 한다.
 이 매개 변수는 서버 시작 시에만 설정 가능하다.
  </para>
 </listitem>
@@ -662,8 +697,11 @@ Unix 도메인 소켓이 없는 Windows에서 이 매개 변수는 사용할 수
 </term>
 <listitem>
  <para>
-TCP가 keepalive 메시지를 클라이언트에 전송하기 전에 비활성화 상태로 대기하는 초 수를 지정한다. 
-0 값은 시스템 기본값을 사용한다.  이 매개 변수는
+        네트워크 활동이 없는 클라이언트가 연결을 정상적인 연결을 하고 있는지
+        OS가 TCP keepalive 메시지를 보내는 간격이다.
+        단위를 지정하지 않으면 초단위로 간주한다.
+        0 (기본값)을 지정하면,  OS 설정값을 사용한다.
+이 매개 변수는
 <symbol>TCP_KEEPIDLE</symbol> 또는 이에 상응하는 소켓 옵션을 지원하는
 시스템과 Windows에서만 지원되며, 그 외 시스템에서는 0이어야 한다. 
 Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무시되고 항상 0으로 읽힌다.
@@ -685,7 +723,7 @@ Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무�
 <listitem>
  <para>
 클라이언트에 의해 승인되지 않은 TCP keepalive 메시지를 재전송하기 전에 대기하는 초 수를 지정한다. 
-0 값은 시스템 기본값을 사용한다. 이 매개 변수는 <symbol>TCP_KEEPINTVL</symbol> 설정 또는
+0 (기본값)을 지정하면,  OS 설정값을 사용한다.  이 매개 변수는 <symbol>TCP_KEEPINTVL</symbol> 설정 또는
 이에 상응하는 소켓 옵션을 지원하는 시스템과 Windows에서만 지원되며,
 그 외 시스템에서는 0이어야 한다. 
 Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무시되고 항상 0으로 읽힌다.
@@ -706,8 +744,8 @@ Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무�
 </term>
 <listitem>
  <para>
-몇 개의 TCP keepalive를 분실해야 클라이언트와 서버의 연결 상태를 dead로 판단하는 기준이 되는 지를 정한다. 
-0 값은 시스템 기본값을 사용한다.  이 매개 변수는 
+몇 개의 TCP keepalive 메시지를 분실해야 클라이언트와 서버의 연결 상태를 dead로 판단하는 기준이 되는 지를 정한다. 
+0 (기본값)을 지정하면,  OS 설정값을 사용한다.  이 매개 변수는 
 <symbol>TCP_KEEPCNT</symbol> 설정 또는 이에 상응하는 소켓 옵션을 지원하는 시스템에서만 지원되며, 
 그 외 시스템에서는 0이어야 한다.
 Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무시되고 항상 0으로 읽힌다.
@@ -719,6 +757,33 @@ Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무�
  </note>
 </listitem>
  </varlistentry>
+
+     <varlistentry id="guc-tcp-user-timeout" xreflabel="tcp_user_timeout">
+      <term><varname>tcp_user_timeout</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>tcp_user_timeout</varname> 환경 설정 매개 변수</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Specifies the amount of time that transmitted data may
+        remain unacknowledged before the TCP connection is forcibly closed.
+        If this value is specified without units, it is taken as milliseconds.
+        0 (기본값)을 지정하면,  OS 설정값을 사용한다.
+        이 매개 변수는 OS <symbol>TCP_USER_TIMEOUT</symbol>
+        설정을 지원하는 경우만 지원되며, 그 외 OS에서는
+        0 이어야한다.
+        유닉스-도메인 소켓을 사용하는 세션에서는
+        이 값이 무시되며, 항상 0으로 간주한다.
+       </para>
+       <note>
+        <para>
+         이 매개 변수는 Windows에서 지원되지 않으며, 0이어야 한다.
+        </para>
+       </note>
+      </listitem>
+     </varlistentry>
+
 
  </variablelist>
  </sect2>
@@ -737,7 +802,9 @@ Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무�
 
 <listitem>
  <para>
-클라이언트 인증이 완료되는 최대 시간. 초 단위. 장차 되려고 하는 클라이언트가 이 시간 내에 인증 프로토콜이 완료되지 않은 경우 서버가 연결을 닫는다. 
+클라이언트 인증이 완료되는 최대 시간. 접속하고자 하는 클라이언트가 이 시간 내에
+인증 프로토콜이 완료되지 않은 경우 서버가 연결을 닫는다. 
+단위를 지정하지 않으면 초로 간주한다.
 이로써 응답이 없는 클라이언트가 연결을 무기한 점유하는 것을 방지한다. 기본값은 1분이다(<literal>1m</literal>). 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
@@ -774,10 +841,16 @@ Unix 도메인 소켓을 통해 연결된 세션에서 이 매개 변수는 무�
       </term>
       <listitem>
        <para>
-        Sets the location of the Kerberos server key file. See
-        <xref linkend="gssapi-auth"/>
-        for details. This parameter can only be set in the
+        Sets the location of the server's Kerberos key file.  The default is
+        <filename>FILE:/usr/local/pgsql/etc/krb5.keytab</filename>
+        (where the directory part is whatever was specified
+        as <varname>sysconfdir</varname> at build time; use
+        <literal>pg_config --sysconfdir</literal> to determine that).
+        If this parameter is set to an empty string, it is ignored and a
+        system-dependent default is used.
+        This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
+        See <xref linkend="gssapi-auth"/> for more information.
        </para>
       </listitem>
      </varlistentry>
@@ -951,14 +1024,21 @@ SSL 서버 개인 키가 포함된 파일 이름을 지정한다.  상대
 </term>
 <listitem>
  <para>
-  보안 연결에 사용할 수 있는 <acronym>SSL</acronym> cipher 스위트suite 목록을
-  지정한다.  이 설정 구문 및 지원되는 값 목록은 <application>OpenSSL</application>
-  패키지의 <citerefentry><refentrytitle>ciphers</refentrytitle></citerefentry> 설명서를
-  참조 바란다.  
-  이 설정은 <filename>postgresql.conf</filename> 파일 또는 서버 실행 명령 옵션에서만
-  지정 가능하다.
-  기본값은 <literal>HIGH:MEDIUM:+3DES:!aNULL</literal>이다.
-  이것은 특별한 보안 요구사항이 없을 경우에 일반적으로 합당하다. 
+        Specifies a list of <acronym>SSL</acronym> cipher suites that are
+        allowed to be used by SSL connections.  See the
+        <citerefentry><refentrytitle>ciphers</refentrytitle></citerefentry>
+        manual page in the <application>OpenSSL</application> package for the
+        syntax of this setting and a list of supported values.  Only
+        connections using TLS version 1.2 and lower are affected.  There is
+        currently no setting that controls the cipher choices used by TLS
+        version 1.3 connections.  The default value is
+        <literal>HIGH:MEDIUM:+3DES:!aNULL</literal>.  The default is usually a
+        reasonable choice unless you have specific security requirements.
+       </para>
+
+       <para>
+        이 설정은 <filename>postgresql.conf</filename> 파일 또는 서버 실행
+        명령행 옵션에서만 지정할 수 있다.
  </para>
 
  <para>
@@ -1024,7 +1104,7 @@ SSL 서버 개인 키가 포함된 파일 이름을 지정한다.  상대
   것으로 사용할 것인지 지정한다.  
   이 설정은 <filename>postgresql.conf</filename> 파일 또는 서버 실행 명령 옵션에서만
   지정 가능하다.
-  기본값은 <literal>true</literal>이다.  
+  기본값은 <literal>on</literal>이다.  
  </para>
 
  <para>
@@ -1053,12 +1133,59 @@ SSL 서버 개인 키가 포함된 파일 이름을 지정한다.  상대
  </para>
 
  <para>
-  가장 일반적인 곡선의 OpenSSL 이름: <literal>prime256v1</literal> (NIST P-256), <literal>secp384r1</literal> (NIST P-384), <literal>secp521r1</literal> (NIST P-521).
+  가장 일반적인 곡선의 OpenSSL 이름: 
+  <literal>prime256v1</literal> (NIST P-256), 
+  <literal>secp384r1</literal> (NIST P-384), 
+  <literal>secp521r1</literal> (NIST P-521).
   사용 가능한 곡선의 전체 목록은 <command>openssl ecparam -list_curves</command> 명령을 사용하면 표시할 수 있다. 
   그렇더라도 모든 곡선을 <acronym>TLS</acronym>에서 사용할 수 있는 것은 아니다.
  </para>
 </listitem>
  </varlistentry>
+
+     <varlistentry id="guc-ssl-min-protocol-version" xreflabel="ssl_min_protocol_version">
+      <term><varname>ssl_min_protocol_version</varname> (<type>enum</type>)
+      <indexterm>
+       <primary><varname>ssl_min_protocol_version</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Sets the minimum SSL/TLS protocol version to use.  Valid values are
+        currently: <literal>TLSv1</literal>, <literal>TLSv1.1</literal>,
+        <literal>TLSv1.2</literal>, <literal>TLSv1.3</literal>.  Older
+        versions of the <productname>OpenSSL</productname> library do not
+        support all values; an error will be raised if an unsupported setting
+        is chosen.  Protocol versions before TLS 1.0, namely SSL version 2 and
+        3, are always disabled.
+       </para>
+
+       <para>
+        The default is <literal>TLSv1</literal>, mainly to support older
+        versions of the <productname>OpenSSL</productname> library.  You might
+        want to set this to a higher value if all software components can
+        support the newer protocol versions.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-ssl-max-protocol-version" xreflabel="ssl_max_protocol_version">
+      <term><varname>ssl_max_protocol_version</varname> (<type>enum</type>)
+      <indexterm>
+       <primary><varname>ssl_max_protocol_version</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Sets the maximum SSL/TLS protocol version to use.  Valid values are as
+        for <xref linkend="guc-ssl-min-protocol-version"/>, with addition of
+        an empty string, which allows any protocol version.  The default is to
+        allow any version.  Setting the maximum protocol version is mainly
+        useful for testing or if some component has issues working with a
+        newer protocol.
+       </para>
+      </listitem>
+     </varlistentry>
 
      <varlistentry id="guc-ssl-dh-params-file" xreflabel="ssl_dh_params_file">
       <term><varname>ssl_dh_params_file</varname> (<type>string</type>)
@@ -1130,12 +1257,12 @@ SSL 서버 개인 키가 포함된 파일 이름을 지정한다.  상대
         This parameter determines whether the passphrase command set by
         <varname>ssl_passphrase_command</varname> will also be called during a
         configuration reload if a key file needs a passphrase.  If this
-        parameter is false (the default), then
+        parameter is off (the default), then
         <varname>ssl_passphrase_command</varname> will be ignored during a
         reload and the SSL configuration will not be reloaded if a passphrase
         is needed.  That setting is appropriate for a command that requires a
         TTY for prompting, which might not be available when the server is
-        running.  Setting this parameter to true might be appropriate if the
+        running.  Setting this parameter to on might be appropriate if the
         passphrase is obtained from a file, for example.
  </para>
 
@@ -1166,8 +1293,15 @@ SSL 서버 개인 키가 포함된 파일 이름을 지정한다.  상대
 <listitem>
  <para>
 데이터베이스 서버가 공유 메모리 버퍼용으로 사용하는 메모리 양을 설정한다. 
-기본값은 일반적으로 128메가바이트(<literal>128MB</literal>)이지만 커널 설정에서 지원하지 않는 경우 여기에 미치지 못할 수 있다(<application>initdb</application> 중에 결정됨). 
-이 설정은 최소 128킬로바이트여야 한다. (기본값이 아닌 <symbol>BLCKSZ</symbol> 값은 최소값을 변경한다.) 단, 최소값보다 훨씬 큰 설정은 일반적으로 우수한 성능이 필요할 때 사용된다. 
+기본값은 일반적으로 128메가바이트(<literal>128MB</literal>)이지만
+커널 설정에서 지원하지 않는 경우 여기에 미치지 못할 수
+있다(<application>initdb</application> 중에 결정됨). 
+이 설정은 최소 128킬로바이트여야 한다. 단, 
+최소값보다 훨씬 큰 설정은 일반적으로 우수한 성능이 필요할 때 사용된다. 
+단위를 지정하지 않으면 블록수로 간주하며, 그 단위는
+<symbol>BLCKSZ</symbol> 바이트이다. 통상 8kB.
+        (<symbol>BLCKSZ</symbol> 값이 바뀌면 최소값도 바뀐다.)
+        이 매개 변수값은 서버를 시작할 때만 지정할 수 있다.
  </para>
 
  <para>
@@ -1249,8 +1383,15 @@ huge pages 페이지의 사용은 결과적으로 메모리 관리에 더 작은
 </term>
 <listitem>
  <para>
-각 데이터베이스 세션이 사용하는 임시 버퍼의 최대 수를 설정한다. 임시 테이블에 액세스하는 용도로만 사용되는 세션 로컬 버퍼가 있다. 
-기본값은 8메가바이트(<literal>8MB</literal>)이다. 설정은 개별 세션 내에서 변경할 수 있지만 세션 내 임시 테이블을 처음 사용하기 전에만 가능하다. 이후에 값을 변경하면 해당 세션에서 효과가 없다.
+        데이터베이스 각 세션이 사용하는 임시 버퍼의 최대 수를
+        설정한다.  임시 테이블에 액세스하는 용도로만 사용되는
+        세션 로컬 버퍼가 있다. 
+        단위를 지정하지 않으면 블록수로 간주한다.
+        블록 크기는 <symbol>BLCKSZ</symbol> 바이트이며, 통상 8kB다.
+        기본값은 8메가바이트(<literal>8MB</literal>)이다. 
+        (<symbol>BLCKSZ</symbol> 값이 8kB가 아니면, 기본값도 그 값에 비례한다.)
+        설정은 개별 세션 내에서 변경할 수 있지만 세션 내 임시 테이블을
+        처음 사용하기 전에만 가능하다.  이후에 값을 변경하면 해당 세션에서 효과가 없다.
  </para>
 
  <para>
@@ -1293,6 +1434,7 @@ linkend="sql-prepare-transaction"/> 참조).
 <listitem>
  <para>
 임시 디스크 파일을 쓰기 전에 내부 정렬 명령 및 해시 테이블에서 사용되는 메모리 양을 지정한다. 
+단위를 지정하지 않으면 kB로 간주한다. 
 기본값은 4메가바이트이다(<literal>4MB</literal>). 복잡한 쿼리의 경우 몇 가지 정렬 또는 해시 명령이 병렬로 실행될 수 있다. 
 각각의 명령은 데이터를 임시 파일에 쓰기 전에 이 값에 지정된 크기만큼 메모리를 사용할 수 있다. 
 또는 실행 중인 몇 개의 세션은 해당 명령을 동시에 실행할 수도 있다. 따라서 사용된 총 메모리는 <varname>work_mem</varname>의 배수가 될 수 있다. 
@@ -1312,6 +1454,7 @@ linkend="sql-prepare-transaction"/> 참조).
  <para>
 <command>VACUUM</command>, <command>CREATE
 INDEX</command> 및 <command>ALTER TABLE ADD FOREIGN KEY</command> 같은 유지보수 명령에서 사용되는 최대 메모리 양을 지정한다. 
+단위를 지정하지 않으면 kB로 간주한다.
 기본값은 64메가바이트이다(<literal>64MB</literal>). 이러한 명령은 데이터베이스 세션에서 한 번에 하나만 실행할 수 있으며, 정상 설치에는 동시 실행되는 명령이 여러 개 있을 수 없다. 
 이 값은 <varname>work_mem</varname>보다 훨씬 큰 값으로 설정하는 것이 안전하다. 설정값이 큰 경우에는 vacuuming 및 데이터베이스 덤프 복구 성능이 개선될 수 있다.
  </para>
@@ -1330,7 +1473,9 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
 </term>
 <listitem>
  <para>
-각각의 autovacuum worker 프로세스에서 사용되는 최대 메모리 양을 지정한다. 기본값은 <xref linkend="guc-maintenance-work-mem"/> 값을 대신 사용해야 함으로 나타내는 -1이다. 
+각각의 autovacuum worker 프로세스에서 사용되는 최대 메모리 양을 지정한다. 
+단위를 지정하지 않으면, kB로 간주한다.
+기본값은 <xref linkend="guc-maintenance-work-mem"/> 값을 대신 사용해야 함으로 나타내는 -1이다. 
 다른 컨텍스트에서 실행하는 경우 이 설정은 <command>VACUUM</command>의 동작에 효과가 없다.
  </para>
 </listitem>
@@ -1346,7 +1491,7 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
  <para>
 서버 실행 스택의 최대 안전 깊이를 지정한다. 
 이 매개 변수의 이상적인 설정은 커널이 강제로 지정한 안전 마진(safety margin)에서 약간 부족한 실제 스택 크기 제한이다(<literal>ulimit -s</literal>에 의해 설정된 대로, 또는 로컬과 동등). 
-표현식 평가(expression evaluation) 같이 서버의 모든 루틴이 아니라 잠재적 재귀 루틴 중 중요한 것만 스택 깊이가 검사되기 때문에, 안전 마진(safety margin)이 필요하다. 
+모든 루틴이 아니라 잠재적 재귀 루틴 중 중요한 것만 스택 깊이가 검사되기 때문에, 안전 마진(safety margin)이 필요하다.  단위를 지정하지 않으면, kB로 간주한다.
 기본 설정은, 기본적으로 적게 잡고 충돌 가능성이 낮은 2메가바이트이다(<literal>2MB</literal>). 그러나, 설정값이 너무 작으면 복합 함수의 실행이 어려울 수 있다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 
@@ -1358,6 +1503,31 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
 </listitem>
  </varlistentry>
 
+     <varlistentry id="guc-shared-memory-type" xreflabel="shared_memory_type">
+      <term><varname>shared_memory_type</varname> (<type>enum</type>)
+      <indexterm>
+       <primary><varname>shared_memory_type</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Specifies the shared memory implementation that the server
+        should use for the main shared memory region that holds
+        <productname>PostgreSQL</productname>'s shared buffers and other
+        shared data.  Possible values are <literal>mmap</literal> (for
+        anonymous shared memory allocated using <function>mmap</function>),
+        <literal>sysv</literal> (for System V shared memory allocated via
+        <function>shmget</function>) and <literal>windows</literal> (for Windows
+        shared memory).  Not all values are supported on all platforms; the
+        first supported option is the default for that platform.  The use of
+        the <literal>sysv</literal> option, which is not the default on any
+        platform, is generally discouraged because it typically requires
+        non-default kernel settings to allow for large allocations (see <xref
+        linkend="sysvipc"/>).
+       </para>
+      </listitem>
+     </varlistentry>
+
  <varlistentry id="guc-dynamic-shared-memory-type" xreflabel="dynamic_shared_memory_type">
 <term><varname>dynamic_shared_memory_type</varname> (<type>enum</type>)
 <indexterm>
@@ -1368,7 +1538,7 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
  <para>
 서버가 사용해야 하는 동적 공유 메모리 구현을 지정한다. 
 가능한 값은 <literal>posix</literal>(<literal>shm_open</literal>을 사용하여 할당된 POSIX 공유 메모리의 경우), <literal>sysv</literal>(<literal>shmget</literal>을 통해 할당된 System V 공유 메모리의 경우), 
-<literal>windows</literal>(Windows 공유 메모리의 경우), <literal>mmap</literal>(데이터 디렉터리에 저장된 메모리 맵 파일을 사용하는 공유 메모리 시뮬레이션) 및 <literal>none</literal>(이 기능 비활성)이다. 몇몇 플랫폼에서는 일부 값이 지원되지 않는다. 
+<literal>windows</literal>(Windows 공유 메모리의 경우), <literal>mmap</literal>(데이터 디렉터리에 저장된 메모리 맵 파일을 사용하는 공유 메모리 시뮬레이션). 몇몇 플랫폼에서는 일부 값이 지원되지 않는다. 
 첫 번째 지원 옵션은 해당 플랫폼의 기본값이다. 플랫폼에서 기본값이 아닌 <literal>mmap</literal> 옵션의 사용은 일반적으로 권장되지 않는다. 
 이유는 운영 체제가 수정된 페이지를 디스크에 반복해서 다시 쓰면서 시스템 I/O 로드가 늘어나기 때문이다. 
 그러나, <literal>pg_dynshmem</literal> 디렉터리를 RAM 디스크에 저장하거나 다른 공유 메모리 기능을 사용할 수 없는 경우에는 디버깅용으로 유용하다.
@@ -1393,7 +1563,9 @@ autovacuum 실행 시 이 메모리에서 <xref linkend="guc-autovacuum-max-work
  <para>
 정렬 및 해시 임시 파일 같은 임시 파일 또는 보류된 커서용 저장소 파일에 프로세스가
 사용할 수 있는 디스크 공간의 최대 크기를 지정한다. 
-이 제한을 초과하는 트랜잭션은 취소된다. 값은 킬로바이트 단위로 지정되며 <literal>-1</literal>(기본값)은 무제한을 의미한다. 슈퍼유저만 이 설정을 변경할 수 있다.
+이 제한을 초과하는 트랜잭션은 취소된다. 
+단위를 지정하지 않으면, kB로 간주한다.
+<literal>-1</literal>(기본값)은 무제한을 의미한다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
  <para>
 이 설정은 주어진 <productname>PostgreSQL</productname> 프로세스에 의해 동시에 사용되는
@@ -1452,21 +1624,27 @@ value.
 
  <variablelist>
 <varlistentry id="guc-vacuum-cost-delay" xreflabel="vacuum_cost_delay">
- <term><varname>vacuum_cost_delay</varname> (<type>integer</type>)
+ <term><varname>vacuum_cost_delay</varname> (<type>floating point</type>)
  <indexterm>
 <primary><varname>vacuum_cost_delay</varname> 환경 설정 매개 변수</primary>
  </indexterm>
  </term>
  <listitem>
 <para>
- 비용 제한을 초과한 경우 프로세스가 슬립하는 초 단위의 시간 길이. 기본값은, 비용 기반 vacuum 지연 기능을 사용하지 않는 0이다. 
- 양의 값은 비용 기반 vacuuming을 사용하는 것으로 설정된다. 다수의 시스템에서 슬립 지연의 효율적인 설정은 10밀리초이다. 
- <varname>vacuum_cost_delay</varname>를 10의 배수가 아닌 다른 값으로 설정하면 10의 배수로 값을 올림하여 설정한 것과 결과가 동일하다.
+ 비용 제한을 초과한 경우 프로세스가 슬립하는 시간.
+단위를 지정하지 않으면 밀리세컨드로 간주한다. 기본값은,
+비용 기반 vacuum 지연 기능을 사용하지 않는 0이다. 
+ 양수 값은 비용 기반 vacuuming을 사용하는 것으로 설정된다.
 </para>
 
 <para>
- 비용 기반 vacuuming을 사용하는 경우 <varname>vacuum_cost_delay</varname>는 일반적으로 매우 작으며, 보통 10 ~ 20밀리초이다. 
- vacuum의 자원 소비를 조절하려면 다른 vacuum 비용 매개 변수를 변경하는 것이 가장 좋다.
+ 비용 기반 vacuuming을 사용하는 경우 <varname>vacuum_cost_delay</varname>는 일반적으로 매우 작으며,
+보통 1ms 보다 적은 값을 사용한다.  
+<varname>vacuum_cost_delay</varname> 값으로 소수값을 사용할 수 있지만, 
+옛날 OS인 경우는 이 계산이 정확하지 않을 수 있다.  이런 OS에서는
+이 값을 1ms 이상 지정할 수 있으며, 이 때는 다른 vacuum 비용 관련 설정들을 
+바꿀 필요가 있다.  그럼에도 불구하고, <varname>vacuum_cost_delay</varname> 값은
+최대한 작은 값을 사용해야한다. 큰 값은 도움이 되지 않는다.
 </para>
  </listitem>
 </varlistentry>
@@ -1536,12 +1714,20 @@ value.
 </sect2>
 
 <sect2 id="runtime-config-resource-background-writer">
- <title>백그라운드 Writer</title>
+ <title>Background Writer</title>
 
  <para>
-<firstterm>백그라운드 writer</firstterm>라는 별도의 서버 프로세스가 있는데, 그 기능은 <quote>dirty</quote>(신규 또는 수정) 공유 버퍼의 쓰기 작업을 실행하는 것이다. 
-이것은 공유 버퍼를 기록하므로 서버는 사용자 쿼리를 거의 처리하지 않거나 쓰기가 시작될 때까지 기다릴 필요도 없다. 
-그러나, 반복적으로 미기록(dirty)된 페이지가 checkpoint 간격당 한 번만 기록될 수 있는 반면, 동일한 간격에서 미기록된 경우 백그라운드 writer가 여러 번 기록할 수 있으므로 백그라운드 writer는 최종적으로 I/O 로드의 전반적인 증가를 초래한다. 
+<firstterm>background writer</firstterm>라는 별도의 서버 프로세스가
+있는데, 그 기능은 <quote>dirty</quote>(신규 또는 수정) 공유 버퍼의
+쓰기 작업을 실행하는 것이다.  When the number of clean shared buffers appears to be
+      insufficient, the background writer writes some dirty buffers to the
+      file system and marks them as clean.  This reduces the likelihood
+      that server processes handling user queries will be unable to find
+      clean buffers and have to write dirty buffers themselves.
+그러나, 반복적으로 미기록(dirty)된 페이지가 checkpoint 간격당
+한 번만 기록될 수 있는 반면, 동일한 간격에서 미기록된 경우 
+background writer가 여러 번 기록할 수 있으므로 background writer는
+최종적으로 I/O 로드의 전반적인 증가를 초래한다. 
 이 절에서 논의된 매개 변수는 로컬로 필요한 동작을 조절하는 데 이용할 수 있다.
  </para>
 
@@ -1554,11 +1740,17 @@ value.
  </term>
  <listitem>
 <para>
- 백그라운드 writer의 작업 라운드 사이의 지연을 지정한다. 각 라운드에서 writer는 몇 개의 dirty 버퍼(다음 매개 변수로 조절 가능)에 대해 쓰기를 실행한다. 
- 그런 다음, <varname>bgwriter_delay</varname> 밀리초 동안 슬립한 다음, 반복한다. 버퍼 풀에 dirty 버퍼가 없으면, <varname>bgwriter_delay</varname>와 무관하게 장기 슬립으로 들어간다. 
- 기본값은 200밀리초이다(<literal>200ms</literal>). 다수의 시스템에서 슬립 지연의 효율적인 설정은 10밀리초이다. 
- <varname>bgwriter_delay</varname>를 10의 배수가 아닌 다른 값으로 설정하면 10의 배수로 값을 올림하여 설정한 것과 결과가 동일하다. 
- 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+ background writer의 작업 라운드 사이의 지연을 지정한다.  각
+라운드에서 writer는 몇 개의 dirty 버퍼(다음 매개 변수로 조절 가능)에
+대해 쓰기를 실행한다.  그런 다음, <varname>bgwriter_delay</varname> 시간
+동안 슬립한 다음, 반복한다.  버퍼 풀에 dirty 버퍼가 없으면, 
+<varname>bgwriter_delay</varname>와 무관하게 장기 슬립으로 들어간다. 
+단위를 지정하지 않으면 ms로 간주한다.  기본값은
+200밀리초이다(<literal>200ms</literal>).  다수의 시스템에서 슬립 지연의
+효율적인 설정은 10밀리초이다.  <varname>bgwriter_delay</varname>를 10의
+배수가 아닌 다른 값으로 설정하면 10의 배수로 값을 올림하여 설정한 것과
+결과가 동일하다.  이 매개 변수는 <filename>postgresql.conf</filename> 파일
+또는 서버 명령행 옵션값으로만 설정 가능하다.
 </para>
  </listitem>
 </varlistentry>
@@ -1604,7 +1796,7 @@ value.
        </term>
        <listitem>
         <para>
-         Whenever more than <varname>bgwriter_flush_after</varname> bytes have
+         Whenever more than this amount of data has
          been written by the background writer, attempt to force the OS to issue these
          writes to the underlying storage.  Doing so will limit the amount of
          dirty data in the kernel's page cache, reducing the likelihood of
@@ -1614,7 +1806,10 @@ value.
          also are some cases, especially with workloads that are bigger than
          <xref linkend="guc-shared-buffers"/>, but smaller than the OS's page
          cache, where performance might degrade.  This setting may have no
-         effect on some platforms.  The valid range is between
+         effect on some platforms.
+         If this value is specified without units, it is taken as blocks,
+         that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+         The valid range is between
          <literal>0</literal>, which disables forced writeback, and
          <literal>2MB</literal>.  The default is <literal>512kB</literal> on Linux,
          <literal>0</literal> elsewhere.  (If <symbol>BLCKSZ</symbol> is not 8kB,
@@ -1806,7 +2001,7 @@ value.
        </term>
        <listitem>
         <para>
-         Whenever more than <varname>backend_flush_after</varname> bytes have
+         Whenever more than this amount of data has
          been written by a single backend, attempt to force the OS to issue
          these writes to the underlying storage.  Doing so will limit the
          amount of dirty data in the kernel's page cache, reducing the
@@ -1816,7 +2011,10 @@ value.
          latency, but there also are some cases, especially with workloads
          that are bigger than <xref linkend="guc-shared-buffers"/>, but smaller
          than the OS's page cache, where performance might degrade.  This
-         setting may have no effect on some platforms.  The valid range is
+         setting may have no effect on some platforms.
+         If this value is specified without units, it is taken as blocks,
+         that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+         The valid range is
          between <literal>0</literal>, which disables forced writeback,
          and <literal>2MB</literal>.  The default is <literal>0</literal>, i.e., no
          forced writeback.  (If <symbol>BLCKSZ</symbol> is not 8kB,
@@ -1833,13 +2031,10 @@ value.
        </term>
        <listitem>
         <para>
-         Sets the minimum time that a snapshot can be used without risk of a
-         <literal>snapshot too old</literal> error occurring when using the snapshot.
-         This parameter can only be set at server start.
-        </para>
-
-        <para>
-         Beyond the threshold, old data may be vacuumed away.  This can help
+         Sets the minimum amount of time that a query snapshot can be used
+         without risk of a <quote>snapshot too old</quote> error occurring
+         when using the snapshot.  Data that has been dead for longer than
+         this threshold is allowed to be vacuumed away.  This can help
          prevent bloat in the face of snapshots which remain in use for a
          long time.  To prevent incorrect results due to cleanup of data which
          would otherwise be visible to the snapshot, an error is generated
@@ -1849,10 +2044,15 @@ value.
         </para>
 
         <para>
-         A value of <literal>-1</literal> disables this feature, and is the default.
+         If this value is specified without units, it is taken as minutes.
+         A value of <literal>-1</literal> (the default) disables this feature,
+         effectively setting the snapshot age limit to infinity.
+         This parameter can only be set at server start.
+        </para>
+
+        <para>
          Useful values for production work probably range from a small number
-         of hours to a few days.  The setting will be coerced to a granularity
-         of minutes, and small numbers (such as <literal>0</literal> or
+         of hours to a few days.  Small values (such as <literal>0</literal> or
          <literal>1min</literal>) are only allowed because they may sometimes be
          useful for testing.  While a setting as high as <literal>60d</literal> is
          allowed, please note that in many workloads extreme bloat or
@@ -1862,7 +2062,7 @@ value.
         <para>
          When this feature is enabled, freed space at the end of a relation
          cannot be released to the operating system, since that could remove
-         information needed to detect the <literal>snapshot too old</literal>
+         information needed to detect the <quote>snapshot too old</quote>
          condition.  All space allocated to a relation remains associated with
          that relation for reuse only within that relation unless explicitly
          freed (for example, with <command>VACUUM FULL</command>).
@@ -1877,7 +2077,7 @@ value.
          Some tables cannot safely be vacuumed early, and so will not be
          affected by this setting, such as system catalogs.  For such tables
          this setting will neither reduce bloat nor create a possibility
-         of a <literal>snapshot too old</literal> error on scanning.
+         of a <quote>snapshot too old</quote> error on scanning.
         </para>
        </listitem>
       </varlistentry>
@@ -1992,9 +2192,19 @@ value.
        <para>
         클라이언트에게 <quote>success</quote>를 반환하기 전, 디스크에 WAL 값이
         쓰여질 때까지 트랜잭션 커밋을 대기시킬 것인지 여부를 설정하는
-        변수이다. <literal>on</literal>, <literal>remote_apply</literal>,
-        <literal>remote_write</literal>, <literal>local</literal>, <literal>off</literal> 중 하나로
-        설정할 수 있고, 기본값은 on이다.  off로 설정할 경우 클라이언트에게
+        변수이다. <literal>remote_apply</literal>, <literal>on</literal>
+        (기본값), <literal>remote_write</literal>, <literal>local</literal>,
+        <literal>off</literal> 중 하나로 설정할 수 있다.
+       </para>
+
+       <para>
+        <varname>synchronous_standby_names</varname> 값이 없을 경우엔
+        <literal>on</literal> / <literal>off</literal> 만 의미있으며, 
+        <literal>remote_apply</literal>, <literal>remote_write</literal>,
+        <literal>local</literal> 모두 <literal>on</literal>으로 처리된다.
+        <literal>off</literal> 설정이 아닌 경우, WAL 디스크 쓰기 작업은
+        flush가 완료될 때까지 기다린다.
+        <literal>off</literal> 로 설정할 경우 클라이언트에게
         success를 반환하는 시점과 서버 crash에 대해 트랜잭션의 안전이 보장되는
         시점 사이에 지연이 발생할 수 있다.  (최장 지연은
         <xref linkend="guc-wal-writer-delay"/>의 3배) 하지만
@@ -2005,16 +2215,23 @@ value.
         우선시되는 경우에 <varname>synchronous_commit</varname>을 끄면(off) 유용하다.
         (<xref linkend="wal-async-commit"/> 참조)
        </para>
+
        <para>
         만약 <xref linkend="guc-synchronous-standby-names"/>가 설정되어있다면,
         이 설정은 대기 서버로 WAL 값이 복제될 때까지 트랜잭션 커밋을 기다릴
-        것인지도 제어한다.  값을 <literal>on</literal>으로 설정하면, 현재 동기화된
-        대기 서버가 트랜잭션의 커밋 레코드를 받았고, 그것을 디스크에
-        flush했음을 나타낼 때까지 커밋은 대기한다. 이 경우 대기 서버의 스토리지가
-        손상되지 않는 한 트랜잭션은 손실되지 않는다.  <literal>remote_apply</literal>로
+        것인지도 제어한다.
+       </para>
+
+       <para>
+        <literal>remote_apply</literal>로
         설정하면, 대기 서버가 트랜잭션의 커밋 레코드를 받고 그것을 적용시켰다는
         응답이 올 때까지 커밋은 대기한다.  따라서 대기 서버에서 쿼리를 확인할
-        수 있다. <literal>remote_write</literal>로 설정된 경우, 대기 서버가 트랜잭션의
+        수 있다. 
+        <literal>on</literal>으로 설정하면, 현재 동기화된
+        대기 서버가 트랜잭션의 커밋 레코드를 받았고, 그것을 디스크에
+        flush했음을 나타낼 때까지 커밋은 대기한다. 이 경우 대기 서버의 스토리지가
+        손상되지 않는 한 트랜잭션은 손실되지 않는다.  
+        <literal>remote_write</literal>로 설정된 경우, 대기 서버가 트랜잭션의
         커밋 레코드를 받아서 OS에 기록했다는 응답이 올 때까지 커밋은
         대기한다.  이 설정에선 데이터가 아직 스토리지에 도달하지 않았기 때문에
         대기 서버의 DB 인스턴스가 죽더라도 데이터는 보존된다.  하지만 대기
@@ -2023,12 +2240,7 @@ value.
         로컬에선 디스크로 flush될 때까지 기다리지만 복제에선 기다리지
         않는다.  바람직하진 않은 설정이지만 완전성을 위해 제공하고 있다.
        </para>
-       <para>
-        <varname>synchronous_standby_names</varname> 값이 없을 경우엔
-        <literal>on</literal>, <literal>remote_apply</literal>, <literal>remote_write</literal>,
-        <literal>local</literal> 모두 같은 동기화 레벨을 갖는다: 트랜잭션
-        커밋은 로컬에서 디스크로 flush하는 작업만 대기한다.
-       </para>
+
        <para>
         이 설정은 아무 때나 변경 가능하다; 한 트랜잭션에 대한 동작은
         트랜잭션이 커밋될 때 적용되는 설정에 따른다. 따라서 일부 트랜잭션은
@@ -2037,6 +2249,66 @@ value.
         multistatement 트랜잭션을 커밋하려면 세션 단에서 <command>SET LOCAL
         synchronous_commit TO OFF</command>를 수행하면 된다.
        </para>
+
+       <para>
+        <xref linkend="synchronous-commit-matrix"/> summarizes the
+        capabilities of the <varname>synchronous_commit</varname> settings.
+       </para>
+
+       <table id="synchronous-commit-matrix">
+        <title>synchronous_commit Modes</title>
+        <tgroup cols="5">
+         <colspec colname="col1" colwidth="1.5*"/>
+         <colspec colname="col2" colwidth="1*"/>
+         <colspec colname="col3" colwidth="1*"/>
+         <colspec colname="col4" colwidth="1*"/>
+         <colspec colname="col5" colwidth="1*"/>
+         <thead>
+          <row>
+           <entry>synchronous_commit setting</entry>
+           <entry>local durable commit</entry>
+           <entry>standby durable commit after PG crash</entry>
+           <entry>standby durable commit after OS crash</entry>
+           <entry>standby query consistency</entry>
+          </row>
+         </thead>
+
+         <tbody>
+
+          <row>
+           <entry>remote_apply</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center">&bull;</entry>
+          </row>
+
+          <row>
+           <entry>on</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center"></entry>
+          </row>
+
+          <row>
+           <entry>remote_write</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center">&bull;</entry>
+           <entry align="center"></entry>
+           <entry align="center"></entry>
+          </row>
+         <row>
+           <entry>off</entry>
+           <entry align="center"></entry>
+           <entry align="center"></entry>
+           <entry align="center"></entry>
+           <entry align="center"></entry>
+          </row>
+
+         </tbody>
+        </tgroup>
+       </table>
 </listitem>
  </varlistentry>
 
@@ -2080,7 +2352,7 @@ value.
  <para>
 <literal>open_</literal>* 옵션도 필요 시 <literal>O_DIRECT</literal>를 사용한다. 이와 같은 선택이 항상 모든 플랫폼에서 가능한 것은 아니다. 
 기본값은 플랫폼에서 지원되는 위의 목록에서 첫 번째 메서드이다. 
-단, Linux에서는 <literal>fdatasync</literal>가 기본값이다. 기본값이 반드시 이상적인 것은 아니다. 
+단, Linux와 FreeBSD에서는 <literal>fdatasync</literal>가 기본값이다. 기본값이 반드시 이상적인 것은 아니다. 
 충돌로부터 안전한 환경 설정을 만들거나 성능을 최적화하려면 값을 변경하거나 시스템 환경 설정의 다른 측면을 변경하는 것이 필요할 수도 있다. 
 이러한 측면은 <xref linkend="wal-reliability"/>에서 다룬다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
@@ -2163,6 +2435,41 @@ value.
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-wal-init-zero" xreflabel="wal_init_zero">
+      <term><varname>wal_init_zero</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>wal_init_zero</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        If set to <literal>on</literal> (the default), this option causes new
+        WAL files to be filled with zeroes.  On some file systems, this ensures
+        that space is allocated before we need to write WAL records.  However,
+        <firstterm>Copy-On-Write</firstterm> (COW) file systems may not benefit
+        from this technique, so the option is given to skip the unnecessary
+        work.  If set to <literal>off</literal>, only the final byte is written
+        when the file is created so that it has the expected size.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-wal-recycle" xreflabel="wal_recycle">
+      <term><varname>wal_recycle</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>wal_recycle</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        If set to <literal>on</literal> (the default), this option causes WAL
+        files to be recycled by renaming them, avoiding the need to create new
+        ones.  On COW file systems, it may be faster to create new ones, so the
+        option is given to disable this behavior.
+       </para>
+      </listitem>
+     </varlistentry>
+
  <varlistentry id="guc-wal-buffers" xreflabel="wal_buffers">
 <term><varname>wal_buffers</varname> (<type>integer</type>)
 <indexterm>
@@ -2172,7 +2479,10 @@ value.
 <listitem>
  <para>
 WAL 데이터에 사용되고 아직 디스크에 기록되지 않은 공유 메모리의 합계. 기본 설정 -1은 <xref linkend="guc-shared-buffers"/>의 1/32번째(약 3%)와 동일하게 선택한다. 
-<literal>64kB</literal> 이상, WAL 세그먼트 1개 크기 이하여야 하며, 일반적으로 <literal>16MB</literal>이다. 이 값은 자동 선택이 너무 크거나 작은 경우에 직접 선택할 수 있으며, <literal>32kB</literal> 미만의 양의 값은 <literal>32kB</literal>로 처리된다. 
+<literal>64kB</literal> 이상, WAL 세그먼트 1개 크기 이하여야 하며,
+일반적으로 <literal>16MB</literal>이다. 이 값은 자동 선택이 너무 크거나 작은 경우에 직접 선택할 수 있으며, <literal>32kB</literal> 미만의 양의 값은 <literal>32kB</literal>로 처리된다. 
+단위를 지정하지 않으면, WAL 블록수로 간주한다. 
+<symbol>XLOG_BLCKSZ</symbol> 바이트이다. 통상 8kB.
 이 매개 변수는 서버 시작 시에만 설정 가능하다.
  </para>
 
@@ -2193,13 +2503,15 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
 </term>
 <listitem>
       <para>
-        Specifies how often the WAL writer flushes WAL. After flushing WAL it
-        sleeps for <varname>wal_writer_delay</varname> milliseconds, unless woken up
+        Specifies how often the WAL writer flushes WAL, in time terms.
+        After flushing WAL the writer sleeps for the length of time given
+        by <varname>wal_writer_delay</varname>, unless woken up sooner
         by an asynchronously committing transaction. If the last flush
-        happened less than <varname>wal_writer_delay</varname> milliseconds ago and
-        less than <varname>wal_writer_flush_after</varname> bytes of WAL have been
+        happened less than <varname>wal_writer_delay</varname> ago and less
+        than <varname>wal_writer_flush_after</varname> worth of WAL has been
         produced since, then WAL is only written to the operating system, not
         flushed to disk.
+        If this value is specified without units, it is taken as milliseconds.
         The default value is 200 milliseconds (<literal>200ms</literal>).  Note that
         on many systems, the effective resolution of sleep delays is 10
         milliseconds; setting <varname>wal_writer_delay</varname> to a value that is
@@ -2218,13 +2530,17 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
       </term>
       <listitem>
       <para>
-        Specifies how often the WAL writer flushes WAL. If the last flush
-        happened less than <varname>wal_writer_delay</varname> milliseconds ago and
-        less than <varname>wal_writer_flush_after</varname> bytes of WAL have been
+        Specifies how often the WAL writer flushes WAL, in volume terms.
+        If the last flush happened less
+        than <varname>wal_writer_delay</varname> ago and less
+        than <varname>wal_writer_flush_after</varname> worth of WAL has been
         produced since, then WAL is only written to the operating system, not
         flushed to disk.  If <varname>wal_writer_flush_after</varname> is set
-        to <literal>0</literal> then WAL data is flushed immediately.  The default is
-        <literal>1MB</literal>.  이 매개 변수는 <filename>postgresql.conf</filename>
+        to <literal>0</literal> then WAL data is always flushed immediately.
+        If this value is specified without units, it is taken as WAL blocks,
+        that is <symbol>XLOG_BLCKSZ</symbol> bytes, typically 8kB.
+        The default is <literal>1MB</literal>.
+        이 매개 변수는 <filename>postgresql.conf</filename>
         파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
@@ -2238,11 +2554,19 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
 </term>
 <listitem>
  <para>
-<varname>commit_delay</varname>는 WAL 쓰기를 초기화하기 전에 측정된 시간 지연을 마이크로초 단위로 추가한다. 
-이것은 시스템 로드가 충분히 커서 주어진 간격 내에 트랜잭션을 추가로 커밋할 준비가 된 경우 단일 WAL 쓰기를 통해 대량의 트랜잭션이 커밋되게 함으로써 그룹 커밋 처리량을 개선할 수 있다. 
-그러나 이것은 WAL 쓰기별로 대기 시간을 최대 <varname>commit_delay</varname> 마이크로초까지 늘리기도 한다. 커밋할 준비가 된 트랜잭션이 없을 경우 지연은 낭비되는 시간이므로 최소한 <varname>commit_siblings</varname>인 경우만 지연이 수행된다. 
-쓰기가 곧 시작되는 경우 다른 트랜잭션이 작동된다. 또한 <varname>fsync</varname>가 비활성화되면 지연이 수행되지 않는다. 기본 <varname>commit_delay</varname>는 0이다(지연 없음). 슈퍼유저만 이 설정을 변경할 수 있다.
+<varname>commit_delay</varname>는 WAL 쓰기를 초기화하기 전에 지정한 시간만큼 지연한다.
+이것은 시스템 로드가 충분히 커서 주어진 간격 내에 트랜잭션을 추가로
+커밋할 준비가 된 경우 단일 WAL 쓰기를 통해 대량의 트랜잭션이 커밋되게
+함으로써 그룹 커밋 처리량을 개선할 수 있다.  그러나 이것은 WAL 쓰기별로
+대기 시간을 최대 <varname>commit_delay</varname> 값만큼 늘리기도
+한다.  커밋할 준비가 된 트랜잭션이 없을 경우 지연은 낭비되는 시간이므로
+최소한 <varname>commit_siblings</varname>인 경우만 지연이 수행된다.  쓰기가
+곧 시작되는 경우 다른 트랜잭션이 작동된다. 또한 <varname>fsync</varname>가
+비활성화되면 지연이 수행되지 않는다. 
+If this value is specified without units, it is taken as microseconds.
+기본 <varname>commit_delay</varname>는 0이다(지연 없음). 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
+
  <para>
 9.3 이전의 <productname>PostgreSQL</productname> 릴리스에서 <varname>commit_delay</varname>는 동작이 다르고 효과도 떨어진다. 이것은 모든 WAL 쓰기가 아닌 커밋에만 영향을 주었고 WAL 쓰기가 곧 완료된 경우에도 환경 설정된 지연 시간 동안 대기했다. 
 <productname>PostgreSQL</productname> 9.3 초반에, 쓸 준비가 된 첫 번째 프로세스는 환경 설정된 시간 간격을 기다리고, 후속 프로세스는 선행 프로세스의 쓰기 연산이 끝날 때까지 대기한다.
@@ -2265,6 +2589,7 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
 
  </variablelist>
  </sect2>
+
  <sect2 id="runtime-config-wal-checkpoints">
  <title>체크포인트</title>
 
@@ -2277,7 +2602,9 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
 </term>
 <listitem>
  <para>
-자동 WAL checkpoints 간의 최대 시간. 초 단위 (30초 ~ 하루). 기본값은
+자동 WAL checkpoints 간의 최대 시간. 
+단위를 지정하지 않으면, 초로 간주한다.
+기본값은
 5분이다(<literal>5min</literal>). 이 매개 변수를 늘리면 충돌 복구에 필요한 시간을
 늘릴 수 있다.  이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는
 서버 커맨드 라인에서만 설정 가능하다.
@@ -2306,8 +2633,8 @@ checkpoints 간 총 시간 분할로써, checkpoints 완료 목표를 지정한�
       </term>
       <listitem>
        <para>
-        Whenever more than <varname>checkpoint_flush_after</varname> bytes
-        have been written while performing a checkpoint, attempt to force the
+        Whenever more than this amount of data has been
+        written while performing a checkpoint, attempt to force the
         OS to issue these writes to the underlying storage.  Doing so will
         limit the amount of dirty data in the kernel's page cache, reducing
         the likelihood of stalls when an <function>fsync</function> is issued at the end of the
@@ -2316,7 +2643,10 @@ checkpoints 간 총 시간 분할로써, checkpoints 완료 목표를 지정한�
         latency, but there also are some cases, especially with workloads
         that are bigger than <xref linkend="guc-shared-buffers"/>, but smaller
         than the OS's page cache, where performance might degrade.  This
-        setting may have no effect on some platforms.  The valid range is
+        setting may have no effect on some platforms.
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The valid range is
         between <literal>0</literal>, which disables controlled writeback,
         and <literal>2MB</literal>.  The default is <literal>256kB</literal> on
         Linux, <literal>0</literal> elsewhere.  (If <symbol>BLCKSZ</symbol> is not
@@ -2336,8 +2666,14 @@ checkpoints 간 총 시간 분할로써, checkpoints 완료 목표를 지정한�
 </term>
 <listitem>
  <para>
-WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수보다 근접해서 발생한 경우 서버 로그에 메시지를 기록한다(<varname>checkpoint_segments</varname>를 증가시키는 것이 권장됨). 
-기본값은 30초이다(<literal>30s</literal>). 0은 경고를 비활성화한다. <varname>checkpoint_timeout</varname>가 <varname>checkpoint_warning</varname> 미만이면 경고가 발생하지 않는다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초보다 
+자주 발생한 경우 서버 로그에 메시지를 기록한다
+(<varname>max_wal_size</varname>를 증가시키는 것이 권장됨). 
+단위를 지정하지 않으면, 초로 간주한다.
+기본값은 30초이다(<literal>30s</literal>).  0은
+경고를 비활성화한다.  <varname>checkpoint_timeout</varname>가
+<varname>checkpoint_warning</varname> 미만이면 경고가 발생하지
+않는다.  이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -2357,6 +2693,7 @@ WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수�
         실패하고 있거나, <varname>wal_keep_segments</varname> 설정값을
         크게 지정한 경우에는 언제든지 WAL 총 크기는 
         이 값을 초과할 수 있다.
+        단위를 지정하지 않으면 MB로 간주한다.
         기본값은 1 GB이다. 이 값이 커지면, 서버가 비정상적으로 
         종료된 뒤 다시 시작하려고 할 때 진행하는 트랜잭션 로그 기반
         복구 작업 시간이 길어 진다.
@@ -2380,6 +2717,7 @@ WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수�
         앞에서 설명한 것 처럼 배치 작업 같은 것으로 갑자기 많은 
         트랜잭션 로그가 쌓이게 되면 이 값 기준으로 다시 적정 수준의
         디스크 공간을 사용하게 된다.
+        단위를 지정하지 않으면 MB로 간주한다.
         기본값은 80 MB이다.
         이 설정은 <filename>postgresql.conf</filename>에서 지정하거나,
         서버 실행 명령행 옵션으로만 지정할 수 있다.
@@ -2389,6 +2727,7 @@ WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수�
 
  </variablelist>
  </sect2>
+
  <sect2 id="runtime-config-wal-archiving">
  <title>아카이브</title>
 
@@ -2436,18 +2775,429 @@ WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수�
 </term>
 <listitem>
  <para>
-<xref linkend="guc-archive-command"/>는 완료된 WAL 세그먼트를 호출만 한다. 그러므로, 서버에서는 WAL 트래픽이 발생되지 않아서(따라서 여유 시간이 있음) 트랜잭션의 완료 및 아카이브 저장소에서 안전한 기록 사이에 긴 지연이 발생할 수 있다. 
-데이터가 아카이브되지 않은 채로 방치되지 않게 하기 위해 서버가 새 WAL 세그먼트 파일로 주기적으로 전환되도록 <varname>archive_timeout</varname>을 설정할 수 있다. 
-이 매개 변수가 0보다 큰 경우 마지막 세그먼트 파일로 전환한 이후로 여기서 지정된 초 시간을 경과할 때마다, 그리고 단일 checkpoint를 비롯한 데이터베이스 작업이 있을 때마다 서버는 새 세그먼트 파일로 전환한다. 
-(사용하지 않는 데이터베이스라면 checkpoint 작업을 하지 않는다.) 강제 전환 때문에 일찌감치 폐쇄된 아카이브된 파일의 길이는 완전한 전체 파일과 동일하다는 점에 유의해야 한다. 
-따라서, <varname>archive_timeout</varname>를 매우 짧게 하는 것은 아카이브 저장소를 부풀게 하므로 현명하지 못하다. <varname>archive_timeout</varname>을 1분 정도로 설정하는 것이 일반적으로 합당하다. 
-데이터를 마스터 서버로 빠르게 복사하려면 아카이빙 대신 streaming replication의 사용을 고려해야 한다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+<xref linkend="guc-archive-command"/>는 현재 다루고 있는
+WAL 조각 파일이 아니라, 트랜잭션 로그 기록을 다 한 WAL
+조각 파일을 대상으로 한다.  그러므로, 서버에서는 WAL 트래픽이 발생되지
+않는 경우(따라서 여유 시간이 있음) 트랜잭션의 완료 및 아카이브
+저장소에서 안전한 기록 사이에 긴 지연이 발생할 수 있다.  데이터가
+아카이브되지 않은 채로 방치되지 않게 하기 위해 서버가 새 WAL 조각
+파일로 주기적으로 전환되도록 <varname>archive_timeout</varname>을
+설정할 수 있다.  이 매개 변수가 0(기본값)보다 큰 경우 마지막 조각 파일로
+전환한 이후로 여기서 지정된 시간을 경과할 때마다, 그리고
+단일 checkpoint를 비롯한 데이터베이스 작업이 있을 때마다 서버는
+새 조각 파일로 전환한다.  (사용하지 않는 데이터베이스라면
+checkpoint 작업을 하지 않는다.) 트랜잭션 로그를 모두 채우지 않고,
+강제 전환된 WAL 조각 파일도 크기는 같다.  따라서, 
+<varname>archive_timeout</varname> 값을
+매우 짧게 하는 것은 아카이브 저장소를 부풀게 하므로 현명하지
+못하다.  <varname>archive_timeout</varname>을 1분 정도로 설정하는
+것이 일반적으로 합당하다.  주 서버의 자료를 보다 빠르게 보조
+서버로 복사하려면, 아카이브된 WAL 조각 파일을 사용하는 것보다, 스트리밍
+복제 기능을 이용하는 것이 낫다.  이 설정 값에서 단위를 지정하지
+않으면 초로 간주한다.  이 변수는 <filename>postgresql.conf</filename>
+파일 또는 서버 명령행 옵션으로 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
 
  </variablelist>
 </sect2>
+
+  <sect2 id="runtime-config-wal-archive-recovery">
+
+    <title>Archive Recovery</title>
+
+    <indexterm>
+     <primary>configuration</primary>
+     <secondary>of recovery</secondary>
+     <tertiary>of a standby server</tertiary>
+    </indexterm>
+
+    <para>
+     This section describes the settings that apply only for the duration of
+     the recovery.  They must be reset for any subsequent recovery you wish to
+     perform.
+    </para>
+
+    <para>
+     <quote>Recovery</quote> covers using the server as a standby or for
+     executing a targeted recovery.  Typically, standby mode would be used to
+     provide high availability and/or read scalability, whereas a targeted
+     recovery is used to recover from data loss.
+    </para>
+
+    <para>
+     To start the server in standby mode, create a file called
+     <filename>standby.signal</filename><indexterm><primary>standby.signal</primary></indexterm>
+     in the data directory.  The server will enter recovery and will not stop
+     recovery when the end of archived WAL is reached, but will keep trying to
+     continue recovery by connecting to the sending server as specified by the
+     <varname>primary_conninfo</varname> setting and/or by fetching new WAL
+     segments using <varname>restore_command</varname>.  For this mode, the
+     parameters from this section and <xref
+     linkend="runtime-config-replication-standby"/> are of interest.
+     Parameters from <xref linkend="runtime-config-wal-recovery-target"/> will
+     also be applied but are typically not useful in this mode.
+    </para>
+
+    <para>
+     To start the server in targeted recovery mode, create a file called
+     <filename>recovery.signal</filename><indexterm><primary>recovery.signal</primary></indexterm>
+     in the data directory.  If both <filename>standby.signal</filename> and
+     <filename>recovery.signal</filename> files are created, standby mode
+     takes precedence.  Targeted recovery mode ends when the archived WAL is
+     fully replayed, or when <varname>recovery_target</varname> is reached.
+     In this mode, the parameters from both this section and <xref
+     linkend="runtime-config-wal-recovery-target"/> will be used.
+    </para>
+
+    <variablelist>
+     <varlistentry id="guc-restore-command" xreflabel="restore_command">
+      <term><varname>restore_command</varname> (<type>string</type>)
+      <indexterm>
+        <primary><varname>restore_command</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        The local shell command to execute to retrieve an archived segment of
+        the WAL file series. This parameter is required for archive recovery,
+        but optional for streaming replication.
+        Any <literal>%f</literal> in the string is
+        replaced by the name of the file to retrieve from the archive,
+        and any <literal>%p</literal> is replaced by the copy destination path name
+        on the server.
+        (The path name is relative to the current working directory,
+        i.e., the cluster's data directory.)
+        Any <literal>%r</literal> is replaced by the name of the file containing the
+        last valid restart point. That is the earliest file that must be kept
+        to allow a restore to be restartable, so this information can be used
+        to truncate the archive to just the minimum required to support
+        restarting from the current restore. <literal>%r</literal> is typically only
+        used by warm-standby configurations
+        (see <xref linkend="warm-standby"/>).
+        Write <literal>%%</literal> to embed an actual <literal>%</literal> character.
+       </para>
+
+       <para>
+        It is important for the command to return a zero exit status
+        only if it succeeds.  The command <emphasis>will</emphasis> be asked for file
+        names that are not present in the archive; it must return nonzero
+        when so asked.  Examples:
+<programlisting>
+restore_command = 'cp /mnt/server/archivedir/%f "%p"'
+restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
+</programlisting>
+        An exception is that if the command was terminated by a signal (other
+        than <systemitem>SIGTERM</systemitem>, which is used as part of a
+        database server shutdown) or an error by the shell (such as command
+        not found), then recovery will abort and the server will not start up.
+       </para>
+
+       <para>
+        This parameter can only be set at server start.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-archive-cleanup-command" xreflabel="archive_cleanup_command">
+      <term><varname>archive_cleanup_command</varname> (<type>string</type>)
+      <indexterm>
+        <primary><varname>archive_cleanup_command</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This optional parameter specifies a shell command that will be executed
+        at every restartpoint.  The purpose of
+        <varname>archive_cleanup_command</varname> is to provide a mechanism for
+        cleaning up old archived WAL files that are no longer needed by the
+        standby server.
+        Any <literal>%r</literal> is replaced by the name of the file containing the
+        last valid restart point.
+        That is the earliest file that must be <emphasis>kept</emphasis> to allow a
+        restore to be restartable, and so all files earlier than <literal>%r</literal>
+        may be safely removed.
+        This information can be used to truncate the archive to just the
+        minimum required to support restart from the current restore.
+        The <xref linkend="pgarchivecleanup"/> module
+        is often used in <varname>archive_cleanup_command</varname> for
+        single-standby configurations, for example:
+<programlisting>archive_cleanup_command = 'pg_archivecleanup /mnt/server/archivedir %r'</programlisting>
+        Note however that if multiple standby servers are restoring from the
+        same archive directory, you will need to ensure that you do not delete
+        WAL files until they are no longer needed by any of the servers.
+        <varname>archive_cleanup_command</varname> would typically be used in a
+        warm-standby configuration (see <xref linkend="warm-standby"/>).
+        Write <literal>%%</literal> to embed an actual <literal>%</literal> character in the
+        command.
+       </para>
+       <para>
+        If the command returns a nonzero exit status then a warning log
+        message will be written.  An exception is that if the command was
+        terminated by a signal or an error by the shell (such as command not
+        found), a fatal error will be raised.
+       </para>
+       <para>
+        This parameter can only be set in the <filename>postgresql.conf</filename>
+        file or on the server command line.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-recovery-end-command" xreflabel="recovery_end_command">
+      <term><varname>recovery_end_command</varname> (<type>string</type>)
+      <indexterm>
+        <primary><varname>recovery_end_command</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies a shell command that will be executed once only
+        at the end of recovery. This parameter is optional. The purpose of the
+        <varname>recovery_end_command</varname> is to provide a mechanism for cleanup
+        following replication or recovery.
+        Any <literal>%r</literal> is replaced by the name of the file containing the
+        last valid restart point, like in <xref linkend="guc-archive-cleanup-command"/>.
+       </para>
+       <para>
+        If the command returns a nonzero exit status then a warning log
+        message will be written and the database will proceed to start up
+        anyway.  An exception is that if the command was terminated by a
+        signal or an error by the shell (such as command not found), the
+        database will not proceed with startup.
+       </para>
+       <para>
+        This parameter can only be set in the <filename>postgresql.conf</filename>
+        file or on the server command line.
+       </para>
+      </listitem>
+     </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+  <sect2 id="runtime-config-wal-recovery-target">
+
+    <title>Recovery Target</title>
+
+     <para>
+      By default, recovery will recover to the end of the WAL log. The
+      following parameters can be used to specify an earlier stopping point.
+      At most one of <varname>recovery_target</varname>,
+      <varname>recovery_target_lsn</varname>, <varname>recovery_target_name</varname>,
+      <varname>recovery_target_time</varname>, or <varname>recovery_target_xid</varname>
+      can be used; if more than one of these is specified in the configuration
+      file, an error will be raised.
+      These parameters can only be set at server start.
+     </para>
+
+     <variablelist>
+     <varlistentry id="guc-recovery-target" xreflabel="recovery_target">
+      <term><varname>recovery_target</varname><literal> = 'immediate'</literal>
+      <indexterm>
+        <primary><varname>recovery_target</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies that recovery should end as soon as a
+        consistent state is reached, i.e., as early as possible. When restoring
+        from an online backup, this means the point where taking the backup
+        ended.
+       </para>
+       <para>
+        Technically, this is a string parameter, but <literal>'immediate'</literal>
+        is currently the only allowed value.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-recovery-target-name" xreflabel="recovery_target_name">
+      <term><varname>recovery_target_name</varname> (<type>string</type>)
+      <indexterm>
+        <primary><varname>recovery_target_name</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies the named restore point (created with
+        <function>pg_create_restore_point()</function>) to which recovery will proceed.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-recovery-target-time" xreflabel="recovery_target_time">
+      <term><varname>recovery_target_time</varname> (<type>timestamp</type>)
+      <indexterm>
+        <primary><varname>recovery_target_time</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies the time stamp up to which recovery
+        will proceed.
+        The precise stopping point is also influenced by
+        <xref linkend="guc-recovery-target-inclusive"/>.
+       </para>
+
+       <para>
+        The value of this parameter is a time stamp in the same format
+        accepted by the <type>timestamp with time zone</type> data type,
+        except that you cannot use a time zone abbreviation (unless the
+        <xref linkend="guc-timezone-abbreviations"/> variable has been set
+        earlier in the configuration file).  Preferred style is to use a
+        numeric offset from UTC, or you can write a full time zone name,
+        e.g., <literal>Europe/Helsinki</literal> not <literal>EEST</literal>.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-recovery-target-xid" xreflabel="recovery_target_xid">
+      <term><varname>recovery_target_xid</varname> (<type>string</type>)
+      <indexterm>
+        <primary><varname>recovery_target_xid</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies the transaction ID up to which recovery
+        will proceed. Keep in mind
+        that while transaction IDs are assigned sequentially at transaction
+        start, transactions can complete in a different numeric order.
+        The transactions that will be recovered are those that committed
+        before (and optionally including) the specified one.
+        The precise stopping point is also influenced by
+        <xref linkend="guc-recovery-target-inclusive"/>.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-recovery-target-lsn" xreflabel="recovery_target_lsn">
+      <term><varname>recovery_target_lsn</varname> (<type>pg_lsn</type>)
+      <indexterm>
+        <primary><varname>recovery_target_lsn</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies the LSN of the write-ahead log location up
+        to which recovery will proceed. The precise stopping point is also
+        influenced by <xref linkend="guc-recovery-target-inclusive"/>. This
+        parameter is parsed using the system data type
+        <link linkend="datatype-pg-lsn"><type>pg_lsn</type></link>.
+       </para>
+      </listitem>
+     </varlistentry>
+     </variablelist>
+
+     <para>
+       The following options further specify the recovery target, and affect
+       what happens when the target is reached:
+     </para>
+
+     <variablelist>
+     <varlistentry id="guc-recovery-target-inclusive"
+                   xreflabel="recovery_target_inclusive">
+      <term><varname>recovery_target_inclusive</varname> (<type>boolean</type>)
+      <indexterm>
+        <primary><varname>recovery_target_inclusive</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Specifies whether to stop just after the specified recovery target
+        (<literal>on</literal>), or just before the recovery target
+        (<literal>off</literal>).
+        Applies when <xref linkend="guc-recovery-target-lsn"/>,
+        <xref linkend="guc-recovery-target-time"/>, or
+        <xref linkend="guc-recovery-target-xid"/> is specified.
+        This setting controls whether transactions
+        having exactly the target WAL location (LSN), commit time, or transaction ID, respectively, will
+        be included in the recovery.  Default is <literal>on</literal>.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-recovery-target-timeline"
+                   xreflabel="recovery_target_timeline">
+      <term><varname>recovery_target_timeline</varname> (<type>string</type>)
+      <indexterm>
+        <primary><varname>recovery_target_timeline</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Specifies recovering into a particular timeline.  The value can be a
+        numeric timeline ID or a special value.  The value
+        <literal>current</literal> recovers along the same timeline that was
+        current when the base backup was taken.  The
+        value <literal>latest</literal> recovers
+        to the latest timeline found in the archive, which is useful in
+        a standby server.  <literal>latest</literal> is the default.
+       </para>
+
+       <para>
+        You usually only need to set this parameter
+        in complex re-recovery situations, where you need to return to
+        a state that itself was reached after a point-in-time recovery.
+        See <xref linkend="backup-timelines"/> for discussion.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-recovery-target-action"
+                   xreflabel="recovery_target_action">
+      <term><varname>recovery_target_action</varname> (<type>enum</type>)
+      <indexterm>
+        <primary><varname>recovery_target_action</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Specifies what action the server should take once the recovery target is
+        reached. The default is <literal>pause</literal>, which means recovery will
+        be paused. <literal>promote</literal> means the recovery process will finish
+        and the server will start to accept connections.
+        Finally <literal>shutdown</literal> will stop the server after reaching the
+        recovery target.
+       </para>
+       <para>
+        The intended use of the <literal>pause</literal> setting is to allow queries
+        to be executed against the database to check if this recovery target
+        is the most desirable point for recovery.
+        The paused state can be resumed by
+        using <function>pg_wal_replay_resume()</function> (see
+        <xref linkend="functions-recovery-control-table"/>), which then
+        causes recovery to end. If this recovery target is not the
+        desired stopping point, then shut down the server, change the
+        recovery target settings to a later target and restart to
+        continue recovery.
+       </para>
+       <para>
+        The <literal>shutdown</literal> setting is useful to have the instance ready
+        at the exact replay point desired.  The instance will still be able to
+        replay more WAL records (and in fact will have to replay WAL records
+        since the last checkpoint next time it is started).
+       </para>
+       <para>
+        Note that because <filename>recovery.signal</filename> will not be
+        removed when <varname>recovery_target_action</varname> is set to <literal>shutdown</literal>,
+        any subsequent start will end with immediate shutdown unless the
+        configuration is changed or the <filename>recovery.signal</filename>
+        file is removed manually.
+       </para>
+       <para>
+        This setting has no effect if no recovery target is set.
+        If <xref linkend="guc-hot-standby"/> is not enabled, a setting of
+        <literal>pause</literal> will act the same as <literal>shutdown</literal>.
+       </para>
+      </listitem>
+     </varlistentry>
+
+    </variablelist>
+   </sect2>
 
  </sect1>
 
@@ -2477,14 +3227,23 @@ WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수�
  </term>
  <listitem>
  <para>
-대기 서버 또는 스트리밍 베이스 백업 클라이언트로부터의 동시 연결 최대 수를 지정한다(예: 동시에 실행 중인 WAL 전송자 프로세스의 최대 수). 
-기본값은 10이다. 복제를 비활성화 하려면 0이다. WAL 전송자 프로세스는 총 연결 수에 포함되므로 매개 변수를 <xref linkend="guc-max-connections"/> 빼기 
-<xref linkend="guc-superuser-reserved-connections"/> 보다 큰 값으로 설정할 수 없다. 
-스트리밍 클라이언트의 연결이 갑작스럽게 끊어지면 타임아웃이 될 때까지 고아 연결 슬롯이 생기므로, 예상되는 클라이언트의 최대 수보다 이 매개 변수를 약간 더 크게 설정하여 연결이 끊어진 클라이언트가 즉시 재연결될 수 있도록 해야 한다. 
-이 매개 변수는 서버 시작 시에만 설정 가능하다.
-또한 대기 서버로부터의 연결이 가능하도록 <varname>wal_level</varname>은
-<literal>replica</literal>와 같거나 크게 설정해야 한다.
+  대기 서버 또는 스트리밍 베이스 백업 클라이언트로부터의 동시 연결 최대
+  수를 지정한다(예: 동시에 실행 중인 WAL 전송자 프로세스의 최대
+  수).  기본값은 <literal>10</literal>이다. 복제를 비활성화 하려면
+  <literal>0</literal>이다.  스트리밍 클라이언트의 연결이
+  갑작스럽게 끊어지면 타임아웃이 될 때까지 고아 연결 슬롯이
+  생기므로, 예상되는 클라이언트의 최대 수보다 이 매개 변수를 약간 더
+  크게 설정하여 연결이 끊어진 클라이언트가 즉시 재연결될 수 있도록 해야
+  한다.  이 매개 변수는 서버 시작 시에만 설정 가능하다.  또한 대기
+  서버로부터의 연결이 가능하도록 <varname>wal_level</varname>은
+  <literal>replica</literal>와 같거나 크게 설정해야 한다.
  </para>
+
+      <para>
+         대기 서버를 사용한다면, 대기 서버에서의 이 설정값은 
+         주 서버의 설정값과 같거나 보다 커야한다.  그렇지 않으면, 
+         대기 서버에서 쿼리 사용을 할 수 없게 된다.
+      </para>
  </listitem>
 </varlistentry>
 
@@ -2499,6 +3258,17 @@ WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수�
  서버가 지원할 수 있는 복제 슬롯의 최대 수를 지정한다(<xref linkend="streaming-replication-slots"/> 참조). 기본값은 10이다. 이 매개 변수는 서버 시작 시에만 설정 가능하다. 
  복제 슬롯의 사용이 가능하도록 <varname>wal_level</varname>은 <literal>replica</literal>와 같거나 크게 설정해야 한다. 현재 존재하는 복제 슬롯 수보다 작은 값으로 설정하면 서버가 시작되지 않는다.
 </para>
+
+        <para>
+         On the subscriber side, specifies how many replication origins (see
+         <xref linkend="replication-origins"/>) can be tracked simultaneously,
+         effectively limiting how many logical replication subscriptions can
+         be created on the server. Setting it a lower value than the current
+         number of tracked replication origins (reflected in
+         <link linkend="view-pg-replication-origin-status">pg_replication_origin_status</link>,
+         not <link linkend="catalog-pg-replication-origin">pg_replication_origin</link>)
+         will prevent the server from starting.
+        </para>
  </listitem>
 </varlistentry>
 
@@ -2531,9 +3301,22 @@ WAL 조각 파일을 채움으로써 checkpoints가 여기에 지정된 초 수�
 </term>
 <listitem>
  <para>
-지정된 밀리초 이상 작동되지 않은 복제 연결이 중단된다. 이것은 전송 서버가 대기 서버 충돌 또는 네트워크 중단을 검출할 때 유용하다. 0 값은 시스템 타임아웃 메커니즘을 비활성화한다. 
-이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다. 기본값은 60초이다.
+지정한 시간 이상 작동되지 않은 복제 연결이 중단된다.  이것은
+전송 서버가 대기 서버 충돌 또는 네트워크 중단을 검출할 때
+유용하다. 
+단위를 지정하지 않으면 밀리세컨드로 간주한다.
+초기값은 60초다.
+0 으로 지정하면, 이 기능이 비활성화 된다.
  </para>
+       <para>
+        With a cluster distributed across multiple geographic
+        locations, using different values per location brings more flexibility
+        in the cluster management. A smaller value is useful for faster
+        failure detection with a standby having a low-latency network
+        connection, and a larger value helps in judging better the health
+        of a standby if located on a remote location, with a high-latency
+        network connection.
+       </para>
 </listitem>
  </varlistentry>
 
@@ -2592,11 +3375,12 @@ linkend="pg-stat-replication-view"><literal>pg_stat_replication</literal></link>
         <varname>application_name</varname> setting of the standby, as set in the
         standby's connection information.  In case of a physical replication
         standby, this should be set in the <varname>primary_conninfo</varname>
-        setting in <filename>recovery.conf</filename>; the default
-        is <literal>walreceiver</literal>.  For logical replication, this can
-        be set in the connection information of the subscription, and it
-        defaults to the subscription name.  For other replication stream
-        consumers, consult their documentation.
+        setting; the default is the setting of <xref linkend="guc-cluster-name"/>
+        if set, else <literal>walreceiver</literal>.
+        For logical replication, this can be set in the connection
+        information of the subscription, and it defaults to the
+        subscription name.  For other replication stream consumers,
+        consult their documentation.
        </para>
 
  <para>
@@ -2729,10 +3513,86 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
  <title>대기 서버</title>
 
  <para>
-이 설정은 복제 데이터를 수신하는 대기 서버의 동작을 제어한다. 마스터 서버의 값은 무관하다.
+이 설정은 복제 데이터를 수신하는 
+<link linkend="standby-server-operation">대기 서버</link>
+의 동작을 제어한다. 마스터 서버의 값은 무관하다.
  </para>
 
 <variablelist>
+
+       <varlistentry id="guc-primary-conninfo" xreflabel="primary_conninfo">
+        <term><varname>primary_conninfo</varname> (<type>string</type>)
+        <indexterm>
+          <primary><varname>primary_conninfo</varname> configuration parameter</primary>
+        </indexterm>
+        </term>
+        <listitem>
+         <para>
+          Specifies a connection string to be used for the standby server
+          to connect with a sending server. This string is in the format
+          described in <xref linkend="libpq-connstring"/>. If any option is
+          unspecified in this string, then the corresponding environment
+          variable (see <xref linkend="libpq-envars"/>) is checked. If the
+          environment variable is not set either, then
+          defaults are used.
+         </para>
+         <para>
+          The connection string should specify the host name (or address)
+          of the sending server, as well as the port number if it is not
+          the same as the standby server's default.
+          Also specify a user name corresponding to a suitably-privileged role
+          on the sending server (see
+          <xref linkend="streaming-replication-authentication"/>).
+          A password needs to be provided too, if the sender demands password
+          authentication.  It can be provided in the
+          <varname>primary_conninfo</varname> string, or in a separate
+          <filename>~/.pgpass</filename> file on the standby server (use
+          <literal>replication</literal> as the database name).
+          Do not specify a database name in the
+          <varname>primary_conninfo</varname> string.
+         </para>
+         <para>
+          This parameter can only be set at server start.
+          This setting has no effect if the server is not in standby mode.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry id="guc-primary-slot-name" xreflabel="primary_slot_name">
+        <term><varname>primary_slot_name</varname> (<type>string</type>)
+        <indexterm>
+          <primary><varname>primary_slot_name</varname> configuration parameter</primary>
+        </indexterm>
+        </term>
+        <listitem>
+         <para>
+          Optionally specifies an existing replication slot to be used when
+          connecting to the sending server via streaming replication to control
+          resource removal on the upstream node
+          (see <xref linkend="streaming-replication-slots"/>).
+          This parameter can only be set at server start.
+          This setting has no effect if <varname>primary_conninfo</varname> is not
+          set.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry id="guc-promote-trigger-file" xreflabel="promote_trigger_file">
+        <term><varname>promote_trigger_file</varname> (<type>string</type>)
+        <indexterm>
+          <primary><varname>promote_trigger_file</varname> configuration parameter</primary>
+        </indexterm>
+        </term>
+        <listitem>
+         <para>
+          Specifies a trigger file whose presence ends recovery in the
+          standby.  Even if this value is not set, you can still promote
+          the standby using <command>pg_ctl promote</command> or calling
+          <function>pg_promote</function>.
+          This parameter can only be set in the <filename>postgresql.conf</filename>
+          file or on the server command line.
+         </para>
+        </listitem>
+       </varlistentry>
 
  <varlistentry id="guc-hot-standby" xreflabel="hot_standby">
 <term><varname>hot_standby</varname> (<type>boolean</type>)
@@ -2758,8 +3618,9 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
 <listitem>
  <para>
 핫 스탠바이가 작동 중이면 <xref linkend="hot-standby-conflict"/>에서 설명된 대로 이 매개 변수는 적용 직전의 WAL 항목과 충돌하는 대기 서버 쿼리를 취소하기 전에 대기 서버가 기다려야 하는 시간을 결정한다. 
-WAL 데이터를 WAL 아카이브에서 읽어오는 경우(따라서 현재가 아닌 경우) <varname>max_standby_archive_delay</varname>가 적용된다. 기본값은 30초이다. 
-지정되지 않으면 단위는 밀리초이다. -1 값은 쿼리 충돌이 완료될 때까지 대기 서버가 무한정 대기하도록 허용한다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+WAL 데이터를 WAL 아카이브에서 읽어오는 경우(따라서 현재가 아닌 경우) <varname>max_standby_archive_delay</varname>가 적용된다. 
+설정값에 단위를 지정하지 않으면 밀리세컨드로 간주한다.  기본값은 30초이다. 
+-1 값은 쿼리 충돌이 완료될 때까지 대기 서버가 무한정 대기하도록 허용한다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
  <para>
 취소 전 쿼리를 실행할 수 있는 시간 길이와 <varname>max_standby_archive_delay</varname>는 동일하지 않는 점에 유의해야 한다. 오히려 이것은 WAL 세그먼트의 데이터를 적용하는 것이 허용된 최대 총 시간이다. 
@@ -2777,7 +3638,9 @@ WAL 데이터를 WAL 아카이브에서 읽어오는 경우(따라서 현재가 
 <listitem>
  <para>
 핫 스탠바이가 작동 중이면 <xref linkend="hot-standby-conflict"/>에서 설명된 대로 이 매개 변수는 적용 직전의 WAL 항목과 충돌하는 대기 서버 쿼리를 취소하기 전에 대기 서버가 기다려야 하는 시간을 결정한다. 
-WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_standby_streaming_delay</varname>가 적용된다. 기본값은 30초이다. 지정되지 않으면 단위는 밀리초이다. -1 값은 쿼리 충돌이 완료될 때까지 대기 서버가 무한정 대기하도록 허용한다. 
+WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_standby_streaming_delay</varname>가 적용된다. 
+설정값에 단위를 지정하지 않으면 밀리세컨드로 간주한다.  기본값은 30초이다. 
+-1 값은 쿼리 충돌이 완료될 때까지 대기 서버가 무한정 대기하도록 허용한다. 
 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
  <para>
@@ -2797,9 +3660,15 @@ WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_
 <para>
  대기 서버의 WAL 수신자 프로세스가 복제 프로세스에 대한 정보를 운영 서버 또는 업스트림 스탠바이로 전송하는 최소 빈도를 지정한다.
   이것은 <link linkend="pg-stat-replication-view"><literal>pg_stat_replication</literal></link> 뷰를 사용하여 볼 수 있다. 
- 대기 서버는 작성된 마지막 트랜잭션 로그 위치, 디스크에 기록한 마지막 위치 및 적용된 마지막 위치를 알려 준다. 이 매개 변수의 값은 리포트 지점간 초 단위의 최대 간격이다. 
- 업데이트는 쓰기 또는 플러시(flush) 위치가 변경될 때마다 전송되거나 최소한 이 매개 변수가 지정한 빈도로 전송된다. 따라서 적용 위치는 실제 위치보다 약간 뒤처질 수 있다. 
- 이 매개 변수를 0으로 설정하면 상태 업데이트가 완전히 비활성화된다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다. 기본값은 10초이다.
+ 대기 서버는 작성된 마지막 트랜잭션 로그 위치, 디스크에 기록한 마지막 위치 및 적용된 마지막 위치를 알려 준다. 이 매개 변수의 값은 리포트 지점간 최대 시간 간격이다. 
+ 업데이트는 쓰기 또는 플러시(flush) 위치가 변경될 때마다 전송되거나
+최소한 이 매개 변수가 지정한 빈도로 전송된다.  따라서 적용 위치는
+실제 위치보다 약간 뒤처질 수 있다. 
+설정값에 단위를 지정하지 않으면, 초로 간주한다.
+기본값은 10초다.
+이 매개 변수를 0으로 설정하면 상태 업데이트가 완전히 비활성화된다.
+이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는
+서버 커맨드 라인에서만 설정 가능하다.
 </para>
 </listitem>
  </varlistentry>
@@ -2840,8 +3709,13 @@ WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_
 </term>
 <listitem>
  <para>
-지정된 밀리초 이상 작동되지 않은 복제 연결이 중단된다. 이것은 대기 서버가 프라이머리 노드 충돌 또는 네트워크 중단을 검출할 때 유용하다. 
-0 값은 시스템 타임아웃 메커니즘을 비활성화한다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다. 기본값은 60초이다.
+지정된 시간 이상 작동되지 않은 복제 연결이 중단된다.  이것은
+대기 서버가 프라이머리 노드 충돌 또는 네트워크 중단을 검출할 때 유용하다. 
+설정값에 단위를 지정하지 않으면 밀리세컨드로 간주한다.
+기본값은 60초다.
+0 값은 시스템 타임아웃 메커니즘을 비활성화한다.  이
+매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버
+커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -2857,9 +3731,10 @@ WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_
         스트리밍 복제 로그나, 로컬 <filename>pg_wal</filename> 
         디렉터리나, WAL 아카이브로 쌓이는 트랜잭션 로그가 없을 때, 
         복제 작업을 다시 진행하기 위해서 기다리는 최대 시간을 지정한다.
+        설정값에 단위를 지정하지 않으면, 밀리세컨드로 간주한다.
+        기본값은 5초다.
         이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드
         라인에서만 설정 가능하다.
-        기본값은 5 초다. 단위를 지정하지 않고 숫자만 사용하면 밀리초 단위로 처리된다.
        </para>
        <para>
         이 설정은 대기 서버가 복구 작업을 
@@ -2875,8 +3750,73 @@ WAL 데이터를 스트리밍 복제를 통해 수신하는 경우 <varname>max_
       </listitem>
      </varlistentry>
 
- </variablelist>
-</sect2>
+     <varlistentry id="guc-recovery-min-apply-delay" xreflabel="recovery_min_apply_delay">
+      <term><varname>recovery_min_apply_delay</varname> (<type>integer</type>)
+      <indexterm>
+        <primary><varname>recovery_min_apply_delay</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        By default, a standby server restores WAL records from the
+        sending server as soon as possible. It may be useful to have a time-delayed
+        copy of the data, offering opportunities to correct data loss errors.
+        This parameter allows you to delay recovery by a specified amount
+        of time.  For example, if
+        you set this parameter to <literal>5min</literal>, the standby will
+        replay each transaction commit only when the system time on the standby
+        is at least five minutes past the commit time reported by the master.
+        If this value is specified without units, it is taken as milliseconds.
+        The default is zero, adding no delay.
+       </para>
+       <para>
+        It is possible that the replication delay between servers exceeds the
+        value of this parameter, in which case no delay is added.
+        Note that the delay is calculated between the WAL time stamp as written
+        on master and the current time on the standby. Delays in transfer
+        because of network lag or cascading replication configurations
+        may reduce the actual wait time significantly. If the system
+        clocks on master and standby are not synchronized, this may lead to
+        recovery applying records earlier than expected; but that is not a
+        major issue because useful settings of this parameter are much larger
+        than typical time deviations between servers.
+       </para>
+       <para>
+        The delay occurs only on WAL records for transaction commits.
+        Other records are replayed as quickly as possible, which
+        is not a problem because MVCC visibility rules ensure their effects
+        are not visible until the corresponding commit record is applied.
+       </para>
+       <para>
+        The delay occurs once the database in recovery has reached a consistent
+        state, until the standby is promoted or triggered. After that the standby
+        will end recovery without further waiting.
+       </para>
+       <para>
+        This parameter is intended for use with streaming replication deployments;
+        however, if the parameter is specified it will be honored in all cases
+        except crash recovery.
+
+        <varname>hot_standby_feedback</varname> will be delayed by use of this feature
+        which could lead to bloat on the master; use both together with care.
+
+        <warning>
+         <para>
+          Synchronous replication is affected by this setting when <varname>synchronous_commit</varname>
+          is set to <literal>remote_apply</literal>; every <literal>COMMIT</literal>
+          will need to wait to be applied.
+         </para>
+        </warning>
+       </para>
+       <para>
+        This parameter can only be set in the <filename>postgresql.conf</filename>
+        file or on the server command line.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     </variablelist>
+    </sect2>
 
     <sect2 id="runtime-config-replication-subscriber">
      <title>Subscribers</title>
@@ -3274,7 +4214,13 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
  </para>
 
  <para>
-사용자의 작업 부하에서 90%의 캐시율이 잘못된 가정인 경우 random_page_cost를 늘려서 랜덤 저장소 읽기의 실제 비용이 반영되도록 할 수 있다. 그에 따라, 총 서버 메모리보다 데이터베이스가 작아서 데이터가 완전히 캐시되는 경우 random_page_cost를 줄이는 것이 적절할 수 있다. 반도체 드라이브 같이 랜덤 읽기 비용이 시퀀스에 비해 상대적으로 낮은 저장소는 더 낮은 random_page_cost 값으로 모델링이 더 잘 될 수도 있다.
+사용자의 작업 부하에서 90%의 캐시율이 잘못된 가정인 경우 random_page_cost를
+늘려서 랜덤 저장소 읽기의 실제 비용이 반영되도록 할 수 있다.  그에 따라,
+총 서버 메모리보다 데이터베이스가 작아서 데이터가 완전히 캐시되는
+경우 random_page_cost를 줄이는 것이 적절할 수 있다.  SSD 디스크
+같이 랜덤 읽기 비용이 시퀀스에 비해 상대적으로 낮은 저장소는
+더 낮은 random_page_cost 값으로 지정하는 것이 더 좋을 것이다.
+예, <literal>1.1</literal>
  </para>
 
  <tip>
@@ -3365,8 +4311,10 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
         for a parallel scan to be considered.  For a parallel sequential scan,
         the amount of table data scanned is always equal to the size of the
         table, but when indexes are used the amount of table data
-        scanned will normally be less.  The default is 8
-        megabytes (<literal>8MB</literal>).
+        scanned will normally be less.
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default is 8 megabytes (<literal>8MB</literal>).
        </para>
       </listitem>
      </varlistentry>
@@ -3383,7 +4331,10 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
         for a parallel scan to be considered.  Note that a parallel index scan
         typically won't touch the entire index; it is the number of pages
         which the planner believes will actually be touched by the scan which
-        is relevant.  The default is 512 kilobytes (<literal>512kB</literal>).
+        is relevant.
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default is 512 kilobytes (<literal>512kB</literal>).
        </para>
       </listitem>
      </varlistentry>
@@ -3401,7 +4352,12 @@ explicit sorts를 완전히 억제하는 것은 어렵지만 이 변수를 해�
 이 매개 변수를 설정하는 경우 <productname>PostgreSQL</productname>의 공유 버퍼와, <productname>PostgreSQL</productname> 데이터 파일에 사용되는 커널의 디스크 캐시 부분을 모두 고려해야 한다. 자료가 두 영역에 같이 있을 수 있기 때문이다.
 또한 사용 가능한 공간을 공유해야 하므로 서로 다른 테이블에 대해 예상되는 동시 쿼리 수도 고려해야 한다. 
 이 매개 변수는 <productname>PostgreSQL</productname>에 의해 할당된 공유 메모리 크기에는 효과가 없으며, 커널 디스크 캐시도 예약하지 않는다. 
-추정용으로만 사용된다. 또한 시스템은 디스크 캐시에 쿼리 간 데이터가 잔류할 것이라고 가정하지 않는다. 기본값은 4기가바이트이다(<literal>4GB</literal>).
+추정용으로만 사용된다. 또한 시스템은 디스크 캐시에 쿼리 간 데이터가 잔류할 것이라고 가정하지 않는다. 
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default is 4 gigabytes (<literal>4GB</literal>).
+        (If <symbol>BLCKSZ</symbol> is not 8kB, the default value scales
+        proportionally to it.)
  </para>
 </listitem>
  </varlistentry>
@@ -3639,9 +4595,11 @@ SET STATISTICS</command>를 통해 설정된 칼럼 특정 타겟 없이, 테이
 <listitem>
  <para>
 쿼리 최적화를 위해 쿼리 플래너의 테이블 제약 조건을 제어한다. 
-<varname>constraint_exclusion</varname>의 허용 값은 <literal>on</literal>(모든 테이블에 대해 제약 조건 검사), <literal>off</literal>(제약 조건 검사 안함) 및 <literal>partition</literal>(상속 자식 테이블 및 <literal>UNION ALL</literal> 하위 쿼리에 대해서만 제약 조건 검사)이다. 
+<varname>constraint_exclusion</varname>의 허용 값은 <literal>on</literal>(모든 테이블에 대해 제약 조건 검사), <literal>off</literal>(제약 조건 검사 안함)
+및 <literal>partition</literal> (상속 자식 테이블 
+및 <literal>UNION ALL</literal> 하위 쿼리에 대해서만 제약 조건 검사)이다. 
 <literal>partition</literal>은 기본 설정이다. 
-        이 설정은 상속 테이블과 파티션 테이블의 성능을 높이는데 가끔 사용된다.
+        이 설정은 옛부터 사용했던 상속 테이블 성능을 높이는데 가끔 사용된다.
 </para>
 
  <para>
@@ -3660,12 +4618,19 @@ SELECT * FROM parent WHERE key = 2400;
  </para>
 
  <para>
-현재, 제약 조건 배제는 테이블 파티션에 주로 사용되는 경우에만 기본값으로 활성화된다. 모든 테이블에 대해 활성화되며, 간단한 쿼리에도 눈에 띄게 플래닝 오버헤드가 가중되어 간단한 쿼리의 장점이 상쇄된다. 
-파티션된 테이블이 없을 경우 전적으로 해제하는 것이 좋다.
+현재, 제약 조건 배제는 옛부터 사용했던 
+상속 기반 테이블 파티션에 주로 사용되는 경우에만 기본값으로
+활성화된다.  모든 테이블에 대해 활성화되며, 간단한 쿼리에도 눈에 띄게
+플래닝 오버헤드가 가중되어 간단한 쿼리의 장점이 상쇄된다. 
+전통적인 상속 기반 파티션된 테이블이 없을 경우 전적으로 해제하는 것이 좋다.
+(Note that the equivalent feature for
+        partitioned tables is controlled by a separate parameter,
+        <xref linkend="guc-enable-partition-pruning"/>.)
  </para>
 
  <para>
-제약 사항 배제 및 파티셔닝에 대한 자세한 내용은 <xref linkend="ddl-partitioning-constraint-exclusion"/>을 참조 바란다.
+제약 사항 배제 기반 파티셔닝에 대한 자세한
+내용은 <xref linkend="ddl-partitioning-constraint-exclusion"/>을 참조 바란다.
  </para>
 </listitem>
  </varlistentry>
@@ -3714,7 +4679,7 @@ SELECT * FROM parent WHERE key = 2400;
         Determines whether <acronym>JIT</acronym> compilation may be used by
         <productname>PostgreSQL</productname>, if available (see <xref
         linkend="jit"/>).
-        The default is <literal>off</literal>.
+        The default is <literal>on</literal>.
        </para>
       </listitem>
      </varlistentry>
@@ -3803,6 +4768,34 @@ SELECT * FROM parent WHERE key = 2400;
         설정할 경우 병렬 작업이 실행하지 않은 것처럼 출력된다.  이 설정으로
         <literal>Gather</literal> 노드가 추가한 실행계획을 <literal>EXPLAIN</literal>  출력에
         숨겨 병렬처리가 <literal>off</literal>된 것처럼 출력 값이 동일하다.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-plan-cache_mode" xreflabel="plan_cache_mode">
+      <term><varname>plan_cache_mode</varname> (<type>enum</type>)
+      <indexterm>
+       <primary><varname>plan_cache_mode</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Prepared statements (either explicitly prepared or implicitly
+        generated, for example by PL/pgSQL) can be executed using custom or
+        generic plans.  Custom plans are made afresh for each execution
+        using its specific set of parameter values, while generic plans do
+        not rely on the parameter values and can be re-used across
+        executions.  Thus, use of a generic plan saves planning time, but if
+        the ideal plan depends strongly on the parameter values then a
+        generic plan may be inefficient.  The choice between these options
+        is normally made automatically, but it can be overridden
+        with <varname>plan_cache_mode</varname>.
+        The allowed values are <literal>auto</literal> (the default),
+        <literal>force_custom_plan</literal> and
+        <literal>force_generic_plan</literal>.
+        This setting is considered when a cached plan is to be executed,
+        not when it is prepared.
+        For more information see <xref linkend="sql-prepare"/>.
        </para>
       </listitem>
      </varlistentry>
@@ -3948,7 +4941,7 @@ logging collector는 메시지 분실을 방지하는 용도로 고안되었다.
 <varname>logging_collector</varname>를 사용으로 설정하면 이 매개 변수는 생성된 로그 파일의 파일 이름을 설정한다. 
 값은 <function>strftime</function> 패턴으로 처리되므로, <literal>%</literal> 이스케이프를 사용하여 시간에 따라 바뀌는 파일 이름을 지정할 수 있다. (시간대 의존적 <literal>%</literal> 이스케이프가 있을 경우 <xref linkend="guc-log-timezone"/>에서 지정된 시간대로 계산된다.) 
 지원되는 <literal>%</literal> 이스케이프는 Open Group의 <ulink
-url="http://pubs.opengroup.org/onlinepubs/009695399/functions/strftime.html">strftime
+url="https://pubs.opengroup.org/onlinepubs/009695399/functions/strftime.html">strftime
 </ulink> 규격에 등재된 것과 유사하다. 시스템의 <systemitem>strftime</systemitem>이 직접 사용되지는 않으므로 플랫폼 특정(비표준) 확장자가 효력이 없다. 기본값은 <literal>postgresql-%Y-%m-%d_%H%M%S.log</literal>이다.
  </para>
  <para>
@@ -3995,7 +4988,10 @@ Unix 시스템에서, 이 매개 변수는 <varname>logging_collector</varname>�
 <listitem>
  <para>
 <varname>logging_collector</varname>를 사용으로 설정하면 이 매개 변수는 개별 로그 파일의 최대 수명을 결정한다. 여기서 지정된 분 시간이 경과된 후 새로운 로그 파일이 생성된다. 
-시간을 기준으로 새 로그 파일을 생성하지 않으려면 0으로 설정한다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+설정값에 단위를 지정하지 않으면 분으로 간주한다.
+기본값은 24시간이다.
+시간을 기준으로 새 로그 파일을 생성하지 않으려면 0으로 설정한다.  이
+매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -4008,7 +5004,10 @@ Unix 시스템에서, 이 매개 변수는 <varname>logging_collector</varname>�
 </term>
 <listitem>
  <para>
-<varname>logging_collector</varname>를 사용으로 설정하면 이 매개 변수는 개별 로그 파일의 최대 크기를 결정한다. 여기서 지정된 킬로바이트가 로그 파일에 방출된 후 새로운 로그 파일이 생성된다. 
+<varname>logging_collector</varname>를 사용으로 설정하면 이 매개 변수는 개별 로그 파일의 최대 크기를 결정한다. 여기서 지정된 킬로바이트가 로그 파일에 방출된 후 새로운 
+로그 파일이 생성된다. 
+설정값에 단위를 지정하지 않으면, kb로 간주한다.
+기본값은 10MB다.
 크기를 기준으로 새 로그 파일을 생성하지 않으려면 0으로 설정한다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
@@ -4150,24 +5149,6 @@ Unix 시스템에서, 이 매개 변수는 <varname>logging_collector</varname>�
 
  <variablelist>
 
- <varlistentry id="guc-client-min-messages" xreflabel="client_min_messages">
-<term><varname>client_min_messages</varname> (<type>enum</type>)
-<indexterm>
- <primary><varname>client_min_messages</varname> 환경 설정 매개 변수</primary>
-</indexterm>
-</term>
-<listitem>
- <para>
-클라이언트로 전송할 메시지 레벨을 제어한다. 유효 값은 <literal>DEBUG5</literal> 및 
-<literal>DEBUG4</literal>, <literal>DEBUG3</literal>, <literal>DEBUG2</literal>, 
-<literal>DEBUG1</literal>, <literal>LOG</literal>, <literal>NOTICE</literal>, 
-<literal>WARNING</literal>, <literal>ERROR</literal>, <literal>FATAL</literal>, 
-<literal>PANIC</literal>이다. 각 레벨에는 후속되는 모든 레벨이 포함된다. 
-후속 레벨일수록 메시지가 적게 전송된다. 기본값은 <literal>NOTICE</literal>이다. <literal>LOG</literal>는 여기서 <varname>log_min_messages</varname>와는 다른 랭크를 갖는다.
- </para>
-</listitem>
- </varlistentry>
-
  <varlistentry id="guc-log-min-messages" xreflabel="log_min_messages">
 <term><varname>log_min_messages</varname> (<type>enum</type>)
 <indexterm>
@@ -4176,12 +5157,13 @@ Unix 시스템에서, 이 매개 변수는 <varname>logging_collector</varname>�
 </term>
 <listitem>
  <para>
-서버 로그에 기록할 메시지 레벨을 제어한다. 유효 값은 <literal>DEBUG5</literal> 및 <literal>DEBUG4</literal>,
+서버 로그에 기록할 <link linkend="runtime-config-severity-levels">메시지 레벨</link>을
+제어한다. 유효 값은 <literal>DEBUG5</literal> 및 <literal>DEBUG4</literal>,
 <literal>DEBUG3</literal>, <literal>DEBUG2</literal>, <literal>DEBUG1</literal>,
 <literal>INFO</literal>, <literal>NOTICE</literal>, <literal>WARNING</literal>,
 <literal>ERROR</literal>, <literal>LOG</literal>, <literal>FATAL</literal>, and
 <literal>PANIC</literal>이다. 각 레벨에는 후속되는 모든 레벨이 포함된다. 
-후속 레벨일수록 메시지가 로그에 적게 전송된다. 기본값은 <literal>WARNING</literal>이다. <literal>LOG</literal>는 여기서 <varname>client_min_messages</varname>와는 다른 랭크를 갖는다. 슈퍼유저만 이 설정을 변경할 수 있다.
+후속 레벨일수록 메시지가 로그에 적게 전송된다. 기본값은 <literal>WARNING</literal>이다. <literal>LOG</literal>는 여기서 <xref linkend="guc-client-min-messages"/>와는 다른 랭크를 갖는다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -4194,15 +5176,19 @@ Unix 시스템에서, 이 매개 변수는 <varname>logging_collector</varname>�
 </term>
 <listitem>
  <para>
-에러 상태를 유발한 SQL 문이 서버 로그에 기록되는 것을 제어한다. 메시지가 지정된 심각도 이상일 경우 현재 SQL 문이 로그 항목에 포함된다. 
+에러 상태를 유발한 SQL 문이 서버 로그에 기록되는 것을 제어한다. 메시지가 
+지정된 <link linkend="runtime-config-severity-levels">심각도</link> 이상일 경우 현재 SQL 문이 로그 항목에 포함된다. 
 유효 값은 <literal>DEBUG5</literal> 및 
 <literal>DEBUG4</literal>, <literal>DEBUG3</literal>,
 <literal>DEBUG2</literal>, <literal>DEBUG1</literal>,
 <literal>INFO</literal>, <literal>NOTICE</literal>,
 <literal>WARNING</literal>, <literal>ERROR</literal>,
 <literal>LOG</literal>,
-<literal>FATAL</literal>, <literal>PANIC</literal>이다. 기본값은, 에러, 로그 메시지, 심각한 에러 또는 패닉을 유발한 문(statement)을 로깅하는 <literal>ERROR</literal>이다. 
-실패 문의 로깅을 효율적으로 해제하려면 이 매개 변수를 <literal>PANIC</literal>으로 설정해야 한다. 슈퍼유저만 이 설정을 변경할 수 있다.
+<literal>FATAL</literal>, <literal>PANIC</literal>이다. 기본값은, 
+에러, 로그 메시지, 심각한 에러 또는 패닉을 유발한 
+문(statement)을 로깅하는 <literal>ERROR</literal>이다. 
+실패 문의 로깅을 효율적으로 해제하려면 이 매개 
+변수를 <literal>PANIC</literal>으로 설정해야 한다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -4215,8 +5201,12 @@ Unix 시스템에서, 이 매개 변수는 <varname>logging_collector</varname>�
 </term>
  <listitem>
 <para>
- 최소한 지정된 밀리 초 동안 문이 실행된 경우 완료된 문별로 지속 시간이 로깅되게 한다. 이것을 0으로 설정하면 모든 문의 기간이 인쇄된다. -1(기본값)은 로깅 문 기간을 비활성화한다. 
- 예를 들어, <literal>250ms</literal>로 설정하면 250ms 이상 실행된 모든 SQL 문이 로깅된다. 이 매개 변수를 활성화하면 애플리케이션에서 최적화되지 않은 쿼리를 찾아내는 데 도움이 된다. 슈퍼유저만 이 설정을 변경할 수 있다.
+ 최소한 지정된 시간 이상 쿼리가 실행된 경우 처리 시간과 
+그 구문을 로깅되게 한다.  설정값에 단위를 지정하지 않으면, 밀리세컨드로 간주한다.
+이것을 0으로 설정하면 모든 모든 쿼리가 로깅된다.  -1(기본값)은 이 기능을 비활성화
+한다.  예를 들어, <literal>250ms</literal>로 설정하면 250ms 이상 실행된 
+모든 SQL 문이 로깅된다.  이 매개 변수를 활성화하면 애플리케이션에서 최적화되지
+않은 쿼리를 찾아내는 데 도움이 된다. 슈퍼유저만 이 설정을 변경할 수 있다.
 </para>
 
 <para>
@@ -4231,6 +5221,33 @@ Unix 시스템에서, 이 매개 변수는 <varname>logging_collector</varname>�
  </note>
  </listitem>
 </varlistentry>
+
+     <varlistentry id="guc-log-transaction-sample-rate" xreflabel="log_transaction_sample_rate">
+      <term><varname>log_transaction_sample_rate</varname> (<type>real</type>)
+      <indexterm>
+       <primary><varname>log_transaction_sample_rate</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+       <listitem>
+        <para>
+         Set the fraction of transactions whose statements are all logged,
+         in addition to statements logged for other reasons.  It applies to
+         each new transaction regardless of its statements' durations.
+         The default is <literal>0</literal>, meaning not to log statements
+         from any additional transaction.  Setting this to <literal>1</literal>
+         logs all statements for all transactions.
+         <varname>log_transaction_sample_rate</varname> is helpful to track a
+         sample of transaction.
+         Only superusers can change this setting.
+        </para>
+       <note>
+        <para>
+         Like all statement-logging options, this option can add significant
+         overhead.
+        </para>
+       </note>
+       </listitem>
+     </varlistentry>
 
  </variablelist>
 
@@ -4433,8 +5450,10 @@ checkpoints 및 restartpoints가 서버 로그에 로깅되게 한다. 일부 �
 
  <note>
 <para>
- 이 옵션과 <xref linkend="guc-log-min-duration-statement"/>를 0으로 설정하는 것의 차이는 <varname>log_min_duration_statement</varname>를 초과하면 쿼리 텍스트가 강제로 로깅되지만, 이 옵션은 그렇지 않다는 것이다. 
- 따라서 <varname>log_duration</varname>이 <literal>on</literal>으로 설정되고 <varname>log_min_duration_statement</varname>가 양의 값을 갖는 경우 모든 지속 시간이 로깅되지만 쿼리 텍스트는 임계값을 초과하는 문인 경우에만 포함된다. 
+ <varname>log_duration</varname>과 <xref linkend="guc-log-min-duration-statement"/>를 0으로 설정하는 것의 차이는 <varname>log_min_duration_statement</varname>를 초과하면 쿼리 텍스트가 강제로 로깅되지만, 이 옵션은 그렇지 않다는 것이다. 
+ 따라서 <varname>log_duration</varname>이 <literal>on</literal>으로 
+설정되고 <varname>log_min_duration_statement</varname>가 양의 값을 갖는 경우
+모든 지속 시간이 로깅되지만 쿼리 텍스트는 임계값을 초과하는 문인 경우에만 포함된다. 
  이러한 동작은 고부하 설치에서 통계를 수집할 때 유용하다.
 </para>
  </note>
@@ -4700,8 +5719,13 @@ setting.
 </term>
 <listitem>
  <para>
-임시 파일 이름과 크기의 로깅을 제어한다. 정렬, 해시 및 임시 쿼리 결과를 위해 임시 파일을 생성할 수 있다. 로그는 각 임시 파일이 삭제된 경우 입력된다. 
-0 값은 모든 임시 파일 정보를 로깅하고, 양의 값은 크기가 지정된 킬로바이트 이상일 때만 로깅된다. 기본값은, 해당 로깅이 비활성화되는 -1이다. 슈퍼유저만 이 설정을 변경할 수 있다.
+임시 파일 이름과 크기의 로깅을 제어한다.  정렬, 해시 및 임시 쿼리
+결과를 위해 임시 파일을 생성할 수 있다.  이 설정이 활성화하면,  각 임시 파일이
+만들어졌다 삭제될 때 로그를 남긴다.
+0 값은 모든 임시 파일 정보를 로깅하고, 양의 값은 크기가 
+지정된 킬로바이트 이상일 때만 로깅된다. 
+단위를 지정하지 않으면 kb로 간주한다.
+기본값은, 해당 로깅이 비활성화되는 -1이다. 슈퍼유저만 이 설정을 변경할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -4768,6 +5792,8 @@ PRIMARY KEY (session_id, session_line_num)
 <programlisting>
 COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
 </programlisting>
+        It is also possible to access the file as a foreign table, using
+        the supplied <xref linkend="file-fdw"/> module.
  </para>
 
  <para>
@@ -4827,7 +5853,14 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
       </term>
       <listitem>
        <para>
-        해당 클러스터에 속한 모든 서버 프로세스 제목에 여기서 지정한 
+        Sets a name that identifies this database cluster (instance) for
+        various purposes.  The cluster name appears in the process title for
+        all server processes in this cluster.  Moreover, it is the default
+        application name for a standby connection (see <xref
+        linkend="guc-synchronous-standby-names"/>.)
+       </para>
+
+       <para>
         클러스터 이름을 포함해서 보여준다.
         클러스터 이름은 <symbol>NAMEDATALEN</symbol> (기본 빌드 초기값은
         64 문자열) 길이의 임의 문자열이다. <varname>cluster_name</varname>
@@ -4899,8 +5932,9 @@ COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
 </term>
 <listitem>
  <para>
- 각각의 활성 세션에 대해 현재 실행 중인 명령을 추적하기 위해 <structname>pg_stat_activity</structname>.<structfield>query</structfield> 필드에 예약된 바이트 수를 지정한다. 
- 기본값은 1024이다. 이 매개 변수는 서버 시작 시에만 설정 가능하다.
+ 각각의 활성 세션에 대해 현재 실행 중인 명령을 추적하기 위해 <structname>pg_stat_activity</structname>.<structfield>query</structfield> 필드에 사용할 메모리 크기를 지정한다.
+설정값에 단위를 지정하지 않으면 바이트로 간주한다.
+ 기본값은 1024바이트다. 이 매개 변수는 서버 시작 시에만 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -5052,13 +6086,16 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
  <varlistentry id="guc-log-autovacuum-min-duration" xreflabel="log_autovacuum_min_duration">
 <term><varname>log_autovacuum_min_duration</varname> (<type>integer</type>)
 <indexterm>
- <primary><varname>log_autovacuum_min_duration</varname> 환경 설정 매개 변수</primary>
+       <primary><varname>log_autovacuum_min_duration</varname></primary>
+       <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
  <para>
-최소한 지정된 밀리초 동안 autovacuum에 의해 실행된 각각의 액션이 로깅되게 한다. 
-0으로 설정하면 모든 autovacuum 액션이 로깅된다. -1(기본값)은 autovacuum 액션을 비활성화한다. 
+지정된 시간 보다 더 걸린 autovacuum에 의해 실행된 각각의 액션이 로깅되게 한다. 
+0으로 설정하면 모든 autovacuum 액션이 로깅된다. <literal>-1</literal> (기본값)은
+autovacuum 로그 남기기를 비활성화한다. 
+설정값에 단위를 지정하지 않으면 밀리세컨드로 간주한다.
 예를 들면, 이것을 <literal>250ms</literal>로 설정한 경우 250ms 이상 지속되는 모든 자동 vacuums 및 분석이 로깅된다. 
 또한 이 매개 변수가 <literal>-1</literal> 이외의 다른 값으로 설정된 경우 잠금 충돌이나,
 같은 작업 시간에 테이블 삭제 작업이 있는 경우 autovacuum 액션을 건너뛰면 메시지가 로깅된다. 
@@ -5092,7 +6129,8 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
  <para>
 주어진 데이터베이스에서 autovacuum 실행 사이의 최소 지연을 지정한다. 
 각 라운드에서 데몬은 데이터베이스를 검사하고 필요 시 해당 데이터베이스 테이블에 대해 <command>VACUUM</command> 및 <command>ANALYZE</command> 명령을 실행한다. 
-지연은 초 단위로 측정되며 기본값은 1분이다(<literal>1min</literal>). 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
+설정값에 단위가 없으면, 초로 간주한다.
+기본값은 1분이다(<literal>1min</literal>). 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
  </varlistentry>
@@ -5100,7 +6138,8 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
  <varlistentry id="guc-autovacuum-vacuum-threshold" xreflabel="autovacuum_vacuum_threshold">
 <term><varname>autovacuum_vacuum_threshold</varname> (<type>integer</type>)
 <indexterm>
- <primary><varname>autovacuum_vacuum_threshold</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_vacuum_threshold</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
@@ -5115,7 +6154,8 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
  <varlistentry id="guc-autovacuum-analyze-threshold" xreflabel="autovacuum_analyze_threshold">
 <term><varname>autovacuum_analyze_threshold</varname> (<type>integer</type>)
 <indexterm>
- <primary><varname>autovacuum_analyze_threshold</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_analyze_threshold</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
@@ -5130,7 +6170,8 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
  <varlistentry id="guc-autovacuum-vacuum-scale-factor" xreflabel="autovacuum_vacuum_scale_factor">
 <term><varname>autovacuum_vacuum_scale_factor</varname> (<type>floating point</type>)
 <indexterm>
- <primary><varname>autovacuum_vacuum_scale_factor</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_vacuum_scale_factor</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
@@ -5145,7 +6186,8 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
  <varlistentry id="guc-autovacuum-analyze-scale-factor" xreflabel="autovacuum_analyze_scale_factor">
 <term><varname>autovacuum_analyze_scale_factor</varname> (<type>floating point</type>)
 <indexterm>
- <primary><varname>autovacuum_analyze_scale_factor</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_analyze_scale_factor</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
@@ -5160,7 +6202,8 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
  <varlistentry id="guc-autovacuum-freeze-max-age" xreflabel="autovacuum_freeze_max_age">
 <term><varname>autovacuum_freeze_max_age</varname> (<type>integer</type>)
 <indexterm>
- <primary><varname>autovacuum_freeze_max_age</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_freeze_max_age</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
@@ -5186,7 +6229,8 @@ For more information see <xref linkend="vacuum-for-wraparound"/>.
  <varlistentry id="guc-autovacuum-multixact-freeze-max-age" xreflabel="autovacuum_multixact_freeze_max_age">
 <term><varname>autovacuum_multixact_freeze_max_age</varname> (<type>integer</type>)
 <indexterm>
- <primary><varname>autovacuum_multixact_freeze_max_age</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_multixact_freeze_max_age</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
@@ -5205,13 +6249,16 @@ Vacuuming multixacts는 <filename>pg_multixact/members</filename> 및 <filename>
  <varlistentry id="guc-autovacuum-vacuum-cost-delay" xreflabel="autovacuum_vacuum_cost_delay">
 <term><varname>autovacuum_vacuum_cost_delay</varname> (<type>integer</type>)
 <indexterm>
- <primary><varname>autovacuum_vacuum_cost_delay</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_vacuum_cost_delay</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
  <para>
 자동 <command>VACUUM</command> 명령에 사용되는 비용 지연 값을 지정한다. -1을 지정하면 일반 <xref linkend="guc-vacuum-cost-delay"/> 값이 사용된다. 
-기본값은 20밀리초이다. 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다. 
+설정값에 단위가 없으면 밀리세컨드로 간주한다.
+기본값은 2ms다.
+이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다. 
 이 설정은 저장소 매개 변수를 변경함으로써 개별 테이블에 오버라이드할 수 있다.
  </para>
 </listitem>
@@ -5220,7 +6267,8 @@ Vacuuming multixacts는 <filename>pg_multixact/members</filename> 및 <filename>
  <varlistentry id="guc-autovacuum-vacuum-cost-limit" xreflabel="autovacuum_vacuum_cost_limit">
 <term><varname>autovacuum_vacuum_cost_limit</varname> (<type>integer</type>)
 <indexterm>
- <primary><varname>autovacuum_vacuum_cost_limit</varname> 환경 설정 매개 변수</primary>
+ <primary><varname>autovacuum_vacuum_cost_limit</varname></primary>
+ <secondary>configuration parameter</secondary>
 </indexterm>
 </term>
 <listitem>
@@ -5244,6 +6292,27 @@ Vacuuming multixacts는 <filename>pg_multixact/members</filename> 및 <filename>
  <title>문 동작</title>
  <variablelist>
 
+ <varlistentry id="guc-client-min-messages" xreflabel="client_min_messages">
+<term><varname>client_min_messages</varname> (<type>enum</type>)
+<indexterm>
+ <primary><varname>client_min_messages</varname> 환경 설정 매개 변수</primary>
+</indexterm>
+</term>
+<listitem>
+ <para>
+클라이언트로 전송할 <link linkend="runtime-config-severity-levels">메시지 레벨</link>을 제어한다. 유효 값은 <literal>DEBUG5</literal> 및 
+<literal>DEBUG4</literal>, <literal>DEBUG3</literal>, <literal>DEBUG2</literal>, 
+<literal>DEBUG1</literal>, <literal>LOG</literal>, <literal>NOTICE</literal>, 
+<literal>WARNING</literal>, <literal>ERROR</literal>, <literal>FATAL</literal>, 
+<literal>PANIC</literal>이다. 각 레벨에는 후속되는 모든 레벨이 포함된다. 
+후속 레벨일수록 메시지가 적게 전송된다. 기본값은 <literal>NOTICE</literal>이다. <literal>LOG</literal>는 여기서 <xref linkend="guc-log-min-messages"/>와는 다른 랭크를 갖는다.
+ </para>
+       <para>
+        <literal>INFO</literal> level messages are always sent to the client.
+       </para>
+</listitem>
+ </varlistentry>
+
  <varlistentry id="guc-search-path" xreflabel="search_path">
 <term><varname>search_path</varname> (<type>string</type>)
 <indexterm>
@@ -5266,13 +6335,18 @@ Vacuuming multixacts는 <filename>pg_multixact/members</filename> 및 <filename>
  </para>
 
  <para>
-목록 항목 중 하나가 특수한 이름 <literal>$user</literal>인 경우, 해당 스키마 및 사용자에게 <literal>USAGE</literal> 권한이 있으면 <function>SESSION_USER</function>가 리턴한 이름의 스키마는 대체된다. 
+목록 항목 중 하나가 특수한 이름 <literal>$user</literal>인 경우, 해당 스키마 및 사용자에게 <literal>USAGE</literal> 권한이 있으면 <function>CURRENT_USER</function>가 리턴한 이름의 스키마는 대체된다. 
 (그 외에는 <literal>$user</literal>가 무시된다.)
  </para>
 
  <para>
 시스템 카탈로그 스키마 <literal>pg_catalog</literal>는 경로에 있든 없든 항상 검색된다. 경로에 있을 경우 지정된 순서대로 검색된다. <literal>pg_catalog</literal>가 경로에 없으면 경로 항목을 검색하기 <emphasis>전</emphasis>에 검색된다.
  </para>
+
+       <!-- To further split hairs, funcname('foo') does not use the temporary
+            schema, even when it considers typname='funcname'.  This paragraph
+            refers to function names in a loose sense, "pg_proc.proname or
+            func_name grammar production". -->
 
  <para>
 마찬가지로, 현재 세션의 임시 테이블 스키마 <literal>pg_temp_<replaceable>nnn</replaceable></literal>은 존재할 경우 항상 검색된다. 
@@ -5334,6 +6408,23 @@ Vacuuming multixacts는 <filename>pg_multixact/members</filename> 및 <filename>
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-default-table-access-method" xreflabel="default_table_access_method">
+      <term><varname>default_table_access_method</varname> (<type>string</type>)
+      <indexterm>
+       <primary><varname>default_table_access_method</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        This parameter specifies the default table access method to use when
+        creating tables or materialized views if the <command>CREATE</command>
+        command does not explicitly specify an access method, or when
+        <command>SELECT ... INTO</command> is used, which does not allow to
+        specify a table access method. The default is <literal>heap</literal>.
+       </para>
+      </listitem>
+     </varlistentry>
+
  <varlistentry id="guc-default-tablespace" xreflabel="default_tablespace">
 <term><varname>default_tablespace</varname> (<type>string</type>)
 <indexterm>
@@ -5360,6 +6451,14 @@ Vacuuming multixacts는 <filename>pg_multixact/members</filename> 및 <filename>
 이 변수는 데이터베이스 생성 시 사용되지 않는다. 
 기본적으로 새 데이터베이스는 복사되었던 템플릿 데이터베이스로부터 테이블스페이스 설정을 상속받는다.
  </para>
+
+       <para>
+        If this parameter is set to a value other than the empty string
+        when a partitioned table is created, the partitioned table's
+        tablespace will be set to that value, which will be used as
+        the default tablespace for partitions created in the future,
+        even if <varname>default_tablespace</varname> has changed since then.
+       </para>
 
  <para>
 테이블스페이스에 대한 자세한 내용은 <xref linkend="manage-ag-tablespaces"/>을 참조 바란다.
@@ -5540,10 +6639,22 @@ linkend="sql-set-transaction"/>을 참고 바란다.
 </indexterm>
 </term>
 <listitem>
- <para>
-명령이 클라이언트에서 서버로 도착한 때부터 걸린 시간이 지정된 밀리초를 초과한 문을 중단한다. 
-<varname>log_min_error_statement</varname>가 <literal>ERROR</literal> 이하로 설정되면 타임아웃된 문도 로깅된다. 0 값(기본값)은 이것을 해제한다.
- </para>
+       <para>
+        Abort any statement that takes more than the specified amount of time.
+        If <varname>log_min_error_statement</varname> is set
+        to <literal>ERROR</literal> or lower, the statement that timed out
+        will also be logged.
+        If this value is specified without units, it is taken as milliseconds.
+        A value of zero (the default) disables the timeout.
+       </para>
+
+       <para>
+        The timeout is measured from the time a command arrives at the
+        server until it is completed by the server.
+        In extended query protocol, the timeout starts running when any
+        query-related message (Parse, Bind, Execute, Describe) arrives, and
+        it is cancelled by completion of an Execute or Sync message.
+       </para>
 
  <para>
 모든 세션에 영향을 줄 수 있으므로 <filename>postgresql.conf</filename>에서 <varname>statement_timeout</varname>을 설정하는 것은 권장하지 않는다.
@@ -5559,11 +6670,12 @@ linkend="sql-set-transaction"/>을 참고 바란다.
 </term>
 <listitem>
  <para>
-테이블, 인덱스, 행 또는 기타 데이터베이스 개체의 잠금을 획득하기 위해 대기한 시간이 지정된 밀리초를 초과하면 문을 중단한다. 
+테이블, 인덱스, 행 또는 기타 데이터베이스 개체의 잠금을 획득하기 위해 대기한 시간이 지정된
+이상 초과하면 문을 중단한다. 
 획득 시도별로 시간 제한이 개별적으로 적용된다. 
 이 제한은 명시적 잠금 요청(예: <command>LOCK TABLE</command> 또는 <literal>NOWAIT</literal>하지 않은 <command>SELECT
 FOR UPDATE</command>) 및 암시적으로 획득한 잠금에 모두 적용된다. 
-<varname>log_min_error_statement</varname>가 <literal>ERROR</literal> 이하로 설정되면 타임아웃된 문이 로깅된다. 
+설정값에 단위가 없으면 밀리세컨드로 간주한다.
 0 값(기본값)은 이것을 해제한다.
  </para>
 
@@ -5643,7 +6755,8 @@ linkend="vacuum-for-wraparound"/>을 참조 바란다.
      <varlistentry id="guc-vacuum-cleanup-index-scale-factor" xreflabel="vacuum_cleanup_index_scale_factor">
       <term><varname>vacuum_cleanup_index_scale_factor</varname> (<type>floating point</type>)
       <indexterm>
-       <primary><varname>vacuum_cleanup_index_scale_factor</varname> configuration parameter</primary>
+       <primary><varname>vacuum_cleanup_index_scale_factor</varname></primary>
+       <secondary>configuration parameter</secondary>
       </indexterm>
       </term>
       <listitem>
@@ -5783,15 +6896,17 @@ SET XML OPTION { DOCUMENT | CONTENT };
      <varlistentry id="guc-gin-pending-list-limit" xreflabel="gin_pending_list_limit">
       <term><varname>gin_pending_list_limit</varname> (<type>integer</type>)
       <indexterm>
-       <primary><varname>gin_pending_list_limit</varname> 환경 설정 매개 변수</primary>
+       <primary><varname>gin_pending_list_limit</varname></primary>
+       <secondary>configuration parameter</secondary>
       </indexterm>
       </term>
       <listitem>
        <para>
         GIN 인덱스 <literal>빠른 변경</literal> 기능이 활성되었을 경우
-        GIN 펜딩 목록 최대 크기를 지정한다.
+        GIN 인덱스 펜딩 목록 최대 크기를 지정한다.
         펜딩 목록이 이 크기보다 커지면, 일괄 작업으로
-        원 GIN 자료에 반영하고 이 목록은 비운다.
+        원 GIN 인덱스 자료에 반영하고 이 목록은 비운다.
+        설정값에 단위가 없으면, kB로 간주한다.
         기본값은 4 MB이다.  이 값은 인덱스의 저장 매개 변수 설정으로
         개별 인덱스 별로 따로 설정할 수 있다.
         이 부분에 대해서는 <xref linkend="gin-fast-update"/>과
@@ -5890,12 +7005,39 @@ SET XML OPTION { DOCUMENT | CONTENT };
 </indexterm>
 </term>
 <listitem>
- <para>
-이 매개 변수는 <type>float4</type>, <type>float8</type> 및 기하학적(geometric) 데이터 타입을 비롯한 floating-point 값에 대해 표시할 수 있는 자릿수를 조절한다. 
-매개 변수 값은 표준 자릿수에 추가된다(<literal>FLT_DIG</literal> 또는 <literal>DBL_DIG</literal>를 적절하게). 
-부분적 유효 숫자를 포함하여 값은 최대 3까지 설정할 수 있다. 이것은 정확한 복원이 필요한 부동 데이터를 덤프할 때 특히 유용하다. 
-또는 불필요한 숫자가 나타나지 않도록 음수로 설정할 수도 있다. <xref linkend="datatype-float"/>도 참조 바란다.
- </para>
+       <para>
+        This parameter adjusts the number of digits used for textual output of
+        floating-point values, including <type>float4</type>, <type>float8</type>,
+        and geometric data types.
+       </para>
+       <para>
+        If the value is 1 (the default) or above, float values are output in
+        shortest-precise format; see <xref linkend="datatype-float"/>. The
+        actual number of digits generated depends only on the value being
+        output, not on the value of this parameter. At most 17 digits are
+        required for <type>float8</type> values, and 9 for <type>float4</type>
+        values. This format is both fast and precise, preserving the original
+        binary float value exactly when correctly read. For historical
+        compatibility, values up to 3 are permitted.
+       </para>
+       <para>
+        If the value is zero or negative, then the output is rounded to a
+        given decimal precision. The precision used is the standard number of
+        digits for the type (<literal>FLT_DIG</literal>
+        or <literal>DBL_DIG</literal> as appropriate) reduced according to the
+        value of this parameter. (For example, specifying -1 will cause
+        <type>float4</type> values to be output rounded to 5 significant
+        digits, and <type>float8</type> values
+        rounded to 14 digits.) This format is slower and does not preserve all
+        the bits of the binary float value, but may be more human-readable.
+       </para>
+       <note>
+        <para>
+         The meaning of this parameter, and its default value, changed
+         in <productname>PostgreSQL</productname> 12;
+         see <xref linkend="datatype-float"/> for further discussion.
+        </para>
+       </note>
 </listitem>
  </varlistentry>
 
@@ -6246,10 +7388,13 @@ GIN 인덱스 스캔에 의해 리턴된 설정 크기에 대한 상한. 자세�
 </term>
 <listitem>
  <para>
-이것은 데드록 상황인지 검사하기 전에 잠금을 대기하는 밀리초 단위의 시간이다. 
+이것은 데드록 상황인지 검사하기 전에 잠금을 대기하는 시간이다. 
 데드록에 대한 검사는 상대적으로 고비용이므로 잠금을 기다릴 때마다 서버가 검사를 실행하지는 않는다. 
 실제 운영 중인 애플리케이션에서 데드록이 일반적이지는 않으며, 데드록 검사 전에 잠시 잠금을 기다리는 것이라고 긍정적으로 가정한다. 
-이 값을 늘리면 불필요한 데드록 검사를 위해 대기하는 시간이 줄어들지만 실제 데드록 에러 리포팅이 느려진다. 기본값은, 실제로 사용자가 희망하는 최소값일 가능성이 높은 1초이다(<literal>1s</literal>). 
+이 값을 늘리면 불필요한 데드록 검사를 위해 대기하는 시간이 줄어들지만
+실제 데드록 에러 리포팅이 느려진다. 
+설정값에 단위를 지정하지 않았다면, 밀리세컨드로 간주한다.
+기본값은, 실제로 사용자가 희망하는 최소값일 가능성이 높은 1초이다(<literal>1s</literal>). 
 로드가 과도한 서버에서는 이 값을 올리고 싶을 것이다. 
 이상적으로, waiter가 데드록 검사를 결정하기 전에 잠금이 해제되는 이상한 상황을 개선하려면 이 설정은 사용자의 일반적인 트랜잭션 시간을 초과해야 한다. 
 슈퍼유저만 이 설정을 변경할 수 있다.
@@ -6392,26 +7537,6 @@ linkend="guc-max-prepared-transactions"/>) 개체(예: 테이블)에 대한 잠�
  <para>
 표준 준수 string 리터럴에서, <literal>\</literal>는 <literal>\</literal>라는 점에 유의해야 한다. 
 이 매개 변수는 이스케이프 string 구문(<literal>E'...'</literal>)을 비롯한 비 표준 준수 리터럴의 처리에만 영향을 준다.
- </para>
-</listitem>
- </varlistentry>
-
- <varlistentry id="guc-default-with-oids" xreflabel="default_with_oids">
-<term><varname>default_with_oids</varname> (<type>boolean</type>)
-<indexterm>
- <primary><varname>default_with_oids</varname> 환경 설정 매개 변수</primary>
-</indexterm>
-</term>
-<listitem>
- <para>
-이것은 <literal>WITH OIDS</literal> 또는 <literal>WITHOUT OIDS</literal>가 지정되지 않은 경우 <command>CREATE TABLE</command> 및 <command>CREATE TABLE AS</command>가 새로 생성된 테이블에서 OID 칼럼을 포함할 것인지를 제어한다. 
-또한 OID를 <command>SELECT INTO</command>에 의해 생성된 테이블에 포함할 것인지를 결정한다. 이 매개 변수는 기본적으로 <literal>off</literal>이며, <productname>PostgreSQL</productname> 8.0 이전 버전에서는 기본적으로 on이다.
- </para>
-
- <para>
-사용자 테이블에서 OID의 사용은 사용 가치가 없는 것(deprecated)으로 간주되므로 대부분의 설치는 이 변수를 비활성화해야 한다. 
-특별한 테이블에 OID가 필요한 애플리케이션은 테이블 생성 시 <literal>WITH OIDS</literal>를 지정해야 한다. 
-이 변수는 이 동작을 따르지 않는 예전 애플리케이션과의 호환성을 위해 활성화할 수 있다.
  </para>
 </listitem>
  </varlistentry>
@@ -6585,7 +7710,7 @@ Access</productname>에서 필터링된 양식은 <literal><replaceable>expr</re
 </term>
 <listitem>
  <para>
-true인 경우 어떤 에러가 발생했든 현재 세션이 중단된다. 기본적으로 이것은 false로 설정되고 FATAL 에러 시 세션이 중단된다.
+on인 경우 어떤 에러가 발생했든 현재 세션이 중단된다. 기본적으로 이것은 off로 설정되고 FATAL 에러 시 세션이 중단된다.
  </para>
 </listitem>
  </varlistentry>
@@ -6598,12 +7723,47 @@ true인 경우 어떤 에러가 발생했든 현재 세션이 중단된다. 기�
 </term>
 <listitem>
  <para>
-기본값인 true로 설정되면 백엔드 충돌 후 <productname>PostgreSQL</productname>이 자동으로 재초기화된다. 
-이 값을 계속 true로 설정하는 것은 일반적으로 데이터베이스의 가용성을 최대화하는 최고의 방법이다. 
+기본값인 on으로 설정되면 백엔드 충돌 후 <productname>PostgreSQL</productname>이 
+자동으로 재초기화된다. 
+이 값을 계속 on으로 설정하는 것은 일반적으로 데이터베이스의
+가용성을 최대화하는 최고의 방법이다. 
 그러나, 클러스터웨어에서 <productname>PostgreSQL</productname>를 호출하는 경우처럼 경우에 따라 재시작을 비활성화해서 클러스터웨어가 제어를 획득하고 적절하다고 생각되는 조치를 취할 수 있게 하는 점이 유용하다.
  </para>
 </listitem>
  </varlistentry>
+
+     <varlistentry id="guc-data-sync-retry" xreflabel="data_sync_retry">
+      <term><varname>data_sync_retry</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>data_sync_retry</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        When set to off, which is the default, <productname>PostgreSQL</productname>
+        will raise a PANIC-level error on failure to flush modified data files
+        to the file system.  This causes the database server to crash.  This
+        parameter can only be set at server start.
+       </para>
+       <para>
+        On some operating systems, the status of data in the kernel's page
+        cache is unknown after a write-back failure.  In some cases it might
+        have been entirely forgotten, making it unsafe to retry; the second
+        attempt may be reported as successful, when in fact the data has been
+        lost.  In these circumstances, the only way to avoid data loss is to
+        recover from the WAL after any failure is reported, preferably
+        after investigating the root cause of the failure and replacing any
+        faulty hardware.
+       </para>
+       <para>
+        If set to on, <productname>PostgreSQL</productname> will instead
+        report an error but continue to run so that the data flushing
+        operation can be retried in a later checkpoint.  Only set it to on
+        after investigating the operating system's treatment of buffered data
+        in case of write-back failure.
+       </para>
+      </listitem>
+     </varlistentry>
 
 </variablelist>
 
@@ -6806,6 +7966,22 @@ true인 경우 어떤 에러가 발생했든 현재 세션이 중단된다. 기�
 </listitem>
  </varlistentry>
 
+     <varlistentry id="guc-ssl-library" xreflabel="ssl_library">
+      <term><varname>ssl_library</varname> (<type>string</type>)
+      <indexterm>
+       <primary><varname>ssl_library</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+        Reports the name of the SSL library that this
+        <productname>PostgreSQL</productname> server was built with (even if
+        SSL is not currently configured or in use on this instance), for
+        example <literal>OpenSSL</literal>, or an empty string if none.
+       </para>
+      </listitem>
+     </varlistentry>
+
  <varlistentry id="guc-wal-block-size" xreflabel="wal_block_size">
 <term><varname>wal_block_size</varname> (<type>integer</type>)
 <indexterm>
@@ -6828,7 +8004,7 @@ WAL 디스크 블록의 크기를 알려준다. 이것은 서버 빌드 시 <lit
 <listitem>
  <para>
 WAL 세그먼트 파일 내에서 블록(페이지)의 수를 알려준다. 
-WAL 세그먼트 파일의 총 크기(바이트 단위)는 <varname>wal_block_size</varname>를 곱한 <varname>wal_segment_size</varname>와 같으며, 기본값은 16GB이다. 
+기본값은 16GM이다. 
 자세한 내용은 <xref linkend="wal-configuration"/>을 참조 바란다.
  </para>
 </listitem>
@@ -6919,8 +8095,10 @@ assertion이 활성화된 상태에서 <productname>PostgreSQL</productname>을 
 </term>
 <listitem>
  <para>
-0이 아닌 경우 인증 절차를 수행한 후 새 서버 프로세스가 시작되면 이 초 단위 수만큼의 지연이 발생한다. 
+인증 절차를 수행한 후 새 서버 프로세스가 시작 된 후 이 시간 만큼의 기다렸다가 계속한다.
 이것은 개발자가 디버거를 사용하여 서버 프로세스에 접속할 수 있는 기회를 제공하기 위한 것이다. 
+설정값에 단위가 없으면, 초로 간주한다.
+기본값은 0 이며, 이는 이 지연이 없음을 뜻한다.
 이 매개 변수는 세션 시작 후에는 변경할 수 없다.
  </para>
 </listitem>
@@ -6934,8 +8112,11 @@ assertion이 활성화된 상태에서 <productname>PostgreSQL</productname>을 
 </term>
 <listitem>
  <para>
-0이 아닌 경우 인증 절차를 수행하기 전 새 서버 프로세스가 시작된 직후 이 초 단위 수만큼의 지연이 발생한다. 
+인증 절차를 수행하기 전 새 서버 프로세스가 시작된 직후 이 시간만큼의
+지연이 발생한다. 
 이것은 개발자가 디버거를 사용하여 인증 오류를 추적할 수 있도록 서버 프로세스에 접속할 수 있는 기회를 제공하기 위한 것이다. 
+설정값에 단위가 없으면, 초로 간주한다.
+기본값은 0 이며, 이는 이 지연이 없음을 뜻한다.
 이 매개 변수는 <filename>postgresql.conf</filename> 파일 또는 서버 커맨드 라인에서만 설정 가능하다.
  </para>
 </listitem>
@@ -7067,7 +8248,8 @@ on으로 설정된 경우 정렬 명령 중에 사용자 잠금(user lock) 사�
 </term>
 <listitem>
  <para>
-설정된 경우 이 OID 아래 테이블에 대해 잠금을 추적하지 않는다. (시스템 테이블에 출력을 방지하려고 사용)
+설정된 경우 이 OID 아래 테이블에 대해 잠금을 추적하지 않는다.
+(시스템 테이블에 출력을 방지하려고 사용되었음)
  </para>
  <para>
 이것은 <productname>PostgreSQL</productname>이 컴파일된 경우 <symbol>LOCK_DEBUG</symbol> 매크로가 정의된 경우에만 사용할 수 있다.

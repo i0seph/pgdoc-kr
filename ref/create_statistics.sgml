@@ -79,10 +79,11 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="parameter">통계이름<
      <para>
       이 통계 정보 개체의 통계 종류.
       현재, n-distinct 통계용 <literal>ndistinct</literal>,
-      기능적 의존성 통계용 <literal>dependencies</literal>
-      두 종류를 지원한다.
+      기능적 의존성 통계용 <literal>dependencies</literal>,
+      최빈값 목록인 <literal>mcv</literal>
+      세 종류를 지원한다.
       이 옵션을 생략하면, 만들어지는 통계 정보에, 
-      두 종류 모든 통계를 보관한다.
+      세 종류 모든 통계를 보관한다.
       <xref linkend="planner-stats-extended"/>,
       <xref linkend="multivariate-statistics-examples"/>에서 이 부분에 
       대한 자세한 내용을 다룬다.
@@ -94,7 +95,8 @@ CREATE STATISTICS [ IF NOT EXISTS ] <replaceable class="parameter">통계이름<
     <term><replaceable class="parameter">칼럼이름</replaceable></term>
     <listitem>
      <para>
-      통계 정보를 수집할 칼럼 이름.  최소 두 개 이상 지정해야 한다.
+      통계 정보를 수집할 칼럼 이름.  최소 두 개 이상 지정해야 한다. 
+      순서는 상관 없다.
      </para>
     </listitem>
    </varlistentry>
@@ -158,6 +160,36 @@ EXPLAIN ANALYZE SELECT * FROM t1 WHERE (a = 1) AND (b = 0);
    이런 사용자 정의 통계 정보를 만들면,
    <literal>WHERE</literal> 조건절에 다중 칼럼을 사용하는 경우, 
    보다 정확한 예측을 할 수 있도록 한다.
+  </para>
+
+  <para>
+   Create table <structname>t2</structname> with two perfectly correlated columns
+   (containing identical data), and a MCV list on those columns:
+
+<programlisting>
+CREATE TABLE t2 (
+    a   int,
+    b   int
+);
+
+INSERT INTO t2 SELECT mod(i,100), mod(i,100)
+                 FROM generate_series(1,1000000) s(i);
+
+CREATE STATISTICS s2 (mcv) ON a, b FROM t2;
+
+ANALYZE t2;
+
+-- valid combination (found in MCV)
+EXPLAIN ANALYZE SELECT * FROM t2 WHERE (a = 1) AND (b = 1);
+
+-- invalid combination (not found in MCV)
+EXPLAIN ANALYZE SELECT * FROM t2 WHERE (a = 1) AND (b = 2);
+</programlisting>
+
+   The MCV list gives the planner more detailed information about the
+   specific values that commonly appear in the table, as well as an upper
+   bound on the selectivities of combinations of values that do not appear
+   in the table, allowing it to generate better estimates in both cases.
   </para>
 
  </refsect1>

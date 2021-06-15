@@ -15,6 +15,11 @@
  </para>
 
  <para>
+  Some of the information available through this module can also be obtained
+  using the built-in system view <xref linkend="pg-stat-ssl-view"/>.
+ </para>
+
+ <para>
   This extension won't build at all unless the installation was
   configured with <literal>--with-openssl</literal>.
  </para>
@@ -47,7 +52,7 @@
     </term>
     <listitem>
     <para>
-     Returns the name of the protocol used for the SSL connection (e.g. TLSv1.0
+     Returns the name of the protocol used for the SSL connection (e.g., TLSv1.0,
      TLSv1.1, or TLSv1.2).
     </para>
     </listitem>
@@ -63,7 +68,7 @@
     <listitem>
     <para>
      Returns the name of the cipher used for the SSL connection
-     (e.g. DHE-RSA-AES256-SHA).
+     (e.g., DHE-RSA-AES256-SHA).
     </para>
     </listitem>
    </varlistentry>
@@ -180,7 +185,7 @@ countryName (alias C)
 localityName (alias L)
 stateOrProvinceName (alias ST)
 organizationName (alias O)
-organizationUnitName (alias OU)
+organizationalUnitName (alias OU)
 title
 description
 initials

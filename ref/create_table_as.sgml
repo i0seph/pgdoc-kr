@@ -23,7 +23,8 @@ PostgreSQL documentation
 <synopsis>
 CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXISTS ] <replaceable>테이블이름</replaceable>
     [ (<replaceable>칼럼이름</replaceable> [, ...] ) ]
-    [ WITH ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] ) | WITH OIDS | WITHOUT OIDS ]
+    [ USING <replaceable class="parameter">method</replaceable> ]
+    [ WITH ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] ) | WITHOUT OIDS ]
     [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
     [ TABLESPACE <replaceable class="parameter">테이블스페이스이름</replaceable> ]
     AS <replaceable>쿼리</replaceable>
@@ -120,6 +121,20 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
    </varlistentry>
 
    <varlistentry>
+    <term><literal>USING <replaceable class="parameter">method</replaceable></literal></term>
+    <listitem>
+     <para>
+      This optional clause specifies the table access method to use to store
+      the contents for the new table; the method needs be an access method of
+      type <literal>TABLE</literal>. See <xref linkend="tableam"/> for more
+      information.  If this option is not specified, the default table access
+      method is chosen for the new table. See <xref
+      linkend="guc-default-table-access-method"/> for more information.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
     <term><literal>WITH ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
@@ -127,24 +142,22 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
       <xref linkend="sql-createtable-storage-parameters"
       endterm="sql-createtable-storage-parameters-title"/>에서 
       이 변수들을 자세히 다룬다.
-      또한, 테이블 로우의 고유 OID를 지정하고자 할 때는
-      <literal>OIDS=TRUE</literal> (또는 그냥 <literal>OIDS</literal>) 를,
-      OID를 사용하지 않을 때는 <literal>OIDS=FALSE</literal> 형태의
-      구문을 사용할 수 있다.
+      For backward-compatibility the <literal>WITH</literal>
+      clause for a table can also include <literal>OIDS=FALSE</literal> to
+      specify that rows of the new table should contain no OIDs (object
+      identifiers), <literal>OIDS=TRUE</literal> is not supported anymore.
       <xref linkend="sql-createtable"/> 참조.
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term><literal>WITH OIDS</literal></term>
     <term><literal>WITHOUT OIDS</literal></term>
     <listitem>
      <para>
-      이 구문은 더 이상 쓰지 않는다. OID 관련 설정은 
-      저장 매개 변수로 처리하는 것이 일관성이 있음으로
-      <literal>WITH (OIDS)</literal>, <literal>WITH (OIDS=FALSE)</literal> 형태로
-      사용하는 것이 좋다.  윗 설명 참조.
+      This is backward-compatible syntax for declaring a table
+      <literal>WITHOUT OIDS</literal>, creating a table <literal>WITH
+      OIDS</literal> is not supported anymore.
      </para>
     </listitem>
    </varlistentry>
@@ -240,14 +253,6 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
    나아가, <command>SELECT INTO</command> 명령이 할 수 있는
    기능보다 더 많은 기능을 제공하고 있다.
   </para>
-
-  <para>
-   <command>CREATE TABLE AS</command> 명령은 테이블을 만들 때, 
-   OID를 사용할 것인지를 지정할 수 있다.
-   이것을 지정하지 않으면, 
-   <xref linkend="guc-default-with-oids"/> 환경 설정 변수 값을 
-   기준으로 처리한다.
-  </para>
  </refsect1>
 
  <refsect1>
@@ -278,12 +283,12 @@ CREATE TABLE films2 AS
    미리 준비된 구문으로 자료 범위를 지정하고, 
    EXECUTE 명령으로 실행해서, 
    해당 트랜잭션이 커밋 되면
-   자동 삭제 되는, OID를 가진 임시 테이블을 만드는 경우:
+   자동 삭제 되는 임시 테이블을 만드는 경우:
 
 <programlisting>
 PREPARE recentfilms(date) AS
   SELECT * FROM films WHERE date_prod &gt; $1;
-CREATE TEMP TABLE films_recent WITH (OIDS) ON COMMIT DROP AS
+CREATE TEMP TABLE films_recent ON COMMIT DROP AS
   EXECUTE recentfilms('2002-01-01');
 </programlisting></para>
  </refsect1>
@@ -318,7 +323,7 @@ CREATE TEMP TABLE films_recent WITH (OIDS) ON COMMIT DROP AS
 
     <listitem>
      <para>
-      표준에는 없는 OID 처리나
+      저장 매개 변수를 지정하는
       <literal>WITH</literal> 절은 <productname>PostgreSQL</productname> 확장
       기능이다.
      </para>

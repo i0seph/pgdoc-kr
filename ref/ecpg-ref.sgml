@@ -39,11 +39,20 @@ PostgreSQL documentation
   </para>
 
   <para>
-   <command>ecpg</command> 명령은 한 번 작업에 하나의 소스 파일을 
-   처리한다.  입력 파일의 확장자는 <filename>.pgc</filename>를
-   사용하고, 출력 파일은 자동으로 그 이름과 같은 
-   <filename>.c</filename> 파일이 된다.  이 출력 파일의 이름을 
-   임의로 지정하려면 <option>-o</option> 옵션을 사용한다.
+   <command>ecpg</command> will convert each input file given on the
+   command line to the corresponding C output file.  If an input file
+   name does not have any extension, <filename>.pgc</filename> is
+   assumed.  The file's extension will be replaced
+   by <filename>.c</filename> to construct the output file name.
+   But the output file name can be overridden using the
+   <option>-o</option> option.
+  </para>
+
+  <para>
+   If an input file name is just <literal>-</literal>,
+   <command>ecpg</command> reads the program from standard input
+   (and writes to standard output, unless that is overridden
+   with <option>-o</option>).
   </para>
 
   <para>
@@ -92,6 +101,19 @@ PostgreSQL documentation
     </varlistentry>
 
     <varlistentry>
+     <term><option>-h</option></term>
+     <listitem>
+      <para>
+       Process header files.  When this option is specified, the output file
+       extension becomes <literal>.h</literal> not <literal>.c</literal>,
+       and the default input file extension is <literal>.pgh</literal>
+       not <literal>.pgc</literal>.  Also, the <option>-c</option> option is
+       forced on.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
      <term><option>-i</option></term>
      <listitem>
       <para>
@@ -121,6 +143,7 @@ PostgreSQL documentation
       <para>
        <command>ecpg</command> 작업 출력물의 이름을 
        <replaceable>파일이름</replaceable>으로 지정한다.
+       Write <literal>-o -</literal> to send all output to standard output.
       </para>
      </listitem>
     </varlistentry>

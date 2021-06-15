@@ -21,7 +21,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-COMMIT [ WORK | TRANSACTION ]
+COMMIT [ WORK | TRANSACTION ] [ AND [ NO ] CHAIN ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -38,6 +38,10 @@ COMMIT [ WORK | TRANSACTION ]
  <refsect1>
   <title>매개 변수</title>
 
+ <indexterm zone="sql-commit-chain">
+   <primary>chained transactions</primary>
+  </indexterm>
+
   <variablelist>
    <varlistentry>
     <term><literal>WORK</literal></term>
@@ -45,6 +49,18 @@ COMMIT [ WORK | TRANSACTION ]
     <listitem>
      <para>
       선택적으로 사용할 수 있으나, 두 옵션 사이 차이는 없다.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="sql-commit-chain">
+    <term><literal>AND CHAIN</literal></term>
+    <listitem>
+     <para>
+      If <literal>AND CHAIN</literal> is specified, a new transaction is
+      immediately started with the same transaction characteristics (see <xref
+      linkend="sql-set-transaction"/>) as the just finished one.  Otherwise,
+      no new transaction is started.
      </para>
     </listitem>
    </varlistentry>
@@ -61,7 +77,8 @@ COMMIT [ WORK | TRANSACTION ]
 
   <para>
    트랜잭션 밖에서 <command>COMMIT</command>  명령을 실행해도 
-   아무런 영향을 주지는 않지만, 경고 메시지는 보여준다.
+   아무런 영향을 주지는 않지만, 경고 메시지는 보여준다. <command>COMMIT AND
+   CHAIN</command> when not inside a transaction is an error.
   </para>
  </refsect1>
 
@@ -79,9 +96,8 @@ COMMIT;
   <title>호환성</title>
 
   <para>
-   표준 SQL에서는 <literal>COMMIT</literal>, <literal>COMMIT
-   WORK</literal> 이 둘 만 지원한다. 물론 이 명령은 
-   표준 그대로 제공한다.
+   The command <command>COMMIT</command> conforms to the SQL standard.  The
+   form <literal>COMMIT TRANSACTION</literal> is a PostgreSQL extension.
   </para>
  </refsect1>
 

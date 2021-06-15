@@ -159,7 +159,6 @@
   &maintenance;
   &backup;
   &high-availability;
-  &recovery-config;
   &monitoring;
   &diskusage;
   &wal;
@@ -249,6 +248,7 @@
   &tablesample-method;
   &custom-scan;
   &geqo;
+  &tableam;
   &indexam;
   &generic-wal;
   &btree;
@@ -274,7 +274,9 @@
   &external-projects;
   &sourcerepo;
   &docguide;
+  &limits;
   &acronyms;
+  &obsolete;
 
  </part>
 

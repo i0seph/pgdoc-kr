@@ -1,4 +1,7 @@
-<!-- doc/src/sgml/ref/pgarchivecleanup.sgml -->
+<!--
+doc/src/sgml/ref/pgarchivecleanup.sgml
+PostgreSQL documentation
+-->
 
 <refentry id="pgarchivecleanup">
  <indexterm zone="pgarchivecleanup">
@@ -37,7 +40,7 @@
 
   <para>
    대기 서버에서 <application>pg_archivecleanup</application> 명령을 
-   사용하는 방법은 <filename>recovery.conf</filename> 파일에 다음과
+   사용하는 방법은 <filename>postgresql.conf</filename> 파일에 다음과
    같이 지정한다:
 <programlisting>
 archive_cleanup_command = 'pg_archivecleanup <replaceable>아카이브위치</replaceable> %r'
@@ -46,7 +49,7 @@ archive_cleanup_command = 'pg_archivecleanup <replaceable>아카이브위치</re
    이름이다.
   </para>
   <para>
-   <xref linkend="archive-cleanup-command"/> 설정은
+   <xref linkend="guc-archive-cleanup-command"/> 설정은
    <replaceable>아카이브위치</replaceable> 디렉터리에 안에 있는 
    마지막으로 반영한 <literal>%r</literal> 파일을 빼고 이 파일보다 먼저 
    반영된 모든 오래된 파일을 지운다.  이렇게 해서 서버 비정상 종료 다음 서버 
@@ -146,13 +149,24 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
  </refsect1>
 
  <refsect1>
+  <title>환경변수</title>
+
+  <para>
+   The environment variable <envar>PG_COLOR</envar> specifies whether to use
+   color in diagnostic messages. Possible values are
+   <literal>always</literal>, <literal>auto</literal> and
+   <literal>never</literal>.
+  </para>
+ </refsect1>
+
+ <refsect1>
   <title>참고</title>
 
   <para>
    <application>pg_archivecleanup</application> 명령은
    <productname>PostgreSQL</productname> 8.0 버전에 처음 등장했고, 
    뒤에 독립적인 응용프로그램이 되었고, <productname>PostgreSQL</productname> 9.0
-   버전부터 <xref linkend="archive-cleanup-command"/> 설정 값으로
+   버전부터 <xref linkend="guc-archive-cleanup-command"/> 설정 값으로
    사용할 수 있었다.
   </para>
 

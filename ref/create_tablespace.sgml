@@ -95,6 +95,8 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
         이 디렉터리 안에는 아무 것도 없어야 하며, 
         그 디렉터리의 OS 소유주는 <productname>PostgreSQL</productname> 서버를
         실행하는 OS 사용자와 같아야 한다.  경로 이름은 절대경로 여야 한다.
+        <command>CREATE TABLESPACE</command> 명령으로 이 디렉터리가
+        자동으로 만들어지지는 않는다. 직접 미리 만들어야 한다.
        </para>
       </listitem>
      </varlistentry>
@@ -137,17 +139,22 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
   <title>예제</title>
 
   <para>
-   <literal>/data/dbs</literal> 디렉터리를 <literal>dbspace</literal> 이름의 테이블스페이스로
-   만드는 경우:
+   <literal>/data/dbs</literal> 디렉터리를 <literal>dbspace</literal>
+   테이블스페이스로 사용한다면, 먼저 디렉터리를 만들고, 
+   소유주를 바꾼다:
+<programlisting>
+mkdir /data/dbs
+chown postgres:postgres /data/dbs
+</programlisting>
+   다음 <productname>PostgreSQL</productname> 서버 안에서
+   아래 명령을 실행한다:
 <programlisting>
 CREATE TABLESPACE dbspace LOCATION '/data/dbs';
 </programlisting>
   </para>
 
   <para>
-   <literal>/data/indexes</literal> 디렉터리를
-   <literal>indexspace</literal> 이름의 테이블스페이스로, 소유주는
-   <literal>genevieve</literal>로 만드는 경우:
+   테이블스페이스 소유주를 다르게 지정할 때는:
 <programlisting>
 CREATE TABLESPACE indexspace OWNER genevieve LOCATION '/data/indexes';
 </programlisting></para>

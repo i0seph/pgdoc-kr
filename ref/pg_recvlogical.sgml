@@ -279,10 +279,12 @@ PostgreSQL documentation
        <term><option>--dbname=<replaceable>데이터베이스</replaceable></option></term>
        <listitem>
         <para>
-         The database to connect to.  See the description of the actions for
-         what this means in detail.  This can be a <application>libpq</application> connection string;
-         see <xref linkend="libpq-connstring"/> for more information.  Defaults
-         to user name.
+         The database to connect to.  See the description
+         of the actions for what this means in detail.
+         The <replaceable>dbname</replaceable> can be a <link
+         linkend="libpq-connstring">connection string</link>.  If so,
+         connection string parameters will override any conflicting
+         command line options.  Defaults to the user name.
         </para>
        </listitem>
       </varlistentry>
@@ -399,6 +401,13 @@ PostgreSQL documentation
    대부분의 <productname>PostgreSQL</productname> 응용 프로그램처럼
    해당 라이브러리에서 사용한 환경 변수를 그대로 사용할 수 있다.
    (<xref linkend="libpq-envars"/> 참조).
+  </para>
+
+  <para>
+   The environment variable <envar>PG_COLOR</envar> specifies whether to use
+   color in diagnostic messages. Possible values are
+   <literal>always</literal>, <literal>auto</literal> and
+   <literal>never</literal>.
   </para>
  </refsect1>
 

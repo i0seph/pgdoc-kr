@@ -99,6 +99,13 @@ PostgreSQL documentation
 
   <cmdsynopsis>
    <command>pg_ctl</command>
+   <arg choice="plain"><option>logrotate</option></arg>
+   <arg choice="opt"><option>-D</option> <replaceable>datadir</replaceable></arg>
+   <arg choice="opt"><option>-s</option></arg>
+  </cmdsynopsis>
+
+  <cmdsynopsis>
+   <command>pg_ctl</command>
    <arg choice="plain"><option>kill</option></arg>
    <arg choice="plain"><replaceable>시그널이름</replaceable></arg>
    <arg choice="plain"><replaceable>프로세스ID</replaceable></arg>
@@ -184,8 +191,8 @@ PostgreSQL documentation
   <para>
    <option>stop</option> 모드는 서버를 중지하는 일을 한다.
    서버 중지 방법은 세가지다. 이는 <option>-m</option> 옵션으로
-   지정한다.  <quote>Smart</quote>: 모든 클라이언트가 종료될 때까지
-   기다렸다, 클라이언트 세션이 없으면 서버를 중지한다.  <quote>Fast</quote>:
+   지정한다.  <quote>Smart</quote>: 이 모드는 새 연결 금지, 기존 연결 
+   끊길 때까지 대기, 모든 온라인 백업 종료한다.  <quote>Fast</quote>:
    현재 접속해 있는 클라이언트의 모든 작업을 강제로 중지하고, 
    모든 클라이언트 접속을 끊고, 서버를 중지한다.  <quote>Immediate</quote>:
    클라이언트 세션 정리 작업을 모두 무시하고, 즉시 서버를 중지한다. 
@@ -227,6 +234,12 @@ PostgreSQL documentation
    읽기 전용 보조 서버였다면, 운영 서버와의 관계를 끊고, 
    그 서버를 읽기-쓰기 가능한 또 다른 운영 서버로 바꾸는 
    일을 한다.
+  </para>
+
+  <para>
+   <option>logrotate</option> mode rotates the server log file.
+   For details on how to use this mode with external log rotation tools, see
+   <xref linkend="logfile-maintenance"/>.
   </para>
 
   <para>

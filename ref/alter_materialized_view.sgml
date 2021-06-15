@@ -42,7 +42,7 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
     ALTER [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> SET STORAGE { PLAIN | EXTERNAL | EXTENDED | MAIN }
     CLUSTER ON <replaceable class="parameter">인덱스이름</replaceable>
     SET WITHOUT CLUSTER
-    SET ( <replaceable class="parameter">스토리지옵션</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] )
+    SET ( <replaceable class="parameter">스토리지옵션</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
     RESET ( <replaceable class="parameter">스토리지옵션</replaceable> [, ... ] )
     OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 </synopsis>

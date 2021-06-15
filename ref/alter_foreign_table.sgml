@@ -50,7 +50,6 @@ ALTER FOREIGN TABLE [ IF EXISTS ] <replaceable class="parameter">이름</replace
     ENABLE TRIGGER [ <replaceable class="parameter">트리거이름</replaceable> | ALL | USER ]
     ENABLE REPLICA TRIGGER <replaceable class="parameter">트리거이름</replaceable>
     ENABLE ALWAYS TRIGGER <replaceable class="parameter">트리거이름</replaceable>
-    SET WITH OIDS
     SET WITHOUT OIDS
     INHERIT <replaceable class="parameter">상위테이블</replaceable>
     NO INHERIT <replaceable class="parameter">상위테이블</replaceable>
@@ -221,32 +220,11 @@ ALTER FOREIGN TABLE [ IF EXISTS ] <replaceable class="parameter">이름</replace
    </varlistentry>
 
    <varlistentry>
-    <term><literal>SET WITH OIDS</literal></term>
-    <listitem>
-     <para>
-      외부 자료의 <literal>oid</literal> 숨은 칼럼을 볼 수 있도록
-      지정한다(<xref linkend="ddl-system-columns"/> 참조).
-      이미 OID를 볼 수 있다면, 이 작업은 무시된다.
-      외부 자료 싸개에서 OID를 지원하지 않는다면, 
-      이 칼럼 값은 무조건 0으로 보여준다.
-     </para>
-
-     <para>
-      이 명령은 <literal>ADD COLUMN oid oid</literal> 명령과 다르다.
-      이 경우는 시스템의 숨은 칼럼인 oid가 아닌,
-      <literal>oid</literal> 라는 사용자 칼럼을 추가하는 경우다.
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
     <term><literal>SET WITHOUT OIDS</literal></term>
     <listitem>
      <para>
-      해당 외부 테이블에서 <literal>oid</literal> 숨은 칼럼을 지운다.
-      이 명령은 <literal>oid</literal> 칼럼이 없는 경우
-      오류로 처리하지 않는 점을 제외하고는
-      <literal>DROP COLUMN oid RESTRICT</literal> 명령과 같다.
+      <literal>oid</literal> 시스템 칼럼을 없애는 하위 호환 구문이다. 
+      <literal>oid</literal> 시스템 칼럼이 없는 서버에는 아무런 작업도 않는다.
      </para>
     </listitem>
    </varlistentry>

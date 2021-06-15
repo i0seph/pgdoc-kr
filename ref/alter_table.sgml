@@ -72,11 +72,10 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
     NO FORCE ROW LEVEL SECURITY
     CLUSTER ON <replaceable class="parameter">인덱스이름</replaceable>
     SET WITHOUT CLUSTER
-    SET WITH OIDS
     SET WITHOUT OIDS
     SET TABLESPACE <replaceable class="parameter">새테이블스페이스</replaceable>
     SET { LOGGED | UNLOGGED }
-    SET ( <replaceable class="parameter">저장_매개변수</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] )
+    SET ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
     RESET ( <replaceable class="parameter">저장_매개변수</replaceable> [, ... ] )
     INHERIT <replaceable class="parameter">상위테이블</replaceable>
     NO INHERIT <replaceable class="parameter">상위테이블</replaceable>
@@ -87,9 +86,9 @@ ALTER TABLE [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
 
 <phrase>and <replaceable class="parameter">partition_bound_spec</replaceable> is:</phrase>
 
-IN ( { <replaceable class="parameter">numeric_literal</replaceable> | <replaceable class="parameter">string_literal</replaceable> | TRUE | FALSE | NULL } [, ...] ) |
-FROM ( { <replaceable class="parameter">numeric_literal</replaceable> | <replaceable class="parameter">string_literal</replaceable> | TRUE | FALSE | MINVALUE | MAXVALUE } [, ...] )
-  TO ( { <replaceable class="parameter">numeric_literal</replaceable> | <replaceable class="parameter">string_literal</replaceable> | TRUE | FALSE | MINVALUE | MAXVALUE } [, ...] ) |
+IN ( <replaceable class="parameter">partition_bound_expr</replaceable> [, ...] ) |
+FROM ( { <replaceable class="parameter">partition_bound_expr</replaceable> | MINVALUE | MAXVALUE } [, ...] )
+  TO ( { <replaceable class="parameter">partition_bound_expr</replaceable> | MINVALUE | MAXVALUE } [, ...] ) |
 WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REMAINDER <replaceable class="parameter">numeric_literal</replaceable> )
 
 <phrase>and <replaceable class="parameter">column_constraint</replaceable> is:</phrase>
@@ -99,11 +98,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
   NULL |
   CHECK ( <replaceable class="parameter">expression</replaceable> ) [ NO INHERIT ] |
   DEFAULT <replaceable>default_expr</replaceable> |
+  GENERATED ALWAYS AS ( <replaceable>generation_expr</replaceable> ) STORED |
   GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY [ ( <replaceable>sequence_options</replaceable> ) ] |
   UNIQUE <replaceable class="parameter">index_parameters</replaceable> |
   PRIMARY KEY <replaceable class="parameter">index_parameters</replaceable> |
   REFERENCES <replaceable class="parameter">reftable</replaceable> [ ( <replaceable class="parameter">refcolumn</replaceable> ) ] [ MATCH FULL | MATCH PARTIAL | MATCH SIMPLE ]
-    [ ON DELETE <replaceable class="parameter">action</replaceable> ] [ ON UPDATE <replaceable class="parameter">action</replaceable> ] }
+    [ ON DELETE <replaceable class="parameter">referential_action</replaceable> ] [ ON UPDATE <replaceable class="parameter">referential_action</replaceable> ] }
 [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
 
 <phrase>and <replaceable class="parameter">table_constraint</replaceable> is:</phrase>
@@ -114,7 +114,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
   PRIMARY KEY ( <replaceable class="parameter">column_name</replaceable> [, ... ] ) <replaceable class="parameter">index_parameters</replaceable> |
   EXCLUDE [ USING <replaceable class="parameter">index_method</replaceable> ] ( <replaceable class="parameter">exclude_element</replaceable> WITH <replaceable class="parameter">operator</replaceable> [, ... ] ) <replaceable class="parameter">index_parameters</replaceable> [ WHERE ( <replaceable class="parameter">predicate</replaceable> ) ] |
   FOREIGN KEY ( <replaceable class="parameter">column_name</replaceable> [, ... ] ) REFERENCES <replaceable class="parameter">reftable</replaceable> [ ( <replaceable class="parameter">refcolumn</replaceable> [, ... ] ) ]
-    [ MATCH FULL | MATCH PARTIAL | MATCH SIMPLE ] [ ON DELETE <replaceable class="parameter">action</replaceable> ] [ ON UPDATE <replaceable class="parameter">action</replaceable> ] }
+    [ MATCH FULL | MATCH PARTIAL | MATCH SIMPLE ] [ ON DELETE <replaceable class="parameter">referential_action</replaceable> ] [ ON UPDATE <replaceable class="parameter">referential_action</replaceable> ] }
 [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
 
 <phrase><replaceable class="parameter">인덱스를_사용하는_제약조건</replaceable> 자리에는:</phrase>
@@ -211,9 +211,17 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     <listitem>
      <para>
       해당 칼럼의 null 값 처리 방식을 바꾼다.
-      이 작업은 실재 자료 유효성 검사를 한다.  즉, 
-      <literal>SET NOT NULL</literal> 작업이라면, 해당 칼럼의 모든 자료에
-      null 값이 없을 때 정상 적용 된다.
+      이 작업은 실재 자료 유효성 검사를 한다.
+     </para>
+
+     <para>
+      <literal>SET NOT NULL</literal> may only be applied to a column
+      provided none of the records in the table contain a
+      <literal>NULL</literal> value for the column.  Ordinarily this is
+      checked during the <literal>ALTER TABLE</literal> by scanning the
+      entire table; however, if a valid <literal>CHECK</literal> constraint is
+      found which proves no <literal>NULL</literal> can exist, then the
+      table scan is skipped.
      </para>
 
      <para>
@@ -353,7 +361,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     <listitem>
      <para>
       이 구문은 해당 테이블에 새로운 제약 조건을 추가한다. 
-      문법은 <xref linkend="sql-createtable"/> 명령에서 사용하는 것과
+      문법은 <xref linkend="sql-createtable"/> 명령에서 제약 조건 사용하는 것과
       같다.  추가로  <literal>NOT VALID</literal> 옵션을 사용할 수 있는데,
       이 옵션은 참조 키나, 체크 제약 조건인 경우 사용할 수 있다.
       <literal>NOT VALID</literal> 옵션을 추가하면, 
@@ -448,22 +456,16 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     <term><literal>VALIDATE CONSTRAINT</literal></term>
     <listitem>
      <para>
-      이 구문은 <literal>NOT VALID</literal> 옵션을 사용해서 만든
-      참조키나 체크 제약 조건의 기존 자료에 대한 유효성 검사를 한다.
-      해당 제약 조건에 <literal>NOT VALID</literal> 옵션이 없다면 무시한다.
+      This form validates a foreign key or check constraint that was
+      previously created as <literal>NOT VALID</literal>, by scanning the
+      table to ensure there are no rows for which the constraint is not
+      satisfied.  Nothing happens if the constraint is already marked valid.
+      (See <xref linkend="sql-altertable-notes"
+      endterm="sql-altertable-notes-title"/> below for an explanation of the
+      usefulness of this command.)
      </para>
      <para>
-      유효성 검사는 큰 테이블에서 많은 시간이 걸린다. 이렇게 유효성 검사를 
-      해당 제약 조건을 만들 때 진행하지 않고, 따로 작업하는 이유는
-      일단 새로 처리되는 자료에 대해서는 제약 조건을 따져 더 이상 잘못된
-      자료 생성이나, 변경을 막으면서, 서버가 바쁘지 않을 때 천천히 
-      기존 자료를 고처 나갈 수 있다는 것이다.  또한 이 작업이 진행 중일 때
-      자료 조작이 가능하다는 점이다. 
-     </para>
-     <para>
-      이 작업은 해당 테이블을  <literal>SHARE UPDATE EXCLUSIVE</literal>
-      수준으로 잠근다.  해당 제약 조건이 참조키라면,
-      그 참조 되는 테이블은 <literal>ROW SHARE</literal> 수준으로 잠긴다.
+      This command acquires a <literal>SHARE UPDATE EXCLUSIVE</literal> lock.
      </para>
     </listitem>
    </varlistentry>
@@ -606,30 +608,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    </varlistentry>
 
    <varlistentry>
-    <term><literal>SET WITH OIDS</literal></term>
-    <listitem>
-     <para>
-      이 구문은 해당 테이블에 시스템 숨은 칼럼인 <literal>oid</literal>
-      칼럼을 추가한다(<xref linkend="ddl-system-columns"/> 참조).
-      이미 oid 칼럼이 있다면 무시한다.
-     </para>
-
-     <para>
-      이 작업은  <literal>ADD COLUMN oid oid</literal> 작업과 다르다.
-      ADD COLUMN 작업은 사용자가 정의하는
-      <literal>oid</literal>라는 칼럼을 추가하는 것이다.
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
     <term><literal>SET WITHOUT OIDS</literal></term>
     <listitem>
      <para>
-      시스템 숨은 칼럼인 <literal>oid</literal> 칼럼을 지운다.
-      이 작업은  <literal>DROP COLUMN oid RESTRICT</literal> 구문으로
-      하는 작업과 같으나, 이미 해당 칼럼이 없어도
-      오류로 처리하지 않는 점이 다르다.
+      Backward-compatible syntax for removing the <literal>oid</literal>
+      system column.  As <literal>oid</literal> system columns cannot be
+      added anymore, this never has an effect.
      </para>
     </listitem>
    </varlistentry>
@@ -643,6 +627,13 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       옮김을 의미한다.  이 때 해당 테이블에 딸린 인덱스는 옮기지 않는다.
       인덱스는 따로 해당 <literal>SET TABLESPACE</literal> 명령으로
       옮길 수 있다.
+      When applied to a partitioned table, nothing is moved, but any
+      partitions created afterwards with
+      <command>CREATE TABLE PARTITION OF</command> will use that tablespace,
+      unless the <literal>TABLESPACE</literal> clause is used to override it.
+     </para>
+
+     <para>
       한 데이터베이스 내, 한 테이블스페이스 안에 있는 모든 테이블은
       <literal>ALL IN TABLESPACE</literal> 구문으로 한 번에 옮긴 수있다.
       이 때는 그 모든 테이블이 잠긴다.  이 구문은 
@@ -673,7 +664,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    </varlistentry>
 
    <varlistentry>
-    <term><literal>SET ( <replaceable class="parameter">저장_매개변수</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] )</literal></term>
+    <term><literal>SET ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
       이 구문은 해당 테이블의 저장 매개 변수값을 바꾼다.  사용할 수 변수들은
@@ -689,21 +680,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
      </para>
 
      <para>
-      fillfactor, toast, autovacuum 관련 저장 매개 변수,
-      <varname>effective_io_concurrency</varname>, <varname>parallel_workers</varname>, <varname>seq_page_cost</varname>, <varname>random_page_cost</varname>, <varname>n_distinct</varname>, <varname>n_distinct_inherited</varname> 설정을 변경할 때는
+      <varname>parallel_workers</varname> 같은 실행 계획기 관련 설정 뿐만 아니라,
+      fillfactor, toast, autovacuum 관련 저장 매개 변수
+      값을 변경할 때는
       <literal>SHARE UPDATE EXCLUSIVE</literal> 수준으로 테이블을 잠근다.
      </para>
 
-     <note>
-      <para>
-       <command>CREATE TABLE</command> 명령에서는 이 저장 매개 변수로 
-       <literal>WITH (OIDS=TRUE or FALSE)</literal> 구문을 
-       사용할 수 있지만, <command>ALTER TABLE</command> 명령에서는
-       그렇게 사용할 수 없다.  OID 관련 작업은
-       <literal>SET WITH OIDS</literal>, <literal>SET WITHOUT OIDS</literal>
-       구문을 사용해야 한다.
-      </para>
-     </note>
     </listitem>
    </varlistentry>
 
@@ -764,7 +746,6 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       기반으로 테이블을 만드는 것과 같이, 지정한 복한 자료형과, 
       해당 테이블과의 관계를 맺는다.
       테이블과 복합 자료형과의 칼럼 이름, 자료형이 모두 같아야 한다.
-      시스템 칼럼인 <literal>oid</literal> 칼럼에 대해서는 같지 않아도 된다.
       작업 테이블은 상속 관계로 볼 때 하위 테이블이 아니여야 한다.
       이런 제약은 <command>CREATE TABLE OF</command> 작업 결과와 같아야 하기 때문이다.
      </para>
@@ -834,7 +815,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altertable-attach-partition">
     <term><literal>ATTACH PARTITION <replaceable class="parameter">파티션이름</replaceable> { FOR VALUES <replaceable class="parameter">파티션범위명세</replaceable> | DEFAULT }</literal></term>
     <listitem>
      <para>
@@ -846,6 +827,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       one will be created in the attached table; or, if an equivalent
       index already exists, will be attached to the target table's index,
       as if <command>ALTER INDEX ATTACH PARTITION</command> had been executed.
+      Note that if the existing table is a foreign table, it is currently not
+      allowed to attach the table as a partition of the target table if there
+      are <literal>UNIQUE</literal> indexes on the target table.  (See also
+      <xref linkend="sql-createforeigntable"/>.)  For each user-defined
+      row-level trigger that exists in the target table, a corresponding one
+      is created in the attached table.
      </para>
 
      <para>
@@ -879,6 +866,19 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       한다.  <literal>NULL</literal> 값을 허용하지 않는 목록 파티션을
       추가하는 경우에는 해당 파티션 키 칼럼에 <literal>NOT NULL</literal>
       제약 조건을 추가 해야 한다.
+      If the new partition is a regular table, a full table scan is performed
+      to check that existing rows in the table do not violate the partition
+      constraint. It is possible to avoid this scan by adding a valid
+      <literal>CHECK</literal> constraint to the table that allows only
+      rows satisfying the desired partition constraint before running this
+      command. The <literal>CHECK</literal> constraint will be used to
+      determine that the table need not be scanned to validate the partition
+      constraint. This does not work, however, if any of the partition keys
+      is an expression and the partition does not accept
+      <literal>NULL</literal> values. If attaching a list partition that will
+      not accept <literal>NULL</literal> values, also add
+      <literal>NOT NULL</literal> constraint to the partition key column,
+      unless it's an expression.
      </para>
 
      <para>
@@ -886,6 +886,24 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       이런 모든 제약 조건 관련 검사를 하지 않는다. 
       (외부 테이블의 제약 조건 이야기는
       <xref linkend="sql-createforeigntable"/> 명령 설명서에서 다룬다.)
+     </para>
+
+     <para>
+      When a table has a default partition, defining a new partition changes
+      the partition constraint for the default partition. The default
+      partition can't contain any rows that would need to be moved to the new
+      partition, and will be scanned to verify that none are present. This
+      scan, like the scan of the new partition, can be avoided if an
+      appropriate <literal>CHECK</literal> constraint is present. Also like
+      the scan of the new partition, it is always skipped when the default
+      partition is a foreign table.
+     </para>
+
+     <para>
+      Attaching a partition acquires a
+      <literal>SHARE UPDATE EXCLUSIVE</literal> lock on the parent table,
+      in addition to <literal>ACCESS EXCLUSIVE</literal> locks on the table
+      to be attached and on the default partition (if any).
      </para>
     </listitem>
    </varlistentry>
@@ -895,7 +913,10 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     <listitem>
      <para>
       지정한 파티션 이름의 하위 테이블을 해당 테이블과 종속 관계를 끊는다.
-      해당 테이블과 아무런 관계가 없게 된다.
+      해당 테이블과 아무런 관계가 없게 된다. Any triggers that
+      were created as clones of those in the target table are removed.
+      <literal>SHARE</literal> lock is obtained on any tables that reference
+      this partitioned table in foreign key constraints.
      </para>
     </listitem>
    </varlistentry>
@@ -1154,8 +1175,8 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     </variablelist>
  </refsect1>
 
- <refsect1>
-  <title>참고</title>
+ <refsect1 id="sql-altertable-notes">
+  <title id="sql-altertable-notes-title">참고</title>
 
    <para>
     <literal>COLUMN</literal> 키워드는 무시 된다. 빠져도 괜찮다.
@@ -1178,8 +1199,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
     the column contents and the old type is either binary coercible to the new
     type or an unconstrained domain over the new type, a table rewrite is not
     needed; but any indexes on the affected columns must still be rebuilt.
-    Adding or removing a system <literal>oid</literal> column also requires
-    rewriting the entire table.  Table and/or index rebuilds may take a
+    Table and/or index rebuilds may take a
     significant amount of time for a large table; and will temporarily require
     as much as double the disk space.
    </para>
@@ -1201,13 +1221,37 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    </para>
 
    <para>
+    Scanning a large table to verify a new foreign key or check constraint
+    can take a long time, and other updates to the table are locked out
+    until the <command>ALTER TABLE ADD CONSTRAINT</command> command is
+    committed.  The main purpose of the <literal>NOT VALID</literal>
+    constraint option is to reduce the impact of adding a constraint on
+    concurrent updates.  With <literal>NOT VALID</literal>,
+    the <command>ADD CONSTRAINT</command> command does not scan the table
+    and can be committed immediately.  After that, a <literal>VALIDATE
+    CONSTRAINT</literal> command can be issued to verify that existing rows
+    satisfy the constraint.  The validation step does not need to lock out
+    concurrent updates, since it knows that other transactions will be
+    enforcing the constraint for rows that they insert or update; only
+    pre-existing rows need to be checked.  Hence, validation acquires only
+    a <literal>SHARE UPDATE EXCLUSIVE</literal> lock on the table being
+    altered.  (If the constraint is a foreign key then a <literal>ROW
+    SHARE</literal> lock is also required on the table referenced by the
+    constraint.)  In addition to improving concurrency, it can be useful to
+    use <literal>NOT VALID</literal> and <literal>VALIDATE
+    CONSTRAINT</literal> in cases where the table is known to contain
+    pre-existing violations.  Once the constraint is in place, no new
+    violations can be inserted, and the existing problems can be corrected
+    at leisure until <literal>VALIDATE CONSTRAINT</literal> finally
+    succeeds.
+   </para>
+
+   <para>
     <literal>DROP COLUMN</literal> 작업은 물리적으로 해당 칼럼을 
     지우지 않고, SQL 작업에서 단지 해당 칼럼을 볼 수 없게만 한다.
     이 작업 뒤 일어나는 자료 추가, 변경 작업에서는 해당 칼럼에 null 값을
     채운다.  이렇게 해서, 칼럼 삭제는 작업 시간을 줄일 수는 있지만,
-    당장에 디스크 여유 공간을 확보하지는 못한다. (시스템 <literal>oid</literal>
-    칼럼 삭제인 경우는 이 방식을 따르지 않고, 즉시 모든 자료를 대상으로
-    해당 칼럼 실재 자료를 지운다.)
+    당장에 디스크 여유 공간을 확보하지는 못한다.
    </para>
 
    <para>

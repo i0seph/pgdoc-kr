@@ -82,7 +82,7 @@ SQL 명령어, 클라이언트, 서버 응용 프로그램들에 대한 자세�
    <productname>PostgreSQL</productname>은 
    객체관계형 데이터베이스 관리 시스템(<acronym>ORDBMS</acronym>)이다.
    이것은 미국 캘리포니아에 있는 버클리 대학 컴퓨터 과학부에서 개발한 
-   <ulink url="http://db.cs.berkeley.edu/postgres.html">
+   <ulink url="https://dsf.berkeley.edu/postgres.html">
    <productname>POSTGRES, Version 4.2</productname></ulink>를 기반으로 개발되었다.
    POSTGRES는 훗날 몇몇 상용 데이터베이스에 영향을 준 많은 개념들을 개척했다.
   </para>

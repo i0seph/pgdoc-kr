@@ -278,8 +278,9 @@ ALTER TYPE <replaceable class="parameter">이름</replaceable> RENAME VALUE <rep
   <title>참고</title>
 
   <para>
-   <command>ALTER TYPE ... ADD VALUE</command> (새 나열값 추가 작업)
-   구문은 트랜잭션 작업 중에는 사용할 수 없다.
+   <command>ALTER TYPE ... ADD VALUE</command> (나열형에 새로운 값 추가하는
+   구문) 작업이 트랜잭션 내에서 사용되었다면, 그 트랜잭션이 커밋되기
+   전까지 새로 추가된 값을 사용할 수 없다.
   </para>
 
   <para>

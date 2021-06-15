@@ -40,6 +40,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
     PARALLEL { UNSAFE | RESTRICTED | SAFE }
     COST <replaceable class="parameter">실행비용</replaceable>
     ROWS <replaceable class="parameter">반환자료수</replaceable>
+    SUPPORT <replaceable class="parameter">support_function</replaceable>
     SET <replaceable class="parameter">환경설정_매개변수</replaceable> { TO | = } { <replaceable class="parameter">값</replaceable> | DEFAULT }
     SET <replaceable class="parameter">환경설정_매개변수</replaceable> FROM CURRENT
     RESET <replaceable class="parameter">환경설정_매개변수</replaceable>
@@ -241,6 +242,24 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
        <xref linkend="sql-createfunction"/> 참조.
       </para>
      </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>SUPPORT</literal> <replaceable class="parameter">support_function</replaceable></term>
+
+    <listitem>
+     <para>
+      Set or change the planner support function to use for this function.
+      See <xref linkend="xfunc-optimization"/> for details.  You must be
+      superuser to use this option.
+     </para>
+
+     <para>
+      This option cannot be used to remove the support function altogether,
+      since it must name a new support function.  Use <command>CREATE OR
+      REPLACE FUNCTION</command> if you need to do that.
+     </para>
+    </listitem>
    </varlistentry>
 
      <varlistentry>

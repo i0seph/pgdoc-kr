@@ -93,6 +93,13 @@ CREATE OPERATOR <replaceable>이름</replaceable> (
    왼쪽 단항 연산자는 <literal>RIGHTARG</literal> 값을 지정해야 한다.
   </para>
 
+  <note>
+   <para>
+    Right unary, also called postfix, operators are deprecated and will be
+    removed in <productname>PostgreSQL</productname> version 14.
+   </para>
+  </note>
+
   <para>
    <replaceable class="parameter">함수이름</replaceable>에 지정하는
    함수는 <command>CREATE FUNCTION</command> 명령으로 

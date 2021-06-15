@@ -18,6 +18,7 @@
 /version.sgml
 /bookindex.sgml
 /HTML.index
+/keywords-table.sgml
 # Assorted byproducts from building the above
 /postgres.xml
 /INSTALL.html

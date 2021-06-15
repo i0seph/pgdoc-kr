@@ -79,6 +79,11 @@ SELECT (a + b) AS c FROM test_complex;
   <sect1 id="xoper-optimization">
    <title>연산자 최적화 정보</title>
 
+  <indexterm zone="xoper-optimization">
+   <primary>optimization information</primary>
+   <secondary>for operators</secondary>
+  </indexterm>
+
    <para>
     <productname>PostgreSQL</productname>에서 사용하는 
     연산자는 자신이 어떻게 동작하는지에 대한 여러 정보를 
@@ -97,6 +102,13 @@ SELECT (a + b) AS c FROM test_complex;
     보다 많은 최적화 옵션들이 추가 되어야 할 것이다.
     여기서 소개하고 있는 옵션들은
     &version; 버전 기준에서 사용 가능한 것들이다.
+   </para>
+
+   <para>
+    It is also possible to attach a planner support function to the function
+    that underlies an operator, providing another way of telling the system
+    about the behavior of the operator.
+    See <xref linkend="xfunc-optimization"/> for more information.
    </para>
 
    <sect2>

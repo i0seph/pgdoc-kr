@@ -132,7 +132,7 @@
     <term><acronym>CVE</acronym></term>
     <listitem>
      <para>
-      <ulink url="http://cve.mitre.org/">알려진 공공 보안 취약점 Common Vulnerabilities and Exposures</ulink>
+      <ulink url="https://cve.mitre.org/">알려진 공공 보안 취약점 Common Vulnerabilities and Exposures</ulink>
      </para>
     </listitem>
    </varlistentry>
@@ -372,7 +372,7 @@
       <ulink url="https://ko.wikipedia.org/wiki/%EC%A0%84%EA%B8%B0_%EC%A0%84%EC%9E%90_%EA%B8%B0%EC%88%A0%EC%9E%90_%ED%98%91%ED%9A%8C">전기 전자 기술자 협회</ulink>
      </para>
      <para>
-      <ulink url="http://standards.ieee.org/">Institute of Electrical and
+      <ulink url="https://standards.ieee.org/">Institute of Electrical and
       Electronics Engineers</ulink>
      </para>
     </listitem>
@@ -445,7 +445,7 @@
     <listitem>
      <para>
       <ulink
-      url="http://json.org">JavaScript Object Notation</ulink>
+      url="https://www.json.org">JavaScript Object Notation</ulink>
      </para>
     </listitem>
    </varlistentry>
@@ -792,6 +792,16 @@
     <listitem>
      <para>
       <link linkend="datatype-oid">튜플 식별자 Tuple Identifier</link>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><acronym>TLS</acronym></term>
+    <listitem>
+     <para>
+      <ulink url="https://en.wikipedia.org/wiki/Transport_Layer_Security">
+      Transport Layer Security</ulink>
      </para>
     </listitem>
    </varlistentry>

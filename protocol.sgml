@@ -28,7 +28,7 @@
   the server, the connection will be rejected (for example, this would occur
   if the client requested protocol version 4.0, which does not exist as of
   this writing).  If the minor version requested by the client is not
-  supported by the server (e.g. the client requests version 3.1, but the
+  supported by the server (e.g., the client requests version 3.1, but the
   server supports only 3.0), the server may either reject the connection or
   may respond with a NegotiateProtocolVersion message containing the highest
   minor protocol version which it supports.  The client may then choose either
@@ -422,7 +422,7 @@
         by the client, but does support an earlier version of the protocol;
         this message indicates the highest supported minor version.  This
         message will also be sent if the client requested unsupported protocol
-        options (i.e. beginning with <literal>_pq_.</literal>) in the
+        options (i.e., beginning with <literal>_pq_.</literal>) in the
         startup packet.  This message will be followed by an ErrorResponse or
         a message indicating the success or failure of authentication.
        </para>
@@ -811,7 +811,7 @@ BEGIN;
 INSERT INTO mytable VALUES(1);
 COMMIT;
 INSERT INTO mytable VALUES(2);
-SELCT 1/0;
+SELCT 1/0;<!-- this typo is intentional -->
 </programlisting>
      then none of the statements would get run, resulting in the visible
      difference that the first <command>INSERT</command> is not committed.
@@ -1454,6 +1454,10 @@ SELCT 1/0;
     <acronym>SSL</acronym>-encrypted.  To continue after
     <literal>N</literal>, send the usual StartupMessage and proceed without
     encryption.
+    (Alternatively, it is permissible to issue a GSSENCRequest message
+    after an <literal>N</literal> response to try to
+    use <acronym>GSSAPI</acronym> encryption instead
+    of <acronym>SSL</acronym>.)
    </para>
 
    <para>
@@ -1475,6 +1479,83 @@ SELCT 1/0;
    <para>
     While the protocol itself does not provide a way for the server to
     force <acronym>SSL</acronym> encryption, the administrator can
+    configure the server to reject unencrypted sessions as a byproduct
+    of authentication checking.
+   </para>
+  </sect2>
+
+  <sect2>
+   <title><acronym>GSSAPI</acronym> Session Encryption</title>
+
+   <para>
+    If <productname>PostgreSQL</productname> was built with
+    <acronym>GSSAPI</acronym> support, frontend/backend communications
+    can be encrypted using <acronym>GSSAPI</acronym>.  This provides
+    communication security in environments where attackers might be
+    able to capture the session traffic. For more information on
+    encrypting <productname>PostgreSQL</productname> sessions with
+    <acronym>GSSAPI</acronym>, see <xref linkend="gssapi-enc"/>.
+   </para>
+
+   <para>
+    To initiate a <acronym>GSSAPI</acronym>-encrypted connection, the
+    frontend initially sends a GSSENCRequest message rather than a
+    StartupMessage.  The server then responds with a single byte
+    containing <literal>G</literal> or <literal>N</literal>, indicating that it
+    is willing or unwilling to perform <acronym>GSSAPI</acronym> encryption,
+    respectively.  The frontend might close the connection at this point
+    if it is dissatisfied with the response.  To continue after
+    <literal>G</literal>, using the GSSAPI C bindings as discussed in RFC2744
+    or equivalent, perform a <acronym>GSSAPI</acronym> initialization by
+    calling <function>gss_init_sec_context()</function> in a loop and sending
+    the result to the server, starting with an empty input and then with each
+    result from the server, until it returns no output.  When sending the
+    results of <function>gss_init_sec_context()</function> to the server,
+    prepend the length of the message as a four byte integer in network byte
+    order.
+    To continue after
+    <literal>N</literal>, send the usual StartupMessage and proceed without
+    encryption.
+    (Alternatively, it is permissible to issue an SSLRequest message
+    after an <literal>N</literal> response to try to
+    use <acronym>SSL</acronym> encryption instead
+    of <acronym>GSSAPI</acronym>.)
+   </para>
+
+   <para>
+    The frontend should also be prepared to handle an ErrorMessage
+    response to GSSENCRequest from the server.  This would only occur if
+    the server predates the addition of <acronym>GSSAPI</acronym> encryption
+    support to <productname>PostgreSQL</productname>.  In this case the
+    connection must be closed, but the frontend might choose to open a fresh
+    connection and proceed without requesting <acronym>GSSAPI</acronym>
+    encryption.
+   </para>
+
+   <para>
+    An initial GSSENCRequest can also be used in a connection that is being
+    opened to send a CancelRequest message.
+   </para>
+
+   <para>
+    Once <acronym>GSSAPI</acronym> encryption has been successfully
+    established, use <function>gss_wrap()</function> to
+    encrypt the usual StartupMessage and all subsequent data, prepending the
+    length of the result from <function>gss_wrap()</function> as a four byte
+    integer in network byte order to the actual encrypted payload.  Note that
+    the server will only accept encrypted packets from the client which are less
+    than 16kB; <function>gss_wrap_size_limit()</function> should be used by the
+    client to determine the size of the unencrypted message which will fit
+    within this limit and larger messages should be broken up into multiple
+    <function>gss_wrap()</function> calls.  Typical segments are 8kB of
+    unencrypted data, resulting in encrypted packets of slightly larger than 8kB
+    but well within the 16kB maximum.  The server can be expected to not send
+    encrypted packets of larger than 16kB to the client.
+   </para>
+
+   <para>
+    While the protocol itself does not provide a way for the server to
+    force <acronym>GSSAPI</acronym> encryption, the administrator can
     configure the server to reject unencrypted sessions as a byproduct
     of authentication checking.
    </para>
@@ -1541,7 +1622,7 @@ ErrorMessage.
 </para>
 
  <sect2 id="sasl-scram-sha-256">
-  <title>SCRAM-SHA-256 authentication</title>
+  <title>SCRAM-SHA-256 Authentication</title>
 
   <para>
    The implemented SASL mechanisms at the moment
@@ -1586,7 +1667,7 @@ PostgreSQL is <literal>tls-server-end-point</literal>.
    user-supplied password in the transmitted password hash.  While this
    prevents the password hash from being successfully retransmitted in
    a later session, it does not prevent a fake server between the real
-   server and client from passing through the server's random value 
+   server and client from passing through the server's random value
    and successfully authenticating.
   </para>
 
@@ -1625,7 +1706,7 @@ PostgreSQL is <literal>tls-server-end-point</literal>.
 <step id="scram-server-first">
 <para>
   Server sends an AuthenticationSASLContinue message, with a SCRAM
-  <structname>server-first message</structname> as the content.
+  <structname>server-first-message</structname> as the content.
 </para>
 </step>
 <step id="scram-client-final">
@@ -1789,7 +1870,10 @@ The commands accepted in replication mode are:
      <para>
       Requests the server to send over the timeline history file for timeline
       <replaceable class="parameter">tli</replaceable>.  Server replies with a
-      result set of a single row, containing two fields:
+      result set of a single row, containing two fields.  While the
+      fields are labeled as <type>text</type> and <type>bytea</type>,
+      they effectively return raw bytes, with no escaping or encoding
+      conversion:
      </para>
 
      <para>
@@ -1821,7 +1905,7 @@ The commands accepted in replication mode are:
     </listitem>
   </varlistentry>
 
-  <varlistentry id="protocol-replication-create-slot" xreflabel="create_replication_slot">
+  <varlistentry id="protocol-replication-create-slot" xreflabel="CREATE_REPLICATION_SLOT">
    <term><literal>CREATE_REPLICATION_SLOT</literal> <replaceable class="parameter">slot_name</replaceable> [ <literal>TEMPORARY</literal> ] { <literal>PHYSICAL</literal> [ <literal>RESERVE_WAL</literal> ] | <literal>LOGICAL</literal> <replaceable class="parameter">output_plugin</replaceable> [ <literal>EXPORT_SNAPSHOT</literal> | <literal>NOEXPORT_SNAPSHOT</literal> | <literal>USE_SNAPSHOT</literal> ] }
      <indexterm><primary>CREATE_REPLICATION_SLOT</primary></indexterm>
     </term>
@@ -2730,7 +2814,7 @@ The commands accepted in replication mode are:
   <para>
    Every sent transaction contains zero or more DML messages (Insert,
    Update, Delete). In case of a cascaded setup it can also contain Origin
-   messages. The origin message indicated that the transaction originated on
+   messages. The origin message indicates that the transaction originated on
    different replication node. Since a replication node in the scope of logical
    replication protocol can be pretty much anything, the only identifier
    is the origin name. It's downstream's responsibility to handle this as
@@ -3837,10 +3921,11 @@ CommandComplete (B)
         <literal>INSERT <replaceable>oid</replaceable>
         <replaceable>rows</replaceable></literal>, where
         <replaceable>rows</replaceable> is the number of rows
-        inserted. <replaceable>oid</replaceable> is the object ID
-        of the inserted row if <replaceable>rows</replaceable> is 1
-        and the target table has OIDs;
-        otherwise <replaceable>oid</replaceable> is 0.
+        inserted. <replaceable>oid</replaceable> used to be the object ID
+        of the inserted row if <replaceable>rows</replaceable> was 1
+        and the target table had OIDs, but OIDs system columns are
+        not supported anymore; therefore <replaceable>oid</replaceable>
+        is always 0.
        </para>
 
        <para>
@@ -5713,6 +5798,43 @@ SSLRequest (F)
 </listitem>
 </varlistentry>
 
+<varlistentry>
+<term>
+GSSENCRequest (F)
+</term>
+<listitem>
+<para>
+
+<variablelist>
+<varlistentry>
+<term>
+        Int32(8)
+</term>
+<listitem>
+<para>
+                Length of message contents in bytes, including self.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+        Int32(80877104)
+</term>
+<listitem>
+<para>
+                The <acronym>GSSAPI</acronym> Encryption request code.  The value is chosen to contain
+                <literal>1234</literal> in the most significant 16 bits, and <literal>5680</literal> in the
+                least significant 16 bits.  (To avoid confusion, this code
+                must not be the same as any protocol version number.)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+</para>
+</listitem>
+</varlistentry>
+
 
 <varlistentry>
 <term>
@@ -6449,7 +6571,7 @@ Relation
 </listitem>
 </varlistentry>
 </variablelist>
-        Next, the following message part appears for each column:
+        Next, the following message part appears for each column (except generated columns):
 <variablelist>
 <varlistentry>
 <term>
@@ -6760,8 +6882,8 @@ Delete
 </term>
 <listitem>
 <para>
-                Identifies the following TupleData message as a old tuple.
-                This field is present if the table in which the delete has
+                Identifies the following TupleData message as an old tuple.
+                This field is present if the table in which the delete
                 happened has REPLICA IDENTITY set to FULL.
 </para>
 </listitem>
@@ -6874,7 +6996,7 @@ TupleData
 </listitem>
 </varlistentry>
 </variablelist>
-        Next, one of the following submessages appears for each column:
+        Next, one of the following submessages appears for each column (except generated columns):
 <variablelist>
 <varlistentry>
 <term>

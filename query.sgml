@@ -32,7 +32,7 @@
     시작부터 하려면, 해당 디렉터리로 이동해서 <application>make</application> 명령을 실행하십시오:
 
 <screen>
-<prompt>$</prompt> <userinput>cd <replaceable>....</replaceable>/src/tutorial</userinput>
+<prompt>$</prompt> <userinput>cd <replaceable>...</replaceable>/src/tutorial</userinput>
 <prompt>$</prompt> <userinput>make</userinput>
 </screen>
 
@@ -41,12 +41,10 @@
     자습서를 시작하려면 다음과 같이 입력합니다:
 
 <screen>
-<prompt>$</prompt> <userinput>cd <replaceable>....</replaceable>/tutorial</userinput>
 <prompt>$</prompt> <userinput>psql -s mydb</userinput>
 <computeroutput>
 ...
 </computeroutput>
-
 <prompt>mydb=&gt;</prompt> <userinput>\i basics.sql</userinput>
 </screen>
 

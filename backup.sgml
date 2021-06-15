@@ -815,7 +815,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
     deprecated and will eventually be removed.
    </para>
    <sect3 id="backup-lowlevel-base-backup-nonexclusive">
-    <title>Making a non-exclusive low level backup</title>
+    <title>Making a Non-Exclusive Low Level Backup</title>
     <para>
      A non-exclusive low level backup is one that allows other
      concurrent backups to be running (both those started using
@@ -893,7 +893,8 @@ SELECT * FROM pg_stop_backup(false, true);
      <filename>backup_label</filename> in the root directory of the backup. The
      third field should be written to a file named
      <filename>tablespace_map</filename> unless the field is empty. These files are
-     vital to the backup working, and must be written without modification.
+     vital to the backup working and must be written byte for byte without 
+     modification, which may require opening the file in binary mode.
     </para>
    </listitem>
    <listitem>
@@ -937,14 +938,27 @@ SELECT * FROM pg_stop_backup(false, true);
     </para>
    </sect3>
    <sect3 id="backup-lowlevel-base-backup-exclusive">
-    <title>Making an exclusive low level backup</title>
+    <title>Making an Exclusive Low Level Backup</title>
+
+    <note>
+     <para>
+      The exclusive backup method is deprecated and should be avoided.
+      Prior to <productname>PostgreSQL</productname> 9.6, this was the only
+      low-level method available, but it is now recommended that all users
+      upgrade their scripts to use non-exclusive backups.
+     </para>
+    </note>
+
     <para>
      The process for an exclusive backup is mostly the same as for a
-     non-exclusive one, but it differs in a few key steps. This type of backup
-     can only be taken on a primary and does not allow concurrent backups.
-     Prior to <productname>PostgreSQL</productname> 9.6, this
-     was the only low-level method available, but it is now recommended that
-     all users upgrade their scripts to use non-exclusive backups if possible.
+     non-exclusive one, but it differs in a few key steps. This type of
+     backup can only be taken on a primary and does not allow concurrent
+     backups.  Moreover, because it creates a backup label file, as
+     described below, it can block automatic restart of the master server
+     after a crash.  On the other hand, the erroneous removal of this
+     file from a backup or standby is a common mistake, which can result
+     in serious data corruption.  If it is necessary to use this method,
+     the following steps may be used.
     </para>
     <para>
   <orderedlist>
@@ -1006,10 +1020,17 @@ SELECT pg_start_backup('label', true);
      <xref linkend="backup-lowlevel-base-backup-data"/> 을 참조한다.
     </para>
     <para>
-      이 작업 도중 서버가 비정상 중지 되었다면, <envar>PGDATA</envar>
-      디렉터리 안에 있는 <literal>backup_label</literal> 파일을 직접
-      지우지 않으면 서버가 정상적으로 다시 실행되지 않을 수 있음을
-      기억해야 한다.
+     As noted above, if the server crashes during the backup it may not be
+     possible to restart until the <filename>backup_label</filename> file has
+     been manually deleted from the <envar>PGDATA</envar> directory.  Note
+     that it is very important to never remove the
+     <filename>backup_label</filename> file when restoring a backup, because
+     this will result in corruption.  Confusion about when it is appropriate
+     to remove this file is a common cause of data corruption when using this
+     method; be very certain that you remove the file only on an existing
+     master and never when building a standby or restoring a backup, even if
+     you are building a standby that will subsequently be promoted to a new
+     master.
     </para>
    </listitem>
    <listitem>
@@ -1039,10 +1060,17 @@ SELECT pg_stop_backup();
          문제가 있는지 살펴보고, 그 원인을 해결해야한다. 또한 <varname>archive_command</varname>
          설정값이 비어 있어도 이 명령은 끝나지 않는다.
          <varname>archive_command</varname> 설정값으로 지정된 작업은 성공 할 때까지 
-         반복 한다는 점도 주의 해야한다.  필요하다면, <varname>statement_timeout</varname>
-         설정값을 지정해서, <function>pg_stop_backup</function> 작업이 무한 대기 상태로 
-         빠지는 것을 막을 수도 있다. 하지만, 이렇게 작업이 중지된 경우라면, 해당 백업에 
-         문제가 생긴 경우이다.
+         반복 한다는 점도 주의 해야한다.
+    </para>
+
+    <para>
+     When using exclusive backup mode, it is absolutely imperative to ensure
+     that <function>pg_stop_backup</function> completes successfully at the
+     end of the backup.  Even if the backup itself fails, for example due to
+     lack of disk space, failure to call <function>pg_stop_backup</function>
+     will leave the server in backup mode indefinitely, causing future backups
+     to fail and increasing the risk of a restart failure during the time that
+     <filename>backup_label</filename> exists.
     </para>
    </listitem>
   </orderedlist>
@@ -1218,8 +1246,11 @@ SELECT pg_stop_backup();
    </listitem>
    <listitem>
     <para>
-         데이터베이스 클러스터 디렉터리 안에, <filename>recovery.conf</filename> 파일을
-         만든다. (이 파일의 내용에 대한 자세한 설명은 <xref linkend="recovery-config"/> 참조)
+     Set recovery configuration settings in
+     <filename>postgresql.conf</filename> (see <xref
+     linkend="runtime-config-wal-archive-recovery"/>) and create a file
+     <filename>recovery.signal</filename> in the cluster
+     data directory.
          또한 복구 과정 중에 외부에서 접근 할 수 없도록 
          임시로 <filename>pg_hba.conf</filename> 파일을 수정하는 것도 좋은 방법이다.
     </para>
@@ -1230,8 +1261,9 @@ SELECT pg_stop_backup();
          필요한 WAL 파일들을 찾아서 반영되지 않았는 트랜잭션들을 
          일괄 처리하기 시작한다. 복구 작업 도중 외부 영향으로 서버가 
          중지 된다면, 단순히 서버를 재실행하면, 이어서 복구 작업을 계속 
-         진행한다. 복구 작업이 끝나면, 서버는 복구 모드로 재실행 되는 것을 막기 위해, 
-         <filename>recovery.conf</filename> 파일을 <filename>recovery.done</filename> 이름으로 바꾸고,
+         진행한다. 복구 작업이 끝나면, 서버는
+     <filename>recovery.signal</filename> (중복 복구 작업을 막기위해)
+     파일을 지우고,
          정상 실행 상태로 클라이언트의 접속을 기다린다. 
     </para>
    </listitem>
@@ -1250,12 +1282,9 @@ SELECT pg_stop_backup();
    <para>
     이 복구 방법의 핵심은 어떻게 백업 WAL 세그먼트 파일을 데이터베이스에 
         적용시키냐는 것과, 그 복구를 어느 시점까지 할 것이냐이다.
-        이것을 <filename>recovery.conf</filename> 파일에서 지정한다.
-        이 파일을 만드는 간단한 방법은 먼저 데이터베이스 배포판의
-        <filename>share/</filename> 디렉터리 안에 <filename>recovery.conf.sample</filename> 파일을
-        복사해서, 필요한 부분만 수정해서 사용하는 것이다.
-        <filename>recovery.conf</filename> 파일에서 꼭 필요한 부분은
-        <varname>restore_command</varname> 부분이다.
+        이런 것들은 복구 환경 설정에서 지정한다.
+        반드시 필요한 설정은
+        <varname>restore_command</varname> 설정이다.
     이 설정은 <productname>PostgreSQL</productname>에서 백업본 WAL 세그먼트 파일을 
         어떻게 적용시킬 것인가에 대한 정의다.
         간단하게 설명하면, 서버 환경 설정 가운데, <varname>archive_command</varname>
@@ -1319,8 +1348,8 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
    </para>
 
    <para>
-    복구 작업은 <filename>recovery.conf</filename> 파일에서 
-        복구 <link linkend="recovery-target-settings">중지 지점</link>을 
+    복구 작업은
+        복구 <link linkend="runtime-config-wal-recovery-target">중지 지점</link>을 
         지정해서 원하는 지점에서 복구 작업을 중지할 수도 있다. 
         이 지점을 <quote>recovery target</quote>이라고 한다.
         이 기능은 미숙한 데이터베이스 관리자가 실수로 중요 테이블을 삭제하는 것 같은 
@@ -1420,11 +1449,11 @@ restore_command = 'cp /mnt/server/archivedir/%f %p'
    </para>
 
    <para>
-    복구 작업에서 기준이 되는 타임라인은 특별히 다른 타임라인을 지정하지 않으며, 
-        베이스 백업 당시 사용되었던 타임라인을 사용한다. 
-        만일 다른 타임라인을 사용하려면, <filename>recovery.conf</filename> 파일에
-        원하는 타임라인 ID를 지정해주면 된다. 물론 이 타임라인은 반드시 베이스 백업 뒤에
-        사용한 하위 타임라인 가운데 하나여야 한다.
+    복구 작업의 최종 타임라인은 아카이브에서 찾은 마지막 타임라인이다.
+    특정 타임라인으로 복구하려면, <xref linkend="guc-recovery-target-timeline"/>
+    설정값으로 현재 타임라인을 뜻하는
+    <literal>current</literal>를 사용하거나, 특정 타임라인 번호를 지정할 수 있다.
+    물론 이 타임라인은 반드시 베이스 백업 뒤에 사용한 하위 타임라인 가운데 하나여야 한다.
    </para>
   </sect2>
 

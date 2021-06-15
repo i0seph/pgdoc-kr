@@ -199,41 +199,81 @@ optionally, group.
 
   </sect2>
 
-  <sect2 id="creating-cluster-nfs">
-   <title>Use of Network File Systems</title>
-
-   <indexterm zone="creating-cluster-nfs">
-    <primary>Network File Systems</primary>
-   </indexterm>
-   <indexterm><primary><acronym>NFS</acronym></primary><see>Network File Systems</see></indexterm>
-   <indexterm><primary>Network Attached Storage (<acronym>NAS</acronym>)</primary><see>Network File Systems</see></indexterm>
+  <sect2 id="creating-cluster-filesystem">
+   <title>File Systems</title>
 
    <para>
-    Many installations create their database clusters on network file
-    systems.  Sometimes this is done via <acronym>NFS</acronym>, or by using a
-    Network Attached Storage (<acronym>NAS</acronym>) device that uses
-    <acronym>NFS</acronym> internally.  <productname>PostgreSQL</productname> does nothing
-    special for <acronym>NFS</acronym> file systems, meaning it assumes
-    <acronym>NFS</acronym> behaves exactly like locally-connected drives.
-    If the client or server <acronym>NFS</acronym> implementation does not
-    provide standard file system semantics, this can
-    cause reliability problems (see <ulink
-    url="https://www.time-travellers.org/shane/papers/NFS_considered_harmful.html"></ulink>).
-    Specifically, delayed (asynchronous) writes to the <acronym>NFS</acronym>
-    server can cause data corruption problems.  If possible, mount the
-    <acronym>NFS</acronym> file system synchronously (without caching) to avoid
-    this hazard.  Also, soft-mounting the <acronym>NFS</acronym> file system is
-    not recommended.
+    일반적으로 POSIX 호환 파일 시스템이라면 어떤 것도 상관 없이 
+    PostgreSQL에서는 사용할 수 있다.  사용자들은
+    벤더 기술지원, 성능, 친숙함 등 다양한 이유로 여러 파일 시스템을
+    각각 사용한다.  경험상, 다른 것들은 모두 동일한데, 
+    파일 시스템의 종류를 바꾼다거나, 
+    사소한 파일 시스템 환경 설정을 바꾼다고 해도, 성능이 크게 좋아진다거나,
+    기능이 크게 바뀌지는 않는다.
    </para>
 
-   <para>
-    Storage Area Networks (<acronym>SAN</acronym>) typically use communication
-    protocols other than <acronym>NFS</acronym>, and may or may not be subject
-    to hazards of this sort.  It's advisable to consult the vendor's
-    documentation concerning data consistency guarantees.
-    <productname>PostgreSQL</productname> cannot be more reliable than
-    the file system it's using.
-   </para>
+   <sect3 id="creating-cluster-nfs">
+    <title>NFS</title>
+
+    <indexterm zone="creating-cluster-nfs">
+     <primary>NFS</primary>
+    </indexterm>
+
+    <para>
+     <productname>PostgreSQL</productname> 데이터 디렉터리로
+     <acronym>NFS</acronym> 파일 시스템을 사용할 수 있다.
+     <productname>PostgreSQL</productname>은 <acronym>NFS</acronym>
+     파일 시스템도 그냥 로컬 드라이브와 같은 것으로 여긴다.
+     데이터베이스 내부적으로 사용하는 파일 처리 작업은 똑같다.
+     파일 잠금 처리가 한 예다.
+    </para>
+
+    <para>
+     단, <acronym>NFS</acronym> 파일 시스템을 사용할 때는, 
+     <productname>PostgreSQL</productname>에서는 그 파티션이
+     <literal>hard</literal> 옵션을 지정해서 마운트한 것을 
+     사용해야 한다.
+     <literal>hard</literal> 옵션을 사용하면, 
+     네트워크 통신 문제가 있을 경우, 서버가 <quote>멈출 수 있다.</quote>
+     그래서, 세심한 모니터링이 필요하다.
+     <literal>soft</literal> 옵션을 사용하면, 
+     네트워크 통신 문제가 있을 경우, 파일 시스템이 시스템 콜을 무시할 수
+     있는데, 이 경우, <productname>PostgreSQL</productname>은 
+     이렇게 처리 안된 시스템 콜을 다시 처리하지 않아, 입출력 오류가
+     생길 수도 있다.
+    </para>
+
+    <para>
+     <literal>sync</literal> 옵션은 지정하지 않아도 된다. 
+     <literal>async</literal> 옵션으로도 충분하다.  <productname>PostgreSQL</productname>
+     내부적으로 필요한 경우는
+     캐시를 디스크로 쓰는 플러시 작업을 하는 <literal>fsync</literal>
+     호출을 충실히 한다.  (로컬 파일 시스템에서 작동하는 방식과 같다.)
+     하지만, 대부분 NFS <emphasis>서버</emphasis>로 사용하는 
+     시스템(일반적으로 리눅스)의 export 설정에서는 
+     <literal>sync</literal> 옵션을 지정하는 것을 권장한다.
+     한편, NFS 클라이언트가 호출하는 <literal>fsync</literal> 또는
+     그 같은 역할을 하는 작업이 반드시 서버에 있는 스토리지에 
+     완벽하게 썼다고 보장하지는 않는다. 이는 데이터베이스 서버가 
+     비정상적으로 종료 되었을 때 커밋된 자료를 잃어버릴 수 있는
+     <xref
+     linkend="guc-fsync"/> off 상태와 같다고 간주 할 수 있다.
+     NFS 파일 시스템의 마운트 옵션과 서버의 export 옵션의 기본값이 
+     각 벤더사와 버전에 따라 다양하다. 그래서, 자신이 쓰는 환경에서
+     앞에서 다룬 문제들을 최대한 피할 수 있는 설정은 스스로 
+     확인하고 사용해야한다.
+    </para>
+
+    <para>
+     한 경우로, NFS 파일 시스템이 아닌, 
+     iSCSI 같은 저수준 프로토콜로 접근할 수 있는 외장 스토리지를 
+     사용할 수 있는데, 이 경우는 OS 상에서는 블록 장치로 보이고, 
+     이것을 원하는 파일 시스템으로 만들어서 사용할 수 있다.
+     이런 경우는 NFS 사용할 때와 달리 DBA가 신경 쓸 부분이 줄지만,
+     iSCSI 서버와 원격 스토리지 설정, 사용에 따른 또 다른 수준의
+     작업이 필요하다.
+    </para>
+   </sect3>
 
   </sect2>
 
@@ -558,8 +598,10 @@ psql: could not connect to server: No such file or directory
 
  <para>
     <productname>PostgreSQL</productname> 서버는 아주 적은 System V 공유 메모리와, 
-    서버에서 사용할 공용 메모리로 POSIX (<function>mmap</function> 함수 이용)
+    서버에서 사용할 공용 메모리로 anonymous <function>mmap</function>
     공유 메모리를 사용한다.
+    다른 방식으로, 하나의 큰 System V 공유 메모리 영역을 
+    사용할 수도 있다(<xref linkend="guc-shared-memory-type"/> 참조).
     또한 OS 세마포어도 필요한데, 이 수량도 서버가 실행될 때 확보한다.
     현재 리눅스나 FreeBSD 인 경우는 POSIX 세마포어를 사용하고, 
     나머지 OS에서는 System V 세마포어를 사용한다.
@@ -631,13 +673,13 @@ psql: could not connect to server: No such file or directory
  <row>
 <entry><varname>SEMMNI</varname></entry>
 <entry>세마포어 식별자의 최대 수(예: 세트)</entry>
-<entry>최소한 <literal>ceil((max_connections + autovacuum_max_workers + max_worker_processes + 5) / 16)</literal>, 다른 응용 프로그램에서도 쓴다면 더 많이.</entry>
+<entry>최소한 <literal>ceil((max_connections + autovacuum_max_workers + max_wal_senders + max_worker_processes + 5) / 16)</literal>, 다른 응용 프로그램에서도 쓴다면 더 많이.</entry>
  </row>
 
  <row>
 <entry><varname>SEMMNS</varname></entry>
 <entry>시스템 차원(system-wide)의 세마포어 최대 수</entry>
-<entry><literal>ceil((max_connections + autovacuum_max_workers + max_worker_processes + 5) / 16) * 17</literal> 그 외 다른 애플리케이션의 여유분</entry>
+<entry><literal>ceil((max_connections + autovacuum_max_workers + max_wal_senders + max_worker_processes + 5) / 16) * 17</literal> 그 외 다른 애플리케이션의 여유분</entry>
  </row>
 
  <row>
@@ -666,6 +708,8 @@ psql: could not connect to server: No such file or directory
 <productname>PostgreSQL</productname>은 서버 인스턴스별로 System V 공유 메모리 수 바이트가 필요하다(64비트 플랫폼의 경우 보통 48바이트).
 최신 운영 체제에서 이 정도 양은 손쉽게 할당 가능하다.
 그러나, 서버 인스턴스를 다수 실행 중이거나 다른 어플리케이션도 System V 공유 메모리를 사용 중인 경우 
+(<xref linkend="guc-shared-memory-type"/> 및 <xref
+linkend="guc-dynamic-shared-memory-type"/> 참조)
 시스템 차원(system-wide)의 System V 공유 메모리인 <varname>SHMALL</varname>를 늘려야 할 수 있다.
 <varname>SHMALL</varname>는 여러 시스템에서 바이트 단위가 아니라 페이지 단위로 처리된다는 점에 유의하라.
  </para>
@@ -683,12 +727,13 @@ autovacuum worker 프로세스(<xref linkend="guc-autovacuum-max-workers"/>),
 각각의 세트마다 다른 어플리케이션에서 사용되는 세마포어 세트와의 충돌을 감지하기 위한 <quote>매직 넘버</quote>가 17번째 세마포어에 포함되어 있다.
 시스템에서 세마포어 최대 수는 <varname>SEMMNS</varname>에 의해 설정되며, 따라서
 최소한 <varname>max_connections</varname> + <varname>autovacuum_max_workers</varname> + 
+<varname>max_wal_senders</varname> +
 <varname>max_worker_processes</varname>
 각각 허용된 16개 연결에 1 추가 + worker여야 한다(<xref
 linkend="sysvipc-parameters"/> 공식 참조).
 파라미터 <varname>SEMMNI</varname>는 시스템에 동시에 존재할 수 있는 세마포어 세트 수에 대한 제한을 결정한다.
 그러므로, 이 파라미터는 최소한
-<literal>ceil((max_connections + autovacuum_max_workers + max_worker_processes + 5) / 16)</literal>여야
+<literal>ceil((max_connections + autovacuum_max_workers + max_wal_senders + max_worker_processes + 5) / 16)</literal>여야
 한다.허용 연결 수를 줄이면 실패를 임시 방편으로 해결할 수 있으며, <function>semget</function> 함수로부터 <quote>No space
 left on device</quote>라는 애매한 메시지를 받게 된다.
  </para>
@@ -696,6 +741,7 @@ left on device</quote>라는 애매한 메시지를 받게 된다.
  <para>
 경우에 따라서는 <varname>SEMMAP</varname>를 적어도 
 <varname>SEMMNS</varname>와 유사하게 늘릴 필요가 있을 수 있다.
+시스템에서 이 매개 변수가 있다면, (없을 수도 있다)
 이 파라미터는 세마포어 리소스 맵의 크기를 정의하며, 이 맵에서는 사용 가능한 세마포어의 연속 블록마다 항목을 필요로 한다.
 세마포어 세트가 해제되면, 해제된 블록에 인접한 기존 항목에 추가되거나 새로운 맵 항목 아래에 등록된다.
 맵이 꽉 차면 해제된 세마포어는 분실된다(리부팅될 때까지).
@@ -744,7 +790,7 @@ left on device</quote>라는 애매한 메시지를 받게 된다.
 </term>
 <listitem>
  <para>
-기본 설정은 <command>sysctl</command> 또는 <command>loader</command> 인터페이스를 사용하여 변경할 수 있다.
+기본 IPC 설정은 <command>sysctl</command> 또는 <command>loader</command> 인터페이스를 사용하여 변경할 수 있다.
 다음 파라미터는 <command>sysctl</command>을 사용하여 설정할 수 있다.
 <screen>
 <prompt>#</prompt> <userinput>sysctl kern.ipc.shmall=32768</userinput>
@@ -760,13 +806,12 @@ left on device</quote>라는 애매한 메시지를 받게 된다.
 <programlisting>
 kern.ipc.semmni=256
 kern.ipc.semmns=512
-kern.ipc.semmnu=256
 </programlisting>
-이 값을 수정한 후에는 새 설정을 적용하려면 리부팅이 필요하다(참고: FreeBSD는 <varname>SEMMAP</varname>를 사용하지 않는다. 오래된 버전은 <literal>kern.ipc.semmap</literal>에 대한 설정을 수용하지만 무시하고 새 버전은 완전히 무시한다.).
+이 파일을 수정한 후에는 새 설정을 적용하려면 리부팅이 필요하다.
  </para>
 
  <para>
-사용자는 커널을 환경 설정하여 공유 메모리를 RAM에 잠그고 스왑을 위해 페이지 아웃되지 못하게 하기를 원할 수 있다.
+사용자는 커널을 환경 설정하여 System V 공유 메모리를 RAM에 잠그고 스왑을 위해 페이지 아웃되지 못하게 하기를 원할 수 있다.
 이것은 <command>sysctl</command>
 설정 <literal>kern.ipc.shm_use_phys</literal>를 사용하면 가능하다.
  </para>
@@ -779,7 +824,7 @@ kern.ipc.semmnu=256
 
  <para>
 <systemitem class="osname">FreeBSD</systemitem> 4.0 이전 버전은 
-<systemitem class="osname">OpenBSD</systemitem>처럼 작동된다(아래 참조).
+옛 <systemitem class="osname">OpenBSD</systemitem>처럼 작동된다(아래 참조).
  </para>
 </listitem>
  </varlistentry>
@@ -792,19 +837,29 @@ kern.ipc.semmnu=256
  <para>
 <systemitem class="osname">NetBSD</systemitem>5.0 이상에서, IPC 파라미터는 <command>sysctl</command>을 사용하여 조절 가능하다.예를 들면:
 <screen>
-<prompt>$</prompt> <userinput>sysctl -w kern.ipc.shmmax=16777216</userinput>
+<prompt>#</prompt> <userinput>sysctl -w kern.ipc.semmni=100</userinput>
 </screen>
 리부팅 시에 이 설정을 유지하려면 
 <filename>/etc/sysctl.conf</filename>를 수정해야 한다.
  </para>
 
+       <para>
+        보통,
+        <systemitem class="osname">NetBSD</systemitem> 기본 설정값이 충분하지
+        않기에, <literal>kern.ipc.semmni</literal> 설정값과, 
+        <literal>kern.ipc.semmns</literal> 설정값을 크게 설정해야할 것이다.
+       </para>
+
  <para>
- 사용자는 커널을 환경 설정하여 공유 메모리를 RAM에 잠그고 스왑을 위해 페이지 아웃되지 못하게 하기를 원할 수 있다.이것은 <command>sysctl</command>
+ 사용자는 커널을 환경 설정하여 System V 공유 메모리를 RAM에 잠그고 스왑을 위해 페이지 아웃되지 못하게 하기를 원할 수 있다.이것은 <command>sysctl</command>
 설정 <literal>kern.ipc.shm_use_phys</literal>를 사용하면 가능하다.
  </para>
 
  <para>
-<systemitem class="osname">NetBSD</systemitem> 5.0 이전 버전은 키워드 <literal>option</literal>이 아니라 <literal>options</literal>로 설정되어야만 하는 파라미터인 경우 외에는 <systemitem class="osname">OpenBSD</systemitem> (아래 참조)처럼 작동된다.
+<systemitem class="osname">NetBSD</systemitem> 5.0 이전 버전은
+키워드 <literal>option</literal>이 아니라 <literal>options</literal>로
+설정되어야만 하는 파라미터인 경우 외에는
+옛 <systemitem class="osname">OpenBSD</systemitem> (아래 참조)처럼 작동된다.
  </para>
 </listitem>
  </varlistentry>
@@ -815,8 +870,31 @@ kern.ipc.semmnu=256
 </term>
 <listitem>
  <para>
-옵션 <varname>SYSVSHM</varname> 및 <varname>SYSVSEM</varname>은 커널이 컴파일된 경우에 활성화되어야 한다(기본으로 설정돼 있음).공유 메모리의 최대 크기는 옵션 <varname>SHMMAXPGS</varname> (페이지 단위)에 의해 결정된다.
-다음 예시는 다양한 파라미터 설정 방법을 보여준다.
+        In <systemitem class="osname">OpenBSD</systemitem> 3.3 and later,
+        IPC parameters can be adjusted using <command>sysctl</command>,
+        for example:
+<screen>
+<prompt>#</prompt> <userinput>sysctl kern.seminfo.semmni=100</userinput>
+</screen>
+        To make these settings persist over reboots, modify
+        <filename>/etc/sysctl.conf</filename>.
+       </para>
+
+       <para>
+        You will usually want to
+        increase <literal>kern.seminfo.semmni</literal>
+        and <literal>kern.seminfo.semmns</literal>,
+        as <systemitem class="osname">OpenBSD</systemitem>'s default settings
+        for these are uncomfortably small.
+       </para>
+
+       <para>
+        In older <systemitem class="osname">OpenBSD</systemitem> versions,
+        you will need to build a custom kernel to change the IPC parameters.
+        Make sure that the options <varname>SYSVSHM</varname>
+        and <varname>SYSVSEM</varname> are enabled, too.  (They are by
+        default.)  The following shows an example of how to set the various
+        parameters in the kernel configuration file:
 <programlisting>
 optionSYSVSHM
 optionSHMMAXPGS=4096
@@ -1013,7 +1091,7 @@ project.max-msg-ids=(priv,4096,deny)
 
    <para>
     If <productname>systemd</productname> is in use, some care must be taken
-    that IPC resources (shared memory and semaphores) are not prematurely
+    that IPC resources (including shared memory) are not prematurely
     removed by the operating system.  This is especially of concern when
     installing PostgreSQL from source.  Users of distribution packages of
     PostgreSQL are less likely to be affected, as
@@ -1030,11 +1108,12 @@ project.max-msg-ids=(priv,4096,deny)
    </para>
 
    <para>
-    A typical observed effect when this setting is on is that the semaphore
-    objects used by a PostgreSQL server are removed at apparently random
-    times, leading to the server crashing with log messages like
+    A typical observed effect when this setting is on is that shared memory
+    objects used for parallel query execution are removed at apparently random
+    times, leading to errors and warnings while attempting to open and remove
+    them, like
 <screen>
-LOG: semctl(1234567890, 0, IPC_RMID, ...) failed: Invalid argument
+WARNING:  could not remove shared memory segment "/PostgreSQL.1450751626": No such file or directory
 </screen>
     Different types of IPC objects (shared memory vs. semaphores, System V
     vs. POSIX) are treated slightly differently
@@ -1366,7 +1445,12 @@ $ <userinput>grep Huge /proc/meminfo</userinput>
 </para>
 
 <para>
-pg_ctl 프로그램은 이러한 서버 셧다운 신호를 전송하기 위한 편리한 인터페이스를 제공한다.또는 Windows가 아닌 시스템에서 <command>kill</command>을 사용하여 직접 신호를 전송할 수 있다.<command>postgres</command> 프로세스의 <acronym>PID</acronym>는 <command>ps</command> 프로그램을 사용하여 찾을 수 있거나 데이터 디렉터리에서 <filename>postmaster.pid</filename> 파일에서 찾을 수 있다.예를 들어, 빠른 셧다운을 하려면 아래와 같은 명령어로 가능하다.
+pg_ctl 프로그램은 이러한 서버 셧다운 신호를 전송하기 위한 편리한 인터페이스를 제공한다.
+또는 Windows가 아닌 시스템에서 <command>kill</command>을 사용하여 직접 신호를 전송할 수 있다.
+<command>postgres</command> 프로세스의 <acronym>PID</acronym>는
+<command>ps</command> 프로그램을 사용하여 찾을 수 있거나 데이터
+디렉터리에서 <filename>postmaster.pid</filename> 파일에서 찾을 수 있다.
+예를 들어, 빠른 셧다운을 하려면 아래와 같은 명령어로 가능하다.
 <screen>
 <prompt>$</prompt> <userinput>kill -INT `head -1 /usr/local/pgsql/data/postmaster.pid`</userinput>
 </screen>
@@ -1374,7 +1458,10 @@ pg_ctl 프로그램은 이러한 서버 셧다운 신호를 전송하기 위한 
 
 <important>
  <para>
-서버 셧다운 시 <systemitem>SIGKILL</systemitem>은 사용하지 않는 것이 최선이다.그럴 경우 서버에서 공유 메모리 및 세마포어가 해제되지 않아서, 새 서버를 시작하기 전에 수동으로 해제를 해야 할 수 있다.또한 <systemitem>SIGKILL</systemitem>은 하위 프로세스로 신호를 전달하지 않고 <command>postgres</command>를 kill하므로 각각의 하위 프로세스 역시 직접 kill해야 한다.
+서버 셧다운 시 <systemitem>SIGKILL</systemitem>은 사용하지 않는 것이 최선이다.
+그럴 경우 서버에서 공유 메모리 및 세마포어가 해제되지 않는다.
+또한 <systemitem>SIGKILL</systemitem>은 하위 프로세스로 신호를
+전달하지 않고 <command>postgres</command>를 kill하므로 각각의 하위 프로세스 역시 직접 kill해야 한다.
  </para>
 </important>
 
@@ -1420,12 +1507,22 @@ pg_ctl 프로그램은 이러한 서버 셧다운 신호를 전송하기 위한 
   </para>
 
 <para>
-<productname>PostgreSQL</productname>의 <emphasis>메이저</emphasis> 릴리스의 경우, 내부 데이터 스토리지 형식이 변경되므로 업그레이드가 복잡하다. 데이터를 새로운 메이저 버전으로 옮기는 전형적인 방법은 느릴 수 있지만 데이터베이스를 덤프하고 다시 불러오는 것이다. 더 빠른 방법은 <xref linkend="pgupgrade"/>이다. 복제 방법도 아래에 언급된 바와 같이 사용 가능하다.
+<productname>PostgreSQL</productname>의 <emphasis>메이저</emphasis>
+릴리스의 경우, 내부 데이터 스토리지 형식이 변경되므로 업그레이드가
+복잡하다.  데이터를 새로운 메이저 버전으로 옮기는 전형적인
+방법은 느릴 수 있지만 데이터베이스를 덤프하고 다시 불러오는
+것이다.  더 빠른 방법은 <xref linkend="pgupgrade"/>이다. 복제
+방법도 아래에 언급된 바와 같이 사용 가능하다.
 </para>
 
 <para>
-일반적으로 새 메이저 버전에서도 사용자 가시(user-visible) 비호환성이 도입되므로 어플리케이션 프로그래밍 변경이 요구되곤 한다. 모든 사용자 가시(user-visible) 변경은 릴리스 노트(<xref
- linkend="release"/>)에 나와 있다. "마이그레이션" 절을 특히 주의 깊게 보아야 한다. 몇 가지 메이저 버전에 걸쳐 업그레이드하는 경우 각각의 매개 버전에 대한 릴리스 노트를 읽어 보아야 한다.
+일반적으로 새 메이저 버전에서도 사용자 가시(user-visible) 비호환성이
+도입되므로 어플리케이션 프로그래밍 변경이 요구되곤 한다.  모든
+사용자 가시(user-visible) 변경은 릴리스 노트(<xref
+ linkend="release"/>)에 나와 있다. "마이그레이션" 절을 특히 주의 깊게
+보아야 한다. Though you can upgrade from one major version
+   to another without upgrading to intervening versions, you should read
+   the major release notes of all intervening versions.
 </para>
 
 <para>
@@ -1661,14 +1758,27 @@ pg_dumpall -p 5432 | psql -d postgres -p 5433
 </para>
 
 <para>
-   TCP 연결에 대한 스푸핑을 방지하기 위한 최고의 해결책은
-   SSL 인증서를 사용하여 클라이언트가 서버 인증서를 확인하게 하는 것이다.  이렇게
-   하려면 <literal>hostssl</literal> 연결만 수락하고(<xref
+   To prevent spoofing on TCP connections, either use
+   SSL certificates and make sure that clients check the server's certificate,
+   or use GSSAPI encryption (or both, if they're on separate connections).
+  </para>
+
+  <para>
+   SSL 인증으로 스푸핑을 방지하려면,
+   <literal>hostssl</literal> 연결만 수락하고(<xref
    linkend="auth-pg-hba-conf"/>) ssl 키와 인증서 파일(<xref linkend="ssl-tcp"/>)을
    갖도록 서버를 환경 설정해야 한다.  TCP 클라이언트는 <literal>sslmode=verify-ca</literal>
    또는 <literal>verify-full</literal>을 사용하여 연결해야 하며,  적절한 루트 인증서
    파일이 설치되어야 한다(<xref linkend="libq-ssl-certificates"/> 참조).
-</para>
+  </para>
+
+  <para>
+    To prevent spoofing with GSSAPI, the server must be configured to accept
+    only <literal>hostgssenc</literal> connections
+    (<xref linkend="auth-pg-hba-conf"/>) and use <literal>gss</literal>
+    authentication with them.  The TCP client must connect
+    using <literal>gssencmode=require</literal>.
+  </para>
  </sect1>
 
  <sect1 id="encryption-options">
@@ -1734,7 +1844,29 @@ pg_dumpall -p 5432 | psql -d postgres -p 5433
 
 <listitem>
  <para>
-SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 및 리턴 데이터)를 암호화한다. <filename>pg_hba.conf</filename> 파일은 어떤 호스트가 암호화되지 않은 연결을 사용할 수 있는지(<literal>host</literal>) 및 어떤 것이 SSL-암호화된 연결을 요구하는지(<literal>hostssl</literal>)를 관리자가 지정할 수 있게 한다. 또한 클라이언트는 SSL을 통해서만 서버에 연결하도록 지정 가능하다. <application>Stunnel</application> 또는 <application>SSH</application>는 전송을 암호화할 때에도 사용할 수 있다.
+SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 및 리턴 데이터)를
+암호화한다. <filename>pg_hba.conf</filename> 파일은 어떤 호스트가
+암호화되지 않은 연결을 사용할 수 있는지(<literal>host</literal>) 및
+어떤 것이 SSL-암호화된 연결을 요구하는지(<literal>hostssl</literal>)를
+관리자가 지정할 수 있게 한다.  또한 클라이언트는 SSL을
+통해서만 서버에 연결하도록 지정 가능하다.
+     </para>
+
+     <para>
+      GSSAPI-encrypted connections encrypt all data sent across the network,
+      including queries and data returned.  (No password is sent across the
+      network.)  The <filename>pg_hba.conf</filename> file allows
+      administrators to specify which hosts can use non-encrypted connections
+      (<literal>host</literal>) and which require GSSAPI-encrypted connections
+      (<literal>hostgssenc</literal>).  Also, clients can specify that they
+      connect to servers only on GSSAPI-encrypted connections
+      (<literal>gssencmode=require</literal>).
+     </para>
+
+     <para>
+      <application>Stunnel</application> or
+      <application>SSH</application> can also be used to encrypt
+      transmissions.
  </para>
 </listitem>
 </varlistentry>
@@ -1778,7 +1910,8 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
    <title>Basic Setup</title>
 
 <para>
-컴파일된 <acronym>SSL</acronym> 지원을 사용함으로써 <filename>postgresql.conf</filename>에서 파라미터 <xref linkend="guc-ssl"/>을 <literal>on</literal>으로 설정하면 <acronym>SSL</acronym>를 활성화한 상태로 <productname>PostgreSQL</productname> 서버를 시작할 수 있다. 서버는 동일한 TCP 포트에서 일반 및 <acronym>SSL</acronym> 연결을 listen하고 <acronym>SSL</acronym> 연결 여부에 대해 클라이언트 연결을 성사시킨다. 기본적으로 이것은 클라이언트의 옵션이다. 일부 또는 모든 연결에 대해 <acronym>SSL</acronym>의 사용을 요구하도록 서버를 설정하는 방법은 <xref
+컴파일된 <acronym>SSL</acronym> 지원을 사용함으로써
+<filename>postgresql.conf</filename>에서 파라미터 <xref linkend="guc-ssl"/>을 <literal>on</literal>으로 설정하면 <acronym>SSL</acronym>를 활성화한 상태로 <productname>PostgreSQL</productname> 서버를 시작할 수 있다. 서버는 동일한 TCP 포트에서 일반 및 <acronym>SSL</acronym> 연결을 listen하고 <acronym>SSL</acronym> 연결 여부에 대해 클라이언트 연결을 성사시킨다. 기본적으로 이것은 클라이언트의 옵션이다. 일부 또는 모든 연결에 대해 <acronym>SSL</acronym>의 사용을 요구하도록 서버를 설정하는 방법은 <xref
  linkend="auth-pg-hba-conf"/>을 참조 바란다.
 </para>
 
@@ -1801,11 +1934,40 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
     likely error.
   </para>
 
-<para>
+  <para>
+   If the private key is protected with a passphrase, the
+   server will prompt for the passphrase and will not start until it has
+   been entered.
+   Using a passphrase by default disables the ability to change the server's
+   SSL configuration without a server restart, but see <xref
+   linkend="guc-ssl-passphrase-command-supports-reload"/>.
+   Furthermore, passphrase-protected private keys cannot be used at all
+   on Windows.
+  </para>
+
+<!-- para>
 개인 키가 암호로 보호되는 경우 서버는 암호를 묻는 메시지를 표시하고 암호가 입력되기 전에는 서버가 시작되지 않는다.
 물론 이 암호 묻는 작업을 생략하도록 SSL 설정을 바꿀 수도 있으며, 
 추가적으로 Windows 환경에서는 반대로 암호를 묻는 개인키를 사용할 수 없다.
-</para>
+</para -->
+
+  <para>
+   The first certificate in <filename>server.crt</filename> must be the
+   server's certificate because it must match the server's private key.
+   The certificates of <quote>intermediate</quote> certificate authorities
+   can also be appended to the file.  Doing this avoids the necessity of
+   storing intermediate certificates on clients, assuming the root and
+   intermediate certificates were created with <literal>v3_ca </literal>
+   extensions.  (This sets the certificate's basic constraint of
+   <literal>CA</literal> to <literal>true</literal>.)
+   This allows easier expiration of intermediate certificates.
+  </para>
+
+  <para>
+   It is not necessary to add the root certificate to
+   <filename>server.crt</filename>.  Instead, clients must have the root
+   certificate of the server's certificate chain.
+  </para>
    </sect2>
 
   <sect2 id="ssl-openssl-config">
@@ -1870,43 +2032,70 @@ SSL 연결은 네트워크로 전송된 모든 데이터(패스워드, 쿼리 �
    (<acronym>CA</acronym>s) you trust in a file in the data
    directory, set the parameter <xref linkend="guc-ssl-ca-file"/> in
    <filename>postgresql.conf</filename> to the new file name, and add the
-   authentication option <literal>clientcert=1</literal> to the appropriate
+   authentication option <literal>clientcert=verify-ca</literal> or
+   <literal>clientcert=verify-full</literal> to the appropriate
    <literal>hostssl</literal> line(s) in <filename>pg_hba.conf</filename>.
    A certificate will then be requested from the client during SSL
    connection startup.  (See <xref linkend="libpq-ssl"/> for a description
-   of how to set up certificates on the client.)  The server will
-   verify that the client's certificate is signed by one of the trusted
-   certificate authorities.
+   of how to set up certificates on the client.)
+  </para>
+
+  <para>
+   For a <literal>hostssl</literal> entry with
+   <literal>clientcert=verify-ca</literal>, the server will verify
+   that the client's certificate is signed by one of the trusted
+   certificate authorities. If <literal>clientcert=verify-full</literal>
+   is specified, the server will not only verify the certificate
+   chain, but it will also check whether the username or its mapping
+   matches the <literal>cn</literal> (Common Name) of the provided certificate.
+   Note that certificate chain validation is always ensured when the
+   <literal>cert</literal> authentication method is used
+   (see <xref linkend="auth-cert"/>).
   </para>
 
   <para>
    Intermediate certificates that chain up to existing root certificates
    can also appear in the <xref linkend="guc-ssl-ca-file"/> file if
    you wish to avoid storing them on clients (assuming the root and
-   intermediate certificates were created with <literal>v3_ca</literal>
-   extensions).  Certificate Revocation List (CRL) entries are also
+   intermediate certificates were created with <literal>v3_ca </literal>
+   extensions.  (This sets the certificate's basic constraint of
+   <literal>CA</literal> to <literal>true</literal>.)
+   This allows easier expiration of intermediate certificates.
    checked if the parameter <xref linkend="guc-ssl-crl-file"/> is set.
-   (See <ulink
-   url="http://h41379.www4.hpe.com/doc/83final/ba554_90007/ch04s02.html"></ulink>
-   for diagrams showing SSL certificate usage.)
   </para>
 
   <para>
    The <literal>clientcert</literal> authentication option is available for
    all authentication methods, but only in <filename>pg_hba.conf</filename> lines
    specified as <literal>hostssl</literal>.  When <literal>clientcert</literal> is
-   not specified or is set to 0, the server will still verify any presented
-   client certificates against its CA file, if one is configured &mdash; but
-   it will not insist that a client certificate be presented.
+   not specified or is set to <literal>no-verify</literal>, the server will still
+   verify any presented client certificates against its CA file, if one is
+   configured &mdash; but it will not insist that a client certificate be presented.
   </para>
 
   <para>
-   If you are setting up client certificates, you may wish to use
-   the <literal>cert</literal> authentication method, so that the certificates
-   control user authentication as well as providing connection security.
-   See <xref linkend="auth-cert"/> for details.  (It is not necessary to
-   specify <literal>clientcert=1</literal> explicitly when using
-   the <literal>cert</literal> authentication method.)
+   There are two approaches to enforce that users provide a certificate during login.
+  </para>
+
+  <para>
+   The first approach makes use of the <literal>cert</literal> authentication
+   method for <literal>hostssl</literal> entries in <filename>pg_hba.conf</filename>,
+   such that the certificate itself is used for authentication while also
+   providing ssl connection security. See <xref linkend="auth-cert"/> for details.
+   (It is not necessary to specify any <literal>clientcert</literal> options
+   explicitly when using the <literal>cert</literal> authentication method.)
+   In this case, the <literal>cn</literal> (Common Name) provided in
+   the certificate is checked against the user name or an applicable mapping.
+  </para>
+
+  <para>
+   The second approach combines any authentication method for <literal>hostssl</literal>
+   entries with the verification of client certificates by setting the
+   <literal>clientcert</literal> authentication option to <literal>verify-ca</literal>
+   or <literal>verify-full</literal>. The former option only enforces that
+   the certificate is valid, while the latter also ensures that the
+   <literal>cn</literal> (Common Name) in the certificate matches
+   the user name or an applicable mapping.
   </para>
   </sect2>
 
@@ -2071,6 +2260,55 @@ openssl x509 -req -in server.csr -text -days 365 \
   </sect2>
  </sect1>
 
+ <sect1 id="gssapi-enc">
+  <title>Secure TCP/IP Connections with GSSAPI Encryption</title>
+
+  <indexterm zone="gssapi-enc">
+   <primary>gssapi</primary>
+  </indexterm>
+
+  <para>
+   <productname>PostgreSQL</productname> also has native support for
+   using <acronym>GSSAPI</acronym> to encrypt client/server communications for
+   increased security.  Support requires that a <acronym>GSSAPI</acronym>
+   implementation (such as MIT Kerberos) is installed on both client and server
+   systems, and that support in <productname>PostgreSQL</productname> is
+   enabled at build time (see <xref linkend="installation"/>).
+  </para>
+
+  <sect2 id="gssapi-setup">
+   <title>Basic Setup</title>
+
+   <para>
+    The <productname>PostgreSQL</productname> server will listen for both
+    normal and <acronym>GSSAPI</acronym>-encrypted connections on the same TCP
+    port, and will negotiate with any connecting client on whether to
+    use <acronym>GSSAPI</acronym> for encryption (and for authentication).  By
+    default, this decision is up to the client (which means it can be
+    downgraded by an attacker); see <xref linkend="auth-pg-hba-conf"/> about
+    setting up the server to require the use of <acronym>GSSAPI</acronym> for
+    some or all connections.
+   </para>
+
+   <para>
+    When using <acronym>GSSAPI</acronym> for encryption, it is common to
+    use <acronym>GSSAPI</acronym> for authentication as well, since the
+    underlying mechanism will determine both client and server identities
+    (according to the <acronym>GSSAPI</acronym> implementation) in any
+    case.  But this is not required;
+    another <productname>PostgreSQL</productname> authentication method
+    can be chosen to perform additional verification.
+   </para>
+
+   <para>
+    Other than configuration of the negotiation
+    behavior, <acronym>GSSAPI</acronym> encryption requires no setup beyond
+    that which is necessary for GSSAPI authentication.  (For more information
+    on configuring that, see <xref linkend="gssapi-auth"/>.)
+   </para>
+  </sect2>
+ </sect1>
+
  <sect1 id="ssh-tunnels">
 <title><application>SSH</application> 터널을 사용하여 TCP/IP 연결 보호</title>
 
@@ -2083,15 +2321,42 @@ openssl x509 -req -in server.csr -text -days 365 \
 </para>
 
 <para>
-먼저 <application>SSH</application> 서버가 <productname>PostgreSQL</productname> 서버와 동일한 머신에서 올바로 실행 중인지 확인하고 <command>ssh</command>를 사용하여 일부 사용자로 로그인할 수 있는지 확인한다. 그런 다음, 클라이언트 머신에서 아래와 같은 명령을 사용하여 보안 터널을 설정할 수 있다.
+먼저 <application>SSH</application> 서버가 <productname>PostgreSQL</productname> 서버와
+동일한 머신에서 올바로 실행 중인지 확인하고 <command>ssh</command>를 사용하여
+일부 사용자로 로그인할 수 있는지 확인한다.  you then can establish a
+   secure tunnel to the remote server.  A secure tunnel listens on a
+   local port and forwards all traffic to a port on the remote machine.
+   Traffic sent to the remote port can arrive on its
+   <literal>localhost</literal> address, or different bind
+   address if desired;  it does not appear as coming from your
+   local machine.  This command creates a secure tunnel from the client
+   machine to the remote machine <literal>foo.com</literal>:
 <programlisting>
 ssh -L 63333:localhost:5432 joe@foo.com
 </programlisting>
-<option>-L</option> 의 첫 번째 인수 63333은 터널 종단의 포트 번호이며, 미사용 포트는 무엇이든 가능하다. (IANA는 개인용으로 포트 49152 ~ 65535를 제공한다.) 두 번째 숫자 5432는 터널의 원거리 종단: 서버가 사용 중인 포트 번호이다. 포트 번호 간의 이름 또는 IP 주소는 연결하려는 데이터베이스 서버가 있는 호스트이며, 이 예시에서 <literal>foo.com</literal>인 로그인되어 있는 호스트에서 표시된다. 이 터널을 사용하여 데이터베이스 서버에 연결하기 위해 사용자는 로컬 머신의 포트 63333에 연결한다.
+<option>-L</option> 의 첫 번째 인수 63333은 터널 종단의
+로컬 포트 번호이며, 미사용 포트는 무엇이든 가능하다.
+(IANA는 개인용으로 포트 49152 ~ 65535를 제공한다.)
+The name or IP
+   address after this is the remote bind address you are connecting to,
+   i.e., <literal>localhost</literal>, which is the default.  The second
+   number, 5432, is the remote end of the tunnel, e.g., the port number
+   your database server is using.
+이 터널을 사용하여 데이터베이스 서버에 연결하기 위해 사용자는 로컬 머신의 포트 63333에 연결한다.
+
 <programlisting>
 psql -h localhost -p 63333 postgres
 </programlisting>
-이것은 해당 문맥의 <literal>localhost</literal>에 연결하는 <literal>foo.com</literal> 호스트에서 사용자가 정말로 데이터베이스 서버에 대한 <literal>joe</literal> 사용자인 것처럼 보이게 하고, 이 사용자와 호스트로부터의 연결에 대해 환경 설정된 대로 인증 절차를 사용한다. 사실, <application>SSH</application> 서버와 <productname>PostgreSQL</productname> 서버 사이가 암호화되지 않으므로 서버는 연결이 SSL로 암호화되어 있지 않다고 생각하게 된다. 동일한 머신에 있는 것이 아니라면 이것은 어떠한 추가적인 보안 위험을 드러내지 않을 것이다.
+   To the database server it will then look as though you are
+   user <literal>joe</literal> on host <literal>foo.com</literal>
+   connecting to the <literal>localhost</literal> bind address, and it
+   will use whatever authentication procedure was configured for
+   connections by that user to that bind address.  Note that the server will not
+   think the connection is SSL-encrypted, since in fact it is not
+   encrypted between the
+   <application>SSH</application> server and the
+   <productname>PostgreSQL</productname> server.  This should not pose any
+   extra security risk because they are on the same machine.
 </para>
 
 <para>
@@ -2103,7 +2368,7 @@ psql -h localhost -p 63333 postgres
 <programlisting>
 ssh -L 63333:foo.com:5432 joe@foo.com
 </programlisting>
-그러나 데이터베이스 서버가 <literal>foo.com</literal> 인터페이스에서 들어오는 연결을 보게 되는데, 이것은 기본 설정 <literal>listen_addresses =
+그러나 데이터베이스 서버가 <literal>foo.com</literal> 바인드 주소에서 들어오는 연결을 보게 되는데, 이것은 기본 설정 <literal>listen_addresses =
  'localhost'</literal>에 의해서는 개방되지 않는다. 보통 이것은 사용자가 원하는 바가 아니다.
 </para>
 

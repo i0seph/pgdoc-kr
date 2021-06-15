@@ -598,20 +598,20 @@ SELECT sum(salary) OVER w, avg(salary) OVER w
 CREATE TABLE capitals (
   name       text,
   population real,
-  altitude   int,    -- (in ft)
+  elevation   int,    -- (in ft)
   state      char(2)
 );
 
 CREATE TABLE non_capitals (
   name       text,
   population real,
-  altitude   int     -- (in ft)
+  elevation   int     -- (in ft)
 );
 
 CREATE VIEW cities AS
-  SELECT name, population, altitude FROM capitals
+  SELECT name, population, elevation FROM capitals
     UNION
-  SELECT name, population, altitude FROM non_capitals;
+  SELECT name, population, elevation FROM non_capitals;
 </programlisting>
 
         이 방식도 괜찮습니다.  하지만 자료를 조작해야하는 
@@ -625,41 +625,44 @@ CREATE VIEW cities AS
 CREATE TABLE cities (
   name       text,
   population real,
-  altitude   int     -- (in ft)
+  elevation   int     -- (in ft)
 );
 
 CREATE TABLE capitals (
-  state      char(2)
+  state      char(2) UNIQUE NOT NULL
 ) INHERITS (cities);
 </programlisting>
    </para>
 
    <para>
     윗 예제는, <classname>capitals</classname> 테이블에서 지정한
-        <firstterm>inherits</firstterm> 예약어가 바로 테이블을 상속받겠다는
-        것을 나타냅니다.  윗 경우라면, cities 테이블의 모든 칼럼을
-        상속 받는 것을 의미합니다.  윗 <structfield>name</structfield> 칼럼의
-        <type>text</type> 자료형은 <productname>PostgreSQL</productname>에서
-        사용하는 고유한 가변길이 문자열 자료형입니다. PostgreSQL에서는
-        하나의 테이블은 자기 자신이 상위테이블 (하나도 상속 받지 않은 테이블)이
-        되거나 여러개의 상위 테이블을 상속받을 수 있습니다.  또한 그 테이블의
-        자료 조회는 하위 테이블의 모든 자료를 포함해서 조회합니다.
+    <firstterm>inherits</firstterm> 예약어가 바로 테이블을 상속받겠다는
+    것을 나타냅니다.  윗 경우라면, <classname>cities</classname> 테이블의
+    모든 칼럼을 상속 받는 것을 의미합니다.  윗
+    <structfield>name</structfield> 칼럼의 <type>text</type>
+    자료형은 <productname>PostgreSQL</productname>에서 사용하는 고유한
+    가변길이 문자열 자료형입니다.  <classname>capitals</classname> 테이블에는
+    주 약자를 보여주는 <structfield>state</structfield> 칼럼이 추가
+    되었습니다.  PostgreSQL에서는
+    하나의 테이블은 자기 자신이 상위테이블 (하나도 상속 받지 않은 테이블)이
+    되거나 여러개의 상위 테이블을 상속받을 수 있습니다.  또한 그 테이블의
+    자료 조회는 하위 테이블의 모든 자료를 포함해서 조회합니다.
    </para>
 
    <para>
-    예를 들어, 고도가 500 ft. 보다 큰 도시들을 모두 찾을 때, 물론
+    예를 들어, 해발고도가 500 ft. 보다 큰 도시들을 모두 찾을 때, 물론
         이때 수도도 포함하고자 할 때는 다음과 같은 쿼리를 이용합니다:
 
 <programlisting>
-SELECT name, altitude
+SELECT name, elevation
   FROM cities
-  WHERE altitude &gt; 500;
+  WHERE elevation &gt; 500;
 </programlisting>
 
     which returns:
 
 <screen>
-   name    | altitude
+   name    | elevation
 -----------+----------
  Las Vegas |     2174
  Mariposa  |     1953
@@ -672,13 +675,13 @@ SELECT name, altitude
     이때, 수도를 빼고 검색하려면 다음과 같이 <literal>ONLY</literal> 예약어를 사용합니다:
 
 <programlisting>
-SELECT name, altitude
+SELECT name, elevation
     FROM ONLY cities
-    WHERE altitude &gt; 500;
+    WHERE elevation &gt; 500;
 </programlisting>
 
 <screen>
-   name    | altitude
+   name    | elevation
 -----------+----------
  Las Vegas |     2174
  Mariposa  |     1953

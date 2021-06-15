@@ -68,24 +68,23 @@ PostgreSQL documentation
    공통된 클러스터 타임라인들 중에서 찾을 수 있다.  전형적인 장애복구
    시나리오에서 target 클러스터는 분기된 이후 빠르게 서버가 중지있다.  이러면
    문제가 없지만, 만약에 target 클러스터가 분기된 이후에도 오래도록
-   운영되었다면 source 클러스터쪽에서 오래된 WAL파일들을 없을 수 있다.  이
-   경우, 수동으로 WAL 아카이브에서 <filename>pg_wal</filename> 디렉터리로
-   복사하거나 target 클러스터의 <filename>recovery.conf</filename>설정파일에서
-   restore_command 를 설정하여 시작할때 가져올 수 있다.
-   <application>pg_rewind</application>의 사용은 장애복구에만 사용할 수
-   있는게 아니다.  예를 들어, standby 서버를 master 로 진급시켜 쓰기
-   트랜잭션을 수행하고 난뒤 다시 standby 로 되돌릴 수 있다.
+   운영되었다면 source 클러스터쪽에서 오래된 WAL파일들이 없을 수 있다.  
+   이 경우, 직접 그 대상 WAL 아카이브 파일을 <filename>pg_wal</filename>
+   디렉터리로 복사할 수도 있다.  <application>pg_rewind</application>
+   명령은 페일오버 용도로만 사용하는 것이 아니라, 
+   대기 서버가 운영 서버로 전환되었다가 다시 대기 서버로 바꾸려고 할 때도
+   사용될 수 있다.
   </para>
 
   <para>
    <application>pg_rewind</application> 수행 후, target 서버는 최초 시작시
    복구 모드로 수행되어 분기지점 이후의 source 서버내 모든 WAL을
    재생한다.  source 서버로 부터 더 이상의 사용가능한 WAL이 없게 되면
-   <application>pg_rewind</application> 세션은 더 이상 복사하지 않다.  이는
-   target 서버가 시작되어 있어야 하고 적합한
-   <varname>restore_comand </varname>값을 가진
-   <filename>recovery.conf</filename>가 target 데이터 위치에 생성되어
-   있어야 한다. 
+   <application>pg_rewind</application> 세션은 더 이상 복사하지 않는다.  필요에 
+   따라 target 데이터 디렉터리 안에 <filename>recovery.signal</filename>
+   파일 만들고, <filename>postgresql.conf</filename> 파일에서
+   복구에 필요한 적당한 <xref linkend="guc-restore-command"/> 설정을 
+   할 수도 있다.
   </para>
 
   <para>
@@ -132,10 +131,14 @@ PostgreSQL documentation
      <varlistentry>
       <term><option>--source-server=<replaceable class="parameter">connstr</replaceable></option></term>
       <listitem>
-       <para>
-        target 서버를 동기화시킬 source 서버의 libpq 연결정보를 가리킨다.  이
-        연결은 일반연결(복제연결이 아님)이며 슈퍼유저 권한이어야 한다.  이
-        옵션은 source 서버가 복구 모드가 아닌 정상 기동하고 있어야 한다.
+      <para>
+        Specifies a libpq connection string to connect to the source
+        <productname>PostgreSQL</productname> server to synchronize the target
+        with. The connection must be a normal (non-replication) connection
+        with a role having sufficient permissions to execute the functions
+        used by <application>pg_rewind</application> on the source server
+        (see Notes section for details) or a superuser role.  This option
+        requires the source server to be running and not in recovery mode.
        </para>
       </listitem>
      </varlistentry>
@@ -146,6 +149,22 @@ PostgreSQL documentation
       <listitem>
        <para>
         target 디렉터리에 실제 수정없이 모든 것을 수행해 본다.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>-N</option></term>
+      <term><option>--no-sync</option></term>
+      <listitem>
+       <para>
+        By default, <command>pg_rewind</command> will wait for all files
+        to be written safely to disk.  This option causes
+        <command>pg_rewind</command> to return without waiting, which is
+        faster, but means that a subsequent operating system crash can leave
+        the synchronized data directory corrupt.  Generally, this option is
+        useful for testing but should not be used when creating a production
+        installation.
        </para>
       </listitem>
      </varlistentry>
@@ -188,17 +207,48 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>환경</title>
+  <title>환경 변수</title>
 
   <para>
    <option>--source-server</option> 옵션이 사용되면,
    <application>pg_rewind</application>는 <application>libpq</application>에서
    지원되는 환경 변수도 사용할 수 있다.(<xref linkend="libpq-envars"/> 참조).
   </para>
+
+  <para>
+   The environment variable <envar>PG_COLOR</envar> specifies whether to use
+   color in diagnostic messages. Possible values are
+   <literal>always</literal>, <literal>auto</literal> and
+   <literal>never</literal>.
+  </para>
  </refsect1>
 
  <refsect1>
   <title>주석</title>
+
+  <para>
+   When executing <application>pg_rewind</application> using an online
+   cluster as source, a role having sufficient permissions to execute the
+   functions used by <application>pg_rewind</application> on the source
+   cluster can be used instead of a superuser.  Here is how to create such
+   a role, named <literal>rewind_user</literal> here:
+<programlisting>
+CREATE USER rewind_user LOGIN;
+GRANT EXECUTE ON function pg_catalog.pg_ls_dir(text, boolean, boolean) TO rewind_user;
+GRANT EXECUTE ON function pg_catalog.pg_stat_file(text, boolean) TO rewind_user;
+GRANT EXECUTE ON function pg_catalog.pg_read_binary_file(text) TO rewind_user;
+GRANT EXECUTE ON function pg_catalog.pg_read_binary_file(text, bigint, bigint, boolean) TO rewind_user;
+</programlisting>
+  </para>
+
+  <para>
+   When executing <application>pg_rewind</application> using an online
+   cluster as source which has been recently promoted, it is necessary
+   to execute a <command>CHECKPOINT</command> after promotion so as its
+   control file reflects up-to-date timeline information, which is used by
+   <application>pg_rewind</application> to check if the target cluster
+   can be rewound using the designated source cluster.
+  </para>
 
   <refsect2>
    <title>어떻게 동작되는가?</title>

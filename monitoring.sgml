@@ -280,6 +280,18 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
    반영 해서 다른 세션에서 수집된 정보와 자신의 세션에서 수집된 정보와 차이가 생길 수도 있다.
   </para>
 
+  <para>
+   Some of the information in the dynamic statistics views shown in <xref
+   linkend="monitoring-stats-dynamic-views-table"/> is security restricted.
+   Ordinary users can only see all the information about their own sessions
+   (sessions belonging to a role that they are a member of).  In rows about
+   other sessions, many columns will be null.  Note, however, that the
+   existence of a session and its general properties such as its sessions user
+   and database are visible to all users.  Superusers and members of the
+   built-in role <literal>pg_read_all_stats</literal> (see also <xref
+   linkend="default-roles"/>) can see all the information about all sessions.
+  </para>
+
   <table id="monitoring-stats-dynamic-views-table">
    <title>동적 통계 정보 뷰들</title>
 
@@ -340,10 +352,34 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
      </row>
 
      <row>
+      <entry><structname>pg_stat_gssapi</structname><indexterm><primary>pg_stat_gssapi</primary></indexterm></entry>
+      <entry>One row per connection (regular and replication), showing information about
+       GSSAPI authentication and encryption used on this connection.
+       See <xref linkend="pg-stat-gssapi-view"/> for details.
+      </entry>
+     </row>
+
+     <row>
+      <entry><structname>pg_stat_progress_create_index</structname><indexterm><primary>pg_stat_progress_create_index</primary></indexterm></entry>
+      <entry>One row for each backend running <command>CREATE INDEX</command> or <command>REINDEX</command>, showing
+      current progress.
+      See <xref linkend='create-index-progress-reporting'/>.
+     </entry>
+     </row>
+
+     <row>
       <entry><structname>pg_stat_progress_vacuum</structname><indexterm><primary>pg_stat_progress_vacuum</primary></indexterm></entry>
       <entry>One row for each backend (including autovacuum worker processes) running
        <command>VACUUM</command>, showing current progress.
        See <xref linkend='vacuum-progress-reporting'/>.
+      </entry>
+     </row>
+
+     <row>
+      <entry><structname>pg_stat_progress_cluster</structname><indexterm><primary>pg_stat_progress_cluster</primary></indexterm></entry>
+      <entry>One row for each backend running
+       <command>CLUSTER</command> or <command>VACUUM FULL</command>, showing current progress.
+       See <xref linkend='cluster-progress-reporting'/>.
       </entry>
      </row>
 
@@ -828,10 +864,14 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
      <entry><type>text</type></entry>
      <entry>백엔드 종류, 다음 중 하나:
       <literal>autovacuum launcher</literal>, <literal>autovacuum worker</literal>,
-      <literal>background worker</literal>, <literal>background writer</literal>,
+      <literal>logical replication launcher</literal>,
+      <literal>logical replication worker</literal>,
+      <literal>parallel worker</literal>, <literal>background writer</literal>,
       <literal>client backend</literal>, <literal>checkpointer</literal>,
       <literal>startup</literal>, <literal>walreceiver</literal>,
       <literal>walsender</literal>, <literal>walwriter</literal>.
+      In addition, background workers registered by extensions may have
+      additional types.
      </entry>
     </row>
    </tbody>
@@ -867,7 +907,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
 
       <tbody>
        <row>
-        <entry morerows="64"><literal>LWLock</literal></entry>
+        <entry morerows="66"><literal>LWLock</literal></entry>
         <entry><literal>ShmemIndexLock</literal></entry>
         <entry>Waiting to find or allocate space in shared memory.</entry>
        </row>
@@ -883,6 +923,10 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          <entry><literal>ProcArrayLock</literal></entry>
          <entry>Waiting to get a snapshot or clearing a transaction id at
          transaction end.</entry>
+        </row>
+        <row>
+         <entry><literal>Promote</literal></entry>
+         <entry>Waiting for standby promotion.</entry>
         </row>
         <row>
          <entry><literal>SInvalReadLock</literal></entry>
@@ -1053,16 +1097,23 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          <entry>Waiting to read or update old snapshot control information.</entry>
         </row>
         <row>
-         <entry><literal>BackendRandomLock</literal></entry>
-         <entry>Waiting to generate a random number.</entry>
-        </row>
-        <row>
          <entry><literal>LogicalRepWorkerLock</literal></entry>
          <entry>Waiting for action on logical replication worker to finish.</entry>
         </row>
         <row>
          <entry><literal>CLogTruncationLock</literal></entry>
-         <entry>Waiting to truncate the write-ahead log or waiting for write-ahead log truncation to finish.</entry>
+         <entry>Waiting to execute <function>txid_status</function> or update
+         the oldest transaction id available to it.</entry>
+        </row>
+        <row>
+         <entry><literal>WrapLimitsVacuumLock</literal></entry>
+         <entry>Waiting to update limits on transaction id and multixact
+         consumption.</entry>
+        </row>
+        <row>
+         <entry><literal>NotifyQueueTailLock</literal></entry>
+         <entry>Waiting to update limit on notification message
+         storage.</entry>
         </row>
         <row>
          <entry><literal>clog</literal></entry>
@@ -1131,6 +1182,11 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          <entry>Waiting to add or examine predicate lock information.</entry>
         </row>
         <row>
+         <entry><literal>serializable_xact</literal></entry>
+         <entry>Waiting to perform an operation on a serializable transaction
+         in a parallel query.</entry>
+        </row>
+        <row>
          <entry><literal>parallel_query_dsa</literal></entry>
          <entry>Waiting for parallel query dynamic shared memory allocation lock.</entry>
         </row>
@@ -1149,13 +1205,19 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          counters during Parallel Hash plan execution.</entry>
         </row>
         <row>
-         <entry morerows="9"><literal>Lock</literal></entry>
+         <entry morerows="10"><literal>Lock</literal></entry>
          <entry><literal>relation</literal></entry>
          <entry>Waiting to acquire a lock on a relation.</entry>
         </row>
         <row>
          <entry><literal>extend</literal></entry>
          <entry>Waiting to extend a relation.</entry>
+        </row>
+        <row>
+         <entry><literal>frozenid</literal></entry>
+         <entry>Waiting to
+         update <structname>pg_database</structname>.<structfield>datfrozenxid</structfield>
+         and <structname>pg_database</structname>.<structfield>datminmxid</structfield>.</entry>
         </row>
         <row>
          <entry><literal>page</literal></entry>
@@ -1229,11 +1291,15 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>RecoveryWalAll</literal></entry>
-         <entry>Waiting for WAL from any kind of source (local, archive or stream) at recovery.</entry>
+         <entry>Waiting for WAL from a stream at recovery.</entry>
         </row>
         <row>
          <entry><literal>RecoveryWalStream</literal></entry>
-         <entry>Waiting for WAL from a stream at recovery.</entry>
+         <entry>
+          Waiting when WAL data is not available from any kind of sources
+          (local, archive or stream) before trying again to retrieve WAL data,
+          at recovery.
+         </entry>
         </row>
         <row>
          <entry><literal>SysLoggerMain</literal></entry>
@@ -1252,13 +1318,17 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          <entry>Waiting in main loop of WAL writer process.</entry>
         </row>
         <row>
-         <entry morerows="7"><literal>Client</literal></entry>
+         <entry morerows="8"><literal>Client</literal></entry>
          <entry><literal>ClientRead</literal></entry>
          <entry>Waiting to read data from the client.</entry>
         </row>
         <row>
          <entry><literal>ClientWrite</literal></entry>
          <entry>Waiting to write data to the client.</entry>
+        </row>
+        <row>
+         <entry><literal>GSSOpenServer</literal></entry>
+         <entry>Waiting to read data from the client while establishing the GSSAPI session.</entry>
         </row>
         <row>
          <entry><literal>LibPQWalReceiverConnect</literal></entry>
@@ -1290,7 +1360,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          <entry>Waiting in an extension.</entry>
         </row>
         <row>
-         <entry morerows="33"><literal>IPC</literal></entry>
+         <entry morerows="36"><literal>IPC</literal></entry>
          <entry><literal>BgWorkerShutdown</literal></entry>
          <entry>Waiting for background worker to shut down.</entry>
         </row>
@@ -1301,6 +1371,14 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         <row>
          <entry><literal>BtreePage</literal></entry>
          <entry>Waiting for the page number needed to continue a parallel B-tree scan to become available.</entry>
+        </row>
+        <row>
+         <entry><literal>CheckpointDone</literal></entry>
+         <entry>Waiting for a checkpoint to complete.</entry>
+        </row>
+        <row>
+         <entry><literal>CheckpointStart</literal></entry>
+         <entry>Waiting for a checkpoint to start.</entry>
         </row>
         <row>
          <entry><literal>ClogGroupUpdate</literal></entry>
@@ -1440,7 +1518,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          <entry>Waiting to apply WAL at recovery because it is delayed.</entry>
         </row>
         <row>
-         <entry morerows="65"><literal>IO</literal></entry>
+         <entry morerows="67"><literal>IO</literal></entry>
          <entry><literal>BufFileRead</literal></entry>
          <entry>Waiting for a read from a buffered file.</entry>
         </row>
@@ -1454,11 +1532,11 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>ControlFileSync</literal></entry>
-         <entry>Waiting for the control file to reach stable storage.</entry>
+         <entry>Waiting for the control file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>ControlFileSyncUpdate</literal></entry>
-         <entry>Waiting for an update to the control file to reach stable storage.</entry>
+         <entry>Waiting for an update to the control file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>ControlFileWrite</literal></entry>
@@ -1482,11 +1560,11 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>DataFileFlush</literal></entry>
-         <entry>Waiting for a relation data file to reach stable storage.</entry>
+         <entry>Waiting for a relation data file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>DataFileImmediateSync</literal></entry>
-         <entry>Waiting for an immediate synchronization of a relation data file to stable storage.</entry>
+         <entry>Waiting for an immediate synchronization of a relation data file to durable storage.</entry>
         </row>
         <row>
          <entry><literal>DataFilePrefetch</literal></entry>
@@ -1498,7 +1576,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>DataFileSync</literal></entry>
-         <entry>Waiting for changes to a relation data file to reach stable storage.</entry>
+         <entry>Waiting for changes to a relation data file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>DataFileTruncate</literal></entry>
@@ -1518,7 +1596,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>LockFileAddToDataDirSync</literal></entry>
-         <entry>Waiting for data to reach stable storage while adding a line to the data directory lock file.</entry>
+         <entry>Waiting for data to reach durable storage while adding a line to the data directory lock file.</entry>
         </row>
         <row>
          <entry><literal>LockFileAddToDataDirWrite</literal></entry>
@@ -1530,7 +1608,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>LockFileCreateSync</literal></entry>
-         <entry>Waiting for data to reach stable storage while creating the data directory lock file.</entry>
+         <entry>Waiting for data to reach durable storage while creating the data directory lock file.</entry>
         </row>
         <row>
          <entry><literal>LockFileCreateWrite</literal></entry>
@@ -1542,11 +1620,11 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>LogicalRewriteCheckpointSync</literal></entry>
-         <entry>Waiting for logical rewrite mappings to reach stable storage during a checkpoint.</entry>
+         <entry>Waiting for logical rewrite mappings to reach durable storage during a checkpoint.</entry>
         </row>
         <row>
          <entry><literal>LogicalRewriteMappingSync</literal></entry>
-         <entry>Waiting for mapping data to reach stable storage during a logical rewrite.</entry>
+         <entry>Waiting for mapping data to reach durable storage during a logical rewrite.</entry>
         </row>
         <row>
          <entry><literal>LogicalRewriteMappingWrite</literal></entry>
@@ -1554,7 +1632,11 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>LogicalRewriteSync</literal></entry>
-         <entry>Waiting for logical rewrite mappings to reach stable storage.</entry>
+         <entry>Waiting for logical rewrite mappings to reach durable storage.</entry>
+        </row>
+        <row>
+         <entry><literal>LogicalRewriteTruncate</literal></entry>
+         <entry>Waiting for truncate of mapping data during a logical rewrite.</entry>
         </row>
         <row>
          <entry><literal>LogicalRewriteWrite</literal></entry>
@@ -1566,7 +1648,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>RelationMapSync</literal></entry>
-         <entry>Waiting for the relation map file to reach stable storage.</entry>
+         <entry>Waiting for the relation map file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>RelationMapWrite</literal></entry>
@@ -1590,11 +1672,11 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>ReplicationSlotRestoreSync</literal></entry>
-         <entry>Waiting for a replication slot control file to reach stable storage while restoring it to memory.</entry>
+         <entry>Waiting for a replication slot control file to reach durable storage while restoring it to memory.</entry>
         </row>
         <row>
          <entry><literal>ReplicationSlotSync</literal></entry>
-         <entry>Waiting for a replication slot control file to reach stable storage.</entry>
+         <entry>Waiting for a replication slot control file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>ReplicationSlotWrite</literal></entry>
@@ -1602,7 +1684,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>SLRUFlushSync</literal></entry>
-         <entry>Waiting for SLRU data to reach stable storage during a checkpoint or database shutdown.</entry>
+         <entry>Waiting for SLRU data to reach durable storage during a checkpoint or database shutdown.</entry>
         </row>
         <row>
          <entry><literal>SLRURead</literal></entry>
@@ -1610,7 +1692,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>SLRUSync</literal></entry>
-         <entry>Waiting for SLRU data to reach stable storage following a page write.</entry>
+         <entry>Waiting for SLRU data to reach durable storage following a page write.</entry>
         </row>
         <row>
          <entry><literal>SLRUWrite</literal></entry>
@@ -1622,7 +1704,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>SnapbuildSync</literal></entry>
-         <entry>Waiting for a serialized historical catalog snapshot to reach stable storage.</entry>
+         <entry>Waiting for a serialized historical catalog snapshot to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>SnapbuildWrite</literal></entry>
@@ -1630,7 +1712,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>TimelineHistoryFileSync</literal></entry>
-         <entry>Waiting for a timeline history file received via streaming replication to reach stable storage.</entry>
+         <entry>Waiting for a timeline history file received via streaming replication to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>TimelineHistoryFileWrite</literal></entry>
@@ -1642,7 +1724,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>TimelineHistorySync</literal></entry>
-         <entry>Waiting for a newly created timeline history file to reach stable storage.</entry>
+         <entry>Waiting for a newly created timeline history file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>TimelineHistoryWrite</literal></entry>
@@ -1654,7 +1736,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>TwophaseFileSync</literal></entry>
-         <entry>Waiting for a two phase state file to reach stable storage.</entry>
+         <entry>Waiting for a two phase state file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>TwophaseFileWrite</literal></entry>
@@ -1662,7 +1744,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>WALBootstrapSync</literal></entry>
-         <entry>Waiting for WAL to reach stable storage during bootstrapping.</entry>
+         <entry>Waiting for WAL to reach durable storage during bootstrapping.</entry>
         </row>
         <row>
          <entry><literal>WALBootstrapWrite</literal></entry>
@@ -1674,7 +1756,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>WALCopySync</literal></entry>
-         <entry>Waiting a new WAL segment created by copying an existing one to reach stable storage.</entry>
+         <entry>Waiting a new WAL segment created by copying an existing one to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>WALCopyWrite</literal></entry>
@@ -1682,7 +1764,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
         </row>
         <row>
          <entry><literal>WALInitSync</literal></entry>
-         <entry>Waiting for a newly initialized WAL file to reach stable storage.</entry>
+         <entry>Waiting for a newly initialized WAL file to reach durable storage.</entry>
         </row>
         <row>
          <entry><literal>WALInitWrite</literal></entry>
@@ -1697,8 +1779,12 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
          <entry>Waiting for a read from a timeline history file during walsender timeline command.</entry>
         </row>
         <row>
+         <entry><literal>WALSync</literal></entry>
+         <entry>Waiting for a WAL file to reach durable storage.</entry>
+        </row>
+        <row>
          <entry><literal>WALSyncMethodAssign</literal></entry>
-         <entry>Waiting for data to reach stable storage while assigning WAL sync method.</entry>
+         <entry>Waiting for data to reach durable storage while assigning WAL sync method.</entry>
         </row>
         <row>
          <entry><literal>WALWrite</literal></entry>
@@ -1870,7 +1956,7 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
       notification that this standby server has written and flushed it
       (but not yet applied it).  This can be used to gauge the delay that
       <literal>synchronous_commit</literal> level
-      <literal>remote_flush</literal> incurred while committing if this
+      <literal>on</literal> incurred while committing if this
       server was configured as a synchronous standby.</entry>
     </row>
     <row>
@@ -1921,6 +2007,11 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
          </listitem>
        </itemizedlist>
      </entry>
+    </row>
+    <row>
+     <entry><structfield>reply_time</structfield></entry>
+     <entry><type>timestamp with time zone</type></entry>
+     <entry>Send time of last reply message received from standby server</entry>
     </row>
    </tbody>
    </tgroup>
@@ -2201,14 +2292,30 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
       or NULL if SSL is not in use on this connection</entry>
     </row>
     <row>
-     <entry><structfield>clientdn</structfield></entry>
+     <entry><structfield>client_dn</structfield></entry>
      <entry><type>text</type></entry>
      <entry>Distinguished Name (DN) field from the client certificate
       used, or NULL if no client certificate was supplied or if SSL
       is not in use on this connection. This field is truncated if the
       DN field is longer than <symbol>NAMEDATALEN</symbol> (64 characters
-      in a standard build)
+      in a standard build).
      </entry>
+    </row>
+    <row>
+     <entry><structfield>client_serial</structfield></entry>
+     <entry><type>numeric</type></entry>
+     <entry>Serial number of the client certificate, or NULL if no client
+     certificate was supplied or if SSL is not in use on this connection.  The
+     combination of certificate serial number and certificate issuer uniquely
+     identifies a certificate (unless the issuer erroneously reuses serial
+     numbers).</entry>
+    </row>
+    <row>
+     <entry><structfield>issuer_dn</structfield></entry>
+     <entry><type>text</type></entry>
+     <entry>DN of the issuer of the client certificate, or NULL if no client
+     certificate was supplied or if SSL is not in use on this connection.
+     This field is truncated like <structfield>client_dn</structfield>.</entry>
     </row>
    </tbody>
    </tgroup>
@@ -2223,6 +2330,54 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
    connection.
   </para>
 
+  <table id="pg-stat-gssapi-view" xreflabel="pg_stat_gssapi">
+   <title><structname>pg_stat_gssapi</structname> View</title>
+   <tgroup cols="3">
+    <thead>
+    <row>
+      <entry>Column</entry>
+      <entry>Type</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+
+   <tbody>
+    <row>
+     <entry><structfield>pid</structfield></entry>
+     <entry><type>integer</type></entry>
+     <entry>Process ID of a backend</entry>
+    </row>
+    <row>
+     <entry><structfield>gss_authenticated</structfield></entry>
+     <entry><type>boolean</type></entry>
+     <entry>True if GSSAPI authentication was used for this connection</entry>
+    </row>
+    <row>
+     <entry><structfield>principal</structfield></entry>
+     <entry><type>text</type></entry>
+     <entry>Principal used to authenticate this connection, or NULL
+      if GSSAPI was not used to authenticate this connection.  This
+      field is truncated if the principal is longer than
+      <symbol>NAMEDATALEN</symbol> (64 characters in a standard build).
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>encrypted</structfield></entry>
+     <entry><type>boolean</type></entry>
+     <entry>True if GSSAPI encryption is in use on this connection</entry>
+    </row>
+   </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   The <structname>pg_stat_gssapi</structname> view will contain one row per
+   backend, showing information about GSSAPI usage on this connection. It can
+   be joined to <structname>pg_stat_activity</structname> or
+   <structname>pg_stat_replication</structname> on the
+   <structfield>pid</structfield> column to get more details about the
+   connection.
+  </para>
 
   <table id="pg-stat-archiver-view" xreflabel="pg_stat_archiver">
    <title><structname>pg_stat_archiver</structname> View</title>
@@ -2383,17 +2538,18 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
     <row>
      <entry><structfield>datid</structfield></entry>
      <entry><type>oid</type></entry>
-     <entry>데이터베이스의 OID</entry>
+     <entry>데이터베이스의 OID, 0은 전역 릴레이션용 데이터베이스 OID</entry>
     </row>
     <row>
      <entry><structfield>datname</structfield></entry>
      <entry><type>name</type></entry>
-     <entry>해당 데이터베이스의 이름</entry>
+     <entry>해당 데이터베이스의 이름, <literal>NULL</literal>은 전역 릴레이션용 데이터베이스 이름</entry>
     </row>
     <row>
      <entry><structfield>numbackends</structfield></entry>
      <entry><type>integer</type></entry>
-     <entry>현재 연결된 백엔드의 수. 현재 상태를 가리키는 값을 리턴 하는 유일한 칼럼. 
+     <entry>현재 연결된 백엔드의 수. <literal>NULL</literal>은 전역 릴레이션용. 
+     현재 상태를 가리키는 값을 리턴 하는 유일한 칼럼. 
      다른 칼럼들은 마지막 리셋 시점 이후로 축적된 값들을 리턴함.
      </entry>
     </row>
@@ -2470,6 +2626,20 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
      <entry>감지된 교착상태의 개수</entry>
     </row>
     <row>
+     <entry><structfield>checksum_failures</structfield></entry>
+     <entry><type>bigint</type></entry>
+     <entry>Number of data page checksum failures detected in this
+      database (or on a shared object), or NULL if data checksums are not
+      enabled.</entry>
+    </row>
+    <row>
+     <entry><structfield>checksum_last_failure</structfield></entry>
+     <entry><type>timestamp with time zone</type></entry>
+     <entry>Time at which the last data page checksum failure was detected in
+      this database (or on a shared object), or NULL if data checksums are not
+      enabled.</entry>
+    </row>
+    <row>
      <entry><structfield>blk_read_time</structfield></entry>
      <entry><type>double precision</type></entry>
      <entry>백엔드가 데이터 파일 블록을 읽는 데 소요된 시간으로 밀리세컨드 단위를 사용</entry>
@@ -2490,7 +2660,7 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
 
   <para>
    <structname>pg_stat_database</structname> 뷰는 클러스터 내 데이터베이스 당 한 개의 로우를 가지며 
-   전체 데이터베이스 통계치를 보여준다.
+   전체 데이터베이스 통계치를 보여준다. 더불어 전역 객체 전체 사용 정보도 한 개의 로우로 보여준다.
   </para>
 
   <table id="pg-stat-database-conflicts-view" xreflabel="pg_stat_database_conflicts">
@@ -3292,9 +3462,261 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
   <para>
    <productname>PostgreSQL</productname>에서는 특정 명령이 실행 되고 있는 동안
    그 작업의 진행 상태를 살펴 볼 수 있다.  이 기능은 현재
-   <command>VACUUM</command> 명령에 대해서만 사용할 수 있다.  앞으로
+   <command>CREATE INDEX</command>,
+   <command>VACUUM</command>,
+   <command>CLUSTER</command> 명령에 대해서만 사용할 수 있다.  앞으로
    계속 추가 될 것이다.
   </para>
+
+ <sect2 id="create-index-progress-reporting">
+  <title>CREATE INDEX Progress Reporting</title>
+
+  <para>
+   Whenever <command>CREATE INDEX</command> or <command>REINDEX</command> is running, the
+   <structname>pg_stat_progress_create_index</structname> view will contain
+   one row for each backend that is currently creating indexes.  The tables
+   below describe the information that will be reported and provide information
+   about how to interpret it.
+  </para>
+
+  <table id="pg-stat-progress-create-index-view" xreflabel="pg_stat_progress_create_index">
+   <title><structname>pg_stat_progress_create_index</structname> View</title>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>Column</entry>
+      <entry>Type</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+
+    <tbody>
+     <row>
+      <entry><structfield>pid</structfield></entry>
+      <entry><type>integer</type></entry>
+      <entry>Process ID of backend.</entry>
+     </row>
+     <row>
+      <entry><structfield>datid</structfield></entry>
+      <entry><type>oid</type></entry>
+      <entry>OID of the database to which this backend is connected.</entry>
+     </row>
+     <row>
+      <entry><structfield>datname</structfield></entry>
+      <entry><type>name</type></entry>
+      <entry>Name of the database to which this backend is connected.</entry>
+     </row>
+     <row>
+      <entry><structfield>relid</structfield></entry>
+      <entry><type>oid</type></entry>
+      <entry>OID of the table on which the index is being created.</entry>
+     </row>
+     <row>
+      <entry><structfield>index_relid</structfield></entry>
+      <entry><type>oid</type></entry>
+      <entry>OID of the index being created or reindexed.  During a
+      non-concurrent <command>CREATE INDEX</command>, this is 0.</entry>
+     </row>
+     <row>
+      <entry><structfield>command</structfield></entry>
+      <entry><type>text</type></entry>
+      <entry>
+       The command that is running: <literal>CREATE INDEX</literal>,
+       <literal>CREATE INDEX CONCURRENTLY</literal>,
+       <literal>REINDEX</literal>, or <literal>REINDEX CONCURRENTLY</literal>.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>phase</structfield></entry>
+      <entry><type>text</type></entry>
+      <entry>
+        Current processing phase of index creation.  See <xref linkend='create-index-phases'/>.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>lockers_total</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+        Total number of lockers to wait for, when applicable.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>lockers_done</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+        Number of lockers already waited for.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>current_locker_pid</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+        Process ID of the locker currently being waited for.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>blocks_total</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+        Total number of blocks to be processed in the current phase.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>blocks_done</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+        Number of blocks already processed in the current phase.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>tuples_total</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+        Total number of tuples to be processed in the current phase.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>tuples_done</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+        Number of tuples already processed in the current phase.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>partitions_total</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+       When creating an index on a partitioned table, this column is set to
+       the total number of partitions on which the index is to be created.
+      </entry>
+     </row>
+     <row>
+      <entry><structfield>partitions_done</structfield></entry>
+      <entry><type>bigint</type></entry>
+      <entry>
+       When creating an index on a partitioned table, this column is set to
+       the number of partitions on which the index has been completed.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <table id="create-index-phases">
+   <title>CREATE INDEX Phases</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>Phase</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry><literal>initializing</literal></entry>
+      <entry>
+       <command>CREATE INDEX</command> or <command>REINDEX</command> is preparing to create the index.  This
+       phase is expected to be very brief.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>waiting for writers before build</literal></entry>
+      <entry>
+       <command>CREATE INDEX CONCURRENTLY</command> or <command>REINDEX CONCURRENTLY</command> is waiting for transactions
+       with write locks that can potentially see the table to finish.
+       This phase is skipped when not in concurrent mode.
+       Columns <structname>lockers_total</structname>, <structname>lockers_done</structname>
+       and <structname>current_locker_pid</structname> contain the progress
+       information for this phase.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>building index</literal></entry>
+      <entry>
+       The index is being built by the access method-specific code.  In this phase,
+       access methods that support progress reporting fill in their own progress data,
+       and the subphase is indicated in this column.  Typically,
+       <structname>blocks_total</structname> and <structname>blocks_done</structname>
+       will contain progress data, as well as potentially
+       <structname>tuples_total</structname> and <structname>tuples_done</structname>.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>waiting for writers before validation</literal></entry>
+      <entry>
+       <command>CREATE INDEX CONCURRENTLY</command> or <command>REINDEX CONCURRENTLY</command> is waiting for transactions
+       with write locks that can potentially write into the table to finish.
+       This phase is skipped when not in concurrent mode.
+       Columns <structname>lockers_total</structname>, <structname>lockers_done</structname>
+       and <structname>current_locker_pid</structname> contain the progress
+       information for this phase.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>index validation: scanning index</literal></entry>
+      <entry>
+       <command>CREATE INDEX CONCURRENTLY</command> is scanning the index searching
+       for tuples that need to be validated.
+       This phase is skipped when not in concurrent mode.
+       Columns <structname>blocks_total</structname> (set to the total size of the index)
+       and <structname>blocks_done</structname> contain the progress information for this phase.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>index validation: sorting tuples</literal></entry>
+      <entry>
+       <command>CREATE INDEX CONCURRENTLY</command> is sorting the output of the
+       index scanning phase.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>index validation: scanning table</literal></entry>
+      <entry>
+       <command>CREATE INDEX CONCURRENTLY</command> is scanning the table
+       to validate the index tuples collected in the previous two phases.
+       This phase is skipped when not in concurrent mode.
+       Columns <structname>blocks_total</structname> (set to the total size of the table)
+       and <structname>blocks_done</structname> contain the progress information for this phase.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>waiting for old snapshots</literal></entry>
+      <entry>
+       <command>CREATE INDEX CONCURRENTLY</command> or <command>REINDEX CONCURRENTLY</command> is waiting for transactions
+       that can potentially see the table to release their snapshots.  This
+       phase is skipped when not in concurrent mode.
+       Columns <structname>lockers_total</structname>, <structname>lockers_done</structname>
+       and <structname>current_locker_pid</structname> contain the progress
+       information for this phase.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>waiting for readers before marking dead</literal></entry>
+      <entry>
+       <command>REINDEX CONCURRENTLY</command> is waiting for transactions
+       with read locks on the table to finish, before marking the old index dead.
+       This phase is skipped when not in concurrent mode.
+       Columns <structname>lockers_total</structname>, <structname>lockers_done</structname>
+       and <structname>current_locker_pid</structname> contain the progress
+       information for this phase.
+      </entry>
+     </row>
+     <row>
+      <entry><literal>waiting for readers before dropping</literal></entry>
+      <entry>
+       <command>REINDEX CONCURRENTLY</command> is waiting for transactions
+       with read locks on the table to finish, before dropping the old index.
+       This phase is skipped when not in concurrent mode.
+       Columns <structname>lockers_total</structname>, <structname>lockers_done</structname>
+       and <structname>current_locker_pid</structname> contain the progress
+       information for this phase.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+ </sect2>
 
  <sect2 id="vacuum-progress-reporting">
   <title>VACUUM 진행 상태 보고</title>
@@ -3306,9 +3728,13 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
    보관한다. (autovacuum 작업자 프로세스도 포함한다.)
    이 뷰의 각 칼럼에 대한 설명과 그 값을 어떻게 해석할 것인가는
    아래에서 다룬다.
-   이 진행 상태 보고에는 <command>VACUUM FULL</command> 작업에 대해서는 
-   제외한다.  따라서 사용자의 <command>VACUUM FULL</command> 명령에 대한 
-   진행 상태는 볼 수 없다.
+   <command>VACUUM FULL</command> 작업에 대해서는 
+   <structname>pg_stat_progress_cluster</structname> 뷰를
+   통해 살펴볼 수 있다. 
+   <command>VACUUM FULL</command> 작업과 <command>CLUSTER</command> 
+   작업은 둘 다 테이블을 새로 만드는 작업이기 때문이다. 
+   일반 <command>VACUUM</command> 작업은 테이블 내용을 바꾸는 작업으로
+   이것들과 구분된다. <xref linkend='cluster-progress-reporting'/> 참조.
   </para>
 
   <table id="pg-stat-progress-vacuum-view" xreflabel="pg_stat_progress_vacuum">
@@ -3486,6 +3912,189 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
   </table>
 
  </sect2>
+
+ <sect2 id="cluster-progress-reporting">
+  <title>CLUSTER Progress Reporting</title>
+
+  <para>
+   Whenever <command>CLUSTER</command> or <command>VACUUM FULL</command> is
+   running, the <structname>pg_stat_progress_cluster</structname> view will
+   contain a row for each backend that is currently running either command.
+   The tables below describe the information that will be reported and
+   provide information about how to interpret it.
+  </para>
+
+  <table id="pg-stat-progress-cluster-view" xreflabel="pg_stat_progress_cluster">
+   <title><structname>pg_stat_progress_cluster</structname> View</title>
+   <tgroup cols="3">
+    <thead>
+    <row>
+      <entry>Column</entry>
+      <entry>Type</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+
+   <tbody>
+    <row>
+     <entry><structfield>pid</structfield></entry>
+     <entry><type>integer</type></entry>
+     <entry>Process ID of backend.</entry>
+    </row>
+    <row>
+     <entry><structfield>datid</structfield></entry>
+     <entry><type>oid</type></entry>
+     <entry>OID of the database to which this backend is connected.</entry>
+    </row>
+    <row>
+     <entry><structfield>datname</structfield></entry>
+     <entry><type>name</type></entry>
+     <entry>Name of the database to which this backend is connected.</entry>
+    </row>
+    <row>
+     <entry><structfield>relid</structfield></entry>
+     <entry><type>oid</type></entry>
+     <entry>OID of the table being clustered.</entry>
+    </row>
+    <row>
+     <entry><structfield>command</structfield></entry>
+     <entry><type>text</type></entry>
+     <entry>
+      The command that is running. Either <literal>CLUSTER</literal> or <literal>VACUUM FULL</literal>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>phase</structfield></entry>
+     <entry><type>text</type></entry>
+     <entry>
+       Current processing phase. See <xref linkend='cluster-phases' />.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>cluster_index_relid</structfield></entry>
+     <entry><type>oid</type></entry>
+     <entry>
+       If the table is being scanned using an index, this is the OID of the
+       index being used; otherwise, it is zero.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>heap_tuples_scanned</structfield></entry>
+     <entry><type>bigint</type></entry>
+     <entry>
+       Number of heap tuples scanned.
+       This counter only advances when the phase is
+       <literal>seq scanning heap</literal>,
+       <literal>index scanning heap</literal>
+       or <literal>writing new heap</literal>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>heap_tuples_written</structfield></entry>
+     <entry><type>bigint</type></entry>
+     <entry>
+       Number of heap tuples written.
+       This counter only advances when the phase is
+       <literal>seq scanning heap</literal>,
+       <literal>index scanning heap</literal>
+       or <literal>writing new heap</literal>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>heap_blks_total</structfield></entry>
+     <entry><type>bigint</type></entry>
+     <entry>
+       Total number of heap blocks in the table.  This number is reported
+       as of the beginning of <literal>seq scanning heap</literal>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>heap_blks_scanned</structfield></entry>
+     <entry><type>bigint</type></entry>
+     <entry>
+       Number of heap blocks scanned.  This counter only advances when the
+       phase is <literal>seq scanning heap</literal>.
+     </entry>
+    </row>
+    <row>
+     <entry><structfield>index_rebuild_count</structfield></entry>
+     <entry><type>bigint</type></entry>
+     <entry>
+       Number of indexes rebuilt.  This counter only advances when the phase
+       is <literal>rebuilding index</literal>.
+     </entry>
+    </row>
+   </tbody>
+   </tgroup>
+  </table>
+
+  <table id="cluster-phases">
+   <title>CLUSTER and VACUUM FULL Phases</title>
+   <tgroup cols="2">
+    <thead>
+    <row>
+      <entry>Phase</entry>
+      <entry>Description</entry>
+     </row>
+    </thead>
+
+   <tbody>
+    <row>
+     <entry><literal>initializing</literal></entry>
+     <entry>
+       The command is preparing to begin scanning the heap.  This phase is
+       expected to be very brief.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>seq scanning heap</literal></entry>
+     <entry>
+       The command is currently scanning the table using a sequential scan.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>index scanning heap</literal></entry>
+     <entry>
+       <command>CLUSTER</command> is currently scanning the table using an index scan.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>sorting tuples</literal></entry>
+     <entry>
+       <command>CLUSTER</command> is currently sorting tuples.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>writing new heap</literal></entry>
+     <entry>
+       <command>CLUSTER</command> is currently writing the new heap.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>swapping relation files</literal></entry>
+     <entry>
+       The command is currently swapping newly-built files into place.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>rebuilding index</literal></entry>
+     <entry>
+       The command is currently rebuilding an index.
+     </entry>
+    </row>
+    <row>
+     <entry><literal>performing final cleanup</literal></entry>
+     <entry>
+       The command is performing final cleanup.  When this phase is
+       completed, <command>CLUSTER</command>
+       or <command>VACUUM FULL</command> will end.
+     </entry>
+    </row>
+   </tbody>
+   </tgroup>
+  </table>
+
+ </sect2>
  </sect1>
 
 
@@ -3509,7 +4118,7 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
    현재 
    <ulink url="https://en.wikipedia.org/wiki/DTrace">DTrace</ulink>
    유틸리티가 지원되고 있는데, 이 다큐멘테이션이 작성되는 시점에는 Solaris, macOS, FreeBSD, NetBSD, Oracle Linux에서 사용 가능하다. 리눅스의 
-   <ulink url="http://sourceware.org/systemtap/">SystemTap</ulink> 프로젝트로 DTrace와 비슷한 유틸리티를 사용할 수 있다. 이 외의 dynamic tracing 유틸리티는 <filename>src/include/utils/probes.h</filename>에 있는 매크로 정의를 변경하여 사용할 수 있다.
+   <ulink url="https://sourceware.org/systemtap/">SystemTap</ulink> 프로젝트로 DTrace와 비슷한 유틸리티를 사용할 수 있다. 이 외의 dynamic tracing 유틸리티는 <filename>src/include/utils/probes.h</filename>에 있는 매크로 정의를 변경하여 사용할 수 있다.
   </para>
 
   <sect2 id="compiling-for-trace">
@@ -4000,7 +4609,7 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
     </row>
     <row>
      <entry><type>bool</type></entry>
-     <entry><type>char</type></entry>
+     <entry><type>unsigned char</type></entry>
     </row>
 
    </tbody>

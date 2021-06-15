@@ -23,6 +23,7 @@ PostgreSQL documentation
 <synopsis>
 CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>테이블이름</replaceable>
     [ (<replaceable>칼럼이름</replaceable> [, ...] ) ]
+    [ USING <replaceable class="parameter">method</replaceable> ]
     [ WITH ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] ) ]
     [ TABLESPACE <replaceable class="parameter">테이블스페이스이름</replaceable> ]
     AS <replaceable>쿼리</replaceable>
@@ -48,8 +49,7 @@ CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>테이블이름</replace
    그 자료 추출 쿼리를 기억하고 있어, 필요에 따라, 
    단순한 갱신 명령으로 자료를 갱신할 수 있다는 장점이 있다.
    구체화한 뷰는 테이블과 비슷하기 때문에, 테이블에서 사용하는 
-   대부분 속성들을 사용한다.  임시 구체화화 뷰는 지원하지 않으며, 
-   OID 자동 생성 기능도 지원하지 않는다.
+   대부분 속성들을 사용한다.  임시 구체화화 뷰는 지원하지 않는다.
   </para>
  </refsect1>
 
@@ -88,6 +88,21 @@ CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>테이블이름</replace
    </varlistentry>
 
    <varlistentry>
+    <term><literal>USING <replaceable class="parameter">method</replaceable></literal></term>
+    <listitem>
+     <para>
+      This optional clause specifies the table access method to use to store
+      the contents for the new materialized view; the method needs be an
+      access method of type <literal>TABLE</literal>. See <xref
+      linkend="tableam"/> for more information.  If this option is not
+      specified, the default table access method is chosen for the new
+      materialized view. See <xref linkend="guc-default-table-access-method"/>
+      for more information.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
     <term><literal>WITH ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
@@ -96,7 +111,6 @@ CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>테이블이름</replace
       <xref linkend="sql-createtable-storage-parameters"
       endterm="sql-createtable-storage-parameters-title"/>에서
       자세히 다룬다.
-      <literal>OIDS</literal> 를 빼고,
       <literal>CREATE TABLE</literal> 명령에서 사용할 수 있는
       모든 매개 변수는 <literal>CREATE MATERIALIZED
       VIEW</literal> 명령에서도 사용할 수 있다.

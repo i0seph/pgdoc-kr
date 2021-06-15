@@ -379,7 +379,7 @@ PostgreSQL documentation
    </refsect2>
 
    <refsect2>
-    <title>Semi-internal Options</title>
+    <title>Semi-Internal Options</title>
 
     <para>
      여기서 다루는 옵션은 주로 서버 문제점 추적할 때, 또는 

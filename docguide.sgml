@@ -74,7 +74,7 @@ PDF 형식의 문서는 따로 다운로드 해서 사용할 수 있다.
 
    <variablelist>
     <varlistentry>
-     <term><ulink url="http://www.oasis-open.org/docbook/">DocBook DTD</ulink></term>
+     <term><ulink url="https://www.oasis-open.org/docbook/">DocBook DTD</ulink></term>
      <listitem>
       <para>
            DocBook 문서 형식 정의 파일이다.  PostgreSQL 문서는 4.2 버전을 
@@ -145,9 +145,11 @@ PDF 형식의 문서는 따로 다운로드 해서 사용할 수 있다.
    DocBook XML, DocBook XSLT 스타일시트를 굳이 설치할 필요는 없다. 이들은
    작업 중에 온라인으로 다운로드 받고, 캐시로 보관해서 사용하기 때문이다.  이
    방법은 사용 환경이 옛 버전만 이용할 수 있는 환경에서 좋은 해결책이다.  이와
-   달리 배포판에서 제공하는 패키지를 이용하고자 한다면, 
+   달리 배포판에서 제공하는 옛 패키지를 이용하거나, 
+   인터넷 외부 접속 환경이 아닌 경우에는
    <command>xmllint</command>, <command>xsltproc</command> 명령의
-   <option>--nonet</option> 옵션에 대해서 살펴보면 된다.
+   <option>--nonet</option> 옵션을 사용할 수 있다. 사용법은 아래 예제에서
+   다룬다.
   </para>
 
   <sect2>
@@ -235,13 +237,28 @@ brew install docbook docbook-xsl fop
    한다:
 <screen>
 checking for xmllint... xmllint
-checking for DocBook XML V4.2... yes
-checking for dbtoepub... dbtoepub
 checking for xsltproc... xsltproc
 checking for fop... fop
+checking for dbtoepub... dbtoepub
 </screen>
-   <filename>xmllint</filename> 검사를 실패 하면 이하 검사 작업은
-   생략한다. 
+   <filename>xmllint</filename> 또는 <filename>xsltproc</filename>
+   파일이 없다면, 문서 만들기 작업을 할 수 없다.
+   <filename>fop</filename> 파일이 없다면, PDF 파일로 만들 수 없다.
+   <filename>dbtoepub</filename> 파일은 EPUB 형식 문서파일을 만드는데 사용된다.
+  </para>
+
+  <para>
+   필요하다면, <filename>configure</filename> 작업에서 이들 프로그램을
+   아래와 같이 직접 지정할 수 있다.
+<screen>
+./configure ... XMLLINT=/opt/local/bin/xmllint ...
+</screen>
+   또, 인터넷 연결이 불가능한 상태라면, <filename>xmllint</filename>,
+   <filename>xsltproc</filename> 지정에서 다음과 같이 옵션을 
+   지정할 수도 있다.
+<screen>
+./configure ... XMLLINT="xmllint --nonet" XSLTPROC="xsltproc --nonet" ...
+</screen>
   </para>
 
   </sect2>
@@ -354,7 +371,9 @@ ADDITIONAL_FLAGS='-Xmx1500m'
     corresponds to <xref linkend="installation"/>, with some minor
     changes to account for the different context.  To recreate the
     file, change to the directory <filename>doc/src/sgml</filename>
-    and enter <userinput>make INSTALL</userinput>.
+    and enter <userinput>make INSTALL</userinput>.  Building text output
+    requires <productname>Pandoc</productname> version 1.13 or newer as an
+    additional build tool.
    </para>
 
    <para>

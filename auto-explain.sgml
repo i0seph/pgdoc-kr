@@ -64,8 +64,8 @@ LOAD 'auto_explain';
       <varname>auto_explain.log_min_duration</varname> 
       설정은 쿼리 실행 시간이 해당 밀리초 이상인 경우에 
       실행 계획을 확인하도록 한다.
-      0으로 지정하면 모든 쿼리를 대상으로 한다.
-      -1(초기값)이면 이 모듈의 기능을 사용하지 않는다. 
+      <literal>0</literal>으로 지정하면 모든 쿼리를 대상으로 한다.
+      <literal>-1</literal>(초기값)이면 이 모듈의 기능을 사용하지 않는다. 
       예를 들어, 이 값으로 <literal>250ms</literal> 로 지정했다면, 
       쿼리 실행 시간이 0.25초 이상 걸린 쿼리들에 대해서
       자동으로 실행계획을 살펴 볼 수 있도록 한다.
@@ -117,6 +117,24 @@ LOAD 'auto_explain';
 
    <varlistentry>
     <term>
+     <varname>auto_explain.log_settings</varname> (<type>boolean</type>)
+     <indexterm>
+      <primary><varname>auto_explain.log_settings</varname> configuration parameter</primary>
+     </indexterm>
+    </term>
+    <listitem>
+     <para>
+      <varname>auto_explain.log_settings</varname> controls whether information
+      about modified configuration options is printed when an execution plan is logged.
+      Only options affecting query planning with value different from the built-in
+      default value are included in the output.  This parameter is off by default.
+      Only superusers can change this setting.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
      <varname>auto_explain.log_buffers</varname> (<type>boolean</type>)
      <indexterm>
       <primary><varname>auto_explain.log_buffers</varname> configuration parameter</primary>
@@ -130,6 +148,31 @@ LOAD 'auto_explain';
       초기값은 off 다. 이 값은 슈퍼유저만 바꿀 수 있다.
       이 설정은 사용하려면, 
       <varname>auto_explain.log_analyze</varname> 값이 on 이어야 한다.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
+     <varname>auto_explain.log_timing</varname> (<type>boolean</type>)
+     <indexterm>
+      <primary><varname>auto_explain.log_timing</varname> configuration parameter</primary>
+     </indexterm>
+    </term>
+    <listitem>
+     <para>
+      <varname>auto_explain.log_timing</varname> 설정은 
+      실행계획을 기록할 때 각 노드별 수행 시간도 함께 
+      기록할 것인지를 결정할 수 있다.  여기서 사용하는 값은
+      <command>EXPLAIN</command> 명령의 <literal>TIMING</literal> 
+      옵션값과 동일하다.
+      각 실행 단계별 시간을 계산하지 않음으로 몇몇 시스템에서는 
+      실행 계획 작업에 소비하는 비용을 어느 정도는 줄일 수 있어
+      유용하게 사용할 수 있다.
+      이 설정은 사용하려면, 
+      <varname>auto_explain.log_analyze</varname> 값이 on 이어야 한다.
+      이 설정의 초기값은 on이다.
+      이 설정은 슈퍼유저만 바꿀 수 있다.
      </para>
     </listitem>
    </varlistentry>
@@ -156,25 +199,21 @@ LOAD 'auto_explain';
 
    <varlistentry>
     <term>
-     <varname>auto_explain.log_timing</varname> (<type>boolean</type>)
+     <varname>auto_explain.log_level</varname> (<type>enum</type>)
      <indexterm>
-      <primary><varname>auto_explain.log_timing</varname> configuration parameter</primary>
+      <primary><varname>auto_explain.log_level</varname> configuration parameter</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      <varname>auto_explain.log_timing</varname> 설정은 
-      실행계획을 기록할 때 각 노드별 수행 시간도 함께 
-      기록할 것인지를 결정할 수 있다.  여기서 사용하는 값은
-      <command>EXPLAIN</command> 명령의 <literal>TIMING</literal> 
-      옵션값과 동일하다.
-      각 실행 단계별 시간을 계산하지 않음으로 몇몇 시스템에서는 
-      실행 계획 작업에 소비하는 비용을 어느 정도는 줄일 수 있어
-      유용하게 사용할 수 있다.
-      이 설정은 사용하려면, 
-      <varname>auto_explain.log_analyze</varname> 값이 on 이어야 한다.
-      이 설정의 초기값은 on이다.
-      이 설정은 슈퍼유저만 바꿀 수 있다.
+      <varname>auto_explain.log_level</varname> selects the log level at which
+      auto_explain will log the query plan.
+      Valid values are <literal>DEBUG5</literal>, <literal>DEBUG4</literal>,
+      <literal>DEBUG3</literal>, <literal>DEBUG2</literal>,
+      <literal>DEBUG1</literal>, <literal>INFO</literal>,
+      <literal>NOTICE</literal>, <literal>WARNING</literal>,
+      and <literal>LOG</literal>. The default is <literal>LOG</literal>.
+      Only superusers can change this setting.
      </para>
     </listitem>
    </varlistentry>

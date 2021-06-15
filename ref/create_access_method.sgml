@@ -61,7 +61,8 @@ CREATE ACCESS METHOD <replaceable class="parameter">이름</replaceable>
     <listitem>
      <para>
       접근 방법 종류.
-      현재, <literal>INDEX</literal>만 사용할 수 있다.
+      현재, <literal>TABLE</literal> 또는
+      <literal>INDEX</literal>만 사용할 수 있다.
      </para>
     </listitem>
    </varlistentry>
@@ -74,11 +75,14 @@ CREATE ACCESS METHOD <replaceable class="parameter">이름</replaceable>
       <replaceable class="parameter">핸들러함수</replaceable> 이름
       (스키마 이름 포함).
       이 핸들러 함수의 입력 인자는 하나만 있고, 그 자료형은
-      <type>internal</type> 형이어야 하며, 접근 방법 종류가
-      <literal>INDEX</literal>인 경우, 반환값은
-      <type>index_am_handler</type> 자료형이어야 한다.
-      이 함수는 C 언어로 구현 되어야 한다.
-      인덱스 접근 방법 API는 <xref linkend="indexam"/>에서 다룬다.
+      <type>internal</type> 형이어야 하며, 반환 자료형은
+      접근 방법 종류가
+      <literal>TABLE</literal>이면 <type>table_am_handler</type>,
+      <literal>INDEX</literal>이면 <type>index_am_handler</type> 
+      형이어야한다.  이 핸들러함수가 구현해야하는 C 언어 API는
+      각 접근 방법의 종료에 따라 다르다. 테이블 접근 방법 API는 
+      <xref linkend="tableam"/>에서, 인덱스 접근 방법 API는
+      <xref linkend="indexam"/>에서 다룬다.
      </para>
     </listitem>
    </varlistentry>

@@ -39,6 +39,7 @@ EXPLAIN [ ANALYZE ] [ VERBOSE ] <replaceable class="parameter">쿼리문</replac
     ANALYZE [ <replaceable class="parameter">boolean</replaceable> ]
     VERBOSE [ <replaceable class="parameter">boolean</replaceable> ]
     COSTS [ <replaceable class="parameter">boolean</replaceable> ]
+    SETTINGS [ <replaceable class="parameter">boolean</replaceable> ]
     BUFFERS [ <replaceable class="parameter">boolean</replaceable> ]
     TIMING [ <replaceable class="parameter">boolean</replaceable> ]
     SUMMARY [ <replaceable class="parameter">boolean</replaceable> ]
@@ -150,6 +151,17 @@ ROLLBACK;
       각 단계별 실행 계획에서 예측된 시작 비용과 총 비용을 보여준다. 
       또한 출력될 로우의 예측 수와 그 한 로우의 크기(예측값)도 보여준다.
       초기값은 <literal>TRUE</literal>.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>SETTINGS</literal></term>
+    <listitem>
+     <para>
+      Include information on configuration parameters.  Specifically, include
+      options affecting query planning with value different from the built-in
+      default value.  This parameter defaults to <literal>FALSE</literal>.
      </para>
     </listitem>
    </varlistentry>
