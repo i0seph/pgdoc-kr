@@ -327,7 +327,7 @@ PostgreSQL documentation
       <listitem>
        <para>
         정렬 작업이나, 해시 작업을 할 때 필요한 세션 별로 내부적으로 
-        사용하는 메모리 크기를 지정한다.  자세한 내용은
+        사용하는 기본 메모리 크기를 지정한다.  자세한 내용은
         <xref
         linkend="runtime-config-resource-memory"/>에서 <varname>work_mem</varname>
         환경 설정 매개 변수 부분을 살펴보면 된다.
@@ -522,8 +522,7 @@ PostgreSQL documentation
 
     <para>
      다음 옵션들은 단일 사용자 모드로 서버를 실행할 때 사용한다
-     (<xref linkend="app-postgres-single-user"
-     endterm="app-postgres-single-user-title"/> 참조).
+     (아래 <xref linkend="app-postgres-single-user" /> 참조).
     </para>
 
     <variablelist>
@@ -744,8 +743,8 @@ PostgreSQL documentation
   </para>
  </refsect1>
 
- <refsect1 id="app-postgres-single-user">
-  <title id="app-postgres-single-user-title">단일 사용자 모드</title>
+ <refsect1 id="app-postgres-single-user" xreflabel="단일 사용자 모드">
+  <title>단일 사용자 모드</title>
 
    <para>
     일반적인 단일 사용자 모드 실행 방법

@@ -1628,8 +1628,10 @@ ALTER TABLE products RENAME TO items;
   </para>
 
   <para>
-   The right to modify or destroy an object is always the privilege of
-   the owner only.
+   The right to modify or destroy an object is inherent in being the
+   object's owner, and cannot be granted or revoked in itself.
+   (However, like all privileges, that right can be inherited by
+   members of the owning role; see <xref linkend="role-membership"/>.)
   </para>
 
   <para>
@@ -1664,17 +1666,11 @@ GRANT UPDATE ON accounts TO joe;
   </para>
 
   <para>
-   To revoke a privilege, use the fittingly named
+   To revoke a previously-granted privilege, use the fittingly named
    <xref linkend="sql-revoke"/> command:
 <programlisting>
 REVOKE ALL ON accounts FROM PUBLIC;
 </programlisting>
-   The special privileges of the object owner (i.e., the right to do
-   <command>DROP</command>, <command>GRANT</command>, <command>REVOKE</command>, etc.)
-   are always implicit in being the owner,
-   and cannot be granted or revoked.  But the object owner can choose
-   to revoke their own ordinary privileges, for example to make a
-   table read-only for themselves as well as others.
   </para>
 
   <para>
@@ -1686,6 +1682,13 @@ REVOKE ALL ON accounts FROM PUBLIC;
    recipient (directly or through a chain of grants) will lose the
    privilege.  For details see the <xref linkend="sql-grant"/> and
    <xref linkend="sql-revoke"/> reference pages.
+  </para>
+
+  <para>
+   An object's owner can choose to revoke their own ordinary privileges,
+   for example to make a table read-only for themselves as well as others.
+   But owners are always treated as holding all grant options, so they
+   can always re-grant their own privileges.
   </para>
 
   <para>
@@ -1789,6 +1792,7 @@ REVOKE ALL ON accounts FROM PUBLIC;
      <listitem>
       <para>
        For databases, allows new schemas and publications to be created within
+       the database, and allows trusted extensions to be installed within
        the database.
       </para>
       <para>
@@ -1800,8 +1804,11 @@ REVOKE ALL ON accounts FROM PUBLIC;
       <para>
        For tablespaces, allows tables, indexes, and temporary files to be
        created within the tablespace, and allows databases to be created that
-       have the tablespace as their default tablespace.  (Note that revoking
-       this privilege will not alter the placement of existing objects.)
+       have the tablespace as their default tablespace.
+      </para>
+      <para>
+       Note that revoking this privilege will not alter the existence or
+       location of existing objects.
       </para>
      </listitem>
     </varlistentry>
@@ -1925,6 +1932,9 @@ REVOKE ALL ON accounts FROM PUBLIC;
   <table id="privilege-abbrevs-table">
    <title>ACL Privilege Abbreviations</title>
    <tgroup cols="3">
+    <colspec colname="col1" colwidth="1*"/>
+    <colspec colname="col2" colwidth="1*"/>
+    <colspec colname="col3" colwidth="2*"/>
     <thead>
      <row>
       <entry>Privilege</entry>
@@ -2030,6 +2040,10 @@ REVOKE ALL ON accounts FROM PUBLIC;
   <table id="privileges-summary-table">
    <title>Summary of Access Privileges</title>
    <tgroup cols="4">
+    <colspec colname="col1" colwidth="2*"/>
+    <colspec colname="col2" colwidth="1*"/>
+    <colspec colname="col3" colwidth="1*"/>
+    <colspec colname="col4" colwidth="1*"/>
     <thead>
      <row>
       <entry>Object Type</entry>
@@ -3434,15 +3448,7 @@ VALUES ('Albany', NULL, NULL, 'NY');
    accessed through <structname>cities</structname>.  This preserves the appearance
    that the data is (also) in the parent table.  But
    the <structname>capitals</structname> table could not be updated directly
-   without an additional grant.  Two exceptions to this rule are
-   <command>TRUNCATE</command> and <command>LOCK TABLE</command>,
-   where permissions on the child tables are always checked,
-   whether they are processed directly or recursively via those commands
-   performed on the parent table.
-  </para>
-
-  <para>
-   In a similar way, the parent table's row
+   without an additional grant.  In a similar way, the parent table's row
    security policies (see <xref linkend="ddl-rowsecurity"/>) are applied to
    rows coming from child tables during an inherited query.  A child table's
    policies, if any, are applied only when it is the table explicitly named
@@ -4045,8 +4051,8 @@ ALTER INDEX measurement_city_id_logdate_key
 
      <listitem>
       <para>
-       <literal>BEFORE ROW</literal> triggers, if necessary, must be defined
-       on individual partitions, not the partitioned table.
+       <literal>BEFORE ROW</literal> triggers on <literal>INSERT</literal>
+       cannot change which partition is the final destination for a new row.
       </para>
      </listitem>
 
@@ -4588,7 +4594,7 @@ SELECT count(*) FROM measurement WHERE logdate &gt;= DATE '2008-01-01';
 SET enable_partition_pruning = off;
 EXPLAIN SELECT count(*) FROM measurement WHERE logdate &gt;= DATE '2008-01-01';
                                     QUERY PLAN
------------------------------------------------------------------------------------
+-------------------------------------------------------------------&zwsp;----------------
  Aggregate  (cost=188.76..188.77 rows=1 width=8)
    -&gt;  Append  (cost=0.00..181.05 rows=3085 width=0)
          -&gt;  Seq Scan on measurement_y2006m02  (cost=0.00..33.12 rows=617 width=0)
@@ -4613,7 +4619,7 @@ EXPLAIN SELECT count(*) FROM measurement WHERE logdate &gt;= DATE '2008-01-01';
 SET enable_partition_pruning = on;
 EXPLAIN SELECT count(*) FROM measurement WHERE logdate &gt;= DATE '2008-01-01';
                                     QUERY PLAN
------------------------------------------------------------------------------------
+-------------------------------------------------------------------&zwsp;----------------
  Aggregate  (cost=37.75..37.76 rows=1 width=8)
    -&gt;  Seq Scan on measurement_y2008m01  (cost=0.00..33.12 rows=617 width=0)
          Filter: (logdate &gt;= '2008-01-01'::date)

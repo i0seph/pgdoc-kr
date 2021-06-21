@@ -108,8 +108,8 @@ CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] <replaceable>테이블이름</replace
      <para>
       해당 구체화한 뷰의 저장 매개 변수 값을 지정한다.
       여기서 사용할 수 있는 매개 변수 이름과 그 값은
-      <xref linkend="sql-createtable-storage-parameters"
-      endterm="sql-createtable-storage-parameters-title"/>에서
+      <xref linkend="sql-createtable"/>의
+      <xref linkend="sql-createtable-storage-parameters"/> 부분에서
       자세히 다룬다.
       <literal>CREATE TABLE</literal> 명령에서 사용할 수 있는
       모든 매개 변수는 <literal>CREATE MATERIALIZED

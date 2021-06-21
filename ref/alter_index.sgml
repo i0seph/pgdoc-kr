@@ -24,7 +24,7 @@ PostgreSQL documentation
 ALTER INDEX [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 ALTER INDEX [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> SET TABLESPACE <replaceable class="parameter">테이블스페이스이름</replaceable>
 ALTER INDEX <replaceable class="parameter">이름</replaceable> ATTACH PARTITION <replaceable class="parameter">인덱스이름</replaceable>
-ALTER INDEX <replaceable class="parameter">이름</replaceable> DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable>
+ALTER INDEX <replaceable class="parameter">이름</replaceable> [ NO ] DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable>
 ALTER INDEX [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> SET ( <replaceable class="parameter">저장옵션_매개변수명</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] )
 ALTER INDEX [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RESET ( <replaceable class="parameter">저장옵션_매개변수명</replaceable> [, ... ] )
 ALTER INDEX [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ALTER [ COLUMN ] <replaceable class="parameter">칼럼번호</replaceable>
@@ -90,11 +90,13 @@ ALTER INDEX ALL IN TABLESPACE <replaceable class="parameter">이름</replaceable
    </varlistentry>
 
    <varlistentry>
-    <term><literal>DEPENDS ON EXTENSION</literal></term>
+    <term><literal>DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable></literal></term>
+    <term><literal>NO DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable></literal></term>
     <listitem>
      <para>
       해당 인덱스를 지정한 확장 모듈의 한 부분으로 지정해서, 
       확장 모듈이 삭제되면 함께 삭제 될 수 있도록 한다.
+      <literal>NO</literal> 옵션을 추가하면 확장 모듈과의 의존 관계를 끊음.
      </para>
     </listitem>
    </varlistentry>

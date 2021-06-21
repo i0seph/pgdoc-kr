@@ -91,11 +91,10 @@ EXECUTE <replaceable class="parameter">name</replaceable> [ ( <replaceable class
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>예제</title>
   <para>
-    Examples are given in the <xref linkend="sql-prepare-examples"
-    endterm="sql-prepare-examples-title"/> section of the <xref
-    linkend="sql-prepare"/> documentation.
+    예제는 <xref linkend="sql-prepare"/> 안에 있는
+    <xref linkend="sql-prepare-examples"/> 부분에 있다.
    </para>
  </refsect1>
 

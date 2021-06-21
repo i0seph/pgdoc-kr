@@ -23,6 +23,7 @@ PostgreSQL documentation
 <synopsis>
 ALTER TRIGGER <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 ALTER TRIGGER <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable>
+ALTER TRIGGER <replaceable class="parameter">이름</replaceable> ON <replaceable class="parameter">테이블이름</replaceable> [ NO ] DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -34,8 +35,11 @@ ALTER TRIGGER <replaceable class="parameter">이름</replaceable> ON <replaceabl
    이 명령은 <literal>RENAME</literal> 구문을 사용한 트리거의 이름을 변경 하는 
    기능을 제공한다.
    <literal>DEPENDS ON EXTENSION</literal> 구문은
-   해당 트리거가 지정한 확장 모듈의 한 부분임을 지정해, 
-   그 확장 모듈이 삭제될 경우 자동으로 함께 삭제 될 수 있도록 한다.
+   해당 트리거가 지정한 확장 모듈의 한 부분임을 하거나,
+   또는 <literal>NO</literal> 옵션을 더 추가해서, 해당 확장 모듈이
+   소속에서 뺄 수도 있다.
+   확장 모듈 소속이 된 트리거는
+   그 확장 모듈이 삭제될 경우 자동으로 함께 삭제 된다.
   </para>
 
   <para>

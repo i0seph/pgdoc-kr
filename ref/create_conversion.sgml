@@ -32,6 +32,9 @@ CREATE [ DEFAULT ] CONVERSION <replaceable>이름</replaceable>
   <para>
    <command>CREATE CONVERSION</command> 명령은
    두 인코딩 간 문자 세트 변환 규칙을 만든다.
+  </para>
+
+  <para>
    <literal>DEFAULT</literal> 옵션을 지정해서
    클라이언트와 서버가 변환을 자동으로 할 수 있게 한다.
    이 변환 규칙은 반드시 A에서 B, B에서 A, 쌍방 두 가지 모두 만들어야 한다.
@@ -122,6 +125,12 @@ conv_proc(
 
  <refsect1 id="sql-createconversion-notes">
   <title>참고</title>
+
+  <para>
+   <literal>SQL_ASCII</literal> <quote>인코딩</quote>은
+   하드코딩 되어 있기 때문에, 두 인코딩이 동시에, 
+   <literal>SQL_ASCII</literal> 인 변환 규칙은 만들 수 없다.
+  </para>
 
   <para>
    사용자 정의 인코딩 변환 규칙은 <command>DROP CONVERSION</command> 

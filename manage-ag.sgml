@@ -139,8 +139,10 @@ createdb <replaceable class="parameter">dbname</replaceable>
   </note>
 
   <para>
-   가끔 다른 사용자를 위한 데이터베이스를 생성하고, 그 사용자를 새 데이터베이스의 소유자로 만들면, 해당 사용자가 스스로 새 데이터베이스를 환경 설정 및 관리할 수 있다. 
-   이렇게 하려면 SQL 환경에서 다음 명령 중 하나를 사용해야 한다.
+   가끔 다른 사용자를 위한 데이터베이스를 생성하고, 그
+   사용자를 새 데이터베이스의 소유자로 만들면, 해당
+   사용자가 스스로 새 데이터베이스를 환경 설정 및 관리할 수 있다.  이렇게
+   하려면 SQL 환경에서 다음 명령 중 하나를 사용해야 한다.
 <programlisting>
 CREATE DATABASE <replaceable>dbname</replaceable> OWNER <replaceable>rolename</replaceable>;
 </programlisting>
@@ -156,20 +158,34 @@ createdb -O <replaceable>rolename</replaceable> <replaceable>dbname</replaceable
   <title>템플릿 데이터베이스</title>
 
   <para>
-   <command>CREATE DATABASE</command>는 실제로 기존 데이터베이스를 복사한다. 기본적으로 <literal>template1</literal><indexterm><primary>template1</primary></indexterm>이라는 표준 시스템 데이터베이스를 복사한다. 
-   따라서 해당 데이터베이스는 새 데이터베이스를 만드는 <quote>템플릿</quote>이다. 객체를 <literal>template1</literal>에 추가하면, 이 객체는 나중에 생성된 사용자 데이터베이스로 복사된다. 
-   이 작업은 데이터베이스의 표준 객체 집합에 대한 사이트-로컬 수정을 가능하게 한다. 
-   예를 들면, <literal>template1</literal>에서 프로시저 언어 <application>PL/Perl</application>을 설치하는 경우 해당 데이터베이스를 생성할 때 추가적인 작업 없이 사용자 데이터베이스가 자동으로 사용 가능하게 된다.
+   <command>CREATE DATABASE</command>는 실제로 기존 데이터베이스를
+   복사한다.  기본적으로 <literal>template1</literal><indexterm><primary>template1</primary></indexterm>이라는
+   표준 시스템 데이터베이스를 복사한다.  따라서 해당 데이터베이스는
+   새 데이터베이스를 만드는 <quote>템플릿</quote>이다.  객체를
+   <literal>template1</literal>에 추가하면, 이 객체는 나중에
+   생성되는 사용자 데이터베이스로 복사된다.  이 작업은 데이터베이스의
+   표준 객체 집합에 대한 사이트-로컬 수정을 가능하게 한다. 
+   예를 들면, <literal>template1</literal>에서 프로시저 언어
+   <application>PL/Perl</application>을 설치하는 경우 
+   새로운 데이터베이스를 생성할 때 추가적인 작업 없이 사용자 데이터베이스가
+   자동으로 사용 가능하게 된다.
   </para>
 
   <para>
-   <literal>template0</literal><indexterm><primary>template0</primary></indexterm>이라는 2차 표준 시스템 데이터베이스가 있다. 
-   이 데이터베이스에는 <literal>template1</literal>의 초기 내용과 동일한 데이터가 포함되어 있다. 
-   즉, <productname>PostgreSQL</productname> 버전에 의해 사전 정의된 표준 객체만 포함되어 있다. 
-   데이터베이스 클러스터를 초기화한 후에는 <literal>template0</literal>을 절대 변경하면 안 된다. 
-   <literal>template1</literal> 대신 <literal>template0</literal>을 복사하도록 <command>CREATE DATABASE</command>를 실행하면 <literal>template1</literal>에서 사이트-로컬 추가가 없는 "처녀" 사용자 데이터베이스를 생성할 수 있다. 
-   이것은 <literal>pg_dump</literal> 덤프를 복원할 때 특히 유용하다. 
-   나중에 <literal>template1</literal>에 추가되었을 수도 있는 객체와 충돌 없이 덤프된 데이터베이스를 올바르게 재생성 하도록 처녀 데이터베이스에서 덤프 스크립트를 복원해야 한다.
+   <literal>template0</literal><indexterm><primary>template0</primary></indexterm>이라는
+   2차 표준 시스템 데이터베이스가 있다.  이 데이터베이스에는 <literal>template1</literal>의
+   초기 내용과 동일한 데이터가 포함되어 있다.  즉, <productname>PostgreSQL</productname>
+   버전에 의해 사전 정의된 표준 객체만 포함되어 있다.  데이터베이스 클러스터를 초기화한
+   후에는 <literal>template0</literal>을 절대 변경하면 안 된다.  <literal>template1</literal>
+   대신 <literal>template0</literal>을 복사하도록 <command>CREATE DATABASE</command>를 실행하면
+   <literal>template1</literal>에 사용자가 추가한 객체들을 제외한 
+   "초기, 완벽한 깡통" 사용자 데이터베이스를 생성할 수 있다.  (사용자가
+   <literal>template1</literal> 데이터베이스에 추가한 것도 없고, 
+   사용자가 시스템 카탈로그 정보를 변경하기 전 완벽한 초기 상태의 데이터베이스가
+   만들어진다.)  이것은 <literal>pg_dump</literal> 덤프를 복원할 때 특히 유용하다. 
+   나중에 <literal>template1</literal>에 추가되었을 수도 있는 객체와
+   충돌 없이 덤프된 데이터베이스를 올바르게 재생성 하도록
+   깡통 데이터베이스에서 덤프 스크립트를 복원해야 한다.
   </para>
 
   <para>

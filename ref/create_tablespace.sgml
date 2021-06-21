@@ -107,14 +107,16 @@ CREATE TABLESPACE <replaceable class="parameter">테이블스페이스이름</re
        <para>
         해당 테이블스페이스에 대한 옵션을 지정.
         현재 지원하는 옵션은 <varname>seq_page_cost</varname>,
-        <varname>random_page_cost</varname>, <varname>effective_io_concurrency</varname>
-        세가지다.
+        <varname>random_page_cost</varname>, <varname>effective_io_concurrency</varname>,
+        <varname>maintenance_io_concurrency</varname> 이다.
         이 설정들은 실행 계획기가 페이지 읽기 비용을 예상할 때 
         그 개체가 이 테이블스페이스가 있다면 여기서 지정한 값을 사용해서
         비용을 계산하도록 한다.
         (각 <xref linkend="guc-seq-page-cost"/>,
         <xref linkend="guc-random-page-cost"/>,
-        <xref linkend="guc-effective-io-concurrency"/> 환경 설정 변수 참조).
+        <xref linkend="guc-effective-io-concurrency"/>,
+        <xref linkend="guc-maintenance-io-concurrency"/> 환경 설정 변수 참조).
+        각 개별 테이블스페이스 별로 지정한 설정은 전역 설정보다 우선 순위가 높다.
         이 옵션들은 해당 디렉터리가 기본 디렉터리와 다른 I/O 성능으로 
         운영 될 때 유용하게 사용된다.
        </para>

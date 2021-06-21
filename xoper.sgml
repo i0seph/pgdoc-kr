@@ -288,6 +288,18 @@ SELECT (a + b) AS c FROM test_complex;
    </para>
 
    <para>
+    Another useful built-in selectivity estimation function
+    is <function>matchingsel</function>, which will work for almost any
+    binary operator, if standard MCV and/or histogram statistics are
+    collected for the input data type(s).  Its default estimate is set to
+    twice the default estimate used in <function>eqsel</function>, making
+    it most suitable for comparison operators that are somewhat less
+    strict than equality.  (Or you could call the
+    underlying <function>generic_restriction_selectivity</function>
+    function, providing a different default estimate.)
+   </para>
+
+   <para>
     추가로 도형 자료형에 대한 제한 선택 추정 함수로는 
     <filename>src/backend/utils/adt/geo_selfuncs.c</filename> 소스 코드에
     다음과 같이 있다: <function>areasel</function>,
@@ -322,10 +334,11 @@ table1.column1 연산자 table2.column2
      <simplelist>
       <member><literal>=</literal> 연산자에서는 <function>eqjoinsel</function></member>
       <member><literal>&lt;&gt;</literal> 연산자에서는 <function>neqjoinsel</function></member>
-      <member><function>scalarltjoinsel</function> for <literal>&lt;</literal></member>
-      <member><function>scalarlejoinsel</function> for <literal>&lt;=</literal></member>
-      <member><function>scalargtjoinsel</function> for <literal>&gt;</literal></member>
-      <member><function>scalargejoinsel</function> for <literal>&gt;=</literal></member>
+      <member><literal>&lt;</literal> 연산자에는 <function>scalarltjoinsel</function></member>
+      <member><literal>&lt;=</literal> 연산자에는 <function>scalarlejoinsel</function></member>
+      <member><literal>&gt;</literal> 연산자에는 <function>scalargtjoinsel</function></member>
+      <member><literal>&gt;=</literal> 연산자에는 <function>scalargejoinsel</function></member>
+      <member>일반 매칭 연산에는 <function>matchingjoinsel</function></member>
       <member>2D 영역 기반 비교 연산에서는 <function>areajoinsel</function></member>
       <member>2D 위치 기반 비교 연산에서는 <function>positionjoinsel</function></member>
       <member>2D 포함 기반 비교 연산에서는 <function>contjoinsel</function></member>

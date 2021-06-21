@@ -98,8 +98,7 @@ CREATE INDEX test1_id_index ON test1 (id);
    In production environments this is often unacceptable.
    It is possible to allow writes to occur in parallel with index
    creation, but there are several caveats to be aware of &mdash;
-   for more information see <xref linkend="sql-createindex-concurrently"
-   endterm="sql-createindex-concurrently-title"/>.
+   for more information see <xref linkend="sql-createindex-concurrently"/>.
   </para>
 
   <para>
@@ -1300,7 +1299,7 @@ SELECT target FROM tests WHERE subject = 'some-subject' AND success;
    An index definition can specify an <firstterm>operator
    class</firstterm> for each column of an index.
 <synopsis>
-CREATE INDEX <replaceable>name</replaceable> ON <replaceable>table</replaceable> (<replaceable>column</replaceable> <replaceable>opclass</replaceable> <optional><replaceable>sort options</replaceable></optional> <optional>, ...</optional>);
+CREATE INDEX <replaceable>name</replaceable> ON <replaceable>table</replaceable> (<replaceable>column</replaceable> <replaceable>opclass</replaceable> [ ( <replaceable>opclass_options</replaceable> ) ] <optional><replaceable>sort options</replaceable></optional> <optional>, ...</optional>);
 </synopsis>
    The operator class identifies the operators to be used by the index
    for that column.  For example, a B-tree index on the type <type>int4</type>
@@ -1411,6 +1410,15 @@ SELECT am.amname AS index_method,
     ORDER BY index_method, opfamily_name, opfamily_operator;
 </programlisting>
   </para>
+
+  <tip>
+   <para>
+    <xref linkend="app-psql"/> has
+    commands <command>\dAc</command>, <command>\dAf</command>,
+    and <command>\dAo</command>, which provide slightly more sophisticated
+    versions of these queries.
+   </para>
+  </tip>
  </sect1>
 
 

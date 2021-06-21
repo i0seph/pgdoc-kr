@@ -31,9 +31,7 @@ PostgreSQL documentation
 
 
  <refsect1 id="r1-app-createdb-1">
-  <title>
-   설명
-  </title>
+  <title>설명</title>
   <para>
    <application>createdb</application> 명령은 새 <productname>PostgreSQL</productname>
    데이터베이스를 만드는 명령이다.

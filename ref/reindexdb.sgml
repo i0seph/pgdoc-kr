@@ -15,7 +15,7 @@ PostgreSQL documentation
  </refmeta>
 
  <refnamediv>
-  <refname id="reindexdb">reindexdb</refname>
+  <refname>reindexdb</refname>
   <refpurpose>지정한 <productname>PostgreSQL</productname> 데이터베이스에서 인덱스를 다시 만든다</refpurpose>
  </refnamediv>
 
@@ -170,6 +170,29 @@ PostgreSQL documentation
         Recreate <replaceable class="parameter">index</replaceable> only.
         Multiple indexes can be recreated by writing multiple
         <option>-i</option> switches.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>-j <replaceable class="parameter">njobs</replaceable></option></term>
+      <term><option>--jobs=<replaceable class="parameter">njobs</replaceable></option></term>
+      <listitem>
+       <para>
+        Execute the reindex commands in parallel by running
+        <replaceable class="parameter">njobs</replaceable>
+        commands simultaneously.  This option may reduce the processing time
+        but it also increases the load on the database server.
+       </para>
+       <para>
+        <application>reindexdb</application> will open
+        <replaceable class="parameter">njobs</replaceable> connections to the
+        database, so make sure your <xref linkend="guc-max-connections"/>
+        setting is high enough to accommodate all connections.
+       </para>
+       <para>
+        Note that this option is incompatible with the <option>--index</option>
+        and <option>--system</option> options.
        </para>
       </listitem>
      </varlistentry>

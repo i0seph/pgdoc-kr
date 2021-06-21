@@ -24,6 +24,7 @@ PostgreSQL documentation
 ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ALTER [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> SET DEFAULT <replaceable class="parameter">expression</replaceable>
 ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> ALTER [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> DROP DEFAULT
 ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
+ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RENAME [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> TO <replaceable class="parameter">새칼럼이름</replaceable>
 ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
 ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> SET ( <replaceable class="parameter">뷰옵션이름</replaceable> [= <replaceable class="parameter">뷰옵션값</replaceable>] [, ... ] )
@@ -61,6 +62,24 @@ ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RES
     <listitem>
      <para>
       (스키마 이름을 포함 수도 있는) 변경 작업을 하려는 뷰의 이름
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><replaceable class="parameter">칼럼이름</replaceable></term>
+    <listitem>
+     <para>
+      기존 칼럼 이름
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><replaceable class="parameter">새칼럼이름</replaceable></term>
+    <listitem>
+     <para>
+      기존 칼럼의 새 이름
      </para>
     </listitem>
    </varlistentry>
@@ -115,20 +134,31 @@ ALTER VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable> RES
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">뷰옵션이름</replaceable></term>
+    <term><literal>SET ( <replaceable class="parameter">뷰옵션이름</replaceable> [= <replaceable class="parameter">뷰옵션값</replaceable>] [, ... ] )</literal></term>
+    <term><literal>RESET ( <replaceable class="parameter">뷰옵션이름</replaceable> [, ... ] )</literal></term>
     <listitem>
      <para>
-      새로운 옵션 값을 지정하거나 지울 뷰 옵션 이름
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term><replaceable class="parameter">뷰옵션값</replaceable></term>
-    <listitem>
-     <para>
-      지정한 뷰 옵션의 값
-     </para>
+      뷰 옵션을 지정하거나 지운다. 현재 지원하는 옵션은 다음과 같다:
+      <variablelist>
+       <varlistentry>
+        <term><literal>check_option</literal> (<type>enum</type>)</term>
+        <listitem>
+         <para>
+          해당 뷰의 체크 옵션을 바꾼다. 사용할 수 있는 값은
+          <literal>local</literal> 또는 <literal>cascaded</literal> 이다.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><literal>security_barrier</literal> (<type>boolean</type>)</term>
+        <listitem>
+         <para>
+          security-barrier 옵션을 바꾼다. 사용할 수 있는 값은
+          <literal>true</literal> 또는 <literal>false</literal> 다.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist></para>
     </listitem>
    </varlistentry>
   </variablelist>

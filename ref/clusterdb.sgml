@@ -15,7 +15,7 @@ PostgreSQL documentation
  </refmeta>
 
  <refnamediv>
-  <refname id="clusterdb">clusterdb</refname>
+  <refname>clusterdb</refname>
   <refpurpose><productname>PostgreSQL</productname> 데이터베이스를 대상으로 클러스터 작업을 한다</refpurpose>
  </refnamediv>
 

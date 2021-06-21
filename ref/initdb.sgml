@@ -34,9 +34,7 @@ PostgreSQL documentation
  </refsynopsisdiv>
 
  <refsect1 id="r1-app-initdb-1">
-  <title>
-   설명
-  </title>
+  <title>설명</title>
   <para>
    <command>initdb</command> 명령은
    <productname>PostgreSQL</productname> 데이터베이스 클러스터를 새로
@@ -236,7 +234,8 @@ PostgreSQL documentation
         오류를 바로 확인할 수 있다.  이 설정이 활성화되면, 모든
         데이터베이스의 모든 개체에 대해서 체크섬 검사를 한다.
         모든 체크섬 검사 실패에 대한 정보는
-        <xref linkend="pg-stat-database-view"/> 뷰를 통해 확인
+        <link linkend="monitoring-pg-stat-database-view">
+        <structname>pg_stat_database</structname></link> 뷰를 통해 확인
         할 수 있다.
        </para>
       </listitem>

@@ -211,7 +211,7 @@
  </para>
 
  <example>
- <title id="csvlog-fdw">Create a Foreign Table for PostgreSQL CSV Logs</title>
+  <title>Create a Foreign Table for PostgreSQL CSV Logs</title>
 
   <para>
    One of the obvious uses for <literal>file_fdw</literal> is to make
@@ -264,9 +264,10 @@ CREATE FOREIGN TABLE pglog (
   query text,
   query_pos integer,
   location text,
-  application_name text
+  application_name text,
+  backend_type text
 ) SERVER pglog
-OPTIONS ( filename '/home/josh/data/log/pglog.csv', format 'csv' );
+OPTIONS ( filename 'log/pglog.csv', format 'csv' );
 </programlisting>
   </para>
 

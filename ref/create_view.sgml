@@ -128,7 +128,7 @@ CREATE VIEW [ <replaceable>스키마</replaceable> . ] <replaceable>뷰이름</r
 
       <variablelist>
        <varlistentry>
-        <term><literal>check_option</literal> (<type>문자열</type>)</term>
+        <term><literal>check_option</literal> (<type>enum</type>)</term>
         <listitem>
          <para>
           이 매개 변수 값으로 <literal>local</literal> 또는
@@ -150,8 +150,7 @@ CREATE VIEW [ <replaceable>스키마</replaceable> . ] <replaceable>뷰이름</r
          </para>
         </listitem>
        </varlistentry>
-      </variablelist>
-     </para>
+      </variablelist></para>
     </listitem>
    </varlistentry>
 
@@ -286,7 +285,7 @@ CREATE VIEW vista AS SELECT text 'Hello World' AS hello;
    </para>
 
   <refsect2 id="sql-createview-updatable-views">
-   <title id="sql-createview-updatable-views-title">업데이트 가능한 뷰</title>
+   <title>업데이트 가능한 뷰</title>
 
    <indexterm zone="sql-createview-updatable-views">
     <primary>업데이트 가능한 뷰</primary>

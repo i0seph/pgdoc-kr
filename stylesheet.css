@@ -6,9 +6,7 @@
 body {
 	color: #000000;
 	background: #FFFFFF;
-        font-family: "Malgun Gothic", "Nanum Gothic", "맑은 고딕", "나눔 고딕", verdana, sans-serif;
-	margin-left: 50px;
-	margin-right: 50px;
+	font-family: "Malgun Gothic", "Nanum Gothic", "맑은 고딕", "나눔 고딕", verdana, sans-serif;
 }
 
 a:link		{ color:#0066A2; }
@@ -79,6 +77,56 @@ div.example {
 	margin: 0.5ex;
 }
 
+/* formatting for entries in tables of functions: indent all but first line */
+
+th.func_table_entry p,
+td.func_table_entry p {
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	padding-left: 4em;
+	text-align: left;
+}
+
+p.func_signature {
+	text-indent: -3.5em;
+}
+
+td.func_table_entry pre.programlisting {
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	padding-left: 4em;
+}
+
+/* formatting for entries in tables of catalog/view columns */
+
+th.catalog_table_entry p,
+td.catalog_table_entry p {
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	padding-left: 4em;
+	text-align: left;
+}
+
+th.catalog_table_entry p.column_definition {
+	text-indent: -3.5em;
+	word-spacing: 0.25em;
+}
+
+td.catalog_table_entry p.column_definition {
+	text-indent: -3.5em;
+}
+
+p.column_definition code.type {
+	padding-left: 0.25em;
+	padding-right: 0.25em;
+}
+
+td.catalog_table_entry pre.programlisting {
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	padding-left: 4em;
+}
+
 /* Put these here instead of inside the HTML (see unsetting of
    admon.style in XSL) so that the web site stylesheet can set its own
    style. */
@@ -96,23 +144,10 @@ div.example {
 
 pre.literallayout, .screen, .synopsis, .programlisting {
 	margin-left: 4ex;
-  -moz-box-shadow: 3px 3px 5px #DFDFDF;
-  -webkit-box-shadow: 3px 3px 5px #DFDFDF;
-  -khtml-box-shadow: 3px 3px 5px #DFDFDF;
-  -o-box-shadow: 3px 3px 5px #DFDFDF;
-  box-shadow: 3px 3px 5px #DFDFDF;
-  border-color: #CFCFCF;
-  background-color: #F7F7F7;
-  color: black;
-  border-width: 1px;
-  border-style: solid;
-  padding: 2ex;
-  margin: 2ex 0 2ex 2ex;
-  overflow: auto;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  -khtml-border-radius: 8px;
-  border-radius: 8px;
+}
+
+ul.itemizedlist {
+	margin-left: 2.5rem;
 }
 
 .comment	{ color: red; }
@@ -123,115 +158,9 @@ acronym		{ font-style: inherit; }
 
 .option		{ white-space: nowrap; }
 
-p, dl { line-height: 1.6 }
-
-/* Table Styles */
-
-table {
-  margin-left: 2ex;
-}
-
-.table table td,
-.table table th,
-.informaltable table td,
-.informaltable table th,
-table.CALSTABLE td,
-table.CALSTABLE th,
-table.CAUTION td,
-table.CAUTION th,
-table.WARNING td,
-table.WARNING th {
-  border-style: solid;
-}
-
-.table table,
-.informaltable table,
-table.CALSTABLE,
-table.CAUTION,
-table.WARNING {
-  border-spacing: 0;
-  border-collapse: collapse;
-}
-
-.table table,
-.informaltable table,
-table.CALSTABLE
-{
-  margin: 2ex 0 2ex 2ex;
-  background-color: #E0ECEF;
-  border: 2px solid #A7C6DF;
-}
-
-.table table tr:hover td,
-.informaltable table tr:hover td,
-table.CALSTABLE tr:hover td
-{
-  background-color: #EFEFEF;
-}
-
-.table table td,
-.informaltable table td,
-table.CALSTABLE td {
-  background-color: #FFF;
-}
-
-.table table td,
-.table table th,
-.informaltable table td,
-.informaltable table th,
-table.CALSTABLE td,
-table.CALSTABLE th {
-  border: 1px solid #A7C6DF;
-  padding: 0.5ex 0.5ex;
-}
-
-table.CAUTION,
-table.WARNING {
-  border-collapse: separate;
-  display: block;
-  padding: 0;
-  max-width: 600px;
-}
-
-.caution,
-table.CAUTION {
-  background-color: #F5F5DC;
-  border-color: #DEDFA7;
-}
-
-.warning,
-table.WARNING {
-  background-color: #FFD7D7;
-  border-color: #DF421E;
-}
-
-table.CAUTION td,
-table.CAUTION th,
-table.WARNING td,
-table.WARNING th {
-  border-width: 0;
-  padding-left: 2ex;
-  padding-right: 2ex;
-}
-
-table.CAUTION td,
-table.CAUTION th {
-  border-color: #F3E4D5
-}
-
-table.WARNING td,
-table.WARNING th {
-  border-color: #FFD7D7;
-}
-
-td.c1,
-td.c2,
-td.c3,
-td.c4,
-td.c5,
-td.c6 {
-  font-size: 1.1em;
-  font-weight: bold;
-  border-bottom: 0px solid #FFEFEF;
-  padding: 1ex 2ex 0;
+/* make images not too wide on larger screens */
+@media (min-width: 800px) {
+  .mediaobject {
+    width: 75%;
+  }
 }

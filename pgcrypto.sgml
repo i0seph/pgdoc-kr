@@ -17,6 +17,13 @@
   사용할 수 있는 암호화 관련 함수를 제공한다.
  </para>
 
+ <para>
+  이 묘듈은 <quote>trusted</quote>, 신뢰할 수 있는 모듈이다.  그래서,
+  해당 데이터베이스를 대상으로
+  <literal>CREATE</literal> 권한이 있는 일반 사용자도 설치할 수
+  있다.
+ </para>
+
  <sect2>
   <title>일반 해시 함수</title>
 
@@ -1158,7 +1165,8 @@ gen_random_bytes(count integer) returns bytea
 gen_random_uuid() returns uuid
 </synopsis>
   <para>
-   버전 4 (임의) UUID 만드는 함수.
+   버전 4 (임의) UUID 만드는 함수. (구식임, 이 함수는
+   <productname>PostgreSQL</productname> 기본 내장 함수로 제공한다.)
   </para>
  </sect2>
 

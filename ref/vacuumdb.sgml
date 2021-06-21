@@ -15,7 +15,7 @@ PostgreSQL documentation
  </refmeta>
 
  <refnamediv>
-  <refname id="vacuumdb">vacuumdb</refname>
+  <refname>vacuumdb</refname>
   <refpurpose>지정한 <productname>PostgreSQL</productname> 데이터베이스를 청소하고 통계 정보를 갱신한다.</refpurpose>
  </refnamediv>
 
@@ -162,8 +162,8 @@ PostgreSQL documentation
        <para>
         Execute the vacuum or analyze commands in parallel by running
         <replaceable class="parameter">njobs</replaceable>
-        commands simultaneously.  This option reduces the time of the
-        processing but it also increases the load on the database server.
+        commands simultaneously.  This option may reduce the processing time
+        but it also increases the load on the database server.
        </para>
        <para>
         <application>vacuumdb</application> will open
@@ -228,6 +228,24 @@ PostgreSQL documentation
         <para>
          This option is only available for servers running
          <productname>PostgreSQL</productname> 9.6 and later.
+         </para>
+       </note>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>-P <replaceable class="parameter">parallel_degree</replaceable></option></term>
+      <term><option>--parallel=<replaceable class="parameter">parallel_degree</replaceable></option></term>
+      <listitem>
+       <para>
+        Specify the parallel degree of <firstterm>parallel vacuum</firstterm>.
+        This allows the vacuum to leverage multiple CPUs to process indexes.
+        See <xref linkend="sql-vacuum"/>.
+       </para>
+       <note>
+        <para>
+         This option is only available for servers running
+         <productname>PostgreSQL</productname> 13 and later.
         </para>
        </note>
       </listitem>

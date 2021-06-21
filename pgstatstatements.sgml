@@ -9,7 +9,7 @@
 
  <para>
   <filename>pg_stat_statements</filename> 모듈은 서버에서 실행 되었던 
-  쿼리들에 대한 실행 통계 정보를 보여준다.
+  쿼리들에 대한 실행계획과 실행 통계 정보를 보여준다.
  </para>
 
  <para>
@@ -46,184 +46,320 @@
   <table id="pgstatstatements-columns">
    <title><structname>pg_stat_statements</structname> 칼럼들</title>
 
-   <tgroup cols="4">
+   <tgroup cols="1">
     <thead>
      <row>
-      <entry>칼럼명</entry>
-      <entry>자료형</entry>
-      <entry>참조</entry>
-      <entry>설명</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       칼럼명 자료형
+      </para>
+      <para>
+       설명
+      </para></entry>
      </row>
     </thead>
+
     <tbody>
      <row>
-      <entry><structfield>userid</structfield></entry>
-      <entry><type>oid</type></entry>
-      <entry><literal><link linkend="catalog-pg-authid"><structname>pg_authid</structname></link>.oid</literal></entry>
-      <entry>해당 쿼리를 실행했던 사용자의 OID</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>userid</structfield> <type>oid</type>
+       (references <link linkend="catalog-pg-authid"><structname>pg_authid</structname></link>.<structfield>oid</structfield>)
+      </para>
+      <para>
+       해당 쿼리를 실행 했던 사용자 OID
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>dbid</structfield></entry>
-      <entry><type>oid</type></entry>
-      <entry><literal><link linkend="catalog-pg-database"><structname>pg_database</structname></link>.oid</literal></entry>
-      <entry>해당 쿼리를 실행했던 데이터베이스 OID</entry>
-     </row>
-
-    <row>
-      <entry><structfield>queryid</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>쿼리 고유 번호</entry>
-     </row>
-
-    <row>
-      <entry><structfield>query</structfield></entry>
-      <entry><type>text</type></entry>
-      <entry></entry>
-      <entry>해당 쿼리 내용(<xref linkend="guc-track-activity-query-size"/> 값으로 지정한 크기만큼만 저장됨)</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>dbid</structfield> <type>oid</type>
+       (references <link linkend="catalog-pg-database"><structname>pg_database</structname></link>.<structfield>oid</structfield>)
+      </para>
+      <para>
+       해당 쿼리가 실행 되었던 데이터베이스 OID
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>calls</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>실행 회수</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>queryid</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리 통계 작업을 위한 내부용 계산된 해시 코드
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>total_time</structfield></entry>
-      <entry><type>double precision</type></entry>
-      <entry></entry>
-      <entry>밀리세컨드 단위 총 실행 시간</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>query</structfield> <type>text</type>
+      </para>
+      <para>
+       해당 쿼리의 구문 내용
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>min_time</structfield></entry>
-      <entry><type>double precision</type></entry>
-      <entry></entry>
-      <entry>해당 구문 최소 실행 시간, 밀리초</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>plans</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리의 실행 계획을 짰던 총 수
+       (<varname>pg_stat_statements.track_planning</varname> 설정값이 on인 경우, off면 0)
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>max_time</structfield></entry>
-      <entry><type>double precision</type></entry>
-      <entry></entry>
-      <entry>해당 구문 최대 실행 시간, 밀리초</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>total_plan_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리의 실행 계획을 짜는데 쓴 총 시간, 단위는 밀리세컨드
+       (<varname>pg_stat_statements.track_planning</varname> 설정값이 on인 경우, off면 0)
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>mean_time</structfield></entry>
-      <entry><type>double precision</type></entry>
-      <entry></entry>
-      <entry>해당 구문 평균 실행 시간, 밀리초</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>min_plan_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리의 실행 계획을 짜는데 쓴 시간 중 제일 짧은 시간, 단위는 밀리세컨드
+       (<varname>pg_stat_statements.track_planning</varname> 설정값이 on인 경우, off면 0)
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>stddev_time</structfield></entry>
-      <entry><type>double precision</type></entry>
-      <entry></entry>
-      <entry>해당 구문 실행 시간의 표준 편차, 밀리초</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>max_plan_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리의 실행 계획을 짜는데 쓴 시간 중 제일 긴 시간, 단위는 밀리세컨드
+       (<varname>pg_stat_statements.track_planning</varname> 설정값이 on인 경우, off면 0)
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>rows</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>해당 쿼리로 출력한 또는 영향 받는 총 로우 개수</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>mean_plan_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리의 실행 계획을 짜는데 쓴 평균 시간, 단위는 밀리세컨드
+       Mean time spent planning the statement, in milliseconds
+       (<varname>pg_stat_statements.track_planning</varname> 설정값이 on인 경우, off면 0)
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>shared_blks_hit</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of shared block cache hits by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>stddev_plan_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+
+       해당 쿼리가 실행 계획 짜는데 쓴 시간의 표준 편차, 단위는 밀리세컨드
+       (<varname>pg_stat_statements.track_planning</varname> 설정값이 on인 경우, off면 0)
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>shared_blks_read</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of shared blocks read by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>calls</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리 총 실행 회수
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>shared_blks_dirtied</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of shared blocks dirtied by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>total_exec_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리 실행 시간의 총 누적 시간, 단위는 밀리세컨드
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>shared_blks_written</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of shared blocks written by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>min_exec_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리 실행 시간 중 제일 작은 값, 단위는 밀리세컨드
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>local_blks_hit</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of local block cache hits by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>max_exec_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리 실행 시간 중 제일 큰 값, 단위는 밀리세컨드
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>local_blks_read</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of local blocks read by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>mean_exec_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리의 평균 실행 시간, 단위는 밀리세컨드
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>local_blks_dirtied</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of local blocks dirtied by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>stddev_exec_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리를 실행하는데 걸린 시간의 표준 편차, 단위는 밀리세컨드
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>local_blks_written</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of local blocks written by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>rows</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 출력되거나 영향받은 총 로우 수
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>temp_blks_read</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of temp blocks read by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>shared_blks_hit</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리가 공유 블록 캐시를 히트한 총 수
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>temp_blks_written</structfield></entry>
-      <entry><type>bigint</type></entry>
-      <entry></entry>
-      <entry>Total number of temp blocks written by the statement</entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>shared_blks_read</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 읽은 공유 블록 총 수
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>blk_read_time</structfield></entry>
-      <entry><type>double precision</type></entry>
-      <entry></entry>
-      <entry>
-        블록을 디스크에서 읽는데 소비한 총 시간, 밀리세컨드
-        (<xref linkend="guc-track-io-timing"/> 값이 on 상태여야 함, 그렇지 않으면, 0)
-      </entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>shared_blks_dirtied</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 생긴 더티 공유 블록 총 수
+      </para></entry>
      </row>
 
      <row>
-      <entry><structfield>blk_write_time</structfield></entry>
-      <entry><type>double precision</type></entry>
-      <entry></entry>
-      <entry>
-        블록을 디스크로 쓰는데 소비한 총 시간, 밀리세컨드
-        (<xref linkend="guc-track-io-timing"/> 값이 on 상태여야 함, 그렇지 않으면, 0)
-      </entry>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>shared_blks_written</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 쓴 공유 블록 총 수
+      </para></entry>
      </row>
 
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>local_blks_hit</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리가 로컬 블록 캐시를 히트한 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>local_blks_read</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 읽은 로컬 블록 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>local_blks_dirtied</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 생긴 더티 로컬 블록 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>local_blks_written</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 쓴 로컬 블록 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>temp_blks_read</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 읽은 임시 블록 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>temp_blks_written</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 쓴 임시 블록 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>blk_read_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리가 블록 읽기에 쓴 총 시간, 단위는 밀리세컨드
+       (<xref linkend="guc-track-io-timing"/> 설정값이 on인 경우, off면 0)
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>blk_write_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+       해당 쿼리가 블록 쓰기에 쓴 총 시간, 단위는 밀리세컨드
+       (<xref linkend="guc-track-io-timing"/> 설정값이 on인 경우, off면 0)
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>wal_records</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 만들어진 WAL 레코드 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>wal_fpi</structfield> <type>bigint</type>
+      </para>
+      <para>
+       해당 쿼리로 만들어진 WAL full page 이미지 총 수
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>wal_bytes</structfield> <type>numeric</type>
+      </para>
+      <para>
+       해당 쿼리로 만들어진 WAL 총 크기, 단위는 바이트
+      </para></entry>
+     </row>
     </tbody>
+
    </tgroup>
   </table>
 
@@ -323,6 +459,16 @@
    each <structfield>queryid</structfield> are preserved.  If this happens, consider
    reducing <varname>pg_stat_statements.max</varname> to prevent
    recurrences.
+  </para>
+
+  <para>
+   <structfield>plans</structfield> and <structfield>calls</structfield> aren't
+   always expected to match because planning and execution statistics are
+   updated at their respective end phase, and only for successful operations.
+   For example, if a statement is successfully planned but fails during
+   the execution phase, only its planning statistics will be updated.
+   If planning is skipped because a cached plan is used, only its execution
+   statistics will be updated.
   </para>
  </sect2>
 
@@ -443,6 +589,24 @@
 
    <varlistentry>
     <term>
+     <varname>pg_stat_statements.track_planning</varname> (<type>boolean</type>)
+    </term>
+
+    <listitem>
+     <para>
+      <varname>pg_stat_statements.track_planning</varname> controls whether
+      planning operations and duration are tracked by the module.
+      Enabling this parameter may incur a noticeable performance penalty,
+      especially when a fewer kinds of queries are executed on many
+      concurrent connections.
+      The default value is <literal>off</literal>.
+      Only superusers can change this setting.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>
      <varname>pg_stat_statements.save</varname> (<type>boolean</type>)
     </term>
 
@@ -494,89 +658,96 @@ $ pgbench -i bench
 $ pgbench -c10 -t300 bench
 
 bench=# \x
-bench=# SELECT query, calls, total_time, rows, 100.0 * shared_blks_hit /
+bench=# SELECT query, calls, total_exec_time, rows, 100.0 * shared_blks_hit /
                nullif(shared_blks_hit + shared_blks_read, 0) AS hit_percent
-          FROM pg_stat_statements ORDER BY total_time DESC LIMIT 5;
--[ RECORD 1 ]--------------------------------------------------------------------
-query       | UPDATE pgbench_branches SET bbalance = bbalance + $1 WHERE bid = $2
-calls       | 3000
-total_time  | 25565.855387
-rows        | 3000
-hit_percent | 100.0000000000000000
--[ RECORD 2 ]--------------------------------------------------------------------
-query       | UPDATE pgbench_tellers SET tbalance = tbalance + $1 WHERE tid = $2
-calls       | 3000
-total_time  | 20756.669379
-rows        | 3000
-hit_percent | 100.0000000000000000
--[ RECORD 3 ]--------------------------------------------------------------------
-query       | copy pgbench_accounts from stdin
-calls       | 1
-total_time  | 291.865911
-rows        | 100000
-hit_percent | 100.0000000000000000
--[ RECORD 4 ]--------------------------------------------------------------------
-query       | UPDATE pgbench_accounts SET abalance = abalance + $1 WHERE aid = $2
-calls       | 3000
-total_time  | 271.232977
-rows        | 3000
-hit_percent | 98.5723926698852723
--[ RECORD 5 ]--------------------------------------------------------------------
-query       | alter table pgbench_accounts add primary key (aid)
-calls       | 1
-total_time  | 160.588563
-rows        | 0
-hit_percent | 100.0000000000000000
-
+          FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 5;
+-[ RECORD 1 ]---+--------------------------------------------------&zwsp;------------------
+query           | UPDATE pgbench_branches SET bbalance = bbalance + $1 WHERE bid = $2
+calls           | 3000
+total_exec_time | 25565.855387
+rows            | 3000
+hit_percent     | 100.0000000000000000
+-[ RECORD 2 ]---+--------------------------------------------------&zwsp;------------------
+query           | UPDATE pgbench_tellers SET tbalance = tbalance + $1 WHERE tid = $2
+calls           | 3000
+total_exec_time | 20756.669379
+rows            | 3000
+hit_percent     | 100.0000000000000000
+-[ RECORD 3 ]---+--------------------------------------------------&zwsp;------------------
+query           | copy pgbench_accounts from stdin
+calls           | 1
+total_exec_time | 291.865911
+rows            | 100000
+hit_percent     | 100.0000000000000000
+-[ RECORD 4 ]---+--------------------------------------------------&zwsp;------------------
+query           | UPDATE pgbench_accounts SET abalance = abalance + $1 WHERE aid = $2
+calls           | 3000
+total_exec_time | 271.232977
+rows            | 3000
+hit_percent     | 98.8454011741682975
+-[ RECORD 5 ]---+--------------------------------------------------&zwsp;------------------
+query           | alter table pgbench_accounts add primary key (aid)
+calls           | 1
+total_exec_time | 160.588563
+rows            | 0
+hit_percent     | 100.0000000000000000
 
 bench=# SELECT pg_stat_statements_reset(0,0,s.queryid) FROM pg_stat_statements AS s
             WHERE s.query = 'UPDATE pgbench_branches SET bbalance = bbalance + $1 WHERE bid = $2';
 
-bench=# SELECT query, calls, total_time, rows, 100.0 * shared_blks_hit /
+bench=# SELECT query, calls, total_exec_time, rows, 100.0 * shared_blks_hit /
                nullif(shared_blks_hit + shared_blks_read, 0) AS hit_percent
-          FROM pg_stat_statements ORDER BY total_time DESC LIMIT 5;
--[ RECORD 1 ]--------------------------------------------------------------------
-query       | UPDATE pgbench_tellers SET tbalance = tbalance + $1 WHERE tid = $2
-calls       | 3000
-total_time  | 20756.669379
-rows        | 3000
-hit_percent | 100.0000000000000000
--[ RECORD 2 ]--------------------------------------------------------------------
-query       | copy pgbench_accounts from stdin
-calls       | 1
-total_time  | 291.865911
-rows        | 100000
-hit_percent | 100.0000000000000000
--[ RECORD 3 ]--------------------------------------------------------------------
-query       | UPDATE pgbench_accounts SET abalance = abalance + $1 WHERE aid = $2
-calls       | 3000
-total_time  | 271.232977
-rows        | 3000
-hit_percent | 98.5723926698852723
--[ RECORD 4 ]--------------------------------------------------------------------
-query       | alter table pgbench_accounts add primary key (aid)
-calls       | 1
-total_time  | 160.588563
-rows        | 0
-hit_percent | 100.0000000000000000
--[ RECORD 5 ]--------------------------------------------------------------------
-query       | vacuum analyze pgbench_accounts
-calls       | 1
-total_time  | 136.448116
-rows        | 0
-hit_percent | 99.9201915403032721
+          FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 5;
+-[ RECORD 1 ]---+--------------------------------------------------&zwsp;------------------
+query           | UPDATE pgbench_tellers SET tbalance = tbalance + $1 WHERE tid = $2
+calls           | 3000
+total_exec_time | 20756.669379
+rows            | 3000
+hit_percent     | 100.0000000000000000
+-[ RECORD 2 ]---+--------------------------------------------------&zwsp;------------------
+query           | copy pgbench_accounts from stdin
+calls           | 1
+total_exec_time | 291.865911
+rows            | 100000
+hit_percent     | 100.0000000000000000
+-[ RECORD 3 ]---+--------------------------------------------------&zwsp;------------------
+query           | UPDATE pgbench_accounts SET abalance = abalance + $1 WHERE aid = $2
+calls           | 3000
+total_exec_time | 271.232977
+rows            | 3000
+hit_percent     | 98.8454011741682975
+-[ RECORD 4 ]---+--------------------------------------------------&zwsp;------------------
+query           | alter table pgbench_accounts add primary key (aid)
+calls           | 1
+total_exec_time | 160.588563
+rows            | 0
+hit_percent     | 100.0000000000000000
+-[ RECORD 5 ]---+--------------------------------------------------&zwsp;------------------
+query           | vacuum analyze pgbench_accounts
+calls           | 1
+total_exec_time | 136.448116
+rows            | 0
+hit_percent     | 99.9201915403032721
 
 bench=# SELECT pg_stat_statements_reset(0,0,0);
 
-bench=# SELECT query, calls, total_time, rows, 100.0 * shared_blks_hit /
+bench=# SELECT query, calls, total_exec_time, rows, 100.0 * shared_blks_hit /
                nullif(shared_blks_hit + shared_blks_read, 0) AS hit_percent
-          FROM pg_stat_statements ORDER BY total_time DESC LIMIT 5;
--[ RECORD 1 ]---------------------------------------
-query       | SELECT pg_stat_statements_reset(0,0,0)
-calls       | 1
-total_time  | 0.189497
-rows        | 1
-hit_percent | 
+          FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 5;
+-[ RECORD 1 ]---+--------------------------------------------------&zwsp;---------------------------
+query           | SELECT pg_stat_statements_reset(0,0,0)
+calls           | 1
+total_exec_time | 0.189497
+rows            | 1
+hit_percent     | 
+-[ RECORD 2 ]---+--------------------------------------------------&zwsp;---------------------------
+query           | SELECT query, calls, total_exec_time, rows, $1 * shared_blks_hit /          +
+                |                nullif(shared_blks_hit + shared_blks_read, $2) AS hit_percent+
+                |           FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT $3
+calls           | 0
+total_exec_time | 0
+rows            | 0
+hit_percent     | 
 
 </screen>
  </sect2>

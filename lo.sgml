@@ -13,6 +13,13 @@
   자료형과 <function>lo_manage</function> 트리거 함수가 포함되어있다.
  </para>
 
+ <para>
+  이 묘듈은 <quote>trusted</quote>, 신뢰할 수 있는 모듈이다.  그래서, 
+  해당 데이터베이스를 대상으로
+  <literal>CREATE</literal> 권한이 있는 일반 사용자도 설치할 수 
+  있다.
+ </para>
+
  <sect2>
   <title>개발 배경</title>
 

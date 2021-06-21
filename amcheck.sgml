@@ -125,8 +125,7 @@ ORDER BY c.relpages DESC LIMIT 10;
       Optionally, when the <parameter>heapallindexed</parameter>
       argument is <literal>true</literal>, the function verifies the
       presence of all heap tuples that should be found within the
-      index, and that there are no missing downlinks in the index
-      structure.  When the optional <parameter>rootdescend</parameter>
+      index.  When the optional <parameter>rootdescend</parameter>
       argument is <literal>true</literal>, verification re-finds
       tuples on the leaf level by performing a new search from the
       root page for each tuple.  The checks that can be performed by
@@ -136,7 +135,8 @@ ORDER BY c.relpages DESC LIMIT 10;
       a more thorough variant of <function>bt_index_check</function>:
       unlike <function>bt_index_check</function>,
       <function>bt_index_parent_check</function> also checks
-      invariants that span parent/child relationships.
+      invariants that span parent/child relationships, including checking
+      that there are no missing downlinks in the index structure.
       <function>bt_index_parent_check</function> follows the general
       convention of raising an error if it finds a logical
       inconsistency or other problem.
@@ -166,6 +166,27 @@ ORDER BY c.relpages DESC LIMIT 10;
     </listitem>
    </varlistentry>
   </variablelist>
+  <tip>
+   <para>
+    <function>bt_index_check</function> and
+    <function>bt_index_parent_check</function> both output log
+    messages about the verification process at
+    <literal>DEBUG1</literal> and <literal>DEBUG2</literal> severity
+    levels.  These messages provide detailed information about the
+    verification process that may be of interest to
+    <productname>PostgreSQL</productname> developers.  Advanced users
+    may also find this information helpful, since it provides
+    additional context should verification actually detect an
+    inconsistency.  Running:
+<programlisting>
+SET client_min_messages = DEBUG1;
+</programlisting>
+    in an interactive <application>psql</application> session before
+    running a verification query will display messages about the
+    progress of verification with a manageable level of detail.
+   </para>
+  </tip>
+
  </sect2>
 
  <sect2>

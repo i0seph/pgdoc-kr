@@ -92,16 +92,15 @@ ALTER COLLATION <replaceable>이름</replaceable> SET SCHEMA <replaceable>새스
     <listitem>
      <para>
       버전 갱신.
-      <xref linkend="sql-altercollation-notes"
-      endterm="sql-altercollation-notes-title"/>에서 자세히 설명함.
+      <xref linkend="sql-altercollation-notes"/>에서 자세히 설명함.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
  </refsect1>
 
- <refsect1 id="sql-altercollation-notes">
-  <title id="sql-altercollation-notes-title">참고</title>
+ <refsect1 id="sql-altercollation-notes" xreflabel="참고">
+  <title>참고</title>
 
   <para>
    ICU 라이브러리에서 제공하는 문자 정렬 규칙을 사용하는 경우, 
@@ -133,6 +132,18 @@ HINT:  Rebuild all objects affected by this collation and run ALTER COLLATION pg
   </para>
 
   <para>
+   When using collations provided by <literal>libc</literal> and
+   <productname>PostgreSQL</productname> was built with the GNU C library, the
+   C library's version is used as a collation version.  Since collation
+   definitions typically change only with GNU C library releases, this provides
+   some defense against corruption, but it is not completely reliable.
+  </para>
+
+  <para>
+   Currently, there is no version tracking for the database default collation.
+  </para>
+
+  <para>
    아래 쿼리는 현재 데이터베이스에서 버전 재 갱신이 필요한 
    문자 정렬 규칙과 그것을 사용하는 개체들을 찾는데 사용할 수 있다:
 <programlisting><![CDATA[
@@ -142,8 +153,7 @@ SELECT pg_describe_object(refclassid, refobjid, refobjsubid) AS "Collation",
        ON refclassid = 'pg_collation'::regclass AND refobjid = c.oid
   WHERE c.collversion <> pg_collation_actual_version(c.oid)
   ORDER BY 1, 2;
-]]></programlisting>
-  </para>
+]]></programlisting></para>
  </refsect1>
 
  <refsect1>

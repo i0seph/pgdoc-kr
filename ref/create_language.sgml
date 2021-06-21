@@ -21,9 +21,9 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CREATE [ OR REPLACE ] [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">이름</replaceable>
 CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">이름</replaceable>
     HANDLER <replaceable class="parameter">호출핸들러</replaceable> [ INLINE <replaceable class="parameter">인라인핸들러</replaceable> ] [ VALIDATOR <replaceable>유효성검사함수</replaceable> ]
+CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="parameter">이름</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -38,21 +38,6 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
    있도록 등록한다 - 옮긴이.
   </para>
 
-  <note>
-   <para>
-    <productname>PostgreSQL</productname> 9.1 이후부터 
-    대부분의 프로시져 언어는 <quote>확장 모듈</quote>로 관리되기 
-    때문에, <command>CREATE LANGUAGE</command> 명령을 직접 
-    사용하기 보다는 <xref linkend="sql-createextension"/> 명령으로
-    등록한다.  이렇기 때문에, <command>CREATE LANGUAGE</command>
-    명령은 그 확장 모듈 설치 스크립트 안에서만 사용되어야 한다.
-    한편, 이미 확장 모듈로 설치하지 않은 언어가 있다면,
-    <literal>CREATE EXTENSION <replaceable>langname</replaceable> FROM
-    unpackaged</literal> 명령으로 확장 모듈로 변환해서 
-    사용하는 것이 향후 업그레이드를 위해서 좋다.
-   </para>
-  </note>
-
   <para>
    <command>CREATE LANGUAGE</command> 명령의 내부 작업은
    해당 언어로 작성된 함수 본문을 처리하는 핸들러 함수와 
@@ -61,52 +46,31 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
   </para>
 
   <para>
-   사용법은 두 가지 방식이 있는데, 
-   첫번째 문법은 <link linkend="catalog-pg-pltemplate"><structname>pg_pltemplate</structname></link> 시스템 카탈로그에 미리 정의된 언어를 등록할 때
-   사용한다.  그냥 언어 이름만 지정하면 된다. 두번째 문법은
-   <structname>pg_pltemplate</structname> 시스템 카탈로그에 정의되지 않은
-   언어를 등록할 때 쓰는 방법인데, 예전 방식이다.
+   <command>CREATE OR REPLACE LANGUAGE</command> 명령은
+   새로운 언어를 만들거나, 그 언어 설정을 바꾼다.
+   해당 언어가 이미 있다면, 명령어에 지정한 옵션으로 매개 변수를
+   바꾼다. 하지만, 언어의 소유주나 접근 권한은 바뀌지 않는다.
+   또, 해당 언어와 관련된 이미 있는 함수들도 여전히 유요한 상태를 
+   유지한다.
   </para>
 
   <para>
-   이 명령에서 해당 언어 관련 여러 옵션을 함께 사용했다 하더라도, 
-   <structname>pg_pltemplate</structname> 카탈로그에 등록되어 있는 언어라면, 
-   카탈로그 정보를 이용해서 언어를 등록한다.
-   이렇게 하는 이유는 오래된 버전의 덤프 파일을 새 버전에서 복원할 때
-   보다 안전하게 복원하기 위함이다.
+   새 언어 등록 또는 매개 변수 변경은 <productname>PostgreSQL</productname>
+   슈퍼유저 권한이 있어야 가능하다.  
+   한편, 해당 언어의 소유주를 일반 사용자로 지정하면, 
+   그 사용자는 그 언어를 삭제, 권한 변경, 이름 변경, 새 소유주 지정을 
+   할 수 있다.  (단, C 함수들은 일반 사용자에게 소유권을 부여하는 것은
+   위험하다.  이렇게 되면 그 일반 사용자 슈퍼유저 권한을 획득하는 길이 
+   열리게 된다.)
   </para>
 
   <para>
-   통상, 새 언어 등록은 <productname>PostgreSQL</productname> 슈퍼유저
-   권한이 있어야 가능하다.  한편, 
-   <structname>pg_pltemplate</structname> 카탈로그에서
-   <structfield>tmpldbacreate</structfield> 칼럼값이 true인 언어에 대해서는
-   데이터베이스 소유주도 자신의 데이터베이스 내에서는 그 언어를
-   등록할 수 있다.
-   데이터베이스 소유주가 등록할 수 있는 언어는 신뢰할 수 있는
-   (<structfield>tmpltrusted</structfield> 칼럼값이 true인) 것이여야 한다.
-   물론 슈퍼유저는 <structname>pg_pltemplate</structname> 내용을 
-   바꿀 수 있다.
-   해당 언어를 등록한 사용자가 그 언어의 소유주가 되며, 
-   삭제, 이름 변경, 소유주 변경 작업을 할 수 있는 권한을 가진다.
-  </para>
-
-  <para>
-   <command>CREATE OR REPLACE LANGUAGE</command> 구문은
-   없으면 새 언어로 등록하고, 있으면, 그 정의를 바꾼다.
-   이때 이미 있어 정의가 변경 될 때는 <structname>pg_pltemplate</structname>
-   내에 정의된 정보로 바꾼다.
-   이때, 소유주, 접근 권한은 바뀌지 않는다.
-   기존에 있는 그 언어용 함수들은 여전히 유효한 것으로 간주한다.
-   추가로 <literal>REPLACE</literal>인 경우에도, 그 접근권한은 새로 등록할 때와 같다.
-   슈퍼유저이거나, 해당 언어의 소유주여야 한다.
-   <literal>REPLACE</literal> 구문은 주로 해당 언어가 이미 있어도 
-   이 작업을 오류로 처리하지 않게 하려고 사용한다.
-   <structname>pg_pltemplate</structname> 안에 등록된 언어라면,
-   특별한 경우를 제외하고는  <literal>REPLACE</literal> 작업으로
-   변경되는 것은 없다. 물론 앞에서 설명한 대로 기존 언어가
-   <structname>pg_pltemplate</structname>에서 정의된 정보와 다른 경우는
-   등록 정보가 변경 된다.
+   핸들러 함수를 지정하지 않는 <command>CREATE LANGUAGE</command> 구문은
+   더 이상 사용할 수 없다.  오래된 버전의 덤프 파일 호환성 유지 때문에,
+   있을 뿐, 이것은 <command>CREATE EXTENSION</command>으로 
+   재해석한다.  이런 구문은 그 언어와 이름이 같은 확장 모듈을 설치로
+   간주한다.  그 확장 모듈이 설치되면, 필요한 함수들과 언어가 함께
+   설치된다.
   </para>
  </refsect1>
 
@@ -209,11 +173,6 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
     </varlistentry>
    </variablelist>
 
-  <para>
-   <literal>TRUSTED</literal> 옵션과 지원 함수들은 
-   그 언어가 <structname>pg_pltemplate</structname> 내에 미리 정의된 것이라면, 
-   무시된다.
-  </para>
  </refsect1>
 
  <refsect1 id="sql-createlanguage-notes">
@@ -248,46 +207,24 @@ CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <replaceable class="pa
    설치해야하는 번거로움을 줄일 수 있다.
   </para>
 
-  <para>
-   <structname>pg_pltemplate</structname> 카탈로그에 미리 정의된 언어가 아닌 경우,
-   그 언어를 등록할 때 필요한 호출 핸들러 함수, 인라인 핸들러 함수(필요하다면),
-   유효성 검사 함수(필요하다면)는 먼저 그 데이터베이스에 있어야 한다.
-   반면, <structname>pg_pltemplate</structname> 카탈로그에 정의된 언어를 
-   등록(설치)하는 경우는 그 관련 함수들을 따로 만들어(설치) 둘 필요는 없다.
-   해당 데이터베이스에 없으면 자동으로 만든다.
-   (그 언어용 공유 라이브러리를 사용할 수 없는 경우, - 설치가 잘못된 경우
-   <command>CREATE LANGUAGE</command> 명령은 실패한다.) 
-  </para>
-
-  <para>
-   <productname>PostgreSQL</productname> 7.3 이전 버전에서는
-   핸들러 함수의 반환 자료형이 <type>language_handler</type>가 아니라, 
-   <type>opaque</type>였다.
-   오래된 버전의 덤프 파일의 호환성을 위해서, 
-   이 경우도 허용하기는 하지만, <type>language_handler</type>
-   형으로 바꾸라는 알림 메시지를 보여준다.
-  </para>
  </refsect1>
 
  <refsect1 id="sql-createlanguage-examples">
   <title>예제</title>
 
   <para>
-   표준 프로시져 언어인 경우는 다음과 같이 간단하게 만들 수 있음:
-<programlisting>
-CREATE LANGUAGE plperl;
-</programlisting>
-  </para>
-
-  <para>
-   <structname>pg_pltemplate</structname> 카탈로그에 없는 언어인 경우는 다음과
-   같은 방식으로 등록한다:
+   새 프로시져 언어를 만드는 단순한 절차는 다음과 같다:
 <programlisting>
 CREATE FUNCTION plsample_call_handler() RETURNS language_handler
     AS '$libdir/plsample'
     LANGUAGE C;
 CREATE LANGUAGE plsample
     HANDLER plsample_call_handler;
+</programlisting>
+   일반적으로 위 작업 절차를 확장 모듈 생성 스크립트로 만들고,
+   다음과 같이 확장 모듈 설치 작업으로 진행한다:
+<programlisting>
+CREATE EXTENSION plsample;
 </programlisting></para>
  </refsect1>
 

@@ -82,8 +82,18 @@
    <para>
     진화과정을 시뮬레이션한다 - <firstterm>재조합</firstterm>,
     <firstterm>변이</firstterm>, <firstterm>선택</firstterm> 과정을 거치면서
-    해결책 가운데 가장 적합도가 높은 것을 선택한다.
+    해결책 가운데 가장 적합도가 높은 것을 선택한다.  <xref linkend="geqo-figure"/>
+    에서 그 과정을 보여준다.
    </para>
+
+   <figure id="geqo-figure">
+    <title>유전자 알고리즘 구조</title>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="images/genetic-algorithm.svg" format="SVG" width="100%"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
 
    <para>
     <systemitem class="resource">comp.ai.genetic</systemitem> 뉴스그룹 <acronym>FAQ</acronym>에
@@ -96,49 +106,6 @@
     그 결과는 분명 임의적 결과는 아니다(순수 임의 선택보다는 낫다).
    </para>
 
-   <figure id="geqo-diagram">
-    <title>유전자 알고리즘의 구조화된 도식</title>
-
-    <informaltable frame="none">
-     <tgroup cols="2">
-      <tbody>
-       <row>
-        <entry>P(t)</entry>
-        <entry>t 시간에 만든 조상 세대</entry>
-       </row>
-
-       <row>
-        <entry>P''(t)</entry>
-        <entry>t 시간에 만든 자손 세대</entry>
-       </row>
-      </tbody>
-     </tgroup>
-    </informaltable>
-
-<literallayout class="monospaced">
-+=========================================+
-|&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;   알고리즘 GA  &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;|
-+=========================================+
-| t := 0 초기화                           |
-+=========================================+
-| P(t) 생성                               |
-+=========================================+
-| P(t) 적합도계산                         |
-+=========================================+
-| 중지 조건에 맞을 때까지 반복
-|   +-------------------------------------+
-|   | P'(t)  := P(t) 재조합               |
-|   +-------------------------------------+
-|   | P''(t) := P'(t) 변이                |
-|   +-------------------------------------+
-|   | P(t+1) := P''(t)와 P(t) 가운데 선택 |
-|   +-------------------------------------+
-|   | P''(t) 적합도 계산                  |
-|   +-------------------------------------+
-|   | t := t + 1                          |
-+===+=====================================+
-</literallayout>
-   </figure>
   </sect1>
 
   <sect1 id="geqo-pg-intro">

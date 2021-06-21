@@ -139,8 +139,8 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
     <listitem>
      <para>
       만들 새 테이블의 저장 매개 변수를 지정한다:
-      <xref linkend="sql-createtable-storage-parameters"
-      endterm="sql-createtable-storage-parameters-title"/>에서 
+      <xref linkend="sql-createtable"/>의 
+      <xref linkend="sql-createtable-storage-parameters"/> 부분에서
       이 변수들을 자세히 다룬다.
       For backward-compatibility the <literal>WITH</literal>
       clause for a table can also include <literal>OIDS=FALSE</literal> to

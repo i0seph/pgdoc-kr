@@ -30,7 +30,7 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
 ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
     SET SCHEMA <replaceable>새스키마</replaceable>
 ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="parameter">인자모드</replaceable> ] [ <replaceable class="parameter">인자이름</replaceable> ] <replaceable class="parameter">인자자료형</replaceable> [, ...] ] ) ]
-    DEPENDS ON EXTENSION <replaceable>확장모듈이름</replaceable>
+    [ NO ] DEPENDS ON EXTENSION <replaceable>확장모듈이름</replaceable>
 
 <phrase><replaceable class="parameter">작업</replaceable> 자리에는:</phrase>
 
@@ -148,10 +148,14 @@ ALTER FUNCTION <replaceable>이름</replaceable> [ ( [ [ <replaceable class="par
    </varlistentry>
 
    <varlistentry>
-    <term><replaceable class="parameter">확장모듈이름</replaceable></term>
+    <term><literal>DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable></literal></term>
+    <term><literal>NO DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈이름</replaceable></literal></term>
     <listitem>
      <para>
-      해당 함수가 이 확장 모듈의 구성 요소가 되도록 의존 관계를 맺음.
+      해당 함수가 이 확장 모듈의 구성 요소가 되도록 의존 관계를 맺음
+      (<literal>NO</literal>
+      옵션을 추가하면 의존 관계 끊음). 의존관계를 맺으면,
+      해당 확장 모듈이 삭제 될 때 이 함수도 함께 삭제 된다.
      </para>
     </listitem>
    </varlistentry>

@@ -24,7 +24,6 @@ PostgreSQL documentation
 CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈이름</replaceable>
     [ WITH ] [ SCHEMA <replaceable class="parameter">스키마이름</replaceable> ]
              [ VERSION <replaceable class="parameter">버전</replaceable> ]
-             [ FROM <replaceable class="parameter">옛버전</replaceable> ]
              [ CASCADE ]
 </synopsis>
  </refsynopsisdiv>
@@ -50,13 +49,23 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
   </para>
 
   <para>
-   이 명령은 여러 개체를 만드는 일을 하기 때문에, 
-   그 각 작업에 필요한 적합한 권한이 있어야 한다.
-   확장 모듈 대부분은 슈퍼유저 또는 해당 데이터베이스 
-   소유주만 설치할 수 있다.
    <command>CREATE EXTENSION</command> 명령을 실행하는 
    사용자는 해당 확장 모듈의 소유주 되며, 
    그 확장 모듈 소속 모든 개체들의 소유주가 된다.
+  </para>
+
+  <para>
+   Loading an extension ordinarily requires the same privileges that would
+   be required to create its component objects.  For many extensions this
+   means superuser privileges are needed.
+   However, if the extension is marked <firstterm>trusted</firstterm> in
+   its control file, then it can be installed by any user who has
+   <literal>CREATE</literal> privilege on the current database.
+   In this case the extension object itself will be owned by the calling
+   user, but the contained objects will be owned by the bootstrap superuser
+   (unless the extension's script explicitly assigns them to the calling
+   user).  This configuration gives the calling user the right to drop the
+   extension, but not to modify individual objects within it.
   </para>
 
  </refsect1>
@@ -128,30 +137,6 @@ CREATE EXTENSION [ IF NOT EXISTS ] <replaceable class="parameter">확장모듈�
         이 버전 값은 식별자이거나 문자열이다.
         이 옵션을 지정하지 않으면,
         해당 확장 모듈 제어 파일에서 지정한 기본 버전이 설치된다.
-       </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry>
-      <term><replaceable class="parameter">옛버전</replaceable></term>
-      <listitem>
-       <para>
-        <literal>FROM</literal> <replaceable class="parameter">옛버전</replaceable>
-        구문은 엄격히 말하면, 확장 모듈을 설치하는 것이 아니라, 
-        옛날 형식으로 설치된 해당 확장 모듈 소속 개체들을 
-        지정한 확장 모듈 개체 소속으로 지정하는 일을 한다.
-        이 작업에는 해당 확장 모듈의 대체 설치 스크립트가 사용된다.
-        이 때는 기존 소속 개체들을 포함하는 스키마를 
-        <literal>SCHEMA</literal> 옵션으로 지정해야 한다.
-       </para>
-
-       <para>
-        <replaceable
-        class="parameter">옛버전</replaceable>  값은 해당 확장 모듈
-        제작자에 의해 결정되며, 새 확장 모듈로 업그레이드 할 수있는
-        옛날 방식 모듈의 버전이 두 개 이상 있는 경우 달라질 수 있다.
-        9.1 이전 버전에서 설치된 확장 모듈이 옛 버전인 경우는
-        이 값으로 <literal>unpackaged</literal>를 사용한다.
        </para>
       </listitem>
      </varlistentry>
@@ -239,17 +224,6 @@ CREATE EXTENSION hstore SCHEMA addons;
 SET search_path = addons;
 CREATE EXTENSION hstore;
 </programlisting>
-  </para>
-
-  <para>
-   9.1 버전 이전에 이미 설치된 <literal>hstore</literal> 소속을 개체들을
-   하나의 확장 모듈로 묶는 경우:
-   extension style:
-<programlisting>
-CREATE EXTENSION hstore SCHEMA public FROM unpackaged;
-</programlisting>
-   이 때는 그 <literal>hstore</literal> 소속 개체들이 어느 스키마에 있는지
-   꼭 확인하고, 그 스키마 이름을 지정해 주어야 한다.
   </para>
  </refsect1>
 

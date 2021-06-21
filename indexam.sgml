@@ -96,6 +96,8 @@ typedef struct IndexAmRoutine
     uint16      amstrategies;
     /* total number of support functions that this AM uses */
     uint16      amsupport;
+    /* opclass options support function number or 0 */
+    uint16      amoptsprocnum;
     /* does AM support ORDER BY indexed column's value? */
     bool        amcanorder;
     /* does AM support ORDER BY result of an operator on indexed column? */
@@ -122,6 +124,10 @@ typedef struct IndexAmRoutine
     bool        amcanparallel;
     /* does AM support columns included with clause INCLUDE? */
     bool        amcaninclude;
+    /* does AM use maintenance_work_mem? */
+    bool        amusemaintenanceworkmem;
+    /* OR of parallel vacuum flags */
+    uint8       amparallelvacuumoptions;
     /* type of data stored in index, or InvalidOid if variable */
     Oid         amkeytype;
 

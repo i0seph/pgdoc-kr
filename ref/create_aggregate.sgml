@@ -397,10 +397,7 @@ SELECT col FROM tab ORDER BY col USING sortop LIMIT 1;
       집계 작업에서 사용하는 상태 값의 대략적인 평균 크기(바이트).  이 옵션이
       생략되거나, 0으로 지정하면, <replaceable>상태값_자료형</replaceable>의
       기본 크기로 간주한다.  이 값으로 실행 계획기는 집계 작업에서 
-      필요한 메모리를 계산한다.  실행 계획기는 해시 테이블이 
-      <xref linkend="guc-work-mem"/> 크기 안에 처리가 가능하다고 
-      판단하면, 이 때만 해시 집계 작업을 고려할 것이다. 즉, 이 값이 
-      크다면, 해시 집계를 권고하지 않는다.
+      필요한 메모리를 계산한다.
      </para>
     </listitem>
    </varlistentry>
@@ -442,8 +439,8 @@ SELECT col FROM tab ORDER BY col USING sortop LIMIT 1;
       This option specifies whether the final function is a pure function
       that does not modify its arguments.  <literal>READ_ONLY</literal> indicates
       it does not; the other two values indicate that it may change the
-      transition state value.  See <xref linkend="sql-createaggregate-notes"
-      endterm="sql-createaggregate-notes-title"/> below for more detail.  The
+      transition state value.  See <xref linkend="sql-createaggregate-notes" />
+      below for more detail.  The
       default is <literal>READ_ONLY</literal>, except for ordered-set aggregates,
       for which the default is <literal>READ_WRITE</literal>.
      </para>
@@ -658,8 +655,8 @@ SELECT col FROM tab ORDER BY col USING sortop LIMIT 1;
   </para>
  </refsect1>
 
- <refsect1 id="sql-createaggregate-notes">
-  <title id="sql-createaggregate-notes-title">참고</title>
+ <refsect1 id="sql-createaggregate-notes" xreflabel="참고">
+  <title>참고</title>
 
    <para>
     함수 이름을 설정 값으로 하는 옵션들에서는 

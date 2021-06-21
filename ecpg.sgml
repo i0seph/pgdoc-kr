@@ -1,7 +1,7 @@
 <!-- doc/src/sgml/ecpg.sgml -->
 
 <chapter id="ecpg">
- <title><application>ECPG</application> - Embedded <acronym>SQL</acronym> in C</title>
+ <title><application>ECPG</application> &mdash; Embedded <acronym>SQL</acronym> in C</title>
 
  <indexterm zone="ecpg"><primary>embedded SQL</primary><secondary>in C</secondary></indexterm>
  <indexterm zone="ecpg"><primary>C</primary></indexterm>
@@ -1043,7 +1043,7 @@ struct varchar_var { int len; char arr[180]; } var;
     </para>
 
     <sect4>
-     <title id="ecpg-type-timestamp-date">timestamp, date</title>
+     <title>timestamp, date</title>
 
      <para>
       Here is a pattern for handling <type>timestamp</type> variables
@@ -1208,7 +1208,7 @@ EXEC SQL END DECLARE SECTION;
     </sect4>
 
     <sect4>
-     <title id="ecpg-type-bytea">bytea</title>
+     <title>bytea</title>
 
      <para>
       The handling of the <type>bytea</type> type is similar to
@@ -2989,7 +2989,7 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
          <listitem>
           <para>
            <literal>%d</literal> - is replaced by the day of the month as a
-           decimal number (01-31).
+           decimal number (01&ndash;31).
           </para>
          </listitem>
          <listitem>
@@ -3025,7 +3025,7 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
          <listitem>
           <para>
            <literal>%e</literal> - is replaced by the day of month as a decimal
-           number (1-31); single digits are preceded by a blank.
+           number (1&ndash;31); single digits are preceded by a blank.
           </para>
          </listitem>
          <listitem>
@@ -3044,13 +3044,13 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
           <para>
            <literal>%g</literal> - is replaced by the same year as in
            <literal>%G</literal>, but as a decimal number without century
-           (00-99).
+           (00&ndash;99).
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%H</literal> - is replaced by the hour (24-hour clock) as a
-           decimal number (00-23).
+           decimal number (00&ndash;23).
           </para>
          </listitem>
          <listitem>
@@ -3061,37 +3061,37 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
          <listitem>
           <para>
            <literal>%I</literal> - is replaced by the hour (12-hour clock) as a
-           decimal number (01-12).
+           decimal number (01&ndash;12).
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%j</literal> - is replaced by the day of the year as a
-           decimal number (001-366).
+           decimal number (001&ndash;366).
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%k</literal> - is replaced by the hour (24-hour clock) as a
-           decimal number (0-23); single digits are preceded by a blank.
+           decimal number (0&ndash;23); single digits are preceded by a blank.
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%l</literal> - is replaced by the hour (12-hour clock) as a
-           decimal number (1-12); single digits are preceded by a blank.
+           decimal number (1&ndash;12); single digits are preceded by a blank.
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%M</literal> - is replaced by the minute as a decimal
-           number (00-59).
+           number (00&ndash;59).
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%m</literal> - is replaced by the month as a decimal number
-           (01-12).
+           (01&ndash;12).
           </para>
          </listitem>
          <listitem>
@@ -3124,7 +3124,7 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
          <listitem>
           <para>
            <literal>%S</literal> - is replaced by the second as a decimal
-           number (00-60).
+           number (00&ndash;60).
           </para>
          </listitem>
          <listitem>
@@ -3146,19 +3146,19 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
          <listitem>
           <para>
            <literal>%U</literal> - is replaced by the week number of the year
-           (Sunday as the first day of the week) as a decimal number (00-53).
+           (Sunday as the first day of the week) as a decimal number (00&ndash;53).
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%u</literal> - is replaced by the weekday (Monday as the
-           first day of the week) as a decimal number (1-7).
+           first day of the week) as a decimal number (1&ndash;7).
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%V</literal> - is replaced by the week number of the year
-           (Monday as the first day of the week) as a decimal number (01-53).
+           (Monday as the first day of the week) as a decimal number (01&ndash;53).
            If the week containing January 1 has four or more days in the new
            year, then it is week 1; otherwise it is the last week of the
            previous year, and the next week is week 1.
@@ -3173,13 +3173,13 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
          <listitem>
           <para>
            <literal>%W</literal> - is replaced by the week number of the year
-           (Monday as the first day of the week) as a decimal number (00-53).
+           (Monday as the first day of the week) as a decimal number (00&ndash;53).
           </para>
          </listitem>
          <listitem>
           <para>
            <literal>%w</literal> - is replaced by the weekday (Sunday as the
-           first day of the week) as a decimal number (0-6).
+           first day of the week) as a decimal number (0&ndash;6).
           </para>
          </listitem>
          <listitem>
@@ -3203,7 +3203,7 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
          <listitem>
           <para>
            <literal>%y</literal> - is replaced by the year without century as a
-           decimal number (00-99).
+           decimal number (00&ndash;99).
           </para>
          </listitem>
          <listitem>
@@ -5695,7 +5695,7 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
   </sect2>
 
   <sect2 id="ecpg-ifdef">
-   <title>ifdef, ifndef, else, elif, and endif Directives</title>
+   <title>ifdef, ifndef, elif, else, and endif Directives</title>
    <para>
    You can use the following directives to compile code sections conditionally:
 
@@ -5705,7 +5705,7 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
      <listitem>
      <para>
       Checks a <replaceable>name</replaceable> and processes subsequent lines if
-      <replaceable>name</replaceable> has been created with <literal>EXEC SQL define
+      <replaceable>name</replaceable> has been defined via <literal>EXEC SQL define
       <replaceable>name</replaceable></literal>.
      </para>
      </listitem>
@@ -5716,19 +5716,8 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
      <listitem>
      <para>
       Checks a <replaceable>name</replaceable> and processes subsequent lines if
-      <replaceable>name</replaceable> has <emphasis>not</emphasis> been created with
+      <replaceable>name</replaceable> has <emphasis>not</emphasis> been defined via
       <literal>EXEC SQL define <replaceable>name</replaceable></literal>.
-     </para>
-     </listitem>
-    </varlistentry>
-
-    <varlistentry>
-     <term><literal>EXEC SQL else;</literal></term>
-     <listitem>
-     <para>
-      Starts processing an alternative section to a section introduced by
-      either <literal>EXEC SQL ifdef <replaceable>name</replaceable></literal> or
-      <literal>EXEC SQL ifndef <replaceable>name</replaceable></literal>.
      </para>
      </listitem>
     </varlistentry>
@@ -5737,9 +5726,30 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
      <term><literal>EXEC SQL elif <replaceable>name</replaceable>;</literal></term>
      <listitem>
      <para>
-      Checks <replaceable>name</replaceable> and starts an alternative section if
-      <replaceable>name</replaceable> has been created with <literal>EXEC SQL define
-      <replaceable>name</replaceable></literal>.
+      Begins an optional alternative section after an
+      <literal>EXEC SQL ifdef <replaceable>name</replaceable></literal> or
+      <literal>EXEC SQL ifndef <replaceable>name</replaceable></literal>
+      directive.  Any number of <literal>elif</literal> sections can appear.
+      Lines following an <literal>elif</literal> will be processed
+      if <replaceable>name</replaceable> has been
+      defined <emphasis>and</emphasis> no previous section of the same
+      <literal>ifdef</literal>/<literal>ifndef</literal>...<literal>endif</literal>
+      construct has been processed.
+     </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>EXEC SQL else;</literal></term>
+     <listitem>
+     <para>
+      Begins an optional, final alternative section after an
+      <literal>EXEC SQL ifdef <replaceable>name</replaceable></literal> or
+      <literal>EXEC SQL ifndef <replaceable>name</replaceable></literal>
+      directive.  Subsequent lines will be processed if no previous section
+      of the same
+      <literal>ifdef</literal>/<literal>ifndef</literal>...<literal>endif</literal>
+      construct has been processed.
      </para>
      </listitem>
     </varlistentry>
@@ -5748,7 +5758,9 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
      <term><literal>EXEC SQL endif;</literal></term>
      <listitem>
      <para>
-      Ends an alternative section.
+      Ends an
+      <literal>ifdef</literal>/<literal>ifndef</literal>...<literal>endif</literal>
+      construct.  Subsequent lines are processed normally.
      </para>
      </listitem>
     </varlistentry>
@@ -5756,14 +5768,20 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
    </para>
 
    <para>
-    Example:
+    <literal>ifdef</literal>/<literal>ifndef</literal>...<literal>endif</literal>
+    constructs can be nested, up to 127 levels deep.
+   </para>
+
+   <para>
+    This example will compile exactly one of the three <literal>SET
+    TIMEZONE</literal> commands:
 <programlisting>
-EXEC SQL ifndef TZVAR;
-EXEC SQL SET TIMEZONE TO 'GMT';
+EXEC SQL ifdef TZVAR;
+EXEC SQL SET TIMEZONE TO TZVAR;
 EXEC SQL elif TZNAME;
 EXEC SQL SET TIMEZONE TO TZNAME;
 EXEC SQL else;
-EXEC SQL SET TIMEZONE TO TZVAR;
+EXEC SQL SET TIMEZONE TO 'GMT';
 EXEC SQL endif;
 </programlisting>
    </para>
@@ -5917,7 +5935,7 @@ ECPG = ecpg
      <para>
        <function>ECPGtransactionStatus(const char *<replaceable>connection_name</replaceable>)</function>
        returns the current transaction status of the given connection identified by <replaceable>connection_name</replaceable>.
-       See <xref linkend="libpq-status"/> and libpq's <function>PQtransactionStatus()</function> for details about the returned status codes.
+       See <xref linkend="libpq-status"/> and libpq's <xref linkend="libpq-PQtransactionStatus"/> for details about the returned status codes.
      </para>
    </listitem>
 
@@ -8241,7 +8259,7 @@ if (*(int2 *)sqldata->sqlvar[i].sqlind != 0)
      <term><literal>sqlformat</literal></term>
       <listitem>
        <para>
-        Reserved in Informix, value of <function>PQfformat()</function> for the field.
+        Reserved in Informix, value of <xref linkend="libpq-PQfformat"/> for the field.
        </para>
       </listitem>
      </varlistentry>
@@ -8270,7 +8288,7 @@ if (*(int2 *)sqldata->sqlvar[i].sqlind != 0)
      <term><literal>sqlxid</literal></term>
       <listitem>
        <para>
-        Extended type of the field, result of <function>PQftype()</function>.
+        Extended type of the field, result of <xref linkend="libpq-PQftype"/>.
        </para>
       </listitem>
      </varlistentry>

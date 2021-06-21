@@ -24,6 +24,7 @@ PostgreSQL documentation
 ALTER STATISTICS <replaceable class="parameter">이름</replaceable> OWNER TO { <replaceable class="parameter">새소유주</replaceable> | CURRENT_USER | SESSION_USER }
 ALTER STATISTICS <replaceable class="parameter">이름</replaceable> RENAME TO <replaceable class="parameter">새이름</replaceable>
 ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA <replaceable class="parameter">새스키마</replaceable>
+ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET STATISTICS <replaceable class="parameter">새타켓</replaceable>
 </synopsis>
  </refsynopsisdiv>
 
@@ -46,7 +47,6 @@ ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA 
    있어야한다.  (새 소유주가
    해당 통계정보 개체를 지우거나, 새로 만들 수 있어야 하기 때문이다.
    반면, 슈퍼유저는 이런 제약 사항이 없다.)
-
   </para>
  </refsect1>
 
@@ -87,6 +87,23 @@ ALTER STATISTICS <replaceable class="parameter">이름</replaceable> SET SCHEMA 
       <listitem>
        <para>
         통계정보 개체의 새 스키마 이름.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><replaceable class="parameter">새타겟</replaceable></term>
+      <listitem>
+       <para>
+        The statistic-gathering target for this statistics object for subsequent
+        <xref linkend="sql-analyze"/> operations.
+        The target can be set in the range 0 to 10000; alternatively, set it
+        to -1 to revert to using the maximum of the statistics target of the
+        referenced columns, if set, or the system default statistics
+        target (<xref linkend="guc-default-statistics-target"/>).
+        For more information on the use of statistics by the
+        <productname>PostgreSQL</productname> query planner, refer to
+        <xref linkend="planner-stats"/>.
        </para>
       </listitem>
      </varlistentry>

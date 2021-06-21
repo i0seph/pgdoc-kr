@@ -52,7 +52,7 @@
   이 모듈에서 제공하는 이것들을 사용하려면, 
   코드에서 설치를 끝내고 나서 데이터베이스 시스템에 새로운 
   SQL 객체들을 등록해 주어야 사용할 수 있다.
-  <productname>PostgreSQL</productname> 9.1 이후 버전부터는 이런 일련의 작업을
+  이런 일련의 작업을
   <xref linkend="sql-createextension"/> 명령어로 손쉽게 할 수 있다.
   새로운 확장 모듈을 해당 데이터베이스 설치하려면, 
   데이터베이스 접속 후 다음과 같은 명령을 실행하면 된다:
@@ -61,7 +61,7 @@
 CREATE EXTENSION <replaceable>확장모듈이름</replaceable>;
 </programlisting>
 
-  이 명령은 데이터베이스 관리자 권한으로만 실행 할 수 있다.  이 작업은
+  이 작업은
   현재 접속해 있는 데이터베이스에 한정 되어 작동한다.  필요하다면, 
   서버에 있는 여러 데이터베이스에 해당 모듈을 사용하고싶다면, 
   각각 이 명령을 실행해 주거나, <literal>template1</literal> 데이터베이스에 
@@ -70,30 +70,20 @@ CREATE EXTENSION <replaceable>확장모듈이름</replaceable>;
  </para>
 
  <para>
+  <quote>trusted</quote> 표시가된 모듈이 아니면, 신뢰할 수 없는 모듈임으로
+  이런 모듈들은 데이터베이스 슈퍼유저이거나, 
+  해당 데이터베이스를 대상으로 <literal>CREATE</literal> 권한이 있는
+  사용자만 설치할 수 있다.  신뢰할 수 있는 모듈은 다음 다음 섹션들에서
+  각각 언급한다.  일반적으로, 신뢰할 수 있는 모듈이란 
+  데이터베이스 범위 밖의 일은 하지 못하도록 기능이 한정적인 것들을 말한다.
+ </para>
+
+ <para>
   많은 모듈들은 설치될 스키마를 직접 지정할 수 있도록 한다. 
   이렇게 하려면, <command>CREATE EXTENSION</command> 명령 구문에, 
   <literal>SCHEMA <replaceable>스키마이름</replaceable></literal> 형태로 
   추가해 주면 된다.  이 값을 지정하지 않으면, 
   <literal>public</literal> 스키마에 필요한 객체들이 만들어진다.
- </para>
-
- <para>
-  9.1 버전 이전 서버에 덤프한 데이터베이스를 현재 버전으로 가져와서 
-  사용하고 있다면, 9.1 이후 버전부터 사용한 <firstterm>extension</firstterm>
-  객체와의 의존성이 없어 <command>ALTER EXTENSION</command>나 
-  <command>DROP EXTENSION</command> 명령으로 관리할 수 없다. 
-  이런 경우, 다음 명령으로 이미 설치 되어 있는 확장 모듈용 객체들을 
-  해당 확장 모듈로 묶어 줄 수 있다.
-
-<programlisting>
-CREATE EXTENSION <replaceable>모듈이름</replaceable> FROM unpackaged;
-</programlisting>
-
-  이 작업을 하게 되면, 9.1 이후 버전에서 새로 확장 모듈을 설치한 것 처럼
-  확장 모듈과 그에 속한 객체들의 의존성을 맞춰준다.
-  그 뒤, <xref linkend="sql-alterextension"/> 명령을 사용할 수 있게 된다.
-  확장 기능을 생성, 관리 하는 것에 대한 자세한 사항은 
-  <xref linkend="extend-extensions"/>을 참조 하라.
  </para>
 
  <para>

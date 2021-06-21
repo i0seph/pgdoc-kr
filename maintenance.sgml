@@ -848,19 +848,35 @@ vacuum 임계치 = vacuum 초기 임계치 + vacuum 배율값 * 로우수
     로우수는
     <structname>pg_class</structname>.<structfield>reltuples</structfield>에서
     참조 한다.
-    더 이상 사용하지 않는, 쓸모 없는 로우 정보는 
-    통계 수집기가 수집한 정보를 사용한다. 이 정보는 
-    <command>UPDATE</command> 명령이나, 
-    <command>DELETE</command> 명령에 의해서 갱신된
-    비교적 정확한 수치다. (비교적 정확하다고 한 이유는 
-    서버 과부하시에는 이 값이 정확하게 수집되지 않을 수도 
-    있기 때문이다.)
-    테이블의 <structfield>relfrozenxid</structfield> 나이값이 
-    <varname>vacuum_freeze_table_age</varname> 설정값보다 크다면, 
-    적극적인 vacuum이 수행되어, 영구 보관 처리를 하고,
-    <structfield>relfrozenxid</structfield> 값을 변경 한다.
-    그렇지 않은 경우는 마지막 vacuum 작업 뒤 변경된 
-    자료 페이지만을 대상으로 작업한다.
+   </para>
+
+   <para>
+    The table is also vacuumed if the number of tuples inserted since the last
+    vacuum has exceeded the defined insert threshold, which is defined as:
+<programlisting>
+vacuum insert threshold = vacuum base insert threshold + vacuum insert scale factor * number of tuples
+</programlisting>
+    where the vacuum insert base threshold is
+    <xref linkend="guc-autovacuum-vacuum-insert-threshold"/>,
+    and vacuum insert scale factor is
+    <xref linkend="guc-autovacuum-vacuum-insert-scale-factor"/>.
+    Such vacuums may allow portions of the table to be marked as
+    <firstterm>all visible</firstterm> and also allow tuples to be frozen, which
+    can reduce the work required in subsequent vacuums.
+    For tables which receive <command>INSERT</command> operations but no or
+    almost no <command>UPDATE</command>/<command>DELETE</command> operations,
+    it may be beneficial to lower the table's
+    <xref linkend="reloption-autovacuum-freeze-min-age"/> as this may allow
+    tuples to be frozen by earlier vacuums.  The number of obsolete tuples and
+    the number of inserted tuples are obtained from the statistics collector;
+    it is a semi-accurate count updated by each <command>UPDATE</command>,
+    <command>DELETE</command> and <command>INSERT</command> operation.  (It is
+    only semi-accurate because some information might be lost under heavy
+    load.)  If the <structfield>relfrozenxid</structfield> value of the table
+    is more than <varname>vacuum_freeze_table_age</varname> transactions old,
+    an aggressive vacuum is performed to freeze old tuples and advance
+    <structfield>relfrozenxid</structfield>; otherwise, only pages that have been modified
+    since the last vacuum are scanned.
    </para>
 
    <para>
@@ -885,8 +901,8 @@ analyze 임계치 = analyze 초기 임계치 + analyze 배율값 * 로우수
     임계치와 배율값은 기본적으로 <filename>postgresql.conf</filename>
     파일에서 지정한다. 하지만, 
     각 테이블 별로도 개별 지정이 가능하다.
-    이 부분에 대한 것은 <xref linkend="sql-createtable-storage-parameters"
-    endterm="sql-createtable-storage-parameters-title"/>에서
+    이 부분에 대한 것은
+    <xref linkend="sql-createtable-storage-parameters"/>에서
     자세히 다룬다.
     이 값들과 autovacuum 제어 매개 변수 값들이 각 테이블 별로 지정 되면, 
     그 테이블에 대해서는 서버 전역으로 설정된 값이 무시된다.
@@ -1082,7 +1098,7 @@ pg_ctl start | rotatelogs /var/log/pgsql_log 86400
     In this case, log messages are sent to the old log file until a
     successful log rotation. If <application>logrotate</application> is
     configured to compress the log file and delete it, the server may lose
-    the messages logged in this timeframe. To avoid this issue, you can
+    the messages logged in this time frame. To avoid this issue, you can
     configure the logging collector to dynamically assign log file names
     and use a <literal>prerotate</literal> script to ignore open log files.
     </para>

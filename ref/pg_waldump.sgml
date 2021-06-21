@@ -127,6 +127,19 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
+      <term><option>-q</option></term>
+      <term><option>--quiet</option></term>
+      <listitem>
+       <para>
+        오류 외에는 어떤 출력도 하지 않는다.  이 옵션은
+        WAL 레코드들이 모두 정상 구조로 되어있는지 확인하는데, 
+        유용한다.  이 옵션으로 그 레코드 내용이 바른지는 확인할 
+        수 없다.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
       <term><option>-r <replaceable>리소스</replaceable></option></term>
       <term><option>--rmgr=<replaceable>리소스</replaceable></option></term>
       <listitem>

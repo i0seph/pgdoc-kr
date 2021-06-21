@@ -1754,8 +1754,9 @@ simple query protocol can be used.
 
 <para>
  For the purpose of testing replication commands, you can make a replication
- connection via <application>psql</application> or any other <literal>libpq</literal>-using
- tool with a connection string including the <literal>replication</literal> option,
+ connection via <application>psql</application> or any other
+ <application>libpq</application>-using tool with a connection string including
+ the <literal>replication</literal> option,
  e.g.:
 <programlisting>
 psql "dbname=postgres replication=database" -c "IDENTIFY_SYSTEM;"
@@ -2073,8 +2074,9 @@ The commands accepted in replication mode are:
       the switch position is the end of the WAL that was streamed, but there
       are corner cases where the server can send some WAL from the old
       timeline that it has not itself replayed before promoting. Finally, the
-      server sends CommandComplete message, and is ready to accept a new
-      command.
+      server sends two CommandComplete messages (one that ends the CopyData
+      and the other ends the <literal>START_REPLICATION</literal> itself), and
+      is ready to accept a new command.
      </para>
 
      <para>
@@ -2396,7 +2398,8 @@ The commands accepted in replication mode are:
 
      <para>
       The messages inside the CopyBothResponse messages are of the same format
-      documented for <literal>START_REPLICATION ... PHYSICAL</literal>.
+      documented for <literal>START_REPLICATION ... PHYSICAL</literal>, including
+      two CommandComplete messages.
      </para>
 
      <para>
@@ -2480,8 +2483,8 @@ The commands accepted in replication mode are:
     </listitem>
   </varlistentry>
 
-  <varlistentry>
-    <term><literal>BASE_BACKUP</literal> [ <literal>LABEL</literal> <replaceable>'label'</replaceable> ] [ <literal>PROGRESS</literal> ] [ <literal>FAST</literal> ] [ <literal>WAL</literal> ] [ <literal>NOWAIT</literal> ] [ <literal>MAX_RATE</literal> <replaceable>rate</replaceable> ] [ <literal>TABLESPACE_MAP</literal> ] [ <literal>NOVERIFY_CHECKSUMS</literal> ]
+  <varlistentry id="protocol-replication-base-backup" xreflabel="BASE_BACKUP">
+    <term><literal>BASE_BACKUP</literal> [ <literal>LABEL</literal> <replaceable>'label'</replaceable> ] [ <literal>PROGRESS</literal> ] [ <literal>FAST</literal> ] [ <literal>WAL</literal> ] [ <literal>NOWAIT</literal> ] [ <literal>MAX_RATE</literal> <replaceable>rate</replaceable> ] [ <literal>TABLESPACE_MAP</literal> ] [ <literal>NOVERIFY_CHECKSUMS</literal> ] [ <literal>MANIFEST</literal> <replaceable>manifest_option</replaceable> ] [ <literal>MANIFEST_CHECKSUMS</literal> <replaceable>checksum_algorithm</replaceable> ]
      <indexterm><primary>BASE_BACKUP</primary></indexterm>
     </term>
     <listitem>
@@ -2591,6 +2594,41 @@ The commands accepted in replication mode are:
          </para>
         </listitem>
        </varlistentry>
+
+       <varlistentry>
+        <term><literal>MANIFEST</literal> <replaceable>manifest_option</replaceable></term>
+        <listitem>
+         <para>
+          When this option is specified with a value of <literal>yes</literal>
+          or <literal>force-encode</literal>, a backup manifest is created
+          and sent along with the backup.  The manifest is a list of every
+          file present in the backup with the exception of any WAL files that
+          may be included. It also stores the size, last modification time, and
+          optionally a checksum for each file.
+          A value of <literal>force-encode</literal> forces all filenames
+          to be hex-encoded; otherwise, this type of encoding is performed only
+          for files whose names are non-UTF8 octet sequences.
+          <literal>force-encode</literal> is intended primarily for testing
+          purposes, to be sure that clients which read the backup manifest
+          can handle this case. For compatibility with previous releases,
+          the default is <literal>MANIFEST 'no'</literal>.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry>
+        <term><literal>MANIFEST_CHECKSUMS</literal> <replaceable>checksum_algorithm</replaceable></term>
+        <listitem>
+         <para>
+          Specifies the checksum algorithm that should be applied to each file included
+          in the backup manifest. Currently, the available
+          algorithms are <literal>NONE</literal>, <literal>CRC32C</literal>,
+          <literal>SHA224</literal>, <literal>SHA256</literal>,
+          <literal>SHA384</literal>, and <literal>SHA512</literal>.
+          The default is <literal>CRC32C</literal>.
+         </para>
+        </listitem>
+       </varlistentry>
       </variablelist>
      </para>
      <para>
@@ -2630,8 +2668,8 @@ The commands accepted in replication mode are:
         <term><literal>size</literal> (<type>int8</type>)</term>
         <listitem>
          <para>
-          The approximate size of the tablespace, if progress report has
-          been requested; otherwise it's null.
+          The approximate size of the tablespace, in kilobytes (1024 bytes),
+          if progress report has been requested; otherwise it's null.
          </para>
         </listitem>
        </varlistentry>
@@ -2645,8 +2683,10 @@ The commands accepted in replication mode are:
       <quote>ustar interchange format</quote> specified in the POSIX 1003.1-2008
       standard) dump of the tablespace contents, except that the two trailing
       blocks of zeroes specified in the standard are omitted.
-      After the tar data is complete, a final ordinary result set will be sent,
-      containing the WAL end position of the backup, in the same format as
+      After the tar data is complete, and if a backup manifest was requested,
+      another CopyResponse result is sent, containing the manifest data for the
+      current base backup. In any case, a final ordinary result set will be
+      sent, containing the WAL end position of the backup, in the same format as
       the start position.
      </para>
 

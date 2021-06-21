@@ -22,6 +22,12 @@
   결국 자료형 유효성 검사나, 하이픈 처리 기능은 이 모듈에서 빠져야 할 것이다.
  </para>
 
+ <para>
+  This module is considered <quote>trusted</quote>, that is, it can be
+  installed by non-superusers who have <literal>CREATE</literal> privilege
+  on the current database.
+ </para>
+
  <sect2>
   <title>자료형</title>
 
@@ -33,6 +39,8 @@
   <table id="isn-datatypes">
    <title><filename>isn</filename> 자료형들</title>
    <tgroup cols="2">
+    <colspec colname="col1" colwidth="1*"/>
+    <colspec colname="col2" colwidth="2*"/>
     <thead>
      <row>
       <entry>자료형</entry>
@@ -224,38 +232,63 @@
 
   <table id="isn-functions">
    <title><filename>isn</filename> 함수들</title>
-   <tgroup cols="3">
-    <thead>
-     <row>
-      <entry>함수</entry>
-      <entry>반환자료형</entry>
-      <entry>설명</entry>
-     </row>
-    </thead>
+    <tgroup cols="1">
+     <thead>
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        함수
+       </para>
+       <para>
+        설명
+       </para></entry>
+      </row>
+     </thead>
 
-    <tbody>
-     <row>
-      <entry><function>isn_weak(boolean)</function><indexterm><primary>isn_weak</primary></indexterm></entry>
-      <entry><type>boolean</type></entry>
-      <entry>입력에서 유효성 검사의 엄격함을 지정함 (반환값은 새로 지정된 값)</entry>
-     </row>
-     <row>
-      <entry><function>isn_weak()</function></entry>
-      <entry><type>boolean</type></entry>
-      <entry>현재 유효성 검사의 엄격함을 보여줌</entry>
-     </row>
-     <row>
-      <entry><function>make_valid(isn)</function><indexterm><primary>make_valid</primary></indexterm></entry>
-      <entry><type>isn</type></entry>
-      <entry>잘못된 플래그가 있는 입력값을 바른 값으로 바꿈</entry>
-     </row>
-     <row>
-      <entry><function>is_valid(isn)</function><indexterm><primary>is_valid</primary></indexterm></entry>
-      <entry><type>boolean</type></entry>
-      <entry>잘못된 플래그가 있는 입력값을 바르게 바꿀 수 있는지 검사함</entry>
-     </row>
-    </tbody>
-   </tgroup>
+     <tbody>
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm><primary>isn_weak</primary></indexterm>
+        <function>isn_weak</function> ( <type>boolean</type> )
+        <returnvalue>boolean</returnvalue>
+       </para>
+       <para>
+        입력값 유효성 검사를 대강 할지 지정함
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <function>isn_weak</function> ()
+        <returnvalue>boolean</returnvalue>
+       </para>
+       <para>
+        입력값 유효성 검사가 현재 대강 하는지 확인
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm><primary>make_valid</primary></indexterm>
+        <function>make_valid</function> ( <type>isn</type> )
+        <returnvalue>isn</returnvalue>
+       </para>
+       <para>
+        잘못된 번호를 검사하고, (잘못된 플래그를 지움).
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm><primary>is_valid</primary></indexterm>
+        <function>is_valid</function> ( <type>isn</type> )
+        <returnvalue>boolean</returnvalue>
+       </para>
+       <para>
+        잘못된 플래그가 있는 입력값을 바르게 바꿀 수 있는지 검사함
+       </para></entry>
+      </row>
+     </tbody>
+    </tgroup>
   </table>
 
   <para>
@@ -371,7 +404,7 @@ SELECT isbn13(id) FROM test;
  <sect2>
   <title>만든 이</title>
   <para>
-   Germ&aacute;n M&eacute;ndez Bravo (Kronuz), 2004 - 2006
+   Germ&aacute;n M&eacute;ndez Bravo (Kronuz), 2004&ndash;2006
   </para>
 
   <para>

@@ -208,8 +208,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">구독이름</replaceable>
         </listitem>
        </varlistentry>
       </variablelist>
-     </para>
-    </listitem>
+     </para></listitem>
    </varlistentry>
   </variablelist>
  </refsect1>

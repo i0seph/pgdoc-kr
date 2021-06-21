@@ -24,7 +24,7 @@ PostgreSQL documentation
 ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
     <replaceable class="parameter">작업</replaceable> [, ... ]
 ALTER MATERIALIZED VIEW <replaceable class="parameter">이름</replaceable>
-    DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈</replaceable>
+    [ NO ] DEPENDS ON EXTENSION <replaceable class="parameter">확장모듈</replaceable>
 ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
     RENAME [ COLUMN ] <replaceable class="parameter">칼럼이름</replaceable> TO <replaceable class="parameter">새칼럼이름</replaceable>
 ALTER MATERIALIZED VIEW [ IF EXISTS ] <replaceable class="parameter">이름</replaceable>
@@ -68,13 +68,6 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
   </para>
 
   <para>
-   <literal>DEPENDS ON EXTENSION</literal> 구문은 
-   해당 구체화한 뷰를 지정한 확장 모듈의 구성 요소로 지정한다. 
-   이렇게 하면, 그 확장 모듈이 삭제 될 경우, 자동으로 이 뷰도 함께 
-   삭제할 있다.
-  </para>
-
-  <para>
    <command>ALTER MATERIALIZED VIEW</command> 명령의 여러 구문과
    구체적인 작업들은 <command>ALTER TABLE</command> 명령에서 
    사용하는 것과 같다.
@@ -109,7 +102,9 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">이름<
      <term><replaceable class="parameter">확장모듈</replaceable></term>
      <listitem>
       <para>
-       해당 구체화한 뷰를 구성 요소로 하는 확장 모듈 이름.
+       해당 구체화한 뷰를 구성 요소로 하는 확장 모듈 이름 (<literal>NO</literal>
+       옵션을 추가하면 의존 관계 끊음).
+       해당 확장 모듈이 삭제 될 때 이 구체화한 뷰도 함께 삭제 된다.
       </para>
      </listitem>
     </varlistentry>

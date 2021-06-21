@@ -41,6 +41,7 @@ EXPLAIN [ ANALYZE ] [ VERBOSE ] <replaceable class="parameter">쿼리문</replac
     COSTS [ <replaceable class="parameter">boolean</replaceable> ]
     SETTINGS [ <replaceable class="parameter">boolean</replaceable> ]
     BUFFERS [ <replaceable class="parameter">boolean</replaceable> ]
+    WAL [ <replaceable class="parameter">boolean</replaceable> ]
     TIMING [ <replaceable class="parameter">boolean</replaceable> ]
     SUMMARY [ <replaceable class="parameter">boolean</replaceable> ]
     FORMAT { TEXT | XML | JSON | YAML }
@@ -172,7 +173,9 @@ ROLLBACK;
      <para>
       버퍼 사용량을 포함한다. 공유 블록 히트, 읽기, 변경(dirtied), 쓰기 회수를 
       포함하며, 
-      로컬 블록과, 임시 블록에 대한 그것들도 포함한다. 
+      로컬 블록과, 임시 블록에 대한 그것들도 포함한다. 또한 
+      <xref linkend="guc-track-io-timing"/> 설정을 활성화 했다면
+      읽고 쓰는데 걸린 시간(밀리세컨드)도 포함한다.
       <emphasis>히트</emphasis>는 이미 해당 데이터 블록이 공유 버퍼에 있어
       그것을 읽은 것을 의미한다.  공유 블록에는 일반 테이블과 인덱스의 자료가
       들어있는 것이며, 로컬 블록에는 임시 테이블, 인덱스 자료가 들어있다.
@@ -185,9 +188,20 @@ ROLLBACK;
       디스크로 기록한 수를 뜻한다.
       블록수는 그 노드 작업 이하 모든 하위 노드에서 작업한 블록수의 
       총합으로 표시된다. 일반 텍스트 양식으로 출력될 때는 해당 값이 있을 때만
-      표시된다.  이 옵션은 그 쿼리가 실제로 수행되어야 함으로 
-      <literal>ANALYZE</literal> 옵션과 반드시 함께 사용해야 한다. 
-      초기값은 <literal>FALSE</literal>.
+      표시된다.  초기값은 <literal>FALSE</literal>.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>WAL</literal></term>
+    <listitem>
+     <para>
+      Include information on WAL record generation. Specifically, include the
+      number of records, number of full page images (fpi) and the amount of WAL
+      generated in bytes. In text format, only non-zero values are printed.
+      This parameter may only be used when <literal>ANALYZE</literal> is also
+      enabled.  It defaults to <literal>FALSE</literal>.
      </para>
     </listitem>
    </varlistentry>
@@ -408,7 +422,7 @@ EXPLAIN (COSTS FALSE) SELECT * FROM foo WHERE i = 4;
 EXPLAIN SELECT sum(i) FROM foo WHERE i &lt; 10;
 
                              QUERY PLAN
----------------------------------------------------------------------
+-------------------------------------------------------------------&zwsp;--
  Aggregate  (cost=23.93..23.93 rows=1 width=4)
    -&gt;  Index Scan using fi on foo  (cost=0.00..23.92 rows=6 width=4)
          Index Cond: (i &lt; 10)
@@ -428,7 +442,7 @@ PREPARE query(int, int) AS SELECT sum(bar) FROM test
 EXPLAIN ANALYZE EXECUTE query(100, 200);
 
                                                        QUERY PLAN
--------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------&zwsp;-----------------------------------------------------
  HashAggregate  (cost=39.53..39.53 rows=1 width=8) (actual time=0.661..0.672 rows=7 loops=1)
    -&gt;  Index Scan using test_pkey on test  (cost=0.00..32.97 rows=1311 width=8) (actual time=0.050..0.395 rows=99 loops=1)
          Index Cond: ((id &gt; $1) AND (id &lt; $2))

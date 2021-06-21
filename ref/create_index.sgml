@@ -22,7 +22,7 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class="parameter">이름</replaceable> ] ON [ ONLY ] <replaceable class="parameter">테이블이름</replaceable> [ USING <replaceable class="parameter">색인방법</replaceable> ]
-    ( { <replaceable class="parameter">칼럼이름</replaceable> | ( <replaceable class="parameter">표현식</replaceable> ) } [ COLLATE <replaceable class="parameter">문자정렬규칙</replaceable> ] [ <replaceable class="parameter">연산자클래스</replaceable> ] [ ASC | DESC ] [ NULLS { FIRST | LAST } ] [, ...] )
+    ( { <replaceable class="parameter">칼럼이름</replaceable> | ( <replaceable class="parameter">표현식</replaceable> ) } [ COLLATE <replaceable class="parameter">문자정렬규칙</replaceable> ] [ <replaceable class="parameter">연산자클래스</replaceable> [ ( <replaceable class="parameter">연산자클래스_매개변수</replaceable> = <replaceable class="parameter">값</replaceable> [, ... ] ) ] ] [ ASC | DESC ] [ NULLS { FIRST | LAST } ] [, ...] )
     [ INCLUDE ( <replaceable class="parameter">칼럼이름</replaceable> [, ...] ) ]
     [ WITH ( <replaceable class="parameter">저장_매개변수</replaceable> [= <replaceable class="parameter">값</replaceable>] [, ... ] ) ]
     [ TABLESPACE <replaceable class="parameter">테이블스페이스이름</replaceable> ]
@@ -133,8 +133,8 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
         인덱스를 만든다.  일반적 인덱스 만들기는 해당 테이블을 읽기 전용으로
         잠근다.
         이 옵션을 사용할 때는 여러 제약 조건들이 있다.
-        이 옵션을 사용하려면  <xref linkend="sql-createindex-concurrently"
-        endterm="sql-createindex-concurrently-title"/> 설명서를
+        이 옵션을 사용하려면  <xref linkend="sql-createindex-concurrently" />
+        설명서를
         꼭 읽고 사용해야 한다.
        </para>
        <para>
@@ -170,6 +170,8 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
         they are available directly from the index entry.  Thus, addition of
         non-key columns allows index-only scans to be used for queries that
         otherwise could not use them.
+        Furthermore, B-tree deduplication is never used with indexes
+        that have a non-key column.
        </para>
 
        <para>
@@ -292,6 +294,15 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
      </varlistentry>
 
      <varlistentry>
+      <term><replaceable class="parameter">연산자클래스_매개변수</replaceable></term>
+      <listitem>
+       <para>
+        The name of an operator class parameter. See below for details.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
       <term><literal>ASC</literal></term>
       <listitem>
        <para>
@@ -333,7 +344,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
       <listitem>
        <para>
         색인 방법에서 사용하는 저장 매개 변수 이름.
-        <xref linkend="sql-createindex-storage-parameters" endterm="sql-createindex-storage-parameters-title"/> 참조.
+        <xref linkend="sql-createindex-storage-parameters" /> 참조.
        </para>
       </listitem>
      </varlistentry>
@@ -362,8 +373,8 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
 
     </variablelist>
 
-  <refsect2 id="sql-createindex-storage-parameters">
-   <title id="sql-createindex-storage-parameters-title">인덱스 저장 매개 변수</title>
+  <refsect2 id="sql-createindex-storage-parameters" xreflabel="인덱스 저장 매개 변수">
+   <title>인덱스 저장 매개 변수</title>
 
    <para>
     <literal>WITH</literal> 옵션을 이용해서, 
@@ -375,7 +386,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
 
    <variablelist>
    <varlistentry id="index-reloption-fillfactor" xreflabel="fillfactor">
-    <term><literal>fillfactor</literal>
+    <term><literal>fillfactor</literal> (<type>integer</type>)
      <indexterm>
       <primary><varname>fillfactor</varname> storage parameter</primary>
      </indexterm>
@@ -406,17 +417,30 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </para>
 
    <variablelist>
-   <varlistentry id="index-reloption-vacuum-cleanup-index-scale-factor" xreflabel="vacuum_cleanup_index_scale_factor">
-    <term><literal>vacuum_cleanup_index_scale_factor</literal>
+   <varlistentry id="index-reloption-deduplicate-items" xreflabel="deduplicate_items">
+    <term><literal>deduplicate_items</literal> (<type>boolean</type>)
      <indexterm>
-      <primary><varname>vacuum_cleanup_index_scale_factor</varname></primary>
-      <secondary>storage parameter</secondary>
+      <primary><varname>deduplicate_items</varname> storage parameter</primary>
      </indexterm>
     </term>
     <listitem>
     <para>
-      Per-index value for <xref linkend="guc-vacuum-cleanup-index-scale-factor"/>.
+      Controls usage of the B-tree deduplication technique described
+      in <xref linkend="btree-deduplication"/>.  Set to
+      <literal>ON</literal> or <literal>OFF</literal> to enable or
+      disable the optimization.  (Alternative spellings of
+      <literal>ON</literal> and <literal>OFF</literal> are allowed as
+      described in <xref linkend="config-setting"/>.) The default is
+      <literal>ON</literal>.
     </para>
+    <note>
+     <para>
+      Turning <literal>deduplicate_items</literal> off via
+      <command>ALTER INDEX</command> prevents future insertions from
+      triggering deduplication, but does not in itself make existing
+      posting list tuples use the standard tuple representation.
+     </para>
+    </note>
     </listitem>
    </varlistentry>
    </variablelist>
@@ -427,7 +451,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
 
    <variablelist>
    <varlistentry id="index-reloption-buffering" xreflabel="buffering">
-    <term><literal>buffering</literal>
+    <term><literal>buffering</literal> (<type>enum</type>)
      <indexterm>
       <primary><varname>buffering</varname> storage parameter</primary>
      </indexterm>
@@ -452,7 +476,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
 
    <variablelist>
    <varlistentry id="index-reloption-fastupdate" xreflabel="fastupdate">
-    <term><literal>fastupdate</literal>
+    <term><literal>fastupdate</literal> (<type>boolean</type>)
      <indexterm>
       <primary><varname>fastupdate</varname> storage parameter</primary>
      </indexterm>
@@ -463,8 +487,6 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
      자동 업데이트 기능을 사용할 것인지를 지정한다.
      값은 불리언형으로 <literal>ON</literal>이면 활성화, <literal>OFF</literal>면
      비활성화한다.
-     (이 값은 <xref linkend="config-setting"/>에서 설명하는 것 처럼
-      허용 가능한 다른 값으로 지정해도 된다.)
      기본값은 <literal>ON</literal>.
     </para>
 
@@ -484,7 +506,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    <variablelist>
 
    <varlistentry id="index-reloption-gin-pending-list-limit" xreflabel="gin_pending_list_limit">
-    <term><literal>gin_pending_list_limit</literal>
+    <term><literal>gin_pending_list_limit</literal> (<type>integer</type>)
      <indexterm>
       <primary><varname>gin_pending_list_limit</varname></primary>
       <secondary>storage parameter</secondary>
@@ -505,7 +527,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
 
    <variablelist>
    <varlistentry id="index-reloption-pages-per-range" xreflabel="pages_per_range">
-    <term><literal>pages_per_range</literal>
+    <term><literal>pages_per_range</literal> (<type>integer</type>)
      <indexterm>
       <primary><varname>pages_per_range</varname> storage parameter</primary>
      </indexterm>
@@ -520,7 +542,7 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </varlistentry>
 
    <varlistentry id="index-reloption-autosummarize" xreflabel="autosummarize">
-    <term><literal>autosummarize</literal>
+    <term><literal>autosummarize</literal> (<type>boolean</type>)
      <indexterm>
       <primary><varname>autosummarize</varname> storage parameter</primary>
      </indexterm>
@@ -535,8 +557,8 @@ CREATE [ UNIQUE ] INDEX [ CONCURRENTLY ] [ [ IF NOT EXISTS ] <replaceable class=
    </variablelist>
   </refsect2>
 
-  <refsect2 id="sql-createindex-concurrently">
-   <title id="sql-createindex-concurrently-title">테이블을 잠그지 않는 인덱스 만들기</title>
+  <refsect2 id="sql-createindex-concurrently" xreflabel="테이블을 잠그지 않는 인덱스 만들기">
+   <title>테이블을 잠그지 않는 인덱스 만들기</title>
 
    <indexterm zone="sql-createindex-concurrently">
    <primary>index</primary>
@@ -676,7 +698,8 @@ Indexes:
 
   <para>
    인덱스를 만들 때, <firstterm>연산자 클래스</firstterm>를 지정할 수
-   있다.  연산자 클래스란 해당 칼럼용 인덱스에서 사용되는 연산자 
+   있다. 이 연산자 클래스의 매개 변수도 추가할 수 있다.  연산자
+   클래스란 해당 칼럼용 인덱스에서 사용되는 연산자 
    식별자다.  예를 들어, 4 바이트 정수 칼럼이라면, 
    <literal>int4_ops</literal> 연산자 클래스가 사용된다.  이 연산자
    클래스에 4 바이트 정수 비교 함수가 포함되어있다.
@@ -840,6 +863,13 @@ CREATE UNIQUE INDEX title_idx ON films (title);
    and <literal>rating</literal> in the table <literal>films</literal>:
 <programlisting>
 CREATE UNIQUE INDEX title_idx ON films (title) INCLUDE (director, rating);
+</programlisting>
+  </para>
+
+  <para>
+   To create a B-Tree index with deduplication disabled:
+<programlisting>
+CREATE INDEX title_idx ON films (title) WITH (deduplicate_items = off);
 </programlisting>
   </para>
 

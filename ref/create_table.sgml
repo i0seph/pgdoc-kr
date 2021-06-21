@@ -30,7 +30,7 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
 [ INHERITS ( <replaceable>parent_table</replaceable> [, ... ] ) ]
 [ PARTITION BY { RANGE | LIST | HASH } ( { <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ... ] ) ]
 [ USING <replaceable class="parameter">method</replaceable> ]
-[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
+[ WITH ( <replaceable class="parameter">스토리지_매개변수</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
 [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
 [ TABLESPACE <replaceable class="parameter">tablespace_name</replaceable> ]
 
@@ -42,7 +42,7 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
 ) ]
 [ PARTITION BY { RANGE | LIST | HASH } ( { <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ... ] ) ]
 [ USING <replaceable class="parameter">method</replaceable> ]
-[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
+[ WITH ( <replaceable class="parameter">스토리지_매개변수</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
 [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
 [ TABLESPACE <replaceable class="parameter">tablespace_name</replaceable> ]
 
@@ -54,7 +54,7 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
 ) ] { FOR VALUES <replaceable class="parameter">partition_bound_spec</replaceable> | DEFAULT }
 [ PARTITION BY { RANGE | LIST | HASH } ( { <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> ] [, ... ] ) ]
 [ USING <replaceable class="parameter">method</replaceable> ]
-[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
+[ WITH ( <replaceable class="parameter">스토리지_매개변수</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) | WITHOUT OIDS ]
 [ ON COMMIT { PRESERVE ROWS | DELETE ROWS | DROP } ]
 [ TABLESPACE <replaceable class="parameter">tablespace_name</replaceable> ]
 
@@ -98,7 +98,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 <phrase><literal>UNIQUE</literal>, <literal>PRIMARY KEY</literal>, <literal>EXCLUDE</literal> 제약조건에서 사용하는 <replaceable class="parameter">index_parameters</replaceable> 자리에는:</phrase>
 
 [ INCLUDE ( <replaceable class="parameter">column_name</replaceable> [, ... ] ) ]
-[ WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) ]
+[ WITH ( <replaceable class="parameter">스토리지_매개변수</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] ) ]
 [ USING INDEX TABLESPACE <replaceable class="parameter">tablespace_name</replaceable> ]
 
 <phrase><literal>EXCLUDE</literal> 제약조건에서 사용하는 <replaceable class="parameter">exclude_element</replaceable> 자리에는:</phrase>
@@ -178,8 +178,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       선택적으로, <literal>TEMPORARY</literal>나 <literal>TEMP</literal> 앞에 
           <literal>GLOBAL</literal> 또는 <literal>LOCAL</literal>을 붙일 수 있습니다.
           이는 현재 <productname>PostgreSQL</productname>에서는 아무런 효과도 없으며, 만료된 기능입니다. 
-          <xref linkend="sql-createtable-compatibility"
-      endterm="sql-createtable-compatibility-title"/>를 참고하십시오.
+          아래 <xref linkend="sql-createtable-compatibility"/> 부분을 참고하십시오.
      </para>
     </listitem>
    </varlistentry>
@@ -807,15 +806,27 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
      <para>
       The clauses <literal>ALWAYS</literal> and <literal>BY DEFAULT</literal>
-      determine how the sequence value is given precedence over a
-      user-specified value in an <command>INSERT</command> statement.
-      If <literal>ALWAYS</literal> is specified, a user-specified value is
-      only accepted if the <command>INSERT</command> statement
-      specifies <literal>OVERRIDING SYSTEM VALUE</literal>.  If <literal>BY
-      DEFAULT</literal> is specified, then the user-specified value takes
-      precedence.  See <xref linkend="sql-insert"/> for details.  (In
-      the <command>COPY</command> command, user-specified values are always
-      used regardless of this setting.)
+      determine how explicitly user-specified values are handled in
+      <command>INSERT</command> and <command>UPDATE</command> commands.
+     </para>
+
+     <para>
+      In an <command>INSERT</command> command, if <literal>ALWAYS</literal> is
+      selected, a user-specified value is only accepted if the
+      <command>INSERT</command> statement specifies <literal>OVERRIDING SYSTEM
+      VALUE</literal>.  If <literal>BY DEFAULT</literal> is selected, then the
+      user-specified value takes precedence.  See <xref linkend="sql-insert"/>
+      for details.  (In the <command>COPY</command> command, user-specified
+      values are always used regardless of this setting.)
+     </para>
+
+     <para>
+      In an <command>UPDATE</command> command, if <literal>ALWAYS</literal> is
+      selected, any update of the column to any value other than
+      <literal>DEFAULT</literal> will be rejected.  If <literal>BY
+      DEFAULT</literal> is selected, the column can be updated normally.
+      (There is no <literal>OVERRIDING</literal> clause for the
+      <command>UPDATE</command> command.)
      </para>
 
      <para>
@@ -1129,12 +1140,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    </varlistentry>
 
    <varlistentry>
-    <term><literal>WITH ( <replaceable class="parameter">storage_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
+    <term><literal>WITH ( <replaceable class="parameter">스토리지_매개변수</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
       이절은 테이블이나 인덱스에 대한 선택적 storage parameter를 지정합니다.
-          더 많은 정보는 <xref linkend="sql-createtable-storage-parameters"
-      endterm="sql-createtable-storage-parameters-title"/>를 참고하십시오.
+          더 많은 정보는 <xref linkend="sql-createtable-storage-parameters" /> 부분을
+      참고하십시오.
       For backward-compatibility the <literal>WITH</literal>
       clause for a table can also include <literal>OIDS=FALSE</literal> to
       specify that rows of the new table should not contain OIDs (object
@@ -1229,19 +1240,19 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
   </variablelist>
 
-  <refsect2 id="sql-createtable-storage-parameters">
-   <title id="sql-createtable-storage-parameters-title">Storage Parameters</title>
+  <refsect2 id="sql-createtable-storage-parameters" xreflabel="스토리지 매개 변수">
+   <title>스토리지 매개 변수</title>
 
  <indexterm zone="sql-createtable-storage-parameters">
-  <primary>storage parameters</primary>
+  <primary>스토리지 매개 변수</primary>
  </indexterm>
 
    <para>
     <literal>WITH</literal>절은 테이블 및 <literal>UNIQUE</literal>, 
         <literal>PRIMARY KEY</literal>, 또는 <literal>EXCLUDE</literal> 제약과 연결된 인덱스에,
-        <firstterm>storage parameters</firstterm>를 지정할 수 있습니다.
-        인덱스에 대한 storage parameter는 <xref linkend="sql-createindex"/>에 문서화되어 있습니다.
-        테이블에 현재 설정할 수 있는 storage parameter는 아래에 나열되어 있습니다.
+        <firstterm>스토리지 매개 변수</firstterm>를 지정할 수 있습니다.
+        인덱스에 대한 스토리지 매개 변수는 <xref linkend="sql-createindex"/>에 문서화되어 있습니다.
+        테이블에 현재 설정할 수 있는 스토리지 매개 변수는 아래에 나열되어 있습니다.
         특별히 명시되어있지 않다면, 각 매개 변수에는, 해당 테이블의 부가적인
         <acronym>TOAST</acronym> 테이블(있다면)의 동작 방식을 제어하는데 사용할 수 있는,
         같은 이름에 <literal>toast.</literal>접두어가 붙여진 이름의 추가 매개 변수가 존재합니다.
@@ -1290,8 +1301,8 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       Main (for compression), or Extended (for both) and applies only to new
       tuples. There is no effect on existing rows.
       By default this parameter is set to allow at least 4 tuples per block,
-      which with the default blocksize will be 2040 bytes. Valid values are
-      between 128 bytes and the (blocksize - header), by default 8160 bytes.
+      which with the default block size will be 2040 bytes. Valid values are
+      between 128 bytes and the (block size - header), by default 8160 bytes.
       Changing this value may not be useful for very short or very long rows.
       Note that the default setting is often close to optimal, and
       it is possible that setting this parameter could have negative
@@ -1408,6 +1419,36 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
      <para>
       해당 테이블 단위 개별 <xref linkend="guc-autovacuum-vacuum-scale-factor"/>
       설정
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="reloption-autovacuum-vacuum-insert-threshold" xreflabel="autovacuum_vacuum_insert_threshold">
+    <term><literal>autovacuum_vacuum_insert_threshold</literal>, <literal>toast.autovacuum_vacuum_insert_threshold</literal> (<type>integer</type>)
+    <indexterm>
+     <primary><varname>autovacuum_vacuum_insert_threshold</varname></primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
+    <listitem>
+     <para>
+      Per-table value for <xref linkend="guc-autovacuum-vacuum-insert-threshold"/>
+      parameter.  The special value of -1 may be used to disable insert vacuums on the table.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry id="reloption-autovacuum-vacuum-insert-scale-factor" xreflabel="autovacuum_vacuum_insert_scale_factor">
+    <term><literal>autovacuum_vacuum_insert_scale_factor</literal>, <literal>toast.autovacuum_vacuum_insert_scale_factor</literal> (<type>float4</type>)
+    <indexterm>
+     <primary><varname>autovacuum_vacuum_insert_scale_factor</varname> </primary>
+     <secondary>storage parameter</secondary>
+    </indexterm>
+    </term>
+    <listitem>
+     <para>
+      Per-table value for <xref linkend="guc-autovacuum-vacuum-insert-scale-factor"/>
+      parameter.
      </para>
     </listitem>
    </varlistentry>
@@ -1939,8 +1980,8 @@ CREATE TABLE cities_partdef
 
  </refsect1>
 
- <refsect1 id="sql-createtable-compatibility">
-  <title id="sql-createtable-compatibility-title">호환성</title>
+ <refsect1 id="sql-createtable-compatibility" xreflabel="호환성">
+  <title>호환성</title>
 
   <para>
    <command>CREATE TABLE</command> 명령은 아래에 나열된 예외를 제외하고,

@@ -103,7 +103,7 @@ DO [ LANGUAGE <replaceable class="parameter">언어이름</replaceable> ] <repla
  </refsect1>
 
  <refsect1 id="sql-do-examples">
-  <title id="sql-do-examples-title">예제</title>
+  <title>예제</title>
   <para>
    <literal>public</literal> 스키마 내에 있는 모든 뷰에 대해서
    <literal>webuser</literal> 롤에게 모든 권한을 부여야하는 예제:

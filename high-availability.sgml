@@ -210,11 +210,11 @@ protocol to make nodes agree on a serializable transactional order.
   </varlistentry>
 
   <varlistentry>
-   <term>명령 구문 기반 복제 미들웨어</term>
+   <term>SQL 기반 복제 미들웨어</term>
    <listitem>
 
     <para>
-         데이터베이스 서버로 보내는 모든 자료 변경 관련 쿼리를 미들웨어가 가로채서 관리되는 
+         데이터베이스 서버로 보내는 모든 자료 변경 관련 SQL을 미들웨어가 가로채서 관리되는 
          모든 데이터베이스 서버에 동시에 그 쿼리를 실행하는 방식이다.
          각각의 서버들은 서로 의존적이지 않게 운영될 수 있다. 읽기 전용 작업이라면, 
          그냥 한 서버 쪽으로만 작업하면 되고, 쓰기 작업이라면, 
@@ -292,18 +292,6 @@ protocol to make nodes agree on a serializable transactional order.
    </listitem>
   </varlistentry>
 
-  <varlistentry>
-   <term>상용 솔루션</term>
-   <listitem>
-
-    <para>
-     <productname>PostgreSQL</productname>은 소스가 공개 되어 있고, 쉽게 확장이 가능하기 때문에, 
-         이것을 가지고, 독자적인 기법으로 장애처리, 복제, 부하 분산 기능을 포함 시켜, 
-         소스를 공개하지 않은 채 상용으로 판매 할 수 있다. 이렇게 몇몇 솔루션들이 판매되고 있다.
-    </para>
-   </listitem>
-  </varlistentry>
-
  </variablelist>
 
  <para>
@@ -314,24 +302,33 @@ protocol to make nodes agree on a serializable transactional order.
  <table id="high-availability-matrix">
   <title>고가용성, 부하 분산, 복제 기능 도표</title>
   <tgroup cols="9">
+   <colspec colname="col1" colwidth="1.1*"/>
+   <colspec colname="col2" colwidth="1*"/>
+   <colspec colname="col3" colwidth="1*"/>
+   <colspec colname="col4" colwidth="1*"/>
+   <colspec colname="col5" colwidth="1*"/>
+   <colspec colname="col6" colwidth="1*"/>
+   <colspec colname="col7" colwidth="1*"/>
+   <colspec colname="col8" colwidth="1*"/>
+   <colspec colname="col9" colwidth="1*"/>
    <thead>
     <row>
      <entry>기능</entry>
-     <entry>공유 디스크 장애처리</entry>
-     <entry>파일 시스템 복제</entry>
-     <entry>미리-쓰기 로그 전달</entry>
+     <entry>공유 디스크</entry>
+     <entry>파일시스템 복제</entry>
+     <entry>WAL 전달</entry>
      <entry>논리 복제</entry>
-     <entry>트리거 기반 운영-대기 복제</entry>
-     <entry>명령 구문 기반 미들웨어</entry>
-     <entry>비동기식 다중 운영 복제</entry>
-     <entry>동기식 다중 운영 복제</entry>
+     <entry>트리거 기반 복제</entry>
+     <entry>SQL 기반 미들웨어</entry>
+     <entry>비동기식 MM 복제</entry>
+     <entry>동기식 MM 복제</entry>
     </row>
    </thead>
 
    <tbody>
 
     <row>
-     <entry>많이 알려진 제품</entry>
+     <entry>대표 제품</entry>
      <entry align="center">NAS</entry>
      <entry align="center">DRBD</entry>
      <entry align="center">내장 스트리밍 복제</entry>
@@ -492,6 +489,14 @@ protocol to make nodes agree on a serializable transactional order.
   </varlistentry>
 
  </variablelist>
+
+  <para>
+   It should also be noted that because <productname>PostgreSQL</productname>
+   is open source and easily extended, a number of companies have
+   taken <productname>PostgreSQL</productname> and created commercial
+   closed-source solutions with unique failover, replication, and load
+   balancing capabilities.  These are not discussed here.
+  </para>
 
  </sect1>
 
@@ -673,6 +678,7 @@ protocol to make nodes agree on a serializable transactional order.
 
    <para>
     대기 모드는  <command>pg_ctl promote</command> 명령을 실행하거나, 
+    <function>pg_promote()</function> 함수를 호출 하거나,
         트리거 파일(<varname>promote_trigger_file</varname> 설정값에 지정한 파일)이 
         생기면 끝난다. 물론 적용해야할 WAL 파일이, 
         아카이브 디렉터리에 아직 있거나, <filename>pg_wal</filename> 디렉터리 내에 
@@ -828,7 +834,7 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
    <para>
     파일 기반 로그 전달 방식을 함께 사용하지 않고, 
         단지 스트리밍 복제 기능만 사용한다면, 
-        운영 서버에서 반드시  <varname>wal_keep_segments</varname> 환경설정값을 
+        운영 서버에서 반드시  <varname>wal_keep_size</varname> 환경설정값을 
         지정해서, 아직 대기 서버로 반영되지 못한 WAL 파일을 남겨두는 최대 
         개수를 지정해 주어야한다. 운영 서버에는 WAL 파일을 재활용하기 때문에, 
         대기 서버의 중지 시간이 길어져, 이 대기 서버로 반영되지 못한 WAL 파일이 
@@ -875,7 +881,8 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
     대기서버는 먼저 운영 서버에서 넘겨 받은 WAL 세그먼트 파일을 모두 
         자신의 서버에 적용하면, <varname>primary_conninfo</varname> 설정값에 지정한 
         운영 서버로 접속한다. 이 접속이 성공하면, 대기 서버는 
-        walreceiver 프로세스를 만들어 운영 서버의 walsender 프로세스에서 
+        <literal>walreceiver</literal> 프로세스를 만들어 운영 서버의
+    <literal>walsender</literal> 프로세스에서 
         보내는 트랜잭션 정보를 하나씩 받아서 자신의 서버에 적용한다.
    </para>
 
@@ -883,12 +890,13 @@ archive_cleanup_command = 'pg_archivecleanup /path/to/archive %r'
     <title>인증</title>
     <para>
          WAL 스트리밍 정보는 보안상 슈퍼유저나  인증된 데이터베이스 사용자만 
-         사용할 수 있어야한다. 이 권한을 부여하려면, <literal>REPLICATION</literal> 권한을 
+         사용할 수 있어야한다. 이 권한을 부여하려면, <literal>REPLICATION</literal> 권한
+         또는 슈퍼유저 권한을
          부여한다. 그래서, 대기 서버에서 운영 서버로 접속하는 데이터베이스 
          사용자는 <literal>LOGIN</literal> 권한과, <literal>REPLICATION</literal>
          권한을 반드시 지정해야한다. 이 리플리케이션 전용 사용자는 운영 서버의 자료를
-         조작할 수 없도록 슈퍼유저가 아닌 별개의 사용자를 만들어 사용하는 것이 
-         보안상 안전하다. 
+         조작할 수 없도록 <literal>SUPERUSER</literal> 권한이 없는 별개의
+         사용자를 만들어 사용하는 것이 보안상 안전하다. 
     </para>
 
     <para>
@@ -950,7 +958,8 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     </para>
     <para>
          또한 운영 서버에서 사용하는 WAL sender 프로세스의 정보는 
-         <xref linkend="pg-stat-replication-view"/> 뷰로 확인할 수 있다.
+         <link linkend="monitoring-pg-stat-replication-view"><structname>
+     pg_stat_replication</structname></link> 뷰로 확인할 수 있다.
          이 뷰에서 <function>pg_current_wal_lsn</function> 값과, 
          <literal>sent_lsn</literal> 값이 차이가 많이 나면, 
          운영 서버가 많이 바쁜 상황이고, 
@@ -960,9 +969,10 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     </para>
     <para>
      On a hot standby, the status of the WAL receiver process can be retrieved
-     via the <xref linkend="pg-stat-wal-receiver-view"/> view.  A large
+     via the <link linkend="monitoring-pg-stat-wal-receiver-view">
+     <structname>pg_stat_wal_receiver</structname></link> view.  A large
      difference between <function>pg_last_wal_replay_lsn</function> and the
-     view's <literal>received_lsn</literal> indicates that WAL is being
+     view's <literal>flushed_lsn</literal> indicates that WAL is being
      received faster than it can be replayed.
     </para>
    </sect3>
@@ -985,21 +995,35 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     <link linkend="hot-standby-conflict">복구 충돌</link>이 발생하는 상황에서도 
     운영 서버의 자료가 지워지는 것을 방지 할 때 이 기능을 이용할 수 있다.
    </para>
+
    <para>
-    이전 버전(9.3 이하)까지는 대기 서버로 전달 할 트랜잭션
-    로그를 전달하지 못할 경우
-    최대 <xref linkend="guc-wal-keep-segments"/> 환경 설정값에 지정된 개수 만큼만    더 보관하고 있어 더 오래된 트랜잭션 로그를 대기 서버가 필요로 하는 경우
-    대기 서버를 다시 구축해야 했었다.  또한 
-    <xref linkend="guc-archive-command"/> 환경 설정값에 지정된 명령어로 
-    트랜잭션 로그를 보관하는 부분에서도 마찬가지였다.
-    이제 복제 슬롯을 이용하면, 장시간 트랜잭션 로그를 전달 받지 못해 대기
-    서버를 다시 만들어야 하는 문제를 피해 갈 수 있게 되었다. 
-    하지만, 이 방법을 이용하게 되면 예상치 않게 트랜잭션 로그 파일의 개수가
-    많아질 수도 있다. 물론 대기 서버와 동기화를 위한 옛 트랜잭션 로그만 보관
-    하지만,  이 기능을 사용하고 할 때는 <literal>pg_wal</literal> 디렉터리의
-    여유 공간을 충분히 확보해야 할 것이다. 현재로써는 트랜잭션 로그를 남기면서
-    이 디렉터리의 여유 공간을 항상 일정하게 유지할 수 있는 방법은 없다.
+    복제 슬롯을 사용하지 않는 방법으로,
+    <xref linkend="guc-wal-keep-size"/> 환경 설정값에 지정된 크기 만큼
+    보관하는 방법과 <xref linkend="guc-archive-command"/>
+    설정으로 WAL 조각 파일을 따로 보관하는 방법이 있다.
+    그런데, 이 방법은 남겨 놓은 WAL 조각들보다 더 오래된 것들을 
+    필요로 하는 경우가 종종 생긴다. 이런 문제를 피해가는 방법으로
+    복제 슬롯을 사용해서 <literal>pg_wal</literal> 디렉터리 
+    내에 대기 서버로 보내지 못한 WAL 조각 파일을 남겨 놓을 수는 있으나,
+    계속 남겨 놓게 되면 또 문제가 생긴다.  이 때는 
+    <xref linkend="guc-max-slot-wal-keep-size"/> 설정으로 남겨 놓을 
+    최대 크기를 제한 할 수 있다.
    </para>
+
+   <para>
+    In lieu of using replication slots, it is possible to prevent the removal
+    of old WAL segments using <xref linkend="guc-wal-keep-size"/>, or by
+    storing the segments in an archive using
+    <xref linkend="guc-archive-command"/>.
+    However, these methods often result in retaining more WAL segments than
+    required, whereas replication slots retain only the number of segments
+    known to be needed.  On the other hand, replication slots can retain so
+    many WAL segments that they fill up the space allocated
+    for <literal>pg_wal</literal>;
+    <xref linkend="guc-max-slot-wal-keep-size"/> limits the size of WAL files
+    retained by replication slots.
+   </para>
+
    <para>
     비슷하게, 이전 버전에서도 제공하고 있던
     <xref linkend="guc-hot-standby-feedback"/> 또는
@@ -1584,11 +1608,11 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
     로그 전달 방식을 이용한 대기 서버환경이면, 
         이 대기 서버가 운영 서버 역할을 하게 하려면, 
         <command>pg_ctl promote</command> 명령을 실행하거나, 
-        <function>pg_promote</function> 함수를 호출하거나,
+        <function>pg_promote()</function> 함수를 호출하거나,
         <varname>promote_trigger_file</varname> 설정값으로 지정한 파일을 
         만들어주면 된다.
     <command>pg_ctl promote</command> 명령을 사용하거나,
-    <function>pg_promote</function> 함수를 호출해서 전환하는 경우는
+    <function>pg_promote()</function> 함수를 호출해서 전환하는 경우는
         <varname>promote_trigger_file</varname> 설정값으로 지정한
         파일을 만들지 않아도 된다.
     고가용성을 고려한 구축이 아니라, 
@@ -1821,22 +1845,22 @@ if (!triggered)
     <itemizedlist>
      <listitem>
       <para>
-       쿼리 접근 - <command>SELECT</command>, <command>COPY TO</command>
+       쿼리 접근: <command>SELECT</command>, <command>COPY TO</command>
       </para>
      </listitem>
      <listitem>
       <para>
-       커서 명령어 - <command>DECLARE</command>, <command>FETCH</command>, <command>CLOSE</command>
+       커서 명령어: <command>DECLARE</command>, <command>FETCH</command>, <command>CLOSE</command>
       </para>
      </listitem>
      <listitem>
       <para>
-       매개 변수 - <command>SHOW</command>, <command>SET</command>, <command>RESET</command>
+       설정: <command>SHOW</command>, <command>SET</command>, <command>RESET</command>
       </para>
      </listitem>
      <listitem>
       <para>
-       트랜잭션 관리 명령어
+       트랜잭션 관리 명령어:
         <itemizedlist>
          <listitem>
           <para>
@@ -1864,13 +1888,13 @@ if (!triggered)
      </listitem>
      <listitem>
       <para>
-       계획과 리소스 - <command>PREPARE</command>, <command>EXECUTE</command>,
+       계획과 리소스: <command>PREPARE</command>, <command>EXECUTE</command>,
        <command>DEALLOCATE</command>, <command>DISCARD</command>
       </para>
      </listitem>
      <listitem>
       <para>
-       플러그인과 확장 모듈 - <command>LOAD</command>
+       플러그인과 확장 모듈: <command>LOAD</command>
       </para>
      </listitem>
      <listitem>
@@ -1887,7 +1911,7 @@ if (!triggered)
     <itemizedlist>
      <listitem>
       <para>
-       데이터 조작어 (DML) - <command>INSERT</command>,
+       데이터 조작어 (DML): <command>INSERT</command>,
        <command>UPDATE</command>, <command>DELETE</command>, <command>COPY FROM</command>,
        <command>TRUNCATE</command>.
        복구하는 동안 트리거를 실행할 수는 없다. 임시 테이블도 마찬가지인데, 테이블 로우는 트랜잭션 ID 없이 읽거나 쓸 수 없기 때문이다. 이 기능은 아직 Hot Standby 환경에 구현되지 않았다.
@@ -1895,7 +1919,7 @@ if (!triggered)
      </listitem>
      <listitem>
       <para>
-       데이터 정의 언어 (DDL) - <command>CREATE</command>,
+       데이터 정의 언어 (DDL): <command>CREATE</command>,
        <command>DROP</command>, <command>ALTER</command>, <command>COMMENT</command>.
        이 규칙은 임시 테이블에도 적용되는데, 이 작업들을 수행하려면 시스템 카탈로그 테이블도 수정해야 하기 때문이다.
       </para>
@@ -1946,14 +1970,14 @@ if (!triggered)
      </listitem>
      <listitem>
       <para>
-       두 단계의 커밋 명령어 - <command>PREPARE TRANSACTION</command>,
+       두 단계의 커밋 명령어: <command>PREPARE TRANSACTION</command>,
        <command>COMMIT PREPARED</command>, <command>ROLLBACK PREPARED</command>
        읽기전용의 트랜잭션도 준비 단계에서 WAL에 쓰기 작업을 해야 하기 때문이다(두 단계중 첫 번째 커밋 단계).
       </para>
      </listitem>
      <listitem>
       <para>
-       시퀀스 업데이트 - <function>nextval()</function>, <function>setval()</function>
+       시퀀스 업데이트: <function>nextval()</function>, <function>setval()</function>
       </para>
      </listitem>
      <listitem>
@@ -2238,18 +2262,18 @@ LOG:  database system is ready to accept read only connections
       <itemizedlist>
        <listitem>
         <para>
-         Data Definition Language (DDL) - e.g. <command>CREATE INDEX</command>
+         Data Definition Language (DDL): e.g. <command>CREATE INDEX</command>
         </para>
        </listitem>
        <listitem>
         <para>
-         Privilege and Ownership - <command>GRANT</command>, <command>REVOKE</command>,
+         Privilege and Ownership: <command>GRANT</command>, <command>REVOKE</command>,
          <command>REASSIGN</command>
         </para>
        </listitem>
        <listitem>
         <para>
-         Maintenance commands - <command>ANALYZE</command>, <command>VACUUM</command>,
+         Maintenance commands: <command>ANALYZE</command>, <command>VACUUM</command>,
          <command>CLUSTER</command>, <command>REINDEX</command>
         </para>
        </listitem>
@@ -2330,7 +2354,9 @@ LOG:  database system is ready to accept read only connections
    </para>
 
    <para>
-    정상(미복원) 모드에서 연결된 사용자에 대해 <command>DROP USER</command>나 <command>DROP ROLE</command>을 실행하면 연결이 끊어지지 않는다.  
+    정상(미복원) 모드에서 연결된 사용자에 대해
+    <command>DROP USER</command>나 <command>DROP ROLE</command>을
+    실행하면 연결이 끊어지지 않는다.  
     그러나 재연결은 불가능하다.  복구 시에도 마찬가지로, 운영 서버에서 
     <command>DROP USER</command>를 실행하면 대기 서버 사용자의 연결이 끊어지지 않는다.  
    </para>

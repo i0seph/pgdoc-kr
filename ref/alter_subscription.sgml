@@ -133,8 +133,7 @@ ALTER SUBSCRIPTION <replaceable class="parameter">이름</replaceable> RENAME TO
          </para>
         </listitem>
        </varlistentry>
-      </variablelist>
-     </para>
+      </variablelist></para>
     </listitem>
    </varlistentry>
 

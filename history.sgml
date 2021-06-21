@@ -97,7 +97,7 @@
    위스콘신 벤치마크에 따르면, 
    <productname>Postgres95</productname> 1.0.x 배포판은
    <productname>POSTGRES</productname> 버전 4.2보다 약 
-   30-50% 빠른 속도로 작동했다고 한다. 버그 수정에 대한 것은 제외하고, 
+   30&ndash;50% 빠른 속도로 작동했다고 한다. 버그 수정에 대한 것은 제외하고, 
    아래와 같은 굵직한 성능향상을 기했다:
 
    <itemizedlist>

@@ -4,7 +4,23 @@
  <title>서버 설정 및 운용</title>
 
  <para>
-이 장에서는 데이터베이스 서버를 설정하고 실행하는 방법과 운영 체제와 상호 작용하는 방법에 대해 다룬다.
+이 장에서는 데이터베이스 서버를 설정하고 실행하는 방법과
+운영 체제와 상호 작용하는 방법에 대해 다룬다.
+ </para>
+
+ <para>
+  이 장 내용은
+  기타 추가적인 인프라 구성 요소 없이 
+  <productname>PostgreSQL</productname> 서버를 사용한다는 
+  가정 아래 작성되었다.  
+  예를 들어, 앞 장에서 다루고 있는 소스 파일을 직접 가져다
+  빌드해서 사용하는 경우다.
+  미리 패키지된 것이나, 벤더사에서 제공하는
+  <productname>PostgreSQL</productname>을 사용한다면, 
+  사용하고 있는 시스템 환경에 따른 패키지 관리자를 사용하고, 
+  해당 환경에 맞는 서버 실행 방법이 있을 것이다. 
+  이 부분에 대해서는, 보다 자세한 내용은
+  패키지 관리 입장에서 해당 문서를 찾아서 살펴보아야 할 것이다.
  </para>
 
  <sect1 id="postgres-user">
@@ -14,11 +30,25 @@
  <primary>postgres 사용자</primary>
 </indexterm>
 
-<para>
- 외부에서 액세스 가능한 서버 데몬과 마찬가지로 <productname>PostgreSQL</productname>도 별도의 사용자 계정으로 실행하는 것이 좋다.
- 이 사용자 계정은 서버에서 관리되는 데이터만 소유해야 하며, 다른 데몬과 공유해서는 안 된다(예를 들면, 사용자 <literal>nobody</literal>를 사용하는 것은 바람직하지 않음.).
- 그럴 경우 손상된 시스템이 자체 바이너리를 변경할 수 있으므로 이 사용자가 소유한 실행 파일을 실행하는 것은 권장되지 않는다.
-</para>
+  <para>
+   외부에서 액세스 가능한 서버 데몬과 마찬가지로 
+   <productname>PostgreSQL</productname>도 별도의 사용자 계정으로
+   실행하는 것이 좋다.  이 사용자 계정은 서버에서 관리되는
+   데이터만 소유해야 하며, 다른 데몬과 공유해서는 안 된다(예를
+   들면, <literal>nobody</literal> 사용자로 서버를 실행하는 것은
+   바람직하지 않음).
+   특히 <productname>PostgreSQL</productname> 실행 파일들은
+   서버 실행 사용자와 달리 하는 것이 좋다.  왜냐하면,
+   손상된 서버 프로세스가 실행 파일을 망가뜨릴 수 있기 때문이다.
+   (악의를 가진 사용자가 보안 취약점을 이용해서 실행 파일을 
+   건드리는 문제를 피할 수 있다. - 옮긴이)
+  </para>
+
+  <para>
+   미리 패키징된 <productname>PostgreSQL</productname> 버전은 
+   일반적으로 설치되는 과정에서 서버를 실행하는 OS 사용자를
+   자동으로 만든다.
+  </para>
 
 <para>
  Unix 사용자 계정을 시스템에 추가하려면 
@@ -52,9 +82,27 @@
  파일 시스템의 관점에서, 데이터베이스 클러스터는 모든 데이터가 저장되는 단일 디렉터리이다.
  이것을 <firstterm>데이터 디렉터리</firstterm> 또는 <firstterm>데이터 영역</firstterm>이라고 한다.
  데이터를 어디에 저장할 것인지는 전적으로 사용자의 선택에 달려 있다.
- <filename>/usr/local/pgsql/data</filename> 또는 <filename>/var/lib/pgsql/data</filename>가 일반적이지만, 필수는 아니다.
- 데이터베이스 클러스터를 초기화하려면 <productname>PostgreSQL</productname>과 함께 설치된 <xref
- linkend="app-initdb"/><indexterm><primary>initdb</primary></indexterm> 명령을 사용한다.
+ <filename>/usr/local/pgsql/data</filename> 또는 
+<filename>/var/lib/pgsql/data</filename>가 일반적이다.
+이 디렉터리를 서버에서 사용하려면, 먼저
+설치된 <productname>PostgreSQL</productname>의
+<xref linkend="app-initdb"/><indexterm><primary>initdb</primary></indexterm> 
+명령을 이용해서 데이터베이스 클러스터를 초기화 해야한다.
+</para>
+
+  <para>
+   미리 패키징된 <productname>PostgreSQL</productname> 버전을
+   사용하는 경우라면, 이미 이 디렉터리가 
+   지정되어 있는 경우도 있다. 또한 이 초기화 작업을 쉽게 
+   할 수 있는 스크립트를 제공하고 있을 수도 있다.  이 경우라면, 
+   <command>initdb</command> 명령을 이용하지 말고, 
+   그 스크립트를 이용해야한다.  자세한 것은 
+   해당 패키지 사용 설명서를 참조한다.
+  </para>
+
+  <para>
+  데이터베이스 클러스터를 수동으로 초기화 하려면, 
+  <command>initdb</command> 명령을 이용하고
  데이터베이스 클러스터의 원하는 파일 시스템 위치는 <option>-D</option> 옵션으로 나타낼 수 있다.
  예를 들면:
 <screen>
@@ -62,22 +110,6 @@
 </screen>
  앞에서 설명한 대로 <productname>PostgreSQL</productname> 사용자 계정으로
 로그인한 상태에서 이 명령을 실행해야 한다.
-optionally, group.
-   Group access, when enabled, is read-only.  This allows an unprivileged
-   user in the same group as the cluster owner to take a backup of the
-   cluster data or perform other operations that only require read access.
-  </para>
-
-  <para>
-   Note that enabling or disabling group access on an existing cluster requires
-   the cluster to be shut down and the appropriate mode to be set on all
-   directories and files before restarting
-   <productname>PostgreSQL</productname>.  Otherwise, a mix of modes might
-   exist in the data directory.  For clusters that allow access only by the
-   owner, the appropriate modes are <literal>0700</literal> for directories
-   and <literal>0600</literal> for files.  For clusters that also allow
-   reads by the group, the appropriate modes are <literal>0750</literal>
-   for directories and <literal>0640</literal> for files.
 </para>
 
 <tip>
@@ -121,7 +153,23 @@ optionally, group.
 </para>
 
 <para>
- 데이터 디렉터리에는 데이터베이스의 모든 데이터가 저장되어 있으므로 무단 액세스로부터 데이터 디렉터리를 보호하는 것이 중요하기 때문에 <command>initdb</command>는 <productname>PostgreSQL</productname> 사용자를 제외한 모든 사용자로부터 접근 권한을 해지한다.
+ 데이터 디렉터리에는 데이터베이스의 모든 데이터가 저장되어 있으므로 무단 액세스로부터 데이터 디렉터리를 보호하는 것이 중요하기 때문에 <command>initdb</command>는 <productname>PostgreSQL</productname> 사용자를 제외한 모든 사용자로부터 접근 권한을 해지한다. 선택적으로 그룹 읽기를 허용할 수도 있다.
+   그룹 접근은 읽기 전용이어야한다.  데이터베이스 서버를 실행한 
+   사용자의 그룹과 같은 다른 사용자가 해당 데이터 파일을 
+   백업 받을 수 있으며, 기타 읽기 관련 작업을 할 수 있게 된다.
+  </para>
+
+  <para>
+   Note that enabling or disabling group access on an existing cluster requires
+   the cluster to be shut down and the appropriate mode to be set on all
+   directories and files before restarting
+   <productname>PostgreSQL</productname>.  Otherwise, a mix of modes might
+   exist in the data directory.  For clusters that allow access only by the
+   owner, the appropriate modes are <literal>0700</literal> for directories
+   and <literal>0600</literal> for files.  For clusters that also allow
+   reads by the group, the appropriate modes are <literal>0750</literal>
+   for directories and <literal>0640</literal> for files.
+
 </para>
 
 <para>
@@ -285,10 +333,22 @@ optionally, group.
 <para>
  데이터베이스에 액세스하기 전에 데이터베이스 서버를 시작해야 한다.
  데이터베이스 서버 프로그램을 <command>postgres</command>라고 한다.
- <indexterm><primary>postgres</primary></indexterm>
- <command>postgres</command>프로그램은 사용하려는 데이터가 어디에 있는지 알고 있어야 한다.
- 이것은 <option>-D</option> 옵션으로 가능하다.
- 따라서 서버를 시작하는 가장 손쉬운 방법은 다음과 같이 하는 것이다.
+  </para>
+
+  <para>
+   미리 패키징된 <productname>PostgreSQL</productname> 버전을
+   사용한다면, 대부분 서버 실행 명령이 
+   OS에서 서비스를 시작하는 명령으로 대체된다.  
+   서버를 시작 작업은 그 미리 패키징된 버전을 사용하면, 
+   수동으로 직접 서버를 실행하는 것보다 일이 적다.  자세한 설명은
+   패키지 사용 설명서를 참고하면 된다.
+  </para>
+
+  <para>
+   서버를 가장 저수준으로 직접 실행하는 방법은
+   <command>postgres</command> 명령을 실행하는 것이다.
+   이 때, 서버가 사용할 자료 파일이 있는 데이터 디렉터리를
+   <option>-D</option> 옵션으로 지정한다. 사용 예:
 <screen>
 <prompt>$</prompt> <userinput>postgres -D /usr/local/pgsql/data</userinput>
 </screen>
@@ -489,9 +549,10 @@ DETAIL:  Failed system call was shmget(key=5440001, size=4011376640, 03600).
 </screen>
  이것은 공유 메모리 크기에 대한 커널 제한이 <productname>PostgreSQL</productname>
  이 생성하려고 하는 작업 영역보다 작다는 것을 의미하는 것일 수 있다(이 예시에서 4011376640바이트).
- 또는 커널에 환경 설정된 System-V-style 공유 메모리가 일절 지원되지 않는다는 것을 의미할 수도 있다.
+이 현상은 <literal>shared_memory_type</literal> 설정을
+<literal>sysv</literal>로 했을 때만 보인다. 이 경우,
  임시 해결책으로, 버퍼 수를 정상보다 작게 해서 서버 시작을 시도해볼 수 있다(<xref linkend="guc-shared-buffers"/>).
- 결국에는 허용된 공유 메모리 크기를 늘리기 위해 사용자는 커널을 다시 환경 설정할 수 있다.
+ 또는 허용된 공유 메모리 크기를 늘리기 위해 사용자는 커널을 다시 환경 설정할 수 있다.
  또한 동일한 머신에서 다중 서버를 시작하려는 경우 총 요청 공간이 커널 제한을 초과하면 이 메시지가 나타날 수도 있다.
 
 </para>
@@ -506,10 +567,6 @@ DETAIL:  Failed system call was semget(5440126, 17, 03600).
  이것은 <systemitem class="osname">System V</systemitem> 세마포어에 대한 커널 수 제한이 생성하려는 
  <productname>PostgreSQL</productname>의 수보다 작다는 것을 의미한다.
  위와 마찬가지로, 허용된 연결 수(<xref linkend="guc-max-connections"/>)를 줄여서 서버를 시작함으로써 문제를 해결할 수 있지만, 결국에는 커널 제한을 늘리는 것이 좋다.
-</para>
-
-<para>
- <quote><errorname>Illegal system call</errorname></quote> 에러가 나타난 경우 공유 메모리 또는 세마포어가 사용자의 커널에서 일절 지원되지 않는 것일 수 있다. 이런 경우 유일한 방법은 이 기능이 가능하도록 커널을 다시 환경 설정하는 것뿐이다.
 </para>
 
 <para>
@@ -589,14 +646,6 @@ psql: could not connect to server: No such file or directory
  </para>
 
  <para>
-이러한 기능을 제공하지 않는 OS에서 서버를 실행하면,
-<quote><errorname>Illegal system call</errorname></quote> 오류를 내면서 실행되지 않는다.
-커널이 이런 기능을 제공하지 않는다면, 커널을 다시 만들거나, OS 환경 설정을
-다시 하거나 해야한다.
-이러한 상황은 최신 운영 체제에서는 거의 일어나지 않는다.
- </para>
-
- <para>
     <productname>PostgreSQL</productname> 서버는 아주 적은 System V 공유 메모리와, 
     서버에서 사용할 공용 메모리로 anonymous <function>mmap</function>
     공유 메모리를 사용한다.
@@ -606,13 +655,6 @@ psql: could not connect to server: No such file or directory
     현재 리눅스나 FreeBSD 인 경우는 POSIX 세마포어를 사용하고, 
     나머지 OS에서는 System V 세마포어를 사용한다.
  </para>
-
- <note>
- <para>
- <productname>PostgreSQL</productname> 9.3 이전에는, 서버 시작에 훨씬 더 많은 System V 공유 메모리가 필요했다.
- 버전이 오래된 서버를 실행 중인 경우 문서에서 서버 버전을 참고하기 바란다.
- </para>
- </note>
 
    <para>
     System V <acronym>IPC</acronym>를 사용하는 경우, 이들 자원(공유 메모리와 세마포어)은
@@ -631,6 +673,9 @@ psql: could not connect to server: No such file or directory
 <title><systemitem class="osname">System V</systemitem> <acronym>IPC</acronym> 파라미터</title>
 
 <tgroup cols="3">
+     <colspec colname="col1" colwidth="1*"/>
+     <colspec colname="col2" colwidth="3*"/>
+     <colspec colname="col3" colwidth="3*"/>
  <thead>
 <row>
  <entry>이름</entry>
@@ -772,7 +817,7 @@ left on device</quote>라는 애매한 메시지를 받게 된다.
 </term>
 <listitem>
  <para>
-모든 메모리가 공유 메모리로 사용되도록 설정되므로, 적어도 버전 5.1은 
+모든 메모리가 공유 메모리로 사용되도록 설정되므로, 
 <varname>SHMMAX</varname>같은 파라미터에 대해 특수한 설정을 할 필요가 없다.
 이것은 <application>DB/2</application> 같은 다른 데이터베이스에서 일반적으로 사용된 설정의 한 종류이다.</para>
 
@@ -789,6 +834,12 @@ left on device</quote>라는 애매한 메시지를 받게 된다.
 <indexterm><primary>FreeBSD</primary><secondary>IPC configuration</secondary></indexterm>
 </term>
 <listitem>
+       <para>
+        The default shared memory settings are usually good enough, unless
+        you have set <literal>shared_memory_type</literal> to <literal>sysv</literal>.
+        System V semaphores are not used on this platform.
+       </para>
+
  <para>
 기본 IPC 설정은 <command>sysctl</command> 또는 <command>loader</command> 인터페이스를 사용하여 변경할 수 있다.
 다음 파라미터는 <command>sysctl</command>을 사용하여 설정할 수 있다.
@@ -800,31 +851,20 @@ left on device</quote>라는 애매한 메시지를 받게 된다.
  </para>
 
  <para>
-이러한 세마포어 관련 설정은 
-<command>sysctl</command>에 관한 한 읽기 전용이지만 
-<filename>/boot/loader.conf</filename>에서 설정 가능하다.
-<programlisting>
-kern.ipc.semmni=256
-kern.ipc.semmns=512
-</programlisting>
-이 파일을 수정한 후에는 새 설정을 적용하려면 리부팅이 필요하다.
- </para>
-
- <para>
-사용자는 커널을 환경 설정하여 System V 공유 메모리를 RAM에 잠그고 스왑을 위해 페이지 아웃되지 못하게 하기를 원할 수 있다.
-이것은 <command>sysctl</command>
+        If you have set <literal>shared_memory_type</literal> to
+        <literal>sysv</literal>, you might also want to configure your kernel
+        to lock System V shared memory into RAM and prevent it from being paged
+        out to swap.  이것은 <command>sysctl</command>
 설정 <literal>kern.ipc.shm_use_phys</literal>를 사용하면 가능하다.
  </para>
 
  <para>
-<application>sysctl</application>의 <literal>security.jail.sysvipc_allowed</literal>를 활성화하여 FreeBSD jail에서 실행 중인 경우 서로 다른 jail에서 실행 중인 <application>postmaster</application>들은 서로 다른 시스템 사용자에 의해 실행되어야 한다.
-루트 사용자가 아닌 경우 서로 다른 jail에서 사용자가 공유 메모리 또는 세마포어를 간섭하지 못하게 하고 PostgreSQL IPC 클린업 코드가 올바로 작동되게 하기 때문에 이것은 보안을 개선시킨다
-(FreeBSD 6.0 이상에서 IPC 클린업 코드는 서로 다른 jail에서 동일한 포트에 postmaster의 실행을 방지하기 때문에 다른 jail에서 프로세스를 올바로 감지하지 못한다.).
- </para>
-
- <para>
-<systemitem class="osname">FreeBSD</systemitem> 4.0 이전 버전은 
-옛 <systemitem class="osname">OpenBSD</systemitem>처럼 작동된다(아래 참조).
+        If running in a FreeBSD jail, you should set its
+        <literal>sysvshm</literal> parameter to <literal>new</literal>, so that
+        it has its own separate System V shared memory namespace.
+        (Before FreeBSD 11.0, it was necessary to enable shared access to
+        the host's IPC namespace from jails, and take measures to avoid
+        collisions.)
  </para>
 </listitem>
  </varlistentry>
@@ -835,7 +875,16 @@ kern.ipc.semmns=512
 </term>
 <listitem>
  <para>
-<systemitem class="osname">NetBSD</systemitem>5.0 이상에서, IPC 파라미터는 <command>sysctl</command>을 사용하여 조절 가능하다.예를 들면:
+        The default shared memory settings are usually good enough, unless
+        you have set <literal>shared_memory_type</literal> to <literal>sysv</literal>.
+        You will usually want to increase <literal>kern.ipc.semmni</literal>
+        and <literal>kern.ipc.semmns</literal>,
+        as <systemitem class="osname">NetBSD</systemitem>'s default settings
+        for these are uncomfortably small.
+       </para>
+
+       <para>
+IPC 파라미터는 <command>sysctl</command>을 사용하여 조절 가능하다.예를 들면:
 <screen>
 <prompt>#</prompt> <userinput>sysctl -w kern.ipc.semmni=100</userinput>
 </screen>
@@ -844,23 +893,14 @@ kern.ipc.semmns=512
  </para>
 
        <para>
-        보통,
-        <systemitem class="osname">NetBSD</systemitem> 기본 설정값이 충분하지
-        않기에, <literal>kern.ipc.semmni</literal> 설정값과, 
-        <literal>kern.ipc.semmns</literal> 설정값을 크게 설정해야할 것이다.
-       </para>
-
- <para>
- 사용자는 커널을 환경 설정하여 System V 공유 메모리를 RAM에 잠그고 스왑을 위해 페이지 아웃되지 못하게 하기를 원할 수 있다.이것은 <command>sysctl</command>
+        If you have set <literal>shared_memory_type</literal> to
+        <literal>sysv</literal>, you might also want to configure your kernel
+        to lock System V shared memory into RAM and prevent it from being paged
+        out to swap.
+이것은 <command>sysctl</command>
 설정 <literal>kern.ipc.shm_use_phys</literal>를 사용하면 가능하다.
  </para>
 
- <para>
-<systemitem class="osname">NetBSD</systemitem> 5.0 이전 버전은
-키워드 <literal>option</literal>이 아니라 <literal>options</literal>로
-설정되어야만 하는 파라미터인 경우 외에는
-옛 <systemitem class="osname">OpenBSD</systemitem> (아래 참조)처럼 작동된다.
- </para>
 </listitem>
  </varlistentry>
 
@@ -870,17 +910,8 @@ kern.ipc.semmns=512
 </term>
 <listitem>
  <para>
-        In <systemitem class="osname">OpenBSD</systemitem> 3.3 and later,
-        IPC parameters can be adjusted using <command>sysctl</command>,
-        for example:
-<screen>
-<prompt>#</prompt> <userinput>sysctl kern.seminfo.semmni=100</userinput>
-</screen>
-        To make these settings persist over reboots, modify
-        <filename>/etc/sysctl.conf</filename>.
-       </para>
-
-       <para>
+        The default shared memory settings are usually good enough, unless
+        you have set <literal>shared_memory_type</literal> to <literal>sysv</literal>.
         You will usually want to
         increase <literal>kern.seminfo.semmni</literal>
         and <literal>kern.seminfo.semmns</literal>,
@@ -889,22 +920,13 @@ kern.ipc.semmns=512
        </para>
 
        <para>
-        In older <systemitem class="osname">OpenBSD</systemitem> versions,
-        you will need to build a custom kernel to change the IPC parameters.
-        Make sure that the options <varname>SYSVSHM</varname>
-        and <varname>SYSVSEM</varname> are enabled, too.  (They are by
-        default.)  The following shows an example of how to set the various
-        parameters in the kernel configuration file:
-<programlisting>
-optionSYSVSHM
-optionSHMMAXPGS=4096
-optionSHMSEG=256
-
-optionSYSVSEM
-optionSEMMNI=256
-optionSEMMNS=512
-optionSEMMNU=256
-</programlisting>
+        IPC parameters can be adjusted using <command>sysctl</command>,
+        for example:
+<screen>
+<prompt>#</prompt> <userinput>sysctl kern.seminfo.semmni=100</userinput>
+</screen>
+        To make these settings persist over reboots, modify
+        <filename>/etc/sysctl.conf</filename>.
  </para>
 
 </listitem>
@@ -916,8 +938,7 @@ optionSEMMNU=256
 </term>
 <listitem>
  <para>
-기본 설정은 보편적으로 정상적인 설치에 충분하다.<productname>HP-UX</productname> 10에서 
-<varname>SEMMNS</varname>의 출고시 기본 설정은 128이며, 이것은 거대 데이터베이스 사이트에는 너무 적을 수 있다.
+기본 설정은 보편적으로 정상적인 설치에 충분하다.
  </para>
  <para>
 <acronym>IPC</acronym> 파라미터는 <menuchoice><guimenu>Kernel
@@ -935,7 +956,12 @@ Administration Manager</application> (<acronym>SAM</acronym>)에서 설정할 �
 </term>
 <listitem>
  <para>
-최대 세그먼트 크기 기본값은 32 MB이며, 최대 총 크기 기본값은 2097152페이지이다.<quote>huge pages</quote>를 이용한 특수한 커널 환경 설정일 때 외에는 페이지는 거의 항상 4096바이트이다(확인하려면 <literal>getconf PAGE_SIZE</literal> 사용).
+        <literal>shared_memory_type</literal> 설정값을
+        <literal>sysv</literal>로 설정하지 않았다면,
+        공유 메모리 설정은 기본 설정값으로도 충분하다.
+        또한 공유 메모리 설정 기본값이 아주 적은 오래된 커널을
+        사용한다면 그 값을 살펴볼 필요는 있다.
+        리눅스 환경에서는 System V 세마포어는 사용하지 않는다.
  </para>
 
  <para>
@@ -944,20 +970,10 @@ Administration Manager</application> (<acronym>SAM</acronym>)에서 설정할 �
 <prompt>$</prompt> <userinput>sysctl -w kernel.shmmax=17179869184</userinput>
 <prompt>$</prompt> <userinput>sysctl -w kernel.shmall=4194304</userinput>
 </screen>
-또한, <filename>/etc/sysctl.conf</filename> 파일에서 리부팅 사이에서도 이 설정을 보존할 수 있다.이렇게 하는 것이 매우 바람직하다.
+        리부팅 된 뒤에도 이 설정을 유지하려면, 
+        <filename>/etc/sysctl.conf</filename> 파일에 지정한다.
  </para>
 
- <para>
-오래된 배포에는 <command>sysctl</command> 프로그램이 없을 수도 있지만 <filename>/proc</filename> 파일 시스템을 처리하여 동일하게 변경할 수 있다.
-<screen>
-<prompt>$</prompt> <userinput>echo 17179869184 &gt;/proc/sys/kernel/shmmax</userinput>
-<prompt>$</prompt> <userinput>echo 4194304 &gt;/proc/sys/kernel/shmall</userinput>
-</screen>
- </para>
-
- <para>
-나머지 기본 설정은 아주 넉넉한 크기로, 일반적으로 변경이 불필요하다.
- </para>
 </listitem>
  </varlistentry>
 
@@ -967,6 +983,11 @@ Administration Manager</application> (<acronym>SAM</acronym>)에서 설정할 �
 <indexterm><primary>macOS</primary><secondary>IPC 설정</secondary></indexterm>
 </term>
 <listitem>
+ <para>
+        <literal>shared_memory_type</literal> 설정값을
+        <literal>sysv</literal>로 설정하지 않았다면,
+        공유 메모리 설정은 기본 설정값으로도 충분하다.
+ </para>
  <para>
 macOS에서 공유 메모리를 환경 설정하는 권장 방법은 다음과 같은 변수 할당이 포함된 <filename>/etc/sysctl.conf</filename> 파일을 생성하는 것이다.
 <programlisting>
@@ -982,7 +1003,7 @@ kern.sysv.shmall=1024
  </para>
 
  <para>
-macOS 최근 릴리스는 설정된 <varname>SHMMAX</varname>가 정확히 4096의 배수가 아니면 이 값을 무시한다.
+<varname>SHMMAX</varname>가 정확히 4096의 배수여야 한다.
  </para>
 
  <para>
@@ -990,66 +1011,20 @@ macOS 최근 릴리스는 설정된 <varname>SHMMAX</varname>가 정확히 4096�
  </para>
 
  <para>
-macOS 구 버전에서는 공유 메모리 파라미터에 대한 변경 내용이 적용되려면 리부팅 해야 한다.
-10.5는 현재, <application>sysctl</application>을 사용하여 <varname>SHMMNI</varname>를 제외한 모두를 상황에 따라 변경 가능하다.
-그러나 리부팅 사이에 값이 유지될 수 있도록 <filename>/etc/sysctl.conf</filename>를 통해 원하는 값을 설정하는 것이 최선이다.
+<application>sysctl</application>을 사용하여 <varname>SHMMNI</varname>를
+제외한 모두를 상황에 따라 변경 가능하다.  그러나 리부팅 사이에 값이
+유지될 수 있도록 <filename>/etc/sysctl.conf</filename>를 통해 원하는 값을 설정하는 것이 최선이다.
  </para>
 
- <para>
-<filename>/etc/sysctl.conf</filename> 파일은 macOS 10.3.9 이상에서만 유효하다.
-이전 10.3.x 릴리스를 실행 중인 경우 <filename>/etc/rc</filename>
-파일을 편집하여 다음 명령으로 값을 변경해야 한다.
-<programlisting>
-sysctl -w kern.sysv.shmmax
-sysctl -w kern.sysv.shmmin
-sysctl -w kern.sysv.shmmni
-sysctl -w kern.sysv.shmseg
-sysctl -w kern.sysv.shmall
-</programlisting>
-Note that
-<filename>/etc/rc</filename>는 일반적으로 macOS 시스템 업데이트 시 덮어쓰기 되므로 업데이트가 있을 때마다 사용자는 이러한 편집을 반복해야 한다.
- </para>
-
- <para>
-macOS 10.2 이전 버전에서는 <filename>/System/Library/StartupItems/SystemTuning/SystemTuning</filename> 파일에서 이 명령을 편집해야 한다.
- </para>
 </listitem>
  </varlistentry>
 
  <varlistentry>
-<term><systemitem class="osname">Solaris</systemitem> 2.6 to 2.9 (Solaris
-6 ~ Solaris 9)
-<indexterm><primary>Solaris</primary><secondary>IPC 설정</secondary></indexterm>
-</term>
+<term><systemitem class="osname">Solaris</systemitem></term>
+<term><systemitem class="osname">illumos</systemitem></term>
 <listitem>
  <para>
-해당 설정은 
-<filename>/etc/system</filename>에서 변경 가능하다.예를 들면:
-<programlisting>
-set shmsys:shminfo_shmmax=0x2000000
-set shmsys:shminfo_shmmin=1
-set shmsys:shminfo_shmmni=256
-set shmsys:shminfo_shmseg=256
-
-set semsys:seminfo_semmap=256
-set semsys:seminfo_semmni=512
-set semsys:seminfo_semmns=512
-set semsys:seminfo_semmsl=32
-</programlisting>
-변경한 내용을 적용하려면 사용자의 리부팅이 필요하다.이전 Solaris 버전에서 공유 메모리에 대한 내용은 
-<ulink url="http://sunsite.uakom.sk/sunworldonline/swol-09-1997/swol-09-insidesolaris.html"></ulink>
-을 참조 바란다.
- </para>
-</listitem>
- </varlistentry>
-
- <varlistentry>
-<term><systemitem class="osname">Solaris</systemitem> 2.10 (Solaris
-10) 이상</term>
-<term><systemitem class="osname">OpenSolaris</systemitem></term>
-<listitem>
- <para>
-Solaris 10 이상 및 OpenSolaris에서 기본 공유 메모리 및 세마포어 설정은 대부분의 
+기본 공유 메모리 및 세마포어 설정은 대부분의 
 <productname>PostgreSQL</productname> 애플리케이션에서 충분하다.이제 Solaris는 시스템 <acronym>RAM</acronym>의 1/4을 <varname>SHMMAX</varname> 기본값으로 설정한다.
 이 설정을 좀 더 조정하려면 <literal>postgres</literal> 사용자에 대한 프로젝트 설정을 사용해야 한다. 예를 들면, <literal>root</literal>로 다음을 실행한다.
 <programlisting>
@@ -1233,36 +1208,54 @@ default:\
    </indexterm>
 
  <para>
-Linux 2.4 이상에서 기본 가상 메모리 동작은 <productname>PostgreSQL</productname>의 경우 최적화 되어 있지 않다.
-커널이 메모리 오버커밋을 이행하는 방식 때문에 <productname>PostgreSQL</productname> 또는 다른 프로세스의 메모리 수요가 시스템의 가상 메모리가 소진되는 원인이 되는 경우 커널은 
-<productname>PostgreSQL</productname> postmaster(마스터 서버 프로세스)를 종료해야 한다.
+Linux 기본 가상 메모리 동작은 <productname>PostgreSQL</productname>의
+경우 최적화 되어 있지 않다.  커널이 메모리 오버커밋을 이행하는 방식
+때문에 <productname>PostgreSQL</productname> 또는 다른 프로세스의
+사용 메모리가 시스템의 가상 메모리 소진의 원인이 되는 경우 커널은 
+<productname>PostgreSQL</productname> postmaster(서버 최상위 프로세스)를
+강제 중시 시킬 것이다.
  </para>
 
  <para>
-이런 경우가 발생하면 이와 같은 커널 메시지가 나타난다(해당 메시지를 찾아 보려면 시스템 문서 및 환경 설정 참조).
+이런 경우가 발생하면 다음 같은 커널 메시지가 나타난다(해당
+메시지를 찾아 보려면 시스템 문서 및 환경 설정 참조).
 <programlisting>
 Out of Memory: Killed process 12345 (postgres).
 </programlisting>
-이것은 <filename>postgres</filename> 프로세스가 메모리 압박 때문에 종료되었음을 나타낸다.기존 데이터베이스 연결이 정상 작동되더라도 새로운 연결은 수락되지 않는다.
+이것은 <filename>postgres</filename> 프로세스가 메모리 압박 때문에
+종료되었음을 나타낸다.  기존 데이터베이스 연결이 정상 작동되더라도
+새로운 연결은 수락되지 않는다.
 복구하려면 <productname>PostgreSQL</productname>을 재시작해야 한다.
  </para>
 
  <para>
-이 문제를 방지하는 방법 중 하나는 다른 프로세스 때문에 머신의 메모리가 소진되지 않을 것이 확실한 머신에서 
-<productname>PostgreSQL</productname>을 실행하는 것이다.실제 메모리와 swap 공간이 소진된 경우에만 메모리 부족(OOM) 킬러가 호출되기 때문에 메모리에 여유가 없는 경우에는 운영 체제의 swap 공간을 늘리면 문제를 방지하는 데 도움이 된다.
+이 문제를 방지하는 방법 중 하나는 다른 프로세스 때문에 머신의
+메모리가 소진되지 않을 것이 확실한 머신에서
+<productname>PostgreSQL</productname>을 실행하는 것이다.  실제
+메모리와 swap 공간이 소진된 경우에만 메모리 부족(OOM) 킬러가
+호출되기 때문에 메모리에 여유가 없는 경우에는 운영
+체제의 swap 공간을 늘리면 문제를 방지하는 데 도움이 된다.
  </para>
 
  <para>
-<productname>PostgreSQL</productname> 자체가 메모리 부족의 원인인 경우 환경 설정을 변경하면 문제를 방지할 수 있다.경우에 따라 메모리 관련 환경 설정 파라미터, 특히 
-<link linkend="guc-shared-buffers"><varname>shared_buffers</varname></link>
-및 <link linkend="guc-work-mem"><varname>work_mem</varname></link>을 줄이는 것이 도움이 된다.그 외에는 데이터베이스 서버 자체로의 연결을 너무 많이 허용하는 것이 문제의 원인일 수 있다.대체로, 
-<link linkend="guc-max-connections"><varname>max_connections</varname></link>를 줄이는 대신 외부 연결 풀링 소프트웨어를 이용하는 것이 좋다.
+<productname>PostgreSQL</productname> 자체가 메모리 부족의 원인인 경우
+환경 설정을 변경하면 문제를 방지할 수 있다.  경우에 따라 메모리 관련 환경 설정 파라미터, 특히 
+    <link linkend="guc-shared-buffers"><varname>shared_buffers</varname></link>,
+    <link linkend="guc-work-mem"><varname>work_mem</varname></link>, 
+    <link linkend="guc-hash-mem-multiplier"><varname>hash_mem_multiplier</varname></link>
+설정값을 줄이는 것이 도움이 된다.  그 외에는 데이터베이스 서버 자체로의
+연결을 너무 많이 허용하는 것이 문제의 원인일 수 있다.  대체로,
+<link linkend="guc-max-connections"><varname>max_connections</varname></link>를 줄이는
+대신 외부 연결 풀링 소프트웨어를 이용하는 것이 좋다.
  </para>
 
  <para>
-Linux 2.6 이상에서 커널의 동작을 수정해서 메모리 <quote>오버커밋</quote>을 방지할 수 있다.
+커널 환경 설정 매개 변수를 수정해서 메모리 <quote>오버커밋</quote>을 방지할 수 있다.
 이 설정으로 <ulink
-url="https://lwn.net/Articles/104179/">OOM killer</ulink>의 호출이 전적으로 방지되는 않지만 가능성은 확연히 줄어들며, 따라서 시스템 동작이 좀 더 견고해진다.<command>sysctl</command>을 통해 엄격한 오버커밋 모드를 선택함으로써 이것이 가능해진다.
+url="https://lwn.net/Articles/104179/">OOM killer</ulink>의 호출이
+전적으로 방지되는 않지만 가능성은 확연히 줄어들며, 따라서 시스템
+동작이 좀 더 견고해진다. <command>sysctl</command>을 통해 엄격한
+오버커밋 모드를 선택함으로써 이것이 가능해진다.
 <programlisting>
 sysctl -w vm.overcommit_memory=2
 </programlisting>
@@ -1302,19 +1295,6 @@ export PG_OOM_ADJUST_VALUE=0
     whole point is to ensure that the postmaster has a preferential setting.
    </para>
 
-   <para>
-    Older Linux kernels do not offer <filename>/proc/self/oom_score_adj</filename>,
-    but may have a previous version of the same functionality called
-    <filename>/proc/self/oom_adj</filename>.  This works the same except the disable
-    value is <literal>-17</literal> not <literal>-1000</literal>.
-   </para>
-
-
- <note>
- <para>
-일부 공급업체의 Linux 2.4 커널은 2.6 오버커밋 <command>sysctl</command> 파라미터의 초기 버전을 가지고 있는 것으로 알려져 있다.그러나, 관련 코드가 없는 2.4 커널에서 <literal>vm.overcommit_memory</literal>가 2로 설정되는 것은 상황을 더 나쁘게 만든다. 실제 커널 소스 코드를 확인하여( <filename>mm/mmap.c</filename> 파일에서 <function>vm_enough_memory</function> 참조) 2.4 설치에서 이것을 시도하기 전에 사용자의 커널에서 무엇이 지원되는지 확인하는 것이 좋다. <filename>overcommit-accounting</filename> 문서 파일이 존재한다고 해서 기능이 지원된다는 증거로 생각해서는 <emphasis>안</emphasis> 된다.의심스러울 경우는 커널 전문가 또는 커널 공급업체에게 문의 바란다.
- </para>
- </note>
 </sect2>
 
 <sect2 id="linux-huge-pages">
@@ -1404,9 +1384,21 @@ $ <userinput>grep Huge /proc/meminfo</userinput>
 </indexterm>
 
 <para>
- 데이터베이스 서버를 셧다운 하는 방법에는 몇 가지가 있다.사용자는 마스터 
- <command>postgres</command> 프로세스에 서로 다른 신호를 전송하여 셧다운 유형을 제어한다.
+ 데이터베이스 서버를 셧다운 하는 방법에는 몇 가지가 있다.  내부적으로
+ 모든 방법은 <command>postgres</command> 프로세스에 서로 다른 신호를
+전송하여 셧다운 유형을 제어한다.
+  </para>
 
+  <para>
+   미리 패키징된 <productname>PostgreSQL</productname> 버전을 
+   사용한다면, 서버 시작과 마찬가지로 서버 중지도 패키지에서 제공한다.
+   자세한 방법은 패키지 설명서를 참조하면 된다.
+  </para>
+
+  <para>
+   수동으로 서버를 직접 관리한다면, <command>postgres</command>
+   (서버 최상위 프로세스)
+   프로세스에 다음과 같은 신호를 보낸다:
  <variablelist>
 <varlistentry>
  <term><systemitem>SIGTERM</systemitem><indexterm><primary>SIGTERM</primary></indexterm></term>
@@ -1513,6 +1505,10 @@ pg_ctl 프로그램은 이러한 서버 셧다운 신호를 전송하기 위한 
 방법은 느릴 수 있지만 데이터베이스를 덤프하고 다시 불러오는
 것이다.  더 빠른 방법은 <xref linkend="pgupgrade"/>이다. 복제
 방법도 아래에 언급된 바와 같이 사용 가능하다.
+   (If you are using a pre-packaged version
+   of <productname>PostgreSQL</productname>, it may provide scripts to
+   assist with major version upgrades.  Consult the package-level
+   documentation for details.)
 </para>
 
 <para>
@@ -2282,7 +2278,7 @@ openssl x509 -req -in server.csr -text -days 365 \
    <para>
     The <productname>PostgreSQL</productname> server will listen for both
     normal and <acronym>GSSAPI</acronym>-encrypted connections on the same TCP
-    port, and will negotiate with any connecting client on whether to
+    port, and will negotiate with any connecting client whether to
     use <acronym>GSSAPI</acronym> for encryption (and for authentication).  By
     default, this decision is up to the client (which means it can be
     downgraded by an attacker); see <xref linkend="auth-pg-hba-conf"/> about

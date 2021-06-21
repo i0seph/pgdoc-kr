@@ -72,11 +72,17 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
      </para>
 
      <para>
-      이 목록에 추가 될 수 있는 테이블은 일반 테이블 뿐이다.
-      임시 테이블, 언로그드 테이블, 외부 테이블, 구체화한 뷰, 일반 뷰,
-      파티션 상위 테이블 이 모두 발행 목록에 추가할 수 없다.
-      파티션 테이블인 경우는 그 하위 일반 테이블들을 대상으로 
-      각각 추가해야 한다.
+      이 목록에 추가 될 수 있는 테이블은 일반 테이블과 파티션 테이블 뿐이다.
+      임시 테이블, 언로그드 테이블, 외부 테이블, 구체화한 뷰, 일반 뷰는
+      발행 목록에 추가할 수 없다.
+     </para>
+
+     <para>
+      상위 파티션 테이블을 추가할 경우,
+      하위 파티션 테이블은 상위 파티션 테이블에
+      암묵적으로 포함되는 것으로 간주하기 때문에, 상위 테이블 대상으로 
+      한 작업은 실제로는 각 개별 하위 테이블 대상으로 하기 때문에, 
+      발행과 구독은 그 실제 하위 테이블 대상으로 이뤄진다.
      </para>
     </listitem>
    </varlistentry>
@@ -112,9 +118,27 @@ CREATE PUBLICATION <replaceable class="parameter">이름</replaceable>
          </para>
         </listitem>
        </varlistentry>
-      </variablelist>
 
-     </para>
+       <varlistentry>
+        <term><literal>publish_via_partition_root</literal> (<type>boolean</type>)</term>
+        <listitem>
+         <para>
+          This parameter determines whether changes in a partitioned table (or
+          on its partitions) contained in the publication will be published
+          using the identity and schema of the partitioned table rather than
+          that of the individual partitions that are actually changed; the
+          latter is the default.  Enabling this allows the changes to be
+          replicated into a non-partitioned table or a partitioned table
+          consisting of a different set of partitions.
+         </para>
+
+         <para>
+          If this is enabled, <literal>TRUNCATE</literal> operations performed
+          directly on partitions are not replicated.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist></para>
     </listitem>
    </varlistentry>
 

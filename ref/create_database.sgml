@@ -25,6 +25,7 @@ CREATE DATABASE <replaceable class="parameter">이름</replaceable>
     [ [ WITH ] [ OWNER [=] <replaceable class="parameter">소유주</replaceable> ]
            [ TEMPLATE [=] <replaceable class="parameter">템플릿</replaceable> ]
            [ ENCODING [=] <replaceable class="parameter">인코딩</replaceable> ]
+           [ LOCALE [=] <replaceable class="parameter">로케일</replaceable> ]
            [ LC_COLLATE [=] <replaceable class="parameter">lc_collate</replaceable> ]
            [ LC_CTYPE [=] <replaceable class="parameter">lc_ctype</replaceable> ]
            [ TABLESPACE [=] <replaceable class="parameter">테이블스페이스</replaceable> ]
@@ -57,7 +58,9 @@ CREATE DATABASE <replaceable class="parameter">이름</replaceable>
    특별히
    <literal>TEMPLATE template0</literal> 구문을 사용하면,
    해당 <productname>PostgreSQL</productname> 버전의 표준 
-   개체들만 포함되어 있는 완전한 초기 데이터베이스를 복사한다.
+   개체들만 포함되어 있는 완전한 초기 데이터베이스
+   (사용자가 추가한 객체도 없고, 사용자가 변경한 시스템 객체들도 없는)
+   objects have not been altered)를 복사한다.
    이 구문은 <literal>template1</literal> 데이터베이스에 임의로 
    만들어둔 개체들을 사용하지 않으려고 할 때 유용하게 쓰인다.
   </para>
@@ -110,6 +113,26 @@ CREATE DATABASE <replaceable class="parameter">이름</replaceable>
         있는 인코딩은 <xref linkend="multibyte-charset-supported"/>에서
         설명하고 있다.  추가 제한 사항은 아래 참조.
        </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><replaceable class="parameter">로케일</replaceable></term>
+      <listitem>
+       <para>
+        This is a shortcut for setting <symbol>LC_COLLATE</symbol>
+        and <symbol>LC_CTYPE</symbol> at once.  If you specify this,
+        you cannot specify either of those parameters.
+       </para>
+       <tip>
+        <para>
+         The other locale settings <xref linkend="guc-lc-messages"/>, <xref
+         linkend="guc-lc-monetary"/>, <xref linkend="guc-lc-numeric"/>, and
+         <xref linkend="guc-lc-time"/> are not fixed per database and are not
+         set by this command.  If you want to make them the default for a
+         specific database, you can use <literal>ALTER DATABASE
+         ... SET</literal>.
+        </para>
+       </tip>
       </listitem>
      </varlistentry>
      <varlistentry>
@@ -287,7 +310,7 @@ CREATE DATABASE sales OWNER salesapp TABLESPACE salesspace;
    임의의 로케일 설정으로 데이터베이스를 만들 때:
 <programlisting>
 CREATE DATABASE music
-    LC_COLLATE 'sv_SE.utf8' LC_CTYPE 'sv_SE.utf8'
+    LOCALE 'sv_SE.utf8'
     TEMPLATE template0;
 </programlisting>
     윗 예제처럼 로케일 관련 설정을 지정하려면,
@@ -299,7 +322,7 @@ CREATE DATABASE music
    임의의 로케일, 문자 세트 인코딩을 지정해서 데이터베이스를 만들 때:
 <programlisting>
 CREATE DATABASE music2
-    LC_COLLATE 'sv_SE.iso885915' LC_CTYPE 'sv_SE.iso885915'
+    LOCALE 'sv_SE.iso885915'
     ENCODING LATIN9
     TEMPLATE template0;
 </programlisting>
