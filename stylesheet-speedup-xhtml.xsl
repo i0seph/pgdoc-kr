@@ -339,6 +339,7 @@
     </xsl:if>
 
     <xsl:call-template name="user.head.content"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   </head>
 </xsl:template>
 

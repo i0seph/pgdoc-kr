@@ -1,9 +1,9 @@
 <appendix id="glossary">
- <title>Glossary</title>
+ <title>용어집</title>
  <para>
-  This is a list of terms and their meaning in the context of
-  <productname>PostgreSQL</productname> and relational database
-  systems in general.
+  다음은 <productname>PostgreSQL</productname>과 일반적인 
+  관계형 데이터베이스 시스템 관련 용어들과 그 의미를 
+  나열한 것이다.
  </para>
 
  <glosslist>
@@ -11,98 +11,97 @@
    <glossterm>ACID</glossterm>
    <glossdef>
     <para>
-     <glossterm linkend="glossary-atomicity">Atomicity</glossterm>,
-     <glossterm linkend="glossary-consistency">Consistency</glossterm>,
-     <glossterm linkend="glossary-isolation">Isolation</glossterm>, and
-     <glossterm linkend="glossary-durability">Durability</glossterm>.
-     This set of properties of database transactions is intended to
-     guarantee validity in concurrent operation and even in event of
-     errors, power failures, etc.
+     <glossterm linkend="glossary-atomicity">원자성 Atomicity</glossterm>,
+     <glossterm linkend="glossary-consistency">일관성 Consistency</glossterm>,
+     <glossterm linkend="glossary-isolation">독립성 Isolation</glossterm>, 그리고
+     <glossterm linkend="glossary-durability">내구성 Durability</glossterm>.
+     데이터베이스 트랜잭션의 속성들로 동시 작업, 오류, 정전 등이 
+     생겼을 때 처리하는 자료가 얼마나 올바르게 보장되는가를 살피는 기준이 된다.
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry id="glossary-aggregate">
-   <glossterm>Aggregate function (routine)</glossterm>
+   <glossterm>집계 함수 Aggregate function (routine)</glossterm>
    <glossdef>
     <para>
-     A <glossterm linkend="glossary-function">function</glossterm> that
-     combines (<firstterm>aggregates</firstterm>) multiple input values,
-     for example by counting, averaging or adding,
-     yielding a single output value.
+     여러 입력값을 조합 (<firstterm>집계</firstterm>)하는
+     <glossterm linkend="glossary-function">함수</glossterm>로
+     자료 수, 평균과 같은 것을 구하기 위해 계산해서 한 값으로 
+     출력하는 함수.
     </para>
     <para>
-     For more information, see
-     <xref linkend="functions-aggregate"/>.
+     자세한 설명은 
+     <xref linkend="functions-aggregate"/> 참조.
     </para>
     <glossseealso otherterm="glossary-window-function" />
    </glossdef>
   </glossentry>
 
   <glossentry>
-   <glossterm>Analytic function</glossterm>
+   <glossterm>분석 함수 Analytic function</glossterm>
    <glosssee otherterm="glossary-window-function" />
   </glossentry>
 
   <glossentry id="glossary-analyze">
-   <glossterm>Analyze (operation)</glossterm>
+   <glossterm>통계 정보 수집 Analyze (작업)</glossterm>
    <glossdef>
     <para>
-     The process of collecting statistics from data in
-     <glossterm linkend="glossary-table">tables</glossterm>
-     and other <glossterm linkend="glossary-relation">relations</glossterm>
-     to help the <glossterm linkend="glossary-planner">query planner</glossterm>
-     to make decisions about how to execute
-     <glossterm linkend="glossary-query">queries</glossterm>.
+     <glossterm linkend="glossary-planner">쿼리 계획기</glossterm>가
+     처리할 <glossterm linkend="glossary-query">쿼리</glossterm>를
+     내부적으로 어떤 순서와 방식으로 실행할지를 결정하기 위해
+     <glossterm linkend="glossary-table">테이블</glossterm>과
+     기타 <glossterm linkend="glossary-relation">릴레이션</glossterm>에
+     저장된 자료를 분석해서 통계 정보를 수집하는 작업.
     </para>
     <para>
-     (Don't confuse this term with the <literal>ANALYZE</literal> option
-     to the <xref linkend="sql-explain"/> command.)
+     (<xref linkend="sql-explain"/> 명령의 옵션으로
+     <literal>ANALYZE</literal> 옵션이 있다. 이것과 헛갈리지 말 것.)
     </para>
     <para>
-     For more information, see
-     <xref linkend="sql-analyze"/>.
+     자세한 설명은
+     <xref linkend="sql-analyze"/> 참조.
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry id="glossary-atomic">
-   <glossterm>Atomic</glossterm>
+   <glossterm>원자화 Atomic</glossterm>
    <glossdef>
     <para>
-     In reference to a <glossterm linkend="glossary-datum">datum</glossterm>:
-     the fact that its value cannot be broken down into smaller
-     components.
+     <glossterm linkend="glossary-datum">자료 datum</glossterm> 관련 용어:
+     더 작은 요소로 더 이상 나눌 수 없는 값.
     </para>
    </glossdef>
    <glossdef>
     <para>
-     In reference to a
-     <glossterm linkend="glossary-transaction">database transaction</glossterm>:
-     see <glossterm linkend="glossary-atomicity">atomicity</glossterm>.
+     <glossterm linkend="glossary-transaction">데이터베이스 트랜잭션</glossterm>
+     관련해서는:
+     <glossterm linkend="glossary-atomicity">원자성 atomicity</glossterm> 참조.
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry id="glossary-atomicity">
-   <glossterm>Atomicity</glossterm>
+   <glossterm>원자성 Atomicity</glossterm>
    <glossdef>
     <para>
-     The property of a <glossterm linkend="glossary-transaction">transaction</glossterm>
-     that either all its operations complete as a single unit or none do.
-     In addition, if a system failure occurs during the execution of a
-     transaction, no partial results are visible after recovery.
-     This is one of the <acronym>ACID</acronym> properties.
+     <glossterm linkend="glossary-transaction">트랜잭션</glossterm>의 속성.
+     하나의 묶음으로 모두 완료 되거나 아니면, 모두 취소되는 것.
+     더 보태서, 트랜잭션 작업 중 시스템 장애가 생겨, 복구 작업을 할 때, 
+     그 부분 작업이 복구 되어 그 결과가 부분적으로 보여지면 안된다.
+     이것은 <acronym>ACID</acronym> 속성 가운데 하나다.
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry id="glossary-attribute">
-   <glossterm>Attribute</glossterm>
+   <glossterm>속성 Attribute</glossterm>
    <glossdef>
     <para>
-     An element with a certain name and data type found within a
-     <glossterm linkend="glossary-tuple">tuple</glossterm>.
+     <glossterm linkend="glossary-tuple">tuple</glossterm> 구성 
+     요소로 이름과 자료형으로 구성된 요소.
+     (튜플은 속성들로 구성된다.)
     </para>
    </glossdef>
   </glossentry>
@@ -111,30 +110,30 @@
    <glossterm>Autovacuum (process)</glossterm>
    <glossdef>
     <para>
-     A set of background processes that routinely perform
-     <glossterm linkend="glossary-vacuum">vacuum</glossterm>
-     and <glossterm linkend="glossary-analyze">analyze</glossterm>
-     operations.
+     정기적으로 <glossterm linkend="glossary-vacuum">vacuum</glossterm>과
+     <glossterm linkend="glossary-analyze">analyze</glossterm> 작업을
+     수행하는 백그라운드 프로세스 세트.
     </para>
     <para>
-     For more information, see
-     <xref linkend="autovacuum"/>.
+     자세한 설명은
+     <xref linkend="autovacuum"/> 참조.
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry id="glossary-backend">
-   <glossterm>Backend (process)</glossterm>
+   <glossterm>백엔드 Backend (프로세스)</glossterm>
    <glossdef>
     <para>
-     Process of an <glossterm linkend="glossary-instance">instance</glossterm>
-     which acts on behalf of a <glossterm linkend="glossary-session">client session</glossterm>
-     and handles its requests.
+     <glossterm linkend="glossary-session">클라이언트 세션</glossterm> 작업을
+     처리하는 프로세스, <glossterm linkend="glossary-instance">인스턴스</glossterm>
+     프로세스들 가운데 하나.
     </para>
     <para>
-     (Don't confuse this term with the similar terms
-     <glossterm linkend="glossary-background-worker">Background Worker</glossterm> or
-     <glossterm linkend="glossary-background-writer">Background Writer</glossterm>).
+     (설명이 비슷한
+     <glossterm linkend="glossary-background-worker">백그라운드 워커 Background Worker</glossterm> 또는
+     <glossterm linkend="glossary-background-writer">백그라운드 라이터 Background Writer</glossterm>와 
+     헛갈리지 말것.)
     </para>
    </glossdef>
   </glossentry>
