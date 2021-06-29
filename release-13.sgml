@@ -4193,8 +4193,9 @@ Author: Alvaro Herrera <alvherre@alvh.no-ip.org>
 -->
 
        <para>
-        Allow <link linkend="ddl-partition-pruning">pruning</link> of
-        partitions to happen in more cases
+        보다 다양한 경우에도, 파티션 테이블 가지치기
+        <link linkend="ddl-partition-pruning">pruning</link>를 
+        할 수 있다.
         (Yuzuko Hosoya, Amit Langote, &Aacute;lvaro Herrera)
        </para>
       </listitem>
@@ -4208,14 +4209,15 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
       <para>
-       Allow <link linkend="guc-enable-partitionwise-join">partitionwise
-       joins</link> to happen in more cases (Ashutosh Bapat, Etsuro Fujita,
+       보다 다양한 경우에도, 
+       <link linkend="guc-enable-partitionwise-join">partitionwise
+       조인</link>을 할 수 있다. (Ashutosh Bapat, Etsuro Fujita,
        Amit Langote, Tom Lane)
       </para>
 
        <para>
-        For example, partitionwise joins can now happen between partitioned
-        tables even when their partition bounds do not match exactly.
+        예를 들어 파티션 경계가 정확하게 딱 맞지 않아도 
+        파티션 테이블 사이 파티션와이즈 조인이 가능하다.
        </para>
       </listitem>
 
@@ -4626,18 +4628,18 @@ Author: Noah Misch <noah@leadboat.com>
 -->
 
        <para>
-        Allow <acronym>WAL</acronym> writes to be skipped during a transaction
-        that creates or rewrites a relation, if <xref
-        linkend="guc-wal-level"/> is <literal>minimal</literal> (Kyotaro
+        <xref linkend="guc-wal-level"/> 설정값이 <literal>minimal</literal>일 때,
+        릴레이션 새로 만들기, 다시 쓰기 관련 WAL를 건너뛸 수 있다.  (Kyotaro
         Horiguchi)
        </para>
 
        <para>
-        Relations larger than <xref linkend="guc-wal-skip-threshold"/>
-        will have their files fsync'ed rather than generating
-        <acronym>WAL</acronym>.  Previously this was done only for
-        <command>COPY</command> operations, but the implementation had a bug
-        that could cause data loss during crash recovery.
+        기록할 자료량이 
+        <xref linkend="guc-wal-skip-threshold"/> 설정값보다 큰 경우
+        <acronym>WAL</acronym> 기록을 하지 않고, 직접 데이터 파일
+        fsync 작업을 한다.  이전 버전에서는  <command>COPY</command>
+        작업일 때만 이렇게 했는데, 이 기능이 복구 작업 때, 
+        자료를 잃을 가능성이 있었다.
        </para>
       </listitem>
 

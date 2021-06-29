@@ -2645,20 +2645,18 @@ WAL 버퍼의 내용은 모든 트랜잭션 커밋마다 디스크에 쓰기 되
      <varlistentry id="guc-wal-skip-threshold" xreflabel="wal_skip_threshold">
       <term><varname>wal_skip_threshold</varname> (<type>integer</type>)
       <indexterm>
-       <primary><varname>wal_skip_threshold</varname> configuration parameter</primary>
+       <primary><varname>wal_skip_threshold</varname> 환경 설정 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
-        When <varname>wal_level</varname> is <literal>minimal</literal> and a
-        transaction commits after creating or rewriting a permanent relation,
-        this setting determines how to persist the new data.  If the data is
-        smaller than this setting, write it to the WAL log; otherwise, use an
-        fsync of affected files.  Depending on the properties of your storage,
-        raising or lowering this value might help if such commits are slowing
-        concurrent transactions.  If this value is specified without units, it
-        is taken as kilobytes.  The default is two megabytes
-        (<literal>2MB</literal>).
+        <varname>wal_level</varname>이 <literal>minimal</literal>이고, 
+        릴레이션을 만들거나 다시 쓰기를 하는 트랜잭션이 커밋될 때,
+        이 설정값을 초과하는 크기의 자료량을 쓰는 경우는 WAL 기록을 하지
+        않는다.  이 설정값보다 적은 자료량이면, WAL에 그 내용을 남기고, 
+        그 반대인 경우는 자료를 데이터 파일에 쓰고 직접 fsync 작업을 한다.  저장
+        매체의 성능과 동시 사용자 수에 따라 이 값을 조절하면 된다.  설정값에
+        단위를 생략하면, kb로 간주한다.  초기값은 2MB이다.
        </para>
       </listitem>
      </varlistentry>
@@ -4281,19 +4279,19 @@ nested-loop joins를 완전히 억제하는 것은 어렵지만 이 변수를 �
      <varlistentry id="guc-enable-partitionwise-join" xreflabel="enable_partitionwise_join">
       <term><varname>enable_partitionwise_join</varname> (<type>boolean</type>)
       <indexterm>
-       <primary><varname>enable_partitionwise_join</varname> configuration parameter</primary>
+       <primary><varname>enable_partitionwise_join</varname> 환경 설정 매개 변수</primary>
       </indexterm>
       </term>
       <listitem>
        <para>
-        Enables or disables the query planner's use of partitionwise join,
-        which allows a join between partitioned tables to be performed by
-        joining the matching partitions.  Partitionwise join currently applies
-        only when the join conditions include all the partition keys, which
-        must be of the same data type and have one-to-one matching sets of
-        child partitions.  Because partitionwise join planning can use
-        significantly more CPU time and memory during planning, the default is
-        <literal>off</literal>.
+        쿼리 실행 계획기가 파티션와이즈 조인을 사용할지를 지정한다.
+        파티션와이즈 조인이란 각 짝이 맞는 하위 파티션 테이블들 끼리
+        조인 작업을 하는 것을 말한다.  현재 버전에서의 파티션와이즈
+        조인은 조인 조건에 모든 파티션 키를 사용하는 경우에만 
+        작동한다.  각 조인 칼럼의 자료형도 같아야하며, 하위 파티션
+        집합도 각각 짝이 맞아야한다.  파티션와이즈 조인 계획 짜는
+        작업은 보다 많은 CPU 자원과 메모리를 사용하기 때문에, 
+        기본값은 <literal>off</literal>다.
        </para>
       </listitem>
      </varlistentry>
