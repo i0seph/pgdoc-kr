@@ -5,31 +5,31 @@
   <title>Release 13.3</title>
 
   <formalpara>
-  <title>Release date:</title>
+  <title>출시일:</title>
   <para>2021-05-13</para>
   </formalpara>
 
   <para>
-   This release contains a variety of fixes from 13.2.
-   For information about new features in major release 13, see
-   <xref linkend="release-13"/>.
+   이 릴리즈는 13.2 버전의 다양한 문제점들을 개선한 것이다.  13
+   메이저 릴리즈 새 기능에 대한 부분은
+   <xref linkend="release-13"/>에서 다룬다.
   </para>
 
   <sect2>
-   <title>Migration to Version 13.3</title>
+   <title>13.3 버전으로 마이그레이션</title>
 
    <para>
-    A dump/restore is not required for those running 13.X.
+    13.X 버전에서는 덤프/복원 작업을 할 필요는 없다. 
    </para>
 
    <para>
-    However, if you are upgrading from a version earlier than 13.2,
-    see <xref linkend="release-13-2"/>.
+    하지만, 13.2 이하 버전에서 업그레이드한다면, 
+    <xref linkend="release-13-2"/>을 살펴보라.
    </para>
   </sect2>
 
   <sect2>
-   <title>Changes</title>
+   <title>바뀐점</title>
 
    <itemizedlist>
 
@@ -1050,7 +1050,7 @@ Branch: REL9_6_STABLE [14652a19f] 2021-04-12 19:24:26 -0700
   <title>Release 13.2</title>
 
   <formalpara>
-  <title>Release date:</title>
+  <title>출시일:</title>
   <para>2021-02-11</para>
   </formalpara>
 
@@ -1076,7 +1076,7 @@ Branch: REL9_6_STABLE [14652a19f] 2021-04-12 19:24:26 -0700
   </sect2>
 
   <sect2>
-   <title>Changes</title>
+   <title>바뀐점</title>
 
    <itemizedlist>
 
@@ -1201,8 +1201,9 @@ Branch: master [facad3147] 2020-12-27 12:09:00 -0800
 Branch: REL_13_STABLE [cd7d8cde7] 2020-12-27 12:11:58 -0800
 -->
      <para>
-      Avoid crash when trying to rescan an aggregation plan node
-      that has both hashed and sorted grouping sets
+      집계 계획 노드가 해시 집합과 정렬된 그룹핑 집합으로 
+      되어 있는데, 그것을 다시 탐색하려고 할 때 발생할 수 있는
+      비정상 종료 문제를 고쳤다.
       (Jeff Davis)
      </para>
     </listitem>
@@ -1214,13 +1215,13 @@ Branch: master [0ff865fbe] 2021-02-04 23:01:37 -0500
 Branch: REL_13_STABLE [6467661b6] 2021-02-04 23:01:33 -0500
 -->
      <para>
-      Fix possible incorrect query results when a hash aggregation node
-      spills some tuples to disk (Tom Lane)
+      해시 집계 작업에서 디스크로 자료를 쓸 때, 잘못된 쿼리
+      결과로 처리되는 문제를 고쳤다.  (Tom Lane)
      </para>
 
      <para>
-      It was possible for aggregation grouping values to be replaced
-      by nulls when the tuples are read back in, leading to wrong answers.
+      해당 튜플을 다시 읽을 때 집계 그룹핑 값이 null로 바뀌어
+      잘못된 결과로 처리되는 가능성이 있었다.
      </para>
     </listitem>
 
@@ -2795,7 +2796,7 @@ Branch: REL9_5_STABLE [c26a0865d] 2021-01-24 16:29:48 -0500
   <title>Release 13.1</title>
 
   <formalpara>
-  <title>Release date:</title>
+  <title>출시일:</title>
   <para>2020-11-12</para>
   </formalpara>
 
@@ -2814,7 +2815,7 @@ Branch: REL9_5_STABLE [c26a0865d] 2021-01-24 16:29:48 -0500
   </sect2>
 
   <sect2>
-   <title>Changes</title>
+   <title>바뀐점</title>
 
    <itemizedlist>
 
@@ -3825,71 +3826,70 @@ Branch: REL9_5_STABLE [ff26f804a] 2020-10-22 21:16:38 -0400
   <title>Release 13</title>
 
   <formalpara>
-   <title>Release date:</title>
+   <title>출시일:</title>
    <para>2020-09-24</para>
   </formalpara>
 
   <sect2>
-   <title>Overview</title>
+   <title>개요</title>
 
    <para>
-    <productname>PostgreSQL</productname> 13 contains many new features and
-    enhancements, including:
+    <productname>PostgreSQL</productname> 13 주요 새 기능과 개선사항:
    </para>
 
    <itemizedlist>
     <listitem>
      <para>
-      Space savings and performance gains from de-duplication of B-tree
-      index entries
+      B-tree 인덱스 중복 항목 없애서 크기를 줄이고 속도를 높혔다.
      </para>
     </listitem>
     <listitem>
      <para>
-      Improved performance for queries that use aggregates or partitioned
-      tables
+      집계 작업이나 파티션 테이블 작업 쿼리 성능을 높혔다.
      </para>
     </listitem>
     <listitem>
      <para>
-      Better query planning when using extended statistics
+      확장 통계 정보를 사용할 때 쿼리 실행 계획이 보다 똑똑해졌다.
      </para>
     </listitem>
     <listitem>
      <para>
-      Parallelized vacuuming of indexes
+      인덱스 청소 작업을 병렬로 할 수 있다.
      </para>
     </listitem>
     <listitem>
      <para>
-      Incremental sorting
+      증분 정렬 Incremental sorting
      </para>
     </listitem>
    </itemizedlist>
 
    <para>
-    The above items and other new features
-    of <productname>PostgreSQL</productname> 13 are explained in more
-    detail in the sections below.
+    <productname>PostgreSQL</productname> 13의
+    위에서 소개한 것들과 기타 새 기능들의 보다 자세한 사항은 
+    아래에서 다룬다.
    </para>
 
   </sect2>
 
   <sect2>
 
-  <title>Migration to Version 13</title>
+  <title>13 버전으로 마이그레이션 하기</title>
 
     <para>
-     A dump/restore using <xref linkend="app-pg-dumpall"/> or use of <xref
-     linkend="pgupgrade"/> or logical replication is required for those
-     wishing to migrate data from any previous release.  See <xref
-     linkend="upgrading"/> for general information on migrating to new major
-     releases.
+     이전 버전에서 사용했던 자료를 마이그레이션 하려면, 
+     <xref linkend="app-pg-dumpall"/> 명령을 이용한 
+     덤프/복원 작업을 하거나, <xref
+     linkend="pgupgrade"/> 명령을 이용하거나, 
+     논리 복제 기법을 쓴다.  기존 자료를 새 버전에서 
+     사용하려는 마이그레이션 작업에 대한 일반적인 내용은 <xref
+     linkend="upgrading"/>에서 자세히 다룬다.
     </para>
 
     <para>
-     Version 13 contains a number of changes that may affect compatibility
-     with previous releases.  Observe the following incompatibilities:
+     13 버전은 하위 버전 호환성에 영향을 미치는 여러 변경 사항을
+     포한한다.  다음은 하위 버전과 호환되지 않는 것들이다:
     </para>
 
    <itemizedlist>
@@ -3901,9 +3901,9 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      Change <link linkend="functions-similarto-regexp"><command>SIMILAR
-      TO ... ESCAPE NULL</command></link> to return <literal>NULL</literal>
-      (Tom Lane)
+      <link linkend="functions-similarto-regexp"><command>SIMILAR
+      TO ... ESCAPE NULL</command></link> 구문은 이제 
+      <literal>NULL</literal>을 반환한다.  (Tom Lane)
      </para>
 
      <para>
@@ -3925,9 +3925,9 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      Make <link
+      <link
       linkend="textsearch-functions-table"><function>json[b]_to_tsvector()</function></link>
-      fully check the spelling of its <literal>string</literal> option
+      함수에서 사용하는 <literal>string</literal> 옵션의 철자를 엄격하게 확인한다.
       (Dominik Czarnota)
      </para>
     </listitem>
@@ -3962,15 +3962,15 @@ Author: Alvaro Herrera <alvherre@alvh.no-ip.org>
 -->
 
      <para>
-      Prevent display of auxiliary processes in <xref
-      linkend="pg-stat-ssl-view"/> and <xref linkend="pg-stat-gssapi-view"/>
-      system views (Euler Taveira)
+      <xref linkend="pg-stat-ssl-view"/> 뷰와 <xref linkend="pg-stat-gssapi-view"/>
+      뷰에서 상관 없는 프로세스들은 이제 보이지 않는다.
+      (Euler Taveira)
      </para>
 
      <para>
-      Queries that join these views to <xref
-      linkend="pg-stat-activity-view"/> and wish to see auxiliary processes
-      will need to use left joins.
+      <xref linkend="pg-stat-activity-view"/>와 조인할 경우, 
+      ssl, gssapi 연결과 상관 없는 프로세스들도 함께 보려면, 
+      left 조인을 해야한다.
      </para>
     </listitem>
 
@@ -3986,8 +3986,8 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      Rename various <link linkend="wait-event-table">wait
-      events</link> to improve consistency (Fujii Masao, Tom Lane)
+      보다 나은 일관성을 위해 <link linkend="wait-event-table">wait
+      event</link> 이름을 바꿨다. (Fujii Masao, Tom Lane)
      </para>
     </listitem>
 
@@ -4168,7 +4168,7 @@ Author: Peter Geoghegan <pg@bowt.ie>
   </sect2>
 
   <sect2>
-   <title>Changes</title>
+   <title>바뀐점</title>
 
      <para>
        Below you will find a detailed account of the changes between
@@ -4555,25 +4555,26 @@ Author: Peter Geoghegan <pg@bowt.ie>
 -->
 
        <para>
-        Allow <link linkend="guc-enable-hashagg">hash aggregation</link>
-        to use disk storage for large aggregation result sets (Jeff Davis)
+        큰 집계 결과 집합을 <link linkend="guc-enable-hashagg">해시 집계</link>로
+        처리할 때 디스크를 사용할 수 있다. (Jeff Davis)
        </para>
 
        <para>
-        Previously, hash aggregation was avoided if it was expected to use
-        more than <xref linkend="guc-work-mem"/> memory.  Now, a hash
-        aggregation plan can be chosen despite that.  The hash table will
-        be spilled to disk if it exceeds <varname>work_mem</varname> times
-        <xref linkend="guc-hash-mem-multiplier"/>.
+        이전 버전에서는 해시 집계인 경우 <xref linkend="guc-work-mem"/>
+        설정값보다 그 집계 결과가 더 클 것으로 예상 되는 경우, 해시 집계
+        계획을 짜지 않았다.  이제 이런 경우에도 해시 집계 계획이 
+        선택될 수 있다.  해시 자료 결과가 
+        <varname>work_mem</varname> 값의 <xref linkend="guc-hash-mem-multiplier"/>
+        배가 넘으면 디스크를 사용한다.
        </para>
 
        <para>
-        This behavior is normally preferable to the old behavior, in which
-        once hash aggregation had been chosen, the hash table would be
-        kept in memory no matter how large it got &mdash; which could be
-        very large if the planner had misestimated.  If necessary,
-        behavior similar to that can be obtained by
-        increasing <varname>hash_mem_multiplier</varname>.
+        일단 해시 집계 계획이 선택되면 무조건 그 필요한 메모리만큼 
+        확보하고 그곳에 해시 자료를 담는 예전 방식보다 낫다. &mdash; 
+        실행 계획기가 잘못 예측하면, 꽤 많은 메모리를 사용하게 된다.  필요하다면,
+        <varname>hash_mem_multiplier</varname> 값을 늘려 해시 집계에
+        사용할 메모리를 크게 확보하는 방법으로 이전 버전의 처리 방식처럼
+        처리할 수 있다.
        </para>
       </listitem>
 
