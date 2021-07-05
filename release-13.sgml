@@ -3907,14 +3907,15 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
      </para>
 
      <para>
-      This new behavior matches the <acronym>SQL</acronym> specification.
-      Previously a null <literal>ESCAPE</literal> value was taken to mean
-      using the default escape string (a backslash character).  This also
-      applies to <literal>substring(<replaceable>text</replaceable>
+      이 새 정책은 <acronym>SQL</acronym> 표준 규약을 따르기 위해서
+      적용되었다.  이전 버전에서는 <literal>ESCAPE NULL</literal>을
+      사용하면, 기본 이스케이프 문자열(백슬래쉬 문자)을 사용하는 것으로
+      간주하였다.  이 정책은
+      <literal>substring(<replaceable>text</replaceable>
       FROM <replaceable>pattern</replaceable>
-      ESCAPE <replaceable>text</replaceable>)</literal>.  The previous
-      behavior has been retained in old views by keeping the original
-      function unchanged.
+      ESCAPE <replaceable>text</replaceable>)</literal> 구문에서도
+      적용된다.  예전부터 사용했던 함수를 바꾸지 않음으로 
+      예전부터 사용했던 뷰의 하위 호환성은 유지했다.
      </para>
     </listitem>
 
@@ -3939,15 +3940,16 @@ Author: Thomas Munro <tmunro@postgresql.org>
 -->
 
      <para>
-      Change the way non-default <xref
-      linkend="guc-effective-io-concurrency"/> values affect concurrency
+      <xref linkend="guc-effective-io-concurrency"/> 설정값이
+      기본값이 아닌 경우 그 영향도 계산 방식이 바뀌었다.
       (Thomas Munro)
      </para>
 
      <para>
-      Previously, this value was adjusted before setting the number of
-      concurrent requests.  The value is now used directly.  Conversion of
-      old values to new ones can be done using:
+      이전 버전에서는 동시 요청 수를 지정하기 전에, 
+      이 설정값을 조정했다.  이제부터는 이 값은 그대로 사용된다.
+      이전버전에서 사용했던 값은 이 버전부터는 다음과 같이 계산해서
+      바꿔 사용하면 된다:
      </para>
 
 <programlisting>
@@ -3998,14 +4000,14 @@ Author: Fujii Masao <fujii@postgresql.org>
 -->
 
      <para>
-      Fix <link linkend="sql-alterforeigntable"><command>ALTER FOREIGN
-      TABLE ... RENAME COLUMN</command></link> to return a more appropriate
-      command tag (Fujii Masao)
+      <link linkend="sql-alterforeigntable"><command>ALTER FOREIGN
+      TABLE ... RENAME COLUMN</command></link> 명령 결과를 좀더 정확하게 바꿨다.
+      (Fujii Masao)
      </para>
 
      <para>
-      Previously it returned <command>ALTER TABLE</command>; now it returns
-      <command>ALTER FOREIGN TABLE</command>.
+      이전 버전에서는 <command>ALTER TABLE</command>을 반환했고, 
+      이제부터 <command>ALTER FOREIGN TABLE</command>을 반환한다.
      </para>
     </listitem>
 
@@ -4016,14 +4018,14 @@ Author: Fujii Masao <fujii@postgresql.org>
 -->
 
      <para>
-      Fix <link linkend="sql-altermaterializedview"><command>ALTER
-      MATERIALIZED VIEW ... RENAME COLUMN</command></link> to return a more
-      appropriate command tag (Fujii Masao)
+      <link linkend="sql-altermaterializedview"><command>ALTER
+      MATERIALIZED VIEW ... RENAME COLUMN</command></link> 명령 결과를
+      좀더 정확하게 바꿨다.  (Fujii Masao)
      </para>
 
      <para>
-      Previously it returned <command>ALTER TABLE</command>; now it returns
-      <command>ALTER MATERIALIZED VIEW</command>.
+      이전 버전에서는 <command>ALTER TABLE</command>을 반환했고, 
+      이제부터 <command>ALTER MATERIALIZED VIEW</command>를 반환한다.
      </para>
     </listitem>
 
@@ -4034,18 +4036,18 @@ Author: Fujii Masao <fujii@postgresql.org>
 -->
 
      <para>
-      Rename configuration parameter <varname>wal_keep_segments</varname>
-      to <xref linkend="guc-wal-keep-size"/> (Fujii Masao)
+      <varname>wal_keep_segments</varname> 환경 설정 매개 변수가
+      <xref linkend="guc-wal-keep-size"/>로 바뀜 (Fujii Masao)
      </para>
 
      <para>
-      This determines how much WAL to retain for standby servers.
-      It is specified in megabytes, rather than number of files as with
-      the old parameter. If you
-      previously used <varname>wal_keep_segments</varname>,
-      the following formula will give you an approximately equivalent setting:
+      이 설정은 대기 서버를 위해 남겨 놓을 WAL 양을 지정한다.
+      이전 버전에서는 WAL 파일 수로 지정했으나, 이제는
+      총 메가 바이트 단위로 지정한다.
+      예전 <varname>wal_keep_segments</varname> 값은
+      다음과 같은 계산식으로 크기를 계산한다:
 <programlisting>
-wal_keep_size = wal_keep_segments * wal_segment_size (typically 16MB)
+wal_keep_size = wal_keep_segments * wal_segment_size (통상 16MB)
 </programlisting>
      </para>
     </listitem>
@@ -4057,9 +4059,9 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      Remove support for defining <link linkend="sql-createopclass">operator
-      classes</link> using pre-<productname>PostgreSQL</productname>
-      8.0 syntax (Daniel Gustafsson)
+      8.0 이전 버전의 <link linkend="sql-createopclass">연산자
+      클래스</link> 정의 문법을 더 이상 지원하지 않는다.
+      (Daniel Gustafsson)
      </para>
     </listitem>
 
@@ -4070,9 +4072,9 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      Remove support for defining <link linkend="sql-altertable">foreign key
-      constraints</link> using pre-<productname>PostgreSQL</productname>
-      7.3 syntax (Daniel Gustafsson)
+      7.3 이전 버전의 <link linkend="sql-altertable">참조키
+      제약조건</link> 정의 문법을 더 이상 지원하지 않는다.
+      (Daniel Gustafsson)
      </para>
     </listitem>
 
@@ -4083,10 +4085,10 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      Remove support for "opaque" <link
-      linkend="sql-createtype">pseudo-types</link> used by
-      pre-<productname>PostgreSQL</productname> 7.3 servers (Daniel
-      Gustafsson)
+      7.3 이전 버전의 "opaque" <link
+      linkend="sql-createtype">의사 자료형</link>을 
+      더 이상 지원하지 않는다.
+      (Daniel Gustafsson)
      </para>
     </listitem>
 
@@ -4097,15 +4099,15 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
       <para>
-       Remove support for upgrading unpackaged (pre-9.1) extensions (Tom Lane)
+       패키지화 되지 않은 확장 모듈(9.1 이전 버전)의 업그레이드를 
+       지원하지 않는다. (Tom Lane)
       </para>
 
       <para>
-       The <literal>FROM</literal> option
-       of <link linkend="sql-createextension"><command>CREATE
-       EXTENSION</command></link> is no longer supported.  Any installations
-       still using unpackaged extensions should upgrade them to a packaged
-       version before updating to <productname>PostgreSQL</productname> 13.
+       <link linkend="sql-createextension"><command>CREATE
+       EXTENSION</command></link> 명령에서 <literal>FROM</literal>
+       옵션을 지원하지 않는다.  패키지화 되지 않은 확장 모듈은 
+       13버전으로 바꾸기 전에 먼저 패키지로 묶는 작업을 해야한다.
       </para>
      </listitem>
 
@@ -4116,23 +4118,23 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      Remove support for <filename>posixrules</filename> files in the
-      timezone database (Tom Lane)
+      지역시간대 데이터베이스에서 <filename>posixrules</filename>
+      파일들을 지원하지 않는다.
+      (Tom Lane)
      </para>
 
      <para>
-      IANA's timezone group has deprecated this feature, meaning that it
-      will gradually disappear from systems' timezone databases over the
-      next few years.  Rather than have a behavioral change appear
-      unexpectedly with a timezone data update, we have
-      removed <productname>PostgreSQL</productname>'s support for this
-      feature as of version 13.  This affects only the behavior
-      of <link linkend="datetime-posix-timezone-specs">POSIX-style time
-      zone specifications</link> that lack an explicit daylight savings
-      transition rule; formerly the transition rule could be determined
-      by installing a custom <filename>posixrules</filename> file, but
-      now it is hard-wired.  The recommended fix for any affected
-      installations is to start using a geographical time zone name.
+      IANA(Internet Assigned Numbers Authority 인터넷 할당 번호 관리기관)의
+      지역시간대 그룹은 이 기능을 없앴다.  따라서 향후 몇 년 사이에, 
+      시스템의 지역시간대 데이터베이스에서도 없어질 것이다.  지역시간대
+      자료가 업데이트 됨에 따라 예상치 않게 시간 처리가 될 소지가 있어,
+      13 버전에서 이 기능을 없앴다.  이 조치는
+      <link linkend="datetime-posix-timezone-specs">POSIX 스타일
+      지역시간대 명세</link>에만 국한된다.  사용자 정의
+      <filename>posixrules</filename> 파일을 만들어 잘못 계산 될 수 
+      있는 일광 시간 절약 변환 규칙을 명시적으로 지정해 
+      문제를 풀어가는 방법이었다.  이제는 이 방법을 사용할 수 없다.
+      추천하는 지역시간대는 지리적인 지역시간대 이름을 사용하는 것이다.
      </para>
     </listitem>
 
@@ -4143,10 +4145,11 @@ Author: Tom Lane <tgl@sss.pgh.pa.us>
 -->
 
      <para>
-      In <xref linkend="ltree"/>, when an <type>lquery</type> pattern
-      contains adjacent asterisks with braces,
-      e.g., <literal>*{2}.*{3}</literal>, properly interpret that
-      as <literal>*{5}</literal> (Nikita Glukhov)
+      <xref linkend="ltree"/> 확장 모듈을 사용할 때, 
+      중괄호 앞 별표를 사용하는
+      <type>lquery</type>인 경우 이제 바르게 처리한다.
+      예, <literal>*{2}.*{3}</literal>는 
+      <literal>*{5}</literal> 로 처리한다. (Nikita Glukhov)
      </para>
     </listitem>
 
@@ -4157,8 +4160,9 @@ Author: Peter Geoghegan <pg@bowt.ie>
 -->
 
      <para>
-      Fix <xref linkend="pageinspect"/>'s <function>bt_metap()</function>
-      to return more appropriate data types that are less likely to overflow
+      <xref linkend="pageinspect"/> 확장 모듈의 <function>bt_metap()</function>
+      함수 반환값에 사용하는 자료형 중 자료형 오버플로우가 일어날
+      가능성이 있는 자료형들은 보다 큰 자료형으로 바꿨다.
       (Peter Geoghegan)
      </para>
     </listitem>
