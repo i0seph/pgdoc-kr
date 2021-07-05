@@ -6962,7 +6962,6 @@ Author: Peter Geoghegan <pg@bowt.ie>
 -->
 
       <para>
-       Add B-tree index de-duplication processing columns to pageinspect output
        pageinspect 확장모듈 출력에서 btree 인덱스 중복제거 작업상황에대한 컬럼이 추가되었다.
        (Peter Geoghegan)
       </para>
