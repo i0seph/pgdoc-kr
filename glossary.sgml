@@ -22,7 +22,7 @@
   </glossentry>
 
   <glossentry id="glossary-aggregate">
-   <glossterm>집계 함수 Aggregate function (routine)</glossterm>
+   <glossterm>집계 함수, Aggregate function (루틴)</glossterm>
    <glossdef>
     <para>
      여러 입력값을 조합 (<firstterm>집계</firstterm>)하는
@@ -39,12 +39,12 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>분석 함수 Analytic function</glossterm>
+   <glossterm>분석 함수, Analytic function</glossterm>
    <glosssee otherterm="glossary-window-function" />
   </glossentry>
 
   <glossentry id="glossary-analyze">
-   <glossterm>통계 정보 수집 Analyze (작업)</glossterm>
+   <glossterm>통계 정보 수집, Analyze (작업)</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-planner">쿼리 계획기</glossterm>가
@@ -66,7 +66,7 @@
   </glossentry>
 
   <glossentry id="glossary-atomic">
-   <glossterm>원자화 Atomic</glossterm>
+   <glossterm>원자화, Atomic</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-datum">자료 datum</glossterm> 관련 용어:
@@ -83,7 +83,7 @@
   </glossentry>
 
   <glossentry id="glossary-atomicity">
-   <glossterm>원자성 Atomicity</glossterm>
+   <glossterm>원자성, Atomicity</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-transaction">트랜잭션</glossterm>의 속성.
@@ -96,7 +96,7 @@
   </glossentry>
 
   <glossentry id="glossary-attribute">
-   <glossterm>속성 Attribute</glossterm>
+   <glossterm>속성, Attribute</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-tuple">tuple</glossterm> 구성 
@@ -107,7 +107,7 @@
   </glossentry>
 
   <glossentry id="glossary-autovacuum">
-   <glossterm>Autovacuum (process)</glossterm>
+   <glossterm>Autovacuum (프로세스)</glossterm>
    <glossdef>
     <para>
      정기적으로 <glossterm linkend="glossary-vacuum">vacuum</glossterm>과
@@ -122,7 +122,7 @@
   </glossentry>
 
   <glossentry id="glossary-backend">
-   <glossterm>백엔드 Backend (프로세스)</glossterm>
+   <glossterm>백엔드, Backend (프로세스)</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-session">클라이언트 세션</glossterm> 작업을
@@ -139,7 +139,7 @@
   </glossentry>
 
   <glossentry id="glossary-background-worker">
-   <glossterm>백그라운드 워커 Background worker (프로세스)</glossterm>
+   <glossterm>백그라운드 워커, Background worker (프로세스)</glossterm>
    <glossdef>
     <para>
      시스템 내부적 또는 사용자 내부적으로 실행되는
@@ -160,7 +160,7 @@
   </glossentry>
 
   <glossentry id="glossary-background-writer">
-   <glossterm>백그라운드 라이터 Background writer (프로세스)</glossterm>
+   <glossterm>백그라운드 라이터, Background writer (프로세스)</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-shared-memory">공유 메모리</glossterm>에
@@ -183,7 +183,7 @@
   </glossentry>
 
   <glossentry id="glossary-bloat">
-   <glossterm>부풀림 Bloat</glossterm>
+   <glossterm>부풀림, Bloat</glossterm>
    <glossdef>
     <para>
      현재 로우 버전을 담고 있지 않은 데이터 페이지 공간,
@@ -194,7 +194,7 @@
   </glossentry>
 
   <glossentry id="glossary-cast">
-   <glossterm>형변환 Cast</glossterm>
+   <glossterm>형변환, Cast</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-datum">자료</glossterm>의 자료형을 
@@ -208,17 +208,17 @@
   </glossentry>
 
   <glossentry id="glossary-catalog">
-   <glossterm>카탈로그 Catalog</glossterm>
+   <glossterm>카탈로그, Catalog</glossterm>
    <glossdef>
     <para>
-     The <acronym>SQL</acronym> standard uses this term to
-     indicate what is called a
-     <glossterm linkend="glossary-database">database</glossterm> in
-     <productname>PostgreSQL</productname>'s terminology.
+     <acronym>SQL</acronym> 표준 용어. 
+     <productname>PostgreSQL</productname> 전문용어로는
+     <glossterm linkend="glossary-database">데이터베이스</glossterm>라고
+     한다.
     </para>
     <para>
-     (Don't confuse this term with
-     <glossterm linkend="glossary-system-catalog">system catalog</glossterm>).
+     (<glossterm linkend="glossary-system-catalog">시스템
+     카탈로그</glossterm>와 헛갈리지 말 것.)
     </para>
     <para>
      자세한 설명은
@@ -228,7 +228,7 @@
   </glossentry>
 
   <glossentry id="glossary-check-constraint">
-   <glossterm>체크 제약조건 Check constraint</glossterm>
+   <glossterm>체크 제약조건, Check constraint</glossterm>
    <glossdef>
     <para>
      A type of <glossterm linkend="glossary-constraint">constraint</glossterm>
@@ -247,7 +247,7 @@
   </glossentry>
 
   <glossentry id="glossary-checkpoint">
-   <glossterm>체크포인트 Checkpoint</glossterm>
+   <glossterm>체크포인트, Checkpoint</glossterm>
    <glossdef>
     <para>
      A point in the <glossterm linkend="glossary-wal">WAL</glossterm> sequence
@@ -274,7 +274,7 @@
   </glossentry>
 
   <glossentry id="glossary-checkpointer">
-   <glossterm>체크포인터 Checkpointer (프로세스)</glossterm>
+   <glossterm>체크포인터, Checkpointer (프로세스)</glossterm>
    <glossdef>
     <para>
      A specialized process responsible for executing checkpoints.
@@ -283,12 +283,12 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>클래스 Class (옛날 용어)</glossterm>
+   <glossterm>클래스, Class (옛날 용어)</glossterm>
    <glosssee otherterm="glossary-relation" />
   </glossentry>
 
   <glossentry id="glossary-client">
-   <glossterm>클라이언트 Client (프로세스)</glossterm>
+   <glossterm>클라이언트, Client (프로세스)</glossterm>
    <glossdef>
     <para>
      Any process, possibly remote, that establishes a
@@ -301,7 +301,7 @@
   </glossentry>
 
   <glossentry id="glossary-column">
-   <glossterm>칼럼 Column</glossterm>
+   <glossterm>칼럼, Column</glossterm>
    <glossdef>
     <para>
      An <glossterm linkend="glossary-attribute">attribute</glossterm> found in
@@ -312,7 +312,7 @@
   </glossentry>
 
   <glossentry id="glossary-commit">
-   <glossterm>커밋 Commit</glossterm>
+   <glossterm>커밋, Commit</glossterm>
    <glossdef>
     <para>
      The act of finalizing a
@@ -329,7 +329,7 @@
   </glossentry>
 
   <glossentry id="glossary-concurrency">
-   <glossterm>동시성 Concurrency</glossterm>
+   <glossterm>동시성, Concurrency</glossterm>
    <glossdef>
     <para>
      The concept that multiple independent operations happen within the
@@ -342,7 +342,7 @@
   </glossentry>
 
   <glossentry id="glossary-connection">
-   <glossterm>연결 Connection</glossterm>
+   <glossterm>연결, Connection</glossterm>
    <glossdef>
     <para>
      An established line of communication between a client process and a
@@ -359,7 +359,7 @@
   </glossentry>
 
   <glossentry id="glossary-consistency">
-   <glossterm>일관성 Consistency</glossterm>
+   <glossterm>일관성, Consistency</glossterm>
    <glossdef>
     <para>
      The property that the data in the
@@ -376,7 +376,7 @@
   </glossentry>
 
   <glossentry id="glossary-constraint">
-   <glossterm>제약조건 Constraint</glossterm>
+   <glossterm>제약조건, Constraint</glossterm>
    <glossdef>
     <para>
      A restriction on the values of data allowed within a
@@ -398,7 +398,7 @@
   </glossentry>
 
   <glossentry id="glossary-database">
-   <glossterm>데이터베이스 Database</glossterm>
+   <glossterm>데이터베이스, Database</glossterm>
    <glossdef>
     <para>
      A named collection of
@@ -412,7 +412,7 @@
   </glossentry>
 
   <glossentry id="glossary-db-cluster">
-   <glossterm>데이터베이스 클러스터 Database cluster</glossterm>
+   <glossterm>데이터베이스 클러스터, Database cluster</glossterm>
    <glossdef>
     <para>
      A collection of databases and global SQL objects,
@@ -429,12 +429,12 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>데이터베이스 서버 Database server</glossterm>
+   <glossterm>데이터베이스 서버, Database server</glossterm>
    <glosssee otherterm="glossary-instance" />
   </glossentry>
 
   <glossentry id="glossary-data-directory">
-   <glossterm>데이터 디렉터리 Data directory</glossterm>
+   <glossterm>데이터 디렉터리, Data directory</glossterm>
    <glossdef>
     <para>
      The base directory on the file system of a
@@ -459,7 +459,7 @@
   </glossentry>
 
   <glossentry id="glossary-data-page">
-   <glossterm>데이터 페이지 Data page</glossterm>
+   <glossterm>데이터 페이지, Data page</glossterm>
    <glossdef>
     <para>
      The basic structure used to store relation data.
@@ -475,17 +475,16 @@
   </glossentry>
 
   <glossentry id="glossary-datum">
-   <glossterm>자료, 데이텀 Datum</glossterm>
+   <glossterm>자료, 데이텀, Datum</glossterm>
    <glossdef>
     <para>
-     The internal representation of one value of an <acronym>SQL</acronym>
-     data type.
+     <acronym>SQL</acronym> 자료형과 그 값이 담기는 내부 자료.
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry id="glossary-delete">
-   <glossterm>삭제 Delete</glossterm>
+   <glossterm>삭제, Delete</glossterm>
    <glossdef>
     <para>
      An <acronym>SQL</acronym> command which removes
@@ -501,7 +500,7 @@
   </glossentry>
 
   <glossentry id="glossary-durability">
-   <glossterm>내구성 Durability</glossterm>
+   <glossterm>내구성, Durability</glossterm>
    <glossdef>
     <para>
      The assurance that once a
@@ -519,7 +518,7 @@
   </glossentry>
 
   <glossentry id="glossary-extension">
-   <glossterm>확장모듈 Extension</glossterm>
+   <glossterm>확장모듈, Extension</glossterm>
    <glossdef>
     <para>
      A software add-on package that can be installed on an
@@ -534,28 +533,30 @@
   </glossentry>
 
   <glossentry id="glossary-file-segment">
-   <glossterm>파일 조각 File segment</glossterm>
+   <glossterm>데이터 조각 파일, File segment</glossterm>
    <glossdef>
     <para>
-     A physical file which stores data for a given
-     <glossterm linkend="glossary-relation">relation</glossterm>.
-     File segments are limited in size by a configuration value
-     (typically 1 gigabyte),
-     so if a relation exceeds that size, it is split into multiple segments.
+     <glossterm linkend="glossary-relation">릴레이션</glossterm>의
+     자료가 저장되는 물리적인 파일.
+     조각 파일의 크기는 엔진 빌드를 위한 설정 작업에서 결정되며
+     (통상 1 기가바이트),
+     이 크기 이상의 자료를 담을 때는 여러개의 조각 파일로 나눠
+     처리한다.
     </para>
     <para>
      자세한 설명은
      <xref linkend="storage-file-layout"/> 참조.
     </para>
     <para>
-     (Don't confuse this term with the similar term
-     <glossterm linkend="glossary-wal-file">WAL segment</glossterm>).
+     (이것과 비슷한 용어인
+     <glossterm linkend="glossary-wal-file">WAL 조각
+     파일</glossterm>과 헛갈리지 말것).
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry id="glossary-foreign-data-wrapper">
-   <glossterm>외부 자료 싸개 Foreign data wrapper</glossterm>
+   <glossterm>외부 자료 싸개, Foreign data wrapper</glossterm>
    <glossdef>
     <para>
      A means of representing data that is not contained in the local
@@ -572,7 +573,7 @@
   </glossentry>
 
   <glossentry id="glossary-foreign-key">
-   <glossterm>참조키 Foreign key</glossterm>
+   <glossterm>참조키, Foreign key</glossterm>
    <glossdef>
     <para>
      A type of <glossterm linkend="glossary-constraint">constraint</glossterm>
@@ -587,7 +588,7 @@
   </glossentry>
 
   <glossentry id="glossary-foreign-server">
-   <glossterm>외부 서버 Foreign server</glossterm>
+   <glossterm>외부 서버, Foreign server</glossterm>
    <glossdef>
     <para>
      A named collection of
@@ -604,7 +605,7 @@
   </glossentry>
 
   <glossentry id="glossary-foreign-table">
-   <glossterm>외부 테이블 Foreign table (릴레이션)</glossterm>
+   <glossterm>외부 테이블, Foreign table (릴레이션)</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-relation">relation</glossterm> which appears to have
@@ -625,7 +626,7 @@
   </glossentry>
 
   <glossentry id="glossary-fork">
-   <glossterm>포크 Fork</glossterm>
+   <glossterm>포크, Fork</glossterm>
    <glossdef>
     <para>
      Each of the separate segmented file sets in which a relation is stored.
@@ -640,7 +641,7 @@
   </glossentry>
 
   <glossentry id="glossary-fsm">
-   <glossterm>빈터 지도 Free space map (fork)</glossterm>
+   <glossterm>빈터 지도, Free space map (fork)</glossterm>
    <glossdef>
     <para>
      A storage structure that keeps metadata about each data page of a table's
@@ -657,7 +658,7 @@
   </glossentry>
 
   <glossentry id="glossary-function">
-   <glossterm>함수 Function (routine)</glossterm>
+   <glossterm>함수, Function (routine)</glossterm>
    <glossdef>
     <para>
      A type of routine that receives zero or more arguments, returns zero or more
@@ -680,7 +681,7 @@
   </glossentry>
 
   <glossentry id="glossary-grant">
-   <glossterm>Grant</glossterm>
+   <glossterm>권한 부여, Grant</glossterm>
    <glossdef>
     <para>
      An <acronym>SQL</acronym> command that is used to allow a
@@ -696,7 +697,7 @@
   </glossentry>
 
   <glossentry id="glossary-heap">
-   <glossterm>힙 Heap</glossterm>
+   <glossterm>힙, Heap</glossterm>
    <glossdef>
     <para>
      Contains the values of <glossterm linkend="glossary-tuple">row</glossterm>
@@ -710,7 +711,7 @@
   </glossentry>
 
   <glossentry id="glossary-host">
-   <glossterm>호스트 Host</glossterm>
+   <glossterm>호스트, Host</glossterm>
    <glossdef>
     <para>
      A computer that communicates with other computers over a network.
@@ -723,7 +724,7 @@
   </glossentry>
 
   <glossentry id="glossary-index">
-   <glossterm>색인, 인덱스 Index (릴레이션)</glossterm>
+   <glossterm>색인, 인덱스, Index (릴레이션)</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-relation">relation</glossterm> that contains
@@ -740,7 +741,7 @@
   </glossentry>
 
   <glossentry id="glossary-insert">
-   <glossterm>Insert</glossterm>
+   <glossterm>인서트, Insert</glossterm>
    <glossdef>
     <para>
      An <acronym>SQL</acronym> command used to add new data into a
@@ -754,7 +755,7 @@
   </glossentry>
 
   <glossentry id="glossary-instance">
-   <glossterm>인스턴스 Instance</glossterm>
+   <glossterm>인스턴스, Instance</glossterm>
    <glossdef>
     <para>
      A group of backend and auxiliary processes that communicate using
@@ -778,7 +779,7 @@
   </glossentry>
 
   <glossentry id="glossary-isolation">
-   <glossterm>격리 Isolation</glossterm>
+   <glossterm>격리, Isolation</glossterm>
    <glossdef>
     <para>
      The property that the effects of a transaction are not visible to
@@ -794,7 +795,7 @@
   </glossentry>
 
   <glossentry id="glossary-join">
-   <glossterm>조인 Join</glossterm>
+   <glossterm>조인, Join</glossterm>
    <glossdef>
     <para>
      An operation and <acronym>SQL</acronym> keyword used in
@@ -806,7 +807,7 @@
   </glossentry>
 
   <glossentry id="glossary-key">
-   <glossterm>키 Key</glossterm>
+   <glossterm>키, Key</glossterm>
    <glossdef>
     <para>
      A means of identifying a <glossterm linkend="glossary-tuple">row</glossterm> within a
@@ -820,7 +821,7 @@
   </glossentry>
 
   <glossentry id="glossary-lock">
-   <glossterm>잠금 Lock</glossterm>
+   <glossterm>잠금, Lock</glossterm>
    <glossdef>
     <para>
      A mechanism that allows a process to limit or prevent simultaneous
@@ -830,11 +831,13 @@
   </glossentry>
 
   <glossentry id="glossary-log-file">
-   <glossterm>로그 파일 Log file</glossterm>
+   <glossterm>로그 파일, Log file</glossterm>
    <glossdef>
     <para>
+     이벤트를 사람이 읽을 수 있는 문장으로 쓴 파일.
      Log files contain human-readable text lines about events.
-     Examples include login failures, long-running queries, etc.
+     예를 들어 로그인 실패, 실행하는데 오랜 시간이 걸린 쿼리
+     등을 쓴다.
     </para>
     <para>
      자세한 설명은
@@ -844,7 +847,7 @@
   </glossentry>
 
   <glossentry id="glossary-logged">
-   <glossterm>Logged</glossterm>
+   <glossterm>로그드, Logged</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-table">table</glossterm> is considered
@@ -858,7 +861,7 @@
   </glossentry>
 
   <glossentry id="glossary-logger">
-   <glossterm>Logger (프로세스)</glossterm>
+   <glossterm>로거, Logger (프로세스)</glossterm>
    <glossdef>
     <para>
      If activated, the process
@@ -876,7 +879,7 @@
   </glossentry>
 
   <glossentry id="glossary-log-record">
-   <glossterm>Log record</glossterm>
+   <glossterm>로그 레코드, Log record</glossterm>
     <glossdef>
      <para>
       Archaic term for a <glossterm linkend="glossary-wal-record">WAL record</glossterm>.
@@ -885,12 +888,12 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>주 Master (서버)</glossterm>
+   <glossterm>주, Master (서버)</glossterm>
    <glosssee otherterm="glossary-primary-server" />
   </glossentry>
 
   <glossentry id="glossary-materialized">
-   <glossterm>Materialized</glossterm>
+   <glossterm>구체화된, Materialized</glossterm>
    <glossdef>
     <para>
      The property that some information has been pre-computed and stored
@@ -912,7 +915,7 @@
   </glossentry>
 
   <glossentry id="glossary-materialized-view">
-   <glossterm>Materialized view (relation)</glossterm>
+   <glossterm>구체화된 뷰, Materialized view (relation)</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-relation">relation</glossterm> that is
@@ -931,7 +934,7 @@
   </glossentry>
 
   <glossentry id="glossary-mvcc">
-   <glossterm>Multi-version concurrency control (MVCC)</glossterm>
+   <glossterm>다중 버전 동시성 제어, Multi-version concurrency control (MVCC)</glossterm>
    <glossdef>
     <para>
      A mechanism designed to allow several
@@ -948,22 +951,24 @@
   </glossentry>
 
   <glossentry id="glossary-null">
-   <glossterm>Null</glossterm>
+   <glossterm>널, Null</glossterm>
    <glossdef>
     <para>
-     A concept of non-existence that is a central tenet of relational
-     database theory. It represents the absence of a definite value.
+     없음을 나타내는 개념, 관계형 데이터베이스 이론의 주요 개념이다.
+     값이, 자료가 없다를 나타낸다.
+     (숫자 영(0)은 영이 있는 것이고, 빈문자열('')은 빈문자열이 있는 것이나,
+     널은 그런 것들 조차 없는 것을 뜻한다. -  옮긴이)
     </para>
    </glossdef>
   </glossentry>
 
   <glossentry>
-   <glossterm>Optimizer</glossterm>
+   <glossterm>최적화기, Optimizer</glossterm>
    <glosssee otherterm="glossary-planner" />
   </glossentry>
 
   <glossentry id="glossary-parallel-query">
-   <glossterm>Parallel query</glossterm>
+   <glossterm>병렬 쿼리, Parallel query</glossterm>
    <glossdef>
     <para>
      The ability to handle parts of executing a
@@ -974,7 +979,7 @@
   </glossentry>
 
   <glossentry id="glossary-partition">
-   <glossterm>Partition</glossterm>
+   <glossterm>파티션, Partition</glossterm>
    <glossdef>
     <para>
      One of several disjoint (not overlapping) subsets of a larger set.
@@ -1004,7 +1009,7 @@
   </glossentry>
 
   <glossentry id="glossary-partitioned-table">
-   <glossterm>Partitioned table (relation)</glossterm>
+   <glossterm>상위 파티션 테이블, Partitioned table (릴레이션)</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-relation">relation</glossterm> that is
@@ -1016,7 +1021,7 @@
   </glossentry>
 
   <glossentry id="glossary-postmaster">
-   <glossterm>Postmaster (process)</glossterm>
+   <glossterm>Postmaster (프로세스)</glossterm>
    <glossdef>
     <para>
       The very first process of an <glossterm linkend="glossary-instance">instance</glossterm>.
@@ -1032,7 +1037,7 @@
   </glossentry>
 
   <glossentry id="glossary-primary-key">
-   <glossterm>Primary key</glossterm>
+   <glossterm>기본키, Primary key</glossterm>
    <glossdef>
     <para>
      A special case of a
@@ -1052,7 +1057,7 @@
   </glossentry>
 
   <glossentry id="glossary-primary-server">
-   <glossterm>Primary (server)</glossterm>
+   <glossterm>프라이머리, Primary (서버)</glossterm>
    <glossdef>
     <para>
      When two or more <glossterm linkend="glossary-database">databases</glossterm>
@@ -1066,7 +1071,7 @@
   </glossentry>
 
   <glossentry id="glossary-procedure">
-   <glossterm>프로시져 Procedure (routine)</glossterm>
+   <glossterm>프로시져, Procedure (routine)</glossterm>
    <glossdef>
     <para>
      A type of routine.
@@ -1083,7 +1088,7 @@
   </glossentry>
 
   <glossentry id="glossary-query">
-   <glossterm>Query</glossterm>
+   <glossterm>쿼리, Query</glossterm>
    <glossdef>
     <para>
      A request sent by a client to a <glossterm linkend="glossary-backend">backend</glossterm>,
@@ -1093,7 +1098,7 @@
   </glossentry>
 
   <glossentry id="glossary-planner">
-   <glossterm>Query planner</glossterm>
+   <glossterm>쿼리 실행계획기, Query planner</glossterm>
    <glossdef>
     <para>
      The part of <productname>PostgreSQL</productname> that is devoted to
@@ -1106,17 +1111,17 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>Record</glossterm>
+   <glossterm>레코드, Record</glossterm>
    <glosssee otherterm="glossary-tuple" />
   </glossentry>
 
   <glossentry>
-   <glossterm>Recycling</glossterm>
+   <glossterm>재활용, Recycling</glossterm>
    <glosssee otherterm="glossary-wal-file" />
   </glossentry>
 
   <glossentry id="glossary-referential-integrity">
-   <glossterm>Referential integrity</glossterm>
+   <glossterm>참조 무결성, Referential integrity</glossterm>
    <glossdef>
     <para>
      A means of restricting data in one <glossterm linkend="glossary-relation">relation</glossterm>
@@ -1128,7 +1133,7 @@
   </glossentry>
 
   <glossentry id="glossary-relation">
-   <glossterm>Relation</glossterm>
+   <glossterm>릴레이션, Relation</glossterm>
    <glossdef>
     <para>
      The generic term for all objects in a
@@ -1157,7 +1162,7 @@
   </glossentry>
 
   <glossentry id="glossary-replica">
-   <glossterm>Replica (server)</glossterm>
+   <glossterm>리플리카, 복제, Replica (서버)</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-database">database</glossterm> that is paired
@@ -1172,7 +1177,7 @@
   </glossentry>
 
   <glossentry id="glossary-replication">
-   <glossterm>Replication</glossterm>
+   <glossterm>복제, Replication</glossterm>
    <glossdef>
     <para>
      The act of reproducing data on one
@@ -1187,7 +1192,7 @@
   </glossentry>
 
   <glossentry id="glossary-result-set">
-   <glossterm>Result set</glossterm>
+   <glossterm>결과 집합, Result set</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-relation">relation</glossterm> transmitted
@@ -1212,7 +1217,7 @@
   </glossentry>
 
   <glossentry id="glossary-revoke">
-   <glossterm>Revoke</glossterm>
+   <glossterm>권한 박탈, Revoke</glossterm>
    <glossdef>
     <para>
      A command to prevent access to a named set of
@@ -1227,7 +1232,7 @@
   </glossentry>
 
   <glossentry id="glossary-role">
-   <glossterm>Role</glossterm>
+   <glossterm>롤, 역할, Role</glossterm>
    <glossdef>
     <para>
      A collection of access privileges to the
@@ -1245,7 +1250,7 @@
   </glossentry>
 
   <glossentry id="glossary-rollback">
-   <glossterm>Rollback</glossterm>
+   <glossterm>롤백, Rollback</glossterm>
    <glossdef>
     <para>
      A command to undo all of the operations performed since the beginning
@@ -1259,7 +1264,7 @@
   </glossentry>
 
   <glossentry id="glossary-routine">
-   <glossterm>Routine</glossterm>
+   <glossterm>루틴, Routine</glossterm>
    <glossdef>
     <para>
      A defined set of instructions stored in the database system
@@ -1280,12 +1285,12 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>Row</glossterm>
+   <glossterm>로우, 행 Row</glossterm>
    <glosssee otherterm="glossary-tuple" />
   </glossentry>
 
   <glossentry id="glossary-savepoint">
-   <glossterm>Savepoint</glossterm>
+   <glossterm>세이브포인트, 저장점, Savepoint</glossterm>
    <glossdef>
     <para>
      A special mark in the sequence of steps in a
@@ -1301,7 +1306,7 @@
   </glossentry>
 
   <glossentry id="glossary-schema">
-   <glossterm>Schema</glossterm>
+   <glossterm>스키마, Schema</glossterm>
    <glossdef>
     <para>
      A schema is a namespace for
@@ -1330,12 +1335,12 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>Segment</glossterm>
+   <glossterm>조각, 세그먼트, Segment</glossterm>
    <glosssee otherterm="glossary-file-segment" />
   </glossentry>
 
   <glossentry id="glossary-select">
-   <glossterm>Select</glossterm>
+   <glossterm>셀렉트 Select</glossterm>
    <glossdef>
     <para>
      The <acronym>SQL</acronym> command used to request data from a
@@ -1354,7 +1359,7 @@
   </glossentry>
 
   <glossentry id="glossary-sequence">
-   <glossterm>Sequence (relation)</glossterm>
+   <glossterm>시퀀스, Sequence (릴레이션)</glossterm>
    <glossdef>
     <para>
      A type of relation that is used to generate values.
@@ -1382,7 +1387,7 @@
 -->
 
   <glossentry id="glossary-server">
-   <glossterm>Server</glossterm>
+   <glossterm>서버, Server</glossterm>
    <glossdef>
     <para>
      A computer on which <productname>PostgreSQL</productname>
@@ -1397,7 +1402,7 @@
   </glossentry>
 
   <glossentry id="glossary-session">
-   <glossterm>Session</glossterm>
+   <glossterm>세션, Session</glossterm>
    <glossdef>
     <para>
      A state that allows a client and a backend to interact,
@@ -1407,7 +1412,7 @@
   </glossentry>
 
   <glossentry id="glossary-shared-memory">
-   <glossterm>Shared memory</glossterm>
+   <glossterm>공유 메모리, Shared memory</glossterm>
    <glossdef>
     <para>
      <acronym>RAM</acronym> which is used by the processes common to an
@@ -1433,7 +1438,7 @@
   </glossentry>
 
   <glossentry id="glossary-sql-object">
-   <glossterm>SQL object</glossterm>
+   <glossterm>SQL 객체, SQL object</glossterm>
     <glossdef>
      <para>
       Any object that can be created with a <command>CREATE</command>
@@ -1477,7 +1482,7 @@
   </glossentry>
 
   <glossentry id="glossary-sql-standard">
-   <glossterm>SQL standard</glossterm>
+   <glossterm>SQL 표준, SQL standard</glossterm>
    <glossdef>
     <para>
      A series of documents that define the <acronym>SQL</acronym> language.
@@ -1491,7 +1496,7 @@
   </glossentry>
 
   <glossentry id="glossary-stats-collector">
-   <glossterm>Stats collector (process)</glossterm>
+   <glossterm>통계 수집, Stats collector (프로세스)</glossterm>
    <glossdef>
     <para>
      This process collects statistical information about the
@@ -1505,7 +1510,7 @@
   </glossentry>
 
   <glossentry id="glossary-system-catalog">
-   <glossterm>System catalog</glossterm>
+   <glossterm>시스템 카탈로그, System catalog</glossterm>
    <glossdef>
     <para>
      A collection of <glossterm linkend="glossary-table">tables</glossterm>
@@ -1531,7 +1536,7 @@
   </glossentry>
 
   <glossentry id="glossary-table">
-   <glossterm>Table</glossterm>
+   <glossterm>테이블, Table</glossterm>
    <glossdef>
     <para>
      A collection of <glossterm linkend="glossary-tuple">tuples</glossterm> having
@@ -1550,7 +1555,7 @@
   </glossentry>
 
   <glossentry id="glossary-tablespace">
-   <glossterm>Tablespace</glossterm>
+   <glossterm>테이블스페이스, Tablespace</glossterm>
    <glossdef>
     <para>
      A named location on the server file system.
@@ -1569,7 +1574,7 @@
   </glossentry>
 
   <glossentry id="glossary-temporary-table">
-   <glossterm>Temporary table</glossterm>
+   <glossterm>임시 테이블, Temporary table</glossterm>
    <glossdef>
     <para>
      <glossterm linkend="glossary-table">Tables</glossterm> that exist either
@@ -1590,7 +1595,7 @@
   </glossentry>
 
   <glossentry id="glossary-toast">
-   <glossterm>TOAST</glossterm>
+   <glossterm>토스트, TOAST</glossterm>
    <glossdef>
     <para>
      A mechanism by which large attributes of table rows are split and
@@ -1605,7 +1610,7 @@
   </glossentry>
 
   <glossentry id="glossary-transaction">
-   <glossterm>Transaction</glossterm>
+   <glossterm>트랜잭션, Transaction</glossterm>
    <glossdef>
     <para>
      A combination of commands that must act as a single
@@ -1623,7 +1628,7 @@
   </glossentry>
 
   <glossentry id="glossary-xid">
-   <glossterm>Transaction ID</glossterm>
+   <glossterm>트랜잭션 아이디, Transaction ID</glossterm>
    <glossdef>
     <para>
      The numerical, unique, sequentially-assigned identifier that each
@@ -1647,7 +1652,7 @@
   </glossentry>
 
   <glossentry id="glossary-tps">
-   <glossterm>Transactions per second (TPS)</glossterm>
+   <glossterm>초당 트랜잭션 수, Transactions per second (TPS)</glossterm>
    <glossdef>
     <para>
      Average number of transactions that are executed per second,
@@ -1659,7 +1664,7 @@
   </glossentry>
 
   <glossentry id="glossary-trigger">
-   <glossterm>Trigger</glossterm>
+   <glossterm>트리거, Trigger</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-function">function</glossterm> which can
@@ -1680,7 +1685,7 @@
   </glossentry>
 
   <glossentry id="glossary-tuple">
-   <glossterm>Tuple</glossterm>
+   <glossterm>튜플, Tuple</glossterm>
    <glossdef>
     <para>
      A collection of <glossterm linkend="glossary-attribute">attributes</glossterm>
@@ -1695,7 +1700,7 @@
   </glossentry>
 
   <glossentry id="glossary-unique-constraint">
-   <glossterm>Unique constraint</glossterm>
+   <glossterm>고유 제약조건, Unique constraint</glossterm>
    <glossdef>
     <para>
      A type of <glossterm linkend="glossary-constraint">constraint</glossterm>
@@ -1714,7 +1719,7 @@
   </glossentry>
 
   <glossentry id="glossary-unlogged">
-   <glossterm>Unlogged</glossterm>
+   <glossterm>언로그드, Unlogged</glossterm>
    <glossdef>
     <para>
      The property of certain <glossterm linkend="glossary-relation">relations</glossterm>
@@ -1734,7 +1739,7 @@
   </glossentry>
 
   <glossentry id="glossary-update">
-   <glossterm>Update</glossterm>
+   <glossterm>업데이트, Update</glossterm>
    <glossdef>
     <para>
      An <acronym>SQL</acronym> command used to modify
@@ -1750,7 +1755,7 @@
   </glossentry>
 
   <glossentry id="glossary-user">
-   <glossterm>User</glossterm>
+   <glossterm>사용자, User</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-role">role</glossterm> that has the
@@ -1760,7 +1765,7 @@
   </glossentry>
 
   <glossentry id="glossary-user-mapping">
-   <glossterm>User mapping</glossterm>
+   <glossterm>사용자 맵핑, User mapping</glossterm>
    <glossdef>
     <para>
      The translation of login credentials in the local
@@ -1776,7 +1781,7 @@
   </glossentry>
 
   <glossentry id="glossary-vacuum">
-   <glossterm>Vacuum</glossterm>
+   <glossterm>청소, Vacuum</glossterm>
    <glossdef>
     <para>
      The process of removing outdated
@@ -1796,7 +1801,7 @@
   </glossentry>
 
   <glossentry id="glossary-view">
-   <glossterm>View</glossterm>
+   <glossterm>뷰, View</glossterm>
    <glossdef>
     <para>
      A <glossterm linkend="glossary-relation">relation</glossterm> that is defined by a
@@ -1813,7 +1818,7 @@
   </glossentry>
 
   <glossentry id="glossary-vm">
-   <glossterm>Visibility map (fork)</glossterm>
+   <glossterm>실자료 지도, Visibility map (fork)</glossterm>
    <glossdef>
     <para>
      A storage structure that keeps metadata about each data page
@@ -1833,7 +1838,7 @@
   </glossentry>
 
   <glossentry id="glossary-wal-archiver">
-   <glossterm>WAL archiver (process)</glossterm>
+   <glossterm>WAL archiver (프로세스)</glossterm>
    <glossdef>
     <para>
      A process that saves copies of <glossterm linkend="glossary-wal-file">WAL files</glossterm>
@@ -1848,7 +1853,7 @@
   </glossentry>
 
   <glossentry id="glossary-wal-file">
-   <glossterm>WAL file</glossterm>
+   <glossterm>WAL 파일</glossterm>
    <glossdef>
     <para>
      Also known as <firstterm>WAL segment</firstterm> or
@@ -1878,7 +1883,7 @@
   </glossentry>
 
   <glossentry id="glossary-wal-record">
-   <glossterm>WAL record</glossterm>
+   <glossterm>WAL 레코드</glossterm>
    <glossdef>
     <para>
      A low-level description of an individual data change.
@@ -1895,12 +1900,12 @@
   </glossentry>
 
   <glossentry>
-   <glossterm>WAL segment</glossterm>
+   <glossterm>WAL 조각 파일</glossterm>
    <glosssee otherterm="glossary-wal-file" />
   </glossentry>
 
   <glossentry id="glossary-wal-writer">
-   <glossterm>WAL writer (process)</glossterm>
+   <glossterm>WAL writer (프로세스)</glossterm>
    <glossdef>
     <para>
      A process that writes <glossterm linkend="glossary-wal-record">WAL records</glossterm>
@@ -1915,7 +1920,7 @@
   </glossentry>
 
   <glossentry id="glossary-window-function">
-   <glossterm>Window function (routine)</glossterm>
+   <glossterm>윈도우 함수, Window function (루틴)</glossterm>
    <glossdef>
     <para>
      A type of <glossterm linkend="glossary-function">function</glossterm>
