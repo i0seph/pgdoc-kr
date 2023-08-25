@@ -204,7 +204,7 @@
    <para>
     일반적인 vacuum 전략은 주기적인 표준 <command>VACUUM</command> 작업을 
     해서, 꾸준히 빈 공간을 확보해서 디스크가 어느 정도 커지지만, 
-    더 이상 크지지 않게 해서, 최대한 <command>VACUUM FULL</command> 작업을
+    더 이상 커지지 않게 해서, 최대한 <command>VACUUM FULL</command> 작업을
     해야하는 상황을 방지하는 것이다.
     autovacuum 데몬이 이런 전략으로 작업을 한다.
     즉, autovacuum 기능을 사용한다면, <command>VACUUM FULL</command>
